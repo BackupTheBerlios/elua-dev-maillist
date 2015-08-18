@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Mizar32: Enable serial console input buffer by	default
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mizar32%3A%20Enable%20serial%20console%20input%20buffer%20by%0A%09default&In-Reply-To=%3CAANLkTikxH0nNiinvFyEu-x8xOmA0QR33bcd2sF-toBVN%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001877.html">
+   <LINK REL="Next"  HREF="001885.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Mizar32: Enable serial console input buffer by	default</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mizar32%3A%20Enable%20serial%20console%20input%20buffer%20by%0A%09default&In-Reply-To=%3CAANLkTikxH0nNiinvFyEu-x8xOmA0QR33bcd2sF-toBVN%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Mizar32: Enable serial console input buffer by	default">martinwguy at gmail.com
+       </A><BR>
+    <I>Sun Jan 16 18:15:55 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001877.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+        <LI>Next message: <A HREF="001885.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1880">[ date ]</a>
+              <a href="thread.html#1880">[ thread ]</a>
+              <a href="subject.html#1880">[ subject ]</a>
+              <a href="author.html#1880">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 16 January 2011 17:04, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> This is a bit more problematic. After the remotefs_int branch merge
+</I>&gt;<i> from yesterday UART buffering is handled using the generic eLua
+</I>&gt;<i> interrupt layer (see platform_uart_set_buffer in src/common_uart.c for
+</I>&gt;<i> details). There is already support for this in AVR32
+</I>&gt;<i> (src/platform/avr32/platform_int.c) but it requires adding the eLua
+</I>&gt;<i> interrupt code (BUILD_C_INT_HANDLERS) which might make things too big
+</I>&gt;<i> to fit. I tried it on my machine and I got this:
+</I>&gt;<i>
+</I>&gt;<i> &#160; text &#160; &#160;data &#160; &#160; bss &#160; &#160; dec &#160; &#160; hex filename
+</I>&gt;<i> &#160;121344 &#160; &#160;1364 &#160; &#160;1480 &#160;124188 &#160; 1e51c elua_lualong_at32uc3a0128.elf
+</I>&gt;<i>
+</I>&gt;<i> with LTR enabled. With LTR disabled (optram=0):
+</I>&gt;<i>
+</I>&gt;<i> &#160; text &#160; &#160;data &#160; &#160; bss &#160; &#160; dec &#160; &#160; hex filename
+</I>&gt;<i> &#160;120320 &#160; &#160;1364 &#160; &#160;1480 &#160;123164 &#160; 1e11c elua_lualong_at32uc3a0128.elf
+</I>
+Thanks. Here's an updated version of that patch for current svn using
+C interrupts
+I only use optram=0 because it saves 1KB text and we have 32MB RAM
+
+&quot;size&quot; says
+   text	   data	    bss	    dec	    hex	filename
+ 119808	   1364	   1480	 122652	  1df1c	elua_lualong_at32uc3a0128.elf
+but in reality it writes 122652 bytes to the flash memory (limit 122880).
+I've never figured exactly how to derive the flash size from the &quot;size&quot; output.
+
+Thanks again
+
+    M
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: elua-mizar32-enable-uart-buf.patch
+Type: text/x-patch
+Size: 2570 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110116/42820e0c/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20110116/42820e0c/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001877.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+	<LI>Next message: <A HREF="001885.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1880">[ date ]</a>
+              <a href="thread.html#1880">[ thread ]</a>
+              <a href="subject.html#1880">[ subject ]</a>
+              <a href="author.html#1880">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

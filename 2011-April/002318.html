@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua Tiny RAM
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20Tiny%20RAM&In-Reply-To=%3CBANLkTimzeQXnC6UTAgkFe82PrfNmCS4hyw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002317.html">
+   <LINK REL="Next"  HREF="002319.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua Tiny RAM</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20Tiny%20RAM&In-Reply-To=%3CBANLkTimzeQXnC6UTAgkFe82PrfNmCS4hyw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Lua Tiny RAM">dadosutter at gmail.com
+       </A><BR>
+    <I>Thu Apr 28 21:28:46 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002317.html">[eLua-dev] Lua Tiny RAM
+</A></li>
+        <LI>Next message: <A HREF="002319.html">[eLua-dev] Lua Tiny RAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2318">[ date ]</a>
+              <a href="thread.html#2318">[ thread ]</a>
+              <a href="subject.html#2318">[ subject ]</a>
+              <a href="author.html#2318">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Apr 28, 2011 at 15:51, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Apr 28, 2011 at 9:47 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I moved it to the end of rodata where it should have been.  Now it works.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Boy, do I feel dumb.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> No reason at all to feel dumb. That's not exactly intuitive :)
+</I>&gt;<i> BTW, great news on the PPC port!
+</I>&gt;<i>
+</I>
++1
+Thankssssssss
+
+
+
+&gt;<i> I'm still very curious about rotables, so I have some reading to do.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The &quot;ltrwork&quot; branch makes rotables into actual types with a header common
+</I>&gt;<i> to regular tables which is much more logical (although it increases the
+</I>&gt;<i> flash usage a bit) and can differentiate between regular tables and rotables
+</I>&gt;<i> simply by checking this common header. You might find the implementation on
+</I>&gt;<i> &quot;master&quot; a bit clumsy. Then again, you might find both of them clumsy :)
+</I>&gt;<i>
+</I>
+:<i>) :)
+</I>Does this mean that it will be changed/improved at any time or this is a
+final work ?
+
+
+&gt;<i>  Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>
+Best
+Dado
+
+
+
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  On Thu, Apr 28, 2011 at 2:40 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi Bogdan,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You suspect isrotable is returning the wrong thing?  I wondered about
+</I>&gt;&gt;&gt;<i> that.  How do the string ro tables interact with the regular stuff?  Anyhow,
+</I>&gt;&gt;&gt;<i> stext is defined to be the start of the .text section, etext near the end.
+</I>&gt;&gt;&gt;<i>  My linker script is a hand-modified version of the one that comes with
+</I>&gt;&gt;&gt;<i> CodeSourcery lite for the PPC eabi.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> SECTIONS
+</I>&gt;&gt;&gt;<i> {
+</I>&gt;&gt;&gt;<i>   .text :
+</I>&gt;&gt;&gt;<i>   {
+</I>&gt;&gt;&gt;<i>     CREATE_OBJECT_SYMBOLS
+</I>&gt;&gt;&gt;<i>     stext = .;
+</I>&gt;&gt;&gt;<i>     __cs3_region_start_ram = .;
+</I>&gt;&gt;&gt;<i>     _ftext = .;
+</I>&gt;&gt;&gt;<i>     *(.cs3.region-head.ram)
+</I>&gt;&gt;&gt;<i>     ASSERT (. == __cs3_region_start_ram, &quot;.cs3.region-head.ram not
+</I>&gt;&gt;&gt;<i> permitted&quot;);
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     *(.cs3.reset)
+</I>&gt;&gt;&gt;<i>     __cs3_start_asm_uboot = DEFINED(__cs3_start_asm) ? __cs3_start_asm :
+</I>&gt;&gt;&gt;<i> __cs3_start_asm_uboot;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     *(.text.cs3.init)
+</I>&gt;&gt;&gt;<i>     *(.text .text.* .gnu.linkonce.t.*)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     . = ALIGN(0x4);
+</I>&gt;&gt;&gt;<i>     KEEP (*crtbegin.o(.jcr))
+</I>&gt;&gt;&gt;<i>     KEEP (*(EXCLUDE_FILE (*crtend.o) .jcr))
+</I>&gt;&gt;&gt;<i>     KEEP (*crtend.o(.jcr))
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     . = ALIGN(0x4);
+</I>&gt;&gt;&gt;<i>     *(.gcc_except_table .gcc_except_table.*)
+</I>&gt;&gt;&gt;<i>     etext = . ;
+</I>&gt;&gt;&gt;<i>     *(.ramtext)
+</I>&gt;&gt;&gt;<i>     . = ALIGN(0x10);
+</I>&gt;&gt;&gt;<i>    } &gt;ram
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Thu, Apr 28, 2011 at 2:33 PM, Bogdan Marinescu &lt;
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Thu, Apr 28, 2011 at 9:20 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Hi Folks,
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> I'm porting eLua to the power pc for a project I'm working on.  What
+</I>&gt;&gt;&gt;&gt;&gt;<i> I'm trying to figure out is why luaB_print dies when I compile with
+</I>&gt;&gt;&gt;&gt;&gt;<i> optram=yes.
+</I>&gt;&gt;&gt;&gt;&gt;<i> For example,
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> =&quot;hello&quot;
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> works fine with optram=no, but causes me trouble with optram=yes.  I've
+</I>&gt;&gt;&gt;&gt;&gt;<i> traced it down to the result of hashstr in luaH_getstr.  But my
+</I>&gt;&gt;&gt;&gt;&gt;<i> understanding of lua internals has hit a wall.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> I will read over Bogdan's material on LTR, but if anything jumps out to
+</I>&gt;&gt;&gt;&gt;&gt;<i> those of you reading, please do let me know your theories.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> How are stext and etext defined in your linker command script?
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110428/f22df312/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110428/f22df312/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002317.html">[eLua-dev] Lua Tiny RAM
+</A></li>
+	<LI>Next message: <A HREF="002319.html">[eLua-dev] Lua Tiny RAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2318">[ date ]</a>
+              <a href="thread.html#2318">[ thread ]</a>
+              <a href="subject.html#2318">[ subject ]</a>
+              <a href="author.html#2318">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

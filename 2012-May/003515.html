@@ -1,0 +1,290 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Raspberry Pi as comprehensive eLua solution ?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Raspberry%20Pi%20as%20comprehensive%20eLua%20solution%20%3F&In-Reply-To=%3CCANKDJfaCGwy6pM7_%3Dg0d7awJmKd-x151nTqGU7Etwba2e6091Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003513.html">
+   <LINK REL="Next"  HREF="003522.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Raspberry Pi as comprehensive eLua solution ?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Raspberry%20Pi%20as%20comprehensive%20eLua%20solution%20%3F&In-Reply-To=%3CCANKDJfaCGwy6pM7_%3Dg0d7awJmKd-x151nTqGU7Etwba2e6091Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Raspberry Pi as comprehensive eLua solution ?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu May 17 08:23:49 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003513.html">[eLua-dev] Raspberry Pi as comprehensive eLua solution ?
+</A></li>
+        <LI>Next message: <A HREF="003522.html">[eLua-dev] Raspberry Pi as comprehensive eLua solution ?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3515">[ date ]</a>
+              <a href="thread.html#3515">[ thread ]</a>
+              <a href="subject.html#3515">[ subject ]</a>
+              <a href="author.html#3515">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Wed, May 16, 2012 at 4:06 PM, Patrick &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">patrick at spellingbeewinnars.org</A>&gt; wrote:
+&gt;<i> Hi Bogdan
+</I>&gt;<i>
+</I>&gt;<i> I am feeling silly about my post now. Of course eLua runs on bare metal and
+</I>&gt;<i> not under an OS, DUH!
+</I>&gt;<i>
+</I>&gt;<i> What I should have said, is &quot;could eLua run under an OS&quot; but having thought
+</I>&gt;<i> this through a little more, this is equally stupid. Why take a complex,
+</I>&gt;<i> feature rich code base and rip out features until your left with what... the
+</I>&gt;<i> ability to control 8 GPIO pins, an LED and maybe a TCP/IP stack? not an
+</I>&gt;<i> intelligent use of time...
+</I>
+This is exactly my problem too. Especially when it comes to
+networking, when Linux has a full stack which is light years better
+than what eLua can do at the moment.
+
+&gt;<i>
+</I>&gt;<i> So would this be sensible...
+</I>&gt;<i>
+</I>&gt;<i> Assuming that these boards(Olimex/BeagleBoard/Raspberry PI etc) have C
+</I>&gt;<i> libraries for their limited peripherals, would it be sensible to write Lua
+</I>&gt;<i> bindings for them?
+</I>
+It does, yes. Except you won't be writing bindings for them directly,
+you'd write bindings for whatever driver the kernel uses for them.
+Fortunately, the kernel driver base is very good, although the way
+they choose to expose some I/O functionality (for example via files in
+/dev) can sometimes feel unnatural (at least to me).
+
+&gt;<i>
+</I>&gt;<i> It could be a totally different code base but retain the same API, a sort of
+</I>&gt;<i> eLua-Lite.
+</I>
+You won't be able to retain the same API, unfortunately. For example,
+everything that has to do with interrupts will go away instantly,
+since that is handled by the kernel. Many other functions in various
+libraries will have to change too.
+
+&gt;<i>
+</I>&gt;<i> Here is a bit of my workflow and logic(if it's okay to call it that!).
+</I>&gt;<i>
+</I>&gt;<i> Using WebBuilder and CuteCom, I've written some simple blink like programs.
+</I>&gt;<i> I am sure WebBuilder can do much more then this and it's just my limited
+</I>&gt;<i> time that's the issue.....
+</I>&gt;<i>
+</I>&gt;<i> I sometimes download other people's .BIN files. When I do, I have to copy
+</I>&gt;<i> them to a USB key, go downstairs, Boot up a Windoze 2000 machine and use the
+</I>&gt;<i> piece-o-sh*t, proprietary Luminary program to flash my board.
+</I>
+Yes, I know how that feels ... There are ways to flash even those
+boards from Linux though, you just have to dig on the net a bit (I
+don't have a link right now, otherwise I would've given it to you).
+
+&gt;<i>
+</I>&gt;<i> I have a JTAG pod on it's way and I hope to set up a cross compiler soon but
+</I>&gt;<i> so far in the limited time I have been able to spend on the project flashing
+</I>&gt;<i> has been an issue and adding C code to a project looks like it will take
+</I>&gt;<i> some time.
+</I>
+Why would you need to setup a cross compiler yourself? Just use
+CodeSourcery's (now Mentor Graphics) lite edition cross compiler
+packages and you can cross an item from your TODO list.
+
+&gt;<i>
+</I>&gt;<i> I was thinking that if eLua-Lite was as easy as installing a deb package or
+</I>&gt;<i> downloading from a repository, then someone could have an LED blinking in
+</I>&gt;<i> under a minute as eLua-Lite is already running on the target. Other features
+</I>&gt;<i> such as a cross compiler could be included as well.
+</I>
+What you say makes a lot of sense, but mainly in the form of standard
+Lua C modules used with stock Lua. There's really no need to use eLua
+for this stuff as far as I can see. BTW, this would be a very nice
+project. The Raspberry Pi was designed (amongst other things) to be a
+Python development machine, but I have a very strong feeling that it
+would be much better used as a Lua development machine. I'd start this
+project myself if I had the time ...
+
+&gt;<i>
+</I>&gt;<i> Someone could play with the eLua like features and then start flashing a
+</I>&gt;<i> real target via JTAG right from the first board and then pretty soon just
+</I>&gt;<i> dump eLua-Lite and use the real thing.
+</I>
+Sadly, I can't see this happening, as we can't provide a fully
+compatible API (as explained).
+
+&gt;<i>
+</I>&gt;<i> The only benefit I see here is a lower barrier to entry but I think that is
+</I>&gt;<i> still worth something.
+</I>&gt;<i>
+</I>&gt;<i> More logical? or should I get back to my crack pipe? :)
+</I>
+I believed I covered the &quot;logical&quot; part. As for your crack pipe ...
+you know what they say, sharing is good for your soul :D
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On 12-05-14 05:11 AM, Bogdan Marinescu wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hi Patrick,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sun, May 13, 2012 at 12:54 AM, Patrick
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">patrick at spellingbeewinnars.org</A>&gt; &#160;wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi Guys
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The past few months have been difficult. It looks like daughter is also
+</I>&gt;&gt;&gt;<i> about to be diagnosed with Autism.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Sorry to hear that :( I wish the best of luck to you and your daughter.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The project I have been working on for my
+</I>&gt;&gt;&gt;<i> Son looked easier as a desktop solution, so I've ignored everything
+</I>&gt;&gt;&gt;<i> embedded. Now it looks viable as embedded and i am back again. i need to
+</I>&gt;&gt;&gt;<i> follow along with what is best for my kids and my business, i haven't
+</I>&gt;&gt;&gt;<i> been
+</I>&gt;&gt;&gt;<i> able to do anything just for my own interest.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I hope to resume the screencast tutorials I started(or &#160;barely
+</I>&gt;&gt;&gt;<i> started)earlier in the year, sorry about the interruption.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> So enough rambling....I am planning on buying a Raspberry Pi for my son's
+</I>&gt;&gt;&gt;<i> project and it got me thinking about eLua.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I got a Raspberry coming my way too :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> This device boots a full Linux desktop(LDXE). I was thinking that if I(or
+</I>&gt;&gt;&gt;<i> we) could rework a distro so that it ships with eLua, Nuccio's text
+</I>&gt;&gt;&gt;<i> editor,
+</I>&gt;&gt;&gt;<i> GCC, OpenOCD and any other useful tools, then it would provide a native
+</I>&gt;&gt;&gt;<i> build environment for many of the boards the project targets, GCC on arm
+</I>&gt;&gt;&gt;<i> is
+</I>&gt;&gt;&gt;<i> not a cross compiler!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You can't have a distribution with both eLua and GCC/OpenOCD. GCC
+</I>&gt;&gt;<i> needs an OS (like Linux) to run on, eLua is itself a
+</I>&gt;&gt;<i> mini-and-extremely-basic-OS (and you certainly won't be able to run
+</I>&gt;&gt;<i> GCC on top of eLua :) ). You could probably find a virtualization
+</I>&gt;&gt;<i> setup suitable for this task, but where's the fun in that? GCC on ARM
+</I>&gt;&gt;<i> is indeed not a cross-compiler, but this isn't an issue at all. Cross
+</I>&gt;&gt;<i> compilers make as good of a job as native compilers do.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> With a jtag programmer preconfigured via OpenOCD and it could also make
+</I>&gt;&gt;&gt;<i> for
+</I>&gt;&gt;&gt;<i> an easy environment to flash lighter weight ARM boards from.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This would be indeed an interesting project, but again, it would have
+</I>&gt;&gt;<i> to run under Linux. While it's probably possible to make OpenOCD run
+</I>&gt;&gt;<i> on bare metal, I can't see an advantage to this.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> If it had SSH and/or NFS installed then it could also be used in tandem
+</I>&gt;&gt;&gt;<i> with
+</I>&gt;&gt;&gt;<i> a full power desktop. People could open remote directories for editing in
+</I>&gt;&gt;&gt;<i> their desktop computers and initiate commands via SSH(like gcc).
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> This device also has 8 GPIO pins and could provide something to play with
+</I>&gt;&gt;&gt;<i> without the user having to be concerned about flashing at all.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> And that's the main problem with this category of devices. They are
+</I>&gt;&gt;<i> built around CPUs, not MCUs, so you loose the convenience of using
+</I>&gt;&gt;<i> on-chip peripherals (like PWM, UARTs and so on) from the start. Sure,
+</I>&gt;&gt;<i> you can add everything you need over USB and other interfaces, but at
+</I>&gt;&gt;<i> that point it really doesn't make much sense to use the board as a
+</I>&gt;&gt;<i> bare metal platform (working an USB drivers alone is a huge PITA). On
+</I>&gt;&gt;<i> a somewhat related topic, don't even get me started on their extremely
+</I>&gt;&gt;<i> bizarre NDA policy (I'm really struggling to keep a polite tone right
+</I>&gt;&gt;<i> now). I refuse to work with manufacturers who release a CPU/MCU and
+</I>&gt;&gt;<i> refuse to make the documentation public, as if you could do anything
+</I>&gt;&gt;<i> at all with that chip without documentation (and actually getting the
+</I>&gt;&gt;<i> documentation involves a lot of time, effort and maybe even lawyers)).
+</I>&gt;&gt;<i> This simply doesn't make any sense at all in my engineerish mind and
+</I>&gt;&gt;<i> thus I choose to not have anything to do with it.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I have a couple of concerns.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> One the board is in short supply.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Two, just because it's a Debian/Fedora ARM build environment might not
+</I>&gt;&gt;&gt;<i> make
+</I>&gt;&gt;&gt;<i> it suitable for all ARM targets. I don't know how much the various ARMs
+</I>&gt;&gt;&gt;<i> differ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You needn't worry about that. Cross compilers are available on all
+</I>&gt;&gt;<i> Linux distros that I know of and they are very good at their job. The
+</I>&gt;&gt;<i> ARMs can differ quite a bit, but that's for the compiler to worry
+</I>&gt;&gt;<i> about (most of the time :) ).
+</I>&gt;&gt;<i> All in all, I'd second Martin's oppinion: get a Mizar32 (or other
+</I>&gt;&gt;<i> board that supports eLua), you're likely to get a much more pleasant
+</I>&gt;&gt;<i> experience as far as eLua is concerned.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Any thoughts on this on this project-Patrick
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003513.html">[eLua-dev] Raspberry Pi as comprehensive eLua solution ?
+</A></li>
+	<LI>Next message: <A HREF="003522.html">[eLua-dev] Raspberry Pi as comprehensive eLua solution ?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3515">[ date ]</a>
+              <a href="thread.html#3515">[ thread ]</a>
+              <a href="subject.html#3515">[ subject ]</a>
+              <a href="author.html#3515">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

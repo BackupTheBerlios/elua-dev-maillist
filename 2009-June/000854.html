@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Re-compiling with cross-compiler?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Re-compiling%20with%20cross-compiler%3F&In-Reply-To=%3CEMEWEMEW2_DELIMl5EDHy60540c9a61a30c45fb192a%2C%0A%09jbsnyder%40fanplastic.org%2C%20B652338B-88AC-494C-A644-50A%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000853.html">
+   <LINK REL="Next"  HREF="000855.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Re-compiling with cross-compiler?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Re-compiling%20with%20cross-compiler%3F&In-Reply-To=%3CEMEWEMEW2_DELIMl5EDHy60540c9a61a30c45fb192a%2C%0A%09jbsnyder%40fanplastic.org%2C%20B652338B-88AC-494C-A644-50A%3E"
+       TITLE="[eLua-dev] Re-compiling with cross-compiler?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jun 15 20:17:57 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000853.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+        <LI>Next message: <A HREF="000855.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#854">[ date ]</a>
+              <a href="thread.html#854">[ thread ]</a>
+              <a href="subject.html#854">[ subject ]</a>
+              <a href="author.html#854">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Jun 15, 2009, at 12:39 PM, Bogdan Marinescu wrote:
+
+&gt;<i> eLua already has a patch for &quot;cross-compiling&quot;, for details please  
+</I>&gt;<i> check this page:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://elua.berlios.de/beta/en/using.html#cross">http://elua.berlios.de/beta/en/using.html#cross</A>
+</I>
+Right, I've been taking a look at that to try and figure out how to  
+integrate this into the RPC code.
+
+&gt;<i> I think you can work on this. My suggestion would be to serialize  
+</I>&gt;<i> everything into a predefined format (for example &quot;network order&quot; for  
+</I>&gt;<i> all numbers) and let the remote target unpack the dump itself  
+</I>&gt;<i> (although it would need some kind of information about the machine  
+</I>&gt;<i> you're sending the request from, but this kind of stuff can be  
+</I>&gt;<i> easily embedded into the dump itself).
+</I>
+I was thinking of having the clients exchange information about  
+endianness and sizes when the connection is initiated.  I think I  
+could just mimic the set of bytes used in the headers for a binary  
+dump in order to get the right info exchanged.
+
+Network order sounds like a good idea for parameters that are being  
+exchanged.  I suppose whatever is done there should be consistent with  
+how bytecode is handled as well.  My initial thought was to use header  
+information exchanged when the connection is started to see who has  
+what configuration (endianness, lua_Number type, etc..) and  only do  
+translations if necessary, and have whoever supports more formats be  
+responsible for putting things into alternate formats for less capable  
+nodes (i.e.: a float machine can handle both float and int, an integer  
+only one however would be the only one who can deal with float).  I  
+may not get all of these cases covered for the initial version, but I  
+would like it to at least work between an Intel 32 or 64 bit machine  
+and a Cortex-M3 for starters.  I suppose one of the merits of just  
+going with network ordering or standardized output is that if one  
+were, say, broadcasting code over some network link to multiple  
+machines at once, this would prevent having to do some sort of  
+negotiation process.
+
+Hmm... more experimentation and coding needed...
+
+-jsnyder
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090615/f4c2256e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090615/f4c2256e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000853.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+	<LI>Next message: <A HREF="000855.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#854">[ date ]</a>
+              <a href="thread.html#854">[ thread ]</a>
+              <a href="subject.html#854">[ subject ]</a>
+              <a href="author.html#854">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

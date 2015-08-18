@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Large ADC Commit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1FIIPf24e8c6fe9b39d1e54583e%2C%0A%09jbsnyder%40fanplastic.org%2C%2082B4A4CF-8BA3-44E2-9C0D-3B8%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000475.html">
+   <LINK REL="Next"  HREF="000463.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Large ADC Commit</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1FIIPf24e8c6fe9b39d1e54583e%2C%0A%09jbsnyder%40fanplastic.org%2C%2082B4A4CF-8BA3-44E2-9C0D-3B8%3E"
+       TITLE="[eLua-dev] Large ADC Commit">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Feb 17 01:18:23 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000475.html">[eLua-dev] autorun
+</A></li>
+        <LI>Next message: <A HREF="000463.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#461">[ date ]</a>
+              <a href="thread.html#461">[ thread ]</a>
+              <a href="subject.html#461">[ subject ]</a>
+              <a href="author.html#461">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Some updates have been committed on top of what originally went in.   
+Bugs were fixed, some of what Bogdan mentioned below has been  
+integrated.  Code for handling more flexible sample sizes is not in  
+there, and neither is buffer growing that keeps existing samples safe.
+
+I did however, make the paradigm adjustment so that sample and burst  
+never return anything other than errors (if encountered).  A separate  
+function called getsamples is now used to pull things out of the  
+buffer when they're ready.  getsamples takes channel_id and a count of  
+samples desired.  If count is either 0 when passed, or let off (call  
+just with the channel arg), then all samples that are in the buffer  
+are returned.
+
+If the total number of samples that is being returned is 1, then an  
+integer is returned.  If more than one sample is being returned, you  
+get a table of integers.
+
+I've also updated adcscope.lua to be faster (using local actually sped  
+things up about 3x) and to use the terminal to output results rather  
+than the RIT display found on LM3S.
+
+On Feb 16, 2009, at 11:15 AM, James Snyder wrote:
+
+&gt;<i> Hi -
+</I>&gt;<i>
+</I>&gt;<i> Thanks for the comments :-)
+</I>&gt;<i>
+</I>&gt;<i> ----- &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I still have to look at the code carefully and figure out what  
+</I>&gt;<i> exactly you did there :), but for now a few simple observations:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 1. it occured to me that since buf_init already expects a  
+</I>&gt;<i> logarithmic parameter, it probably makes sense to make it expect two  
+</I>&gt;<i> logarithmic parameters, so instead of this:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; int buf_set( unsigned resid, unsigned resnum, u8 logsize, size_t  
+</I>&gt;<i> dsize )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; we'll have this:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; int buf_set( unsigned resid, unsigned resnum, u8 logsize, size_t  
+</I>&gt;<i> logdsize )
+</I>&gt;<i>
+</I>&gt;<i> I was thinking about doing this, I'll make the change.
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 2. Since you did this:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   pbuf-&gt;logsize = logsize + ( pbuf-&gt;logdsize );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; in buf_set, you probably need to modify this:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; #define BUF_MOD_INCR( p, m ) p-&gt;m = ( p-&gt;m + ( ( u16 )1 &lt;&lt; p- 
+</I>&gt;<i> &gt;logdsize ) ) &amp; ( ( ( u16 )1 &lt;&lt; ( p-&gt;logsize + p-&gt;logdsize) ) - 1 )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; (because you add logdsize to logsize once again, and I don't think  
+</I>&gt;<i> this is right).
+</I>&gt;<i>
+</I>&gt;<i> Ooops.  That would likely be the cause of some of the random crashes  
+</I>&gt;<i> I was seeing :-)  (currently worked around somewhat)
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 3. The data size of an ADC is not always 16 bits, so we should add  
+</I>&gt;<i> another (probably also logarithmic) parameter to elua_adc/ 
+</I>&gt;<i> adc_init_state.
+</I>&gt;<i>
+</I>&gt;<i> True..  Are you anticipating use of higher or lower bit depth?   
+</I>&gt;<i> There are certainly lower and higher ones out there, though I've not  
+</I>&gt;<i> seen &gt;16-bit ones built-in to uCs.  If we want to accomodate larger  
+</I>&gt;<i> sizes, the return types for some things will need adjustment,  
+</I>&gt;<i> perhaps by defining a type that reflects the maximum size that will  
+</I>&gt;<i> be returned?  This type would be selected at compile time depending  
+</I>&gt;<i> on the maximum bits-per-sample one might want to work with?
+</I>&gt;<i>
+</I>&gt;<i> Something like:
+</I>&gt;<i>
+</I>&gt;<i> #if MAX_ADC_BIT_RESOLUTION &lt;= 8
+</I>&gt;<i> typedef u8 t_adc_data
+</I>&gt;<i> #elif MAX_ADC_BIT_RESOLUTION &lt;= 16
+</I>&gt;<i> typedef u16 t_adc_data
+</I>&gt;<i> #elif MAX_ADC_BIT_RESOLUTION &lt;= 32
+</I>&gt;<i> typedef u32 t_adc_data
+</I>&gt;<i> #else
+</I>&gt;<i> #error &quot;No matching type for MAX_ADC_BIT_RESOLUTION, check your  
+</I>&gt;<i> selected bit depth or add larger type&quot;
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 4. As for the change you proposed, as I said I still have to  
+</I>&gt;<i> figure out what exactly your code does :), but for now it makes  
+</I>&gt;<i> sense. I'll get back to you with more information. Fortunately we  
+</I>&gt;<i> don't really have a pre-existing paradigm, we just have some  
+</I>&gt;<i> proposals, so we can change everything we don't like.
+</I>&gt;<i>
+</I>&gt;<i> OK, sounds good.  The one midly complicated thing to make this  
+</I>&gt;<i> approach work with dynamic buffer sizing is to have buf_set handle  
+</I>&gt;<i> increasing buffer size gracefully.  I think the main case to handle  
+</I>&gt;<i> is when wptr &lt; rptr.  i.e. the write pointer has wrapped around to  
+</I>&gt;<i> the beginning of the buffer, but the read ptr has not.  If one just  
+</I>&gt;<i> adds space in this case, the read pointer will start going into as  
+</I>&gt;<i> yet unwritten space thinking it is picking up valid data.
+</I>&gt;<i>
+</I>&gt;<i> One way to handle this would be copying data so that the freshly  
+</I>&gt;<i> resized buffer is coherent again.  Another would be to somehow grow  
+</I>&gt;<i> the buffer in the space between the rptr and the wptr.  This,  
+</I>&gt;<i> however, without moving data around, even if it were possible, would  
+</I>&gt;<i> result in fragmentation.
+</I>&gt;<i>
+</I>&gt;<i> If I were to just do an implementation without further research it  
+</I>&gt;<i> might look like this:
+</I>&gt;<i>
+</I>&gt;<i> 1. If wptr &gt; rptr, just realloc.
+</I>&gt;<i> 2. If rptr &gt; wptr, move all of the elements between buf (array start  
+</I>&gt;<i> pointer) and wptr to space after the wrapping point of the original,  
+</I>&gt;<i> smaller, buffer.
+</I>&gt;<i>
+</I>&gt;<i> If we could also grow the buffer at the starting end, maybe we could  
+</I>&gt;<i> decide whether adding at the start or the end would result in more  
+</I>&gt;<i> copying.
+</I>&gt;<i>
+</I>&gt;<i> I'm not as concerned about algorithms for downsizing the buffer to  
+</I>&gt;<i> conserve space.  I think instead of dealing with copying in this  
+</I>&gt;<i> case, the downsizing might just be done whenever the buffer runs  
+</I>&gt;<i> dry, and if no new interesting requests are pending, drop down to  
+</I>&gt;<i> some reasonable default size.
+</I>&gt;<i>
+</I>&gt;<i> Any thoughts or ideas would certainly be appreciated.
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Mon, Feb 16, 2009 at 3:12 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> 
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> &gt; &gt; Hi -
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I've dropped in another large ADC commit.  I've mentioned most  
+</I>&gt;<i> of what was done in the commit message, but here's a rundown:
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; - When samples are available from ADC, they're initially copied  
+</I>&gt;<i> into an elua buf.
+</I>&gt;<i> &gt; &gt; - buf length is adjusted according to number of expected samples  
+</I>&gt;<i> coming in (when burst is requested, buf is resized to accomodate the  
+</I>&gt;<i> number of burst samples, size is dropped back down when single  
+</I>&gt;<i> samples are requested)
+</I>&gt;<i> &gt; &gt; - if smoothing is enabled, and has no samples, smoothing buffer  
+</I>&gt;<i> (not an elua buf) is filled first to warm up the filter, then  
+</I>&gt;<i> samples begin to accumulate in the main buffer.
+</I>&gt;<i> &gt; &gt; - a flush function has been added to manually clear out both  
+</I>&gt;<i> smoothing and primary buffers in case one doesn't want old samples  
+</I>&gt;<i> or old smoothing data being used for future measurements
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Also, I forgot to mention one thing in the commit message:  As  
+</I>&gt;<i> per a discussion with Bogdan, the type checking on buf_write and  
+</I>&gt;<i> buf_read have been pulled out.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; One adjustment that I'd like to consider before the 0.6 freeze  
+</I>&gt;<i> is to remove the option for blocking and non-blocking as it applies  
+</I>&gt;<i> to sample and burst functions (used to initiate sampling) and to  
+</I>&gt;<i> instead make these always non-blocking, and never have them return  
+</I>&gt;<i> any samples (only errors, if needed).  A separate function, say  
+</I>&gt;<i> getsamples would pull in data collected using either mode.  Right  
+</I>&gt;<i> now, if one uses non-blocking mode, samples will always be returned  
+</I>&gt;<i> for the last time you ran sample or burst.  This means that if you  
+</I>&gt;<i> want to get the data already requested, you also have to always  
+</I>&gt;<i> request new samples, even if you don't want them.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I should be able to make this change with minimal code changes,  
+</I>&gt;<i> but I haven't done it yet because it changes the pre-existing  
+</I>&gt;<i> paradigm, and I wanted to get these changes in sooner rather than  
+</I>&gt;<i> later :-)
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I think it might just take me another hour or so to get  
+</I>&gt;<i> adjustments along those lines working.  There wouldn't be as long of  
+</I>&gt;<i> a delay as this ADC commit.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Suggestions/comments are welcome :-)
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; -jsnyder
+</I>&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;<i> &gt; &gt; Elua-dev mailing list
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________ Elua-dev mailing  
+</I>&gt;<i> list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090216/aa3a9561/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090216/aa3a9561/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090216/aa3a9561/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090216/aa3a9561/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000475.html">[eLua-dev] autorun
+</A></li>
+	<LI>Next message: <A HREF="000463.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#461">[ date ]</a>
+              <a href="thread.html#461">[ thread ]</a>
+              <a href="subject.html#461">[ subject ]</a>
+              <a href="author.html#461">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

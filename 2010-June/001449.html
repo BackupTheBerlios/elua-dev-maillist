@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] collectgarbage(&quot;count&quot;)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3CAANLkTikSA0F-OKYDpusWIhusetsiAsNMfZr3wvp2eigP%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001447.html">
+   <LINK REL="Next"  HREF="001428.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] collectgarbage(&quot;count&quot;)</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3CAANLkTikSA0F-OKYDpusWIhusetsiAsNMfZr3wvp2eigP%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] collectgarbage(&quot;count&quot;)">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jun 14 18:12:17 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001447.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+        <LI>Next message: <A HREF="001428.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1449">[ date ]</a>
+              <a href="thread.html#1449">[ thread ]</a>
+              <a href="subject.html#1449">[ subject ]</a>
+              <a href="author.html#1449">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jun 14, 2010 at 5:57 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> It's true that collectgarbage('count') is only a part of the story. A lot of
+</I>&gt;<i> stuff happens in the background, such as buffered I/O (fopen and friends),
+</I>&gt;<i> eLua's own buffers, malloc overhead and so on. I still don't have a good way
+</I>&gt;<i> to see a clear &quot;memory map&quot; of the system when an &quot;out of memory&quot; error is
+</I>&gt;<i> returned, and I'm not even sure if this would help. In the end, the truth is
+</I>&gt;<i> that 64k is still quite a limitation for eLua. I'm afraid that the only
+</I>&gt;<i> thing left to do to decrease memory consumption is to have a &quot;run from
+</I>&gt;<i> memory&quot; patch (run a Lua script directly from Flash, thus saving RAM; this
+</I>&gt;<i> obviously will work only for Flash memory mapped on the CPU's bus, not
+</I>&gt;<i> serial memory or anything similar, but it would still be an improvement).
+</I>&gt;<i> Well, this and rewriting the VM, of course :)
+</I>
+I haven't investigated, but one other thing that has occurred to me
+would be making things like table creation a little more tunable so
+that pre-allocation doesn't grow automatically up to the next power of
+two.  Either that, or perhaps having GC compact tables when needed
+(this might be done by Jakabosky's patch, though I haven't read
+through the memory optimization features that are part of the main
+patch (and also broken out):
+<A HREF="http://lua-users.org/wiki/EmergencyGarbageCollector">http://lua-users.org/wiki/EmergencyGarbageCollector</A>
+
+If the EGC code actually does this already, then I don't think I'd
+worry too much about the creation side.
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Jun 11, 2010 at 8:08 PM, Stefan Brantschen
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">stefan.brantschen at mac.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hi
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 11 Jun 2010, at 15:55, Dado Sutter wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; PS: BTW, I can run about 100 counting agents in parallel with tight
+</I>&gt;&gt;<i> &gt; garbage collection.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Very impressive for such a tiny board, simple code and on bare metal !
+</I>&gt;&gt;<i> &gt; :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Bear in mind that they don't do anything useful though :-)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; Meanwhile, does the performance change too much if you let the GC do
+</I>&gt;&gt;<i> &gt; it's job automatically ? (not forcing collect ...)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Running 50 agents doing their counting and displaying, with
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &#160;t-cycle = time to run all agents once
+</I>&gt;&gt;<i> &#160;c-max = max value of collectgarbage(&quot;count&quot;)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 1) GC let alone: t-cycle = 27.7 ms, c-max = 32.2k
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2) GC enforced each scheduler cycle: t-cycle = 30.8 ms, c-max = 23.3k
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 3) GC enforced each 10th cycle: t-cycle = 28.6 ms, c-max = 24.6k
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> In this set-up, variant 3) looks like a decent compromise.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Times measures with the board's timer and the tmr module.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Cheers
+</I>&gt;&gt;<i> -- Stefan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001447.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+	<LI>Next message: <A HREF="001428.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1449">[ date ]</a>
+              <a href="thread.html#1449">[ thread ]</a>
+              <a href="subject.html#1449">[ subject ]</a>
+              <a href="author.html#1449">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

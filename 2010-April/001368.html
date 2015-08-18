@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How do I set the platform_conf.h to use the SD Card
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20do%20I%20set%20the%20platform_conf.h%20to%20use%20the%20SD%20Card&In-Reply-To=%3Cl2g33644d3c1004271602m97acd845v3965c3c741ed63cd%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001364.html">
+   <LINK REL="Next"  HREF="001369.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How do I set the platform_conf.h to use the SD Card</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20do%20I%20set%20the%20platform_conf.h%20to%20use%20the%20SD%20Card&In-Reply-To=%3Cl2g33644d3c1004271602m97acd845v3965c3c741ed63cd%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How do I set the platform_conf.h to use the SD Card">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Apr 28 01:02:52 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001364.html">[eLua-dev] How do I set the platform_conf.h to use the SD Card
+</A></li>
+        <LI>Next message: <A HREF="001369.html">[eLua-dev] Problem with space memory in Lm3s8962
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1368">[ date ]</a>
+              <a href="thread.html#1368">[ thread ]</a>
+              <a href="subject.html#1368">[ subject ]</a>
+              <a href="author.html#1368">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This issue was actually resolved in trunk:
+<A HREF="http://elua-development.2368040.n2.nabble.com/Building-v0-7-with-MMCFS-for-EK-LM3S8962-SDC-SPI-NUM-undefined-td4469565.html">http://elua-development.2368040.n2.nabble.com/Building-v0-7-with-MMCFS-for-EK-LM3S8962-SDC-SPI-NUM-undefined-td4469565.html</A>
+
+Commit:
+<A HREF="http://lists.berlios.de/pipermail/elua-svn/2010-January/000637.html">http://lists.berlios.de/pipermail/elua-svn/2010-January/000637.html</A>
+
+Perhaps I'll make an errata page on the wiki for issues like this.
+
+On Thu, Apr 22, 2010 at 8:37 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+&gt;<i> Hello Tze-Chien,
+</I>&gt;<i> eLua v0.7 works fine with the onboard MMC slot on my EK-LM3S8962 out of the
+</I>&gt;<i> box.
+</I>&gt;<i> But we will check the #defines you've mentioned and do some more tests when
+</I>&gt;<i> possible here too.
+</I>&gt;<i> Thanks for pointing (and aparently solving :) it !!!
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Apr 22, 2010 at 07:31, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thank you. We know there are some problems with the MMCFS code, they will
+</I>&gt;&gt;<i> be fixed in the next release (at least the ones that lead to compilation
+</I>&gt;&gt;<i> issues).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Thu, Apr 22, 2010 at 7:34 AM, Tze-Chien Chu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tzechienchu at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I try to search the forum and found the problem.
+</I>&gt;&gt;&gt;<i> I change the platform_conf.h's line 191 from
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> #ifndef SDC_SPI_NUM &#160; &#160;&lt;-- Original
+</I>&gt;&gt;&gt;<i> to
+</I>&gt;&gt;&gt;<i> #ifndef MMCFS_SPI_NUM &lt;- Modify
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> then it works.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> thanks.
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> View this message in context:
+</I>&gt;&gt;&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/How-do-I-set-the-platform-conf-h-to-use-the-SD-Card-tp4940912p4940940.html">http://elua-development.2368040.n2.nabble.com/How-do-I-set-the-platform-conf-h-to-use-the-SD-Card-tp4940912p4940940.html</A>
+</I>&gt;&gt;&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001364.html">[eLua-dev] How do I set the platform_conf.h to use the SD Card
+</A></li>
+	<LI>Next message: <A HREF="001369.html">[eLua-dev] Problem with space memory in Lm3s8962
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1368">[ date ]</a>
+              <a href="thread.html#1368">[ thread ]</a>
+              <a href="subject.html#1368">[ subject ]</a>
+              <a href="author.html#1368">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

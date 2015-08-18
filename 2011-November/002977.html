@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Flexible RAM allocation
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Flexible%20RAM%20allocation&In-Reply-To=%3CCAJ%3DY9Y2FsWUxJpGqm0Q%2BMNU2YTNieJz_9mnDsqLEkQj_YM7ZSg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002976.html">
+   <LINK REL="Next"  HREF="002978.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Flexible RAM allocation</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Flexible%20RAM%20allocation&In-Reply-To=%3CCAJ%3DY9Y2FsWUxJpGqm0Q%2BMNU2YTNieJz_9mnDsqLEkQj_YM7ZSg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Flexible RAM allocation">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Nov 18 20:43:25 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002976.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+        <LI>Next message: <A HREF="002978.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2977">[ date ]</a>
+              <a href="thread.html#2977">[ thread ]</a>
+              <a href="subject.html#2977">[ subject ]</a>
+              <a href="author.html#2977">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Nov 18, 2011 at 1:01 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> 2011/11/18 pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;:
+</I>&gt;&gt;<i> 1. in stm32.ld I did following
+</I>&gt;&gt;<i> ..
+</I>&gt;&gt;<i> MEMORY
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i> sram (W!RX) : ORIGIN = 0x10000000, LENGTH = 64K
+</I>&gt;&gt;<i> /* CCMRAM (xrw) : ORIGIN = 0x20000000 , LENGTH = 128K */
+</I>&gt;&gt;<i> flash (RX) : ORIGIN = 0x08000000, LENGTH = 1024K
+</I>&gt;&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> instead of the standard
+</I>&gt;<i>
+</I>&gt;<i> MEMORY
+</I>&gt;<i> {
+</I>&gt;<i> &#160; &#160;sram (W!RX) : ORIGIN = 0x20000000, LENGTH = 64k
+</I>&gt;<i> &#160; &#160;flash (RX) : ORIGIN = 0x08000000, LENGTH = 512k
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> 2. It compiles, it runs smaller code, but when I run my biglife I
+</I>&gt;&gt;<i> get:
+</I>&gt;&gt;<i> [Hard fault handler]
+</I>&gt;&gt;<i> R0 = 2001fbc0
+</I>&gt;&gt;<i> R1 = 2001fcd7
+</I>&gt;&gt;<i> R2 = 2001fcd7
+</I>&gt;&gt;<i> R3 = 4f
+</I>&gt;&gt;<i> R12 = 0
+</I>&gt;&gt;<i> LR = 800f653
+</I>&gt;&gt;<i> PC = 800f654
+</I>&gt;&gt;<i> PSR = 61000000
+</I>&gt;&gt;<i> BFAR = 2d2d0a35
+</I>&gt;&gt;<i> CFSR = 8600
+</I>&gt;&gt;<i> HFSR = 40000000
+</I>&gt;&gt;<i> DFSR = 8
+</I>&gt;&gt;<i> AFSR = 0
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 3. when I run my sieve.lua, I get the expected results, BUT IT SHOWS
+</I>&gt;&gt;<i> IT IS SLOWER:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -- SYS in SRAM
+</I>&gt;&gt;<i> -- Sieve 256, Count: 54, 1000x Iterations elapsed: 6.261334 secs
+</I>&gt;&gt;<i> -- SYS in CCM:
+</I>&gt;&gt;<i> -- Sieve 256, Count: 54, 1000x Iterations elapsed: 6.396253 secs
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is a big surprise for me, though.
+</I>&gt;<i>
+</I>&gt;<i> Such a small difference could be caused by it having less RAM, if you
+</I>&gt;<i> rar using 64K internal and 128K CCM, and so eLua having to garbage
+</I>&gt;<i> collect more frequently, which suggests that your RAM speeds are
+</I>&gt;<i> identical.
+</I>
+Yeah, if you include something like:
+print(collectgarbage(&quot;count&quot;))
+
+You can get an idea of how many collectable objects the VM has as time
+goes along.
+
+I haven't tried this on STM32F4, but at least on the desktop where it
+wasn't doing as much aggressive collection it got up to 263kB by the
+end of N=1000 for sieve.
+
+If you want to be fair for the comparison, you might want to force a
+full garbage collection every cycle or every N cycles so that you can
+be sure that both configurations are doing the same amount of work.
+
+For reference:
+<A HREF="http://www.lua.org/manual/5.1/manual.html#pdf-collectgarbage">http://www.lua.org/manual/5.1/manual.html#pdf-collectgarbage</A>
+
+&gt;<i>
+</I>&gt;<i> By comparison, the difference in speed between the small internal SRAM
+</I>&gt;<i> and the external SDRAM on the AVR32 platforms was a factor of 6, not
+</I>&gt;<i> the 1% you are seeing - that could just be noise in the measurement.
+</I>&gt;<i>
+</I>&gt;<i> &#160; M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002976.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+	<LI>Next message: <A HREF="002978.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2977">[ date ]</a>
+              <a href="thread.html#2977">[ thread ]</a>
+              <a href="subject.html#2977">[ subject ]</a>
+              <a href="author.html#2977">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

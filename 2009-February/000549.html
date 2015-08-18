@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Keplerizing eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Keplerizing%20eLua&In-Reply-To=%3C095E6752-695D-4130-BF73-B5F493F80891%40dnainternet.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000590.html">
+   <LINK REL="Next"  HREF="000534.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Keplerizing eLua</H1>
+    <B>Asko Kauppi</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Keplerizing%20eLua&In-Reply-To=%3C095E6752-695D-4130-BF73-B5F493F80891%40dnainternet.net%3E"
+       TITLE="[eLua-dev] Keplerizing eLua">askok at dnainternet.net
+       </A><BR>
+    <I>Wed Feb 18 22:32:44 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000590.html">[eLua-dev] Keplerizing eLua
+</A></li>
+        <LI>Next message: <A HREF="000534.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#549">[ date ]</a>
+              <a href="thread.html#549">[ thread ]</a>
+              <a href="subject.html#549">[ subject ]</a>
+              <a href="author.html#549">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+This got me thinking, would it be beneficial to dig up my Lumikki (Lua  
+tags embedded in XML) filtering, and use it _dynamically_ (once per  
+each file loaded) instead of statically (as intended).
+
+What Lumikki does is it embeds tags such as &lt;@THIS args  
+here=value&gt;whatever&lt;/@&gt; within a normal XML, and those tags get  
+processed into Lua calls ( THIS{ args, here=value } kind). Lua script  
+can return anything it wants that gets reformulated as XML. Tags can  
+be recursively within each other, too.
+
+Anyways, running these dynamically would basically cover for the  
+server side call issue.
+
+Lumikki can be checked out here:
+
+	svn co <A HREF="svn://slugak.dyndns.org/public/2009/Lumikki">svn://slugak.dyndns.org/public/2009/Lumikki</A>
+
+-asko
+
+
+Andre Carregal kirjoitti 18.2.2009 kello 20:14:
+
+&gt;<i> (long mail ahead...)
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Feb 18, 2009 at 1:44 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;  
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i>   Kepler (www.keplerproject.org) is &quot;the Lua way of doing web&quot; :)  
+</I>&gt;&gt;<i> (it is
+</I>&gt;&gt;<i> actually one of them but afaik, by far the most used, most mature  
+</I>&gt;&gt;<i> and most
+</I>&gt;&gt;<i> complete web framework for Lua).
+</I>&gt;<i>
+</I>&gt;<i> I wouldn't claim that so fast... let's see how things go first... :o)
+</I>&gt;<i>
+</I>&gt;&gt;<i>   We do not plan to embedd a full fancy web server like Xavante  
+</I>&gt;&gt;<i> (Kepler's
+</I>&gt;&gt;<i> web srv), even with it's incredibly small footprint. Bogdan's
+</I>&gt;&gt;<i> concept-proof-yet-to-be-enhanced lhttpd web server offers all I  
+</I>&gt;&gt;<i> needed here
+</I>&gt;&gt;<i> for initial demos and real world small aplications.
+</I>&gt;<i>
+</I>&gt;<i> I don't think Xavante would be a good option for eLua. Although
+</I>&gt;<i> Xavante has proved to be an excellent web server for certain
+</I>&gt;<i> applications, eLua needs something more &quot;fire and forget&quot; and Xavante
+</I>&gt;<i> needs some caring if it is supposed to be left running for long
+</I>&gt;<i> periods.
+</I>&gt;<i>
+</I>&gt;<i> The thing is that Xavante uses coroutines to allow multitasking
+</I>&gt;<i> without needing separate threads. While this is great for a developer
+</I>&gt;<i> setup and embedding into applications, it may not be the best solution
+</I>&gt;<i> for devices that need to be on &quot;forever&quot; for example. If one of the
+</I>&gt;<i> requests hang, the other also get stuck. Not a good scenario if you
+</I>&gt;<i> can't reset easily the server... :o)
+</I>&gt;<i>
+</I>&gt;<i> If you have the ability to run threads, then any C level webserver
+</I>&gt;<i> would probably be a better fit. The other solution would be to set a
+</I>&gt;<i> watchdog for Xavante, but I really would not recommend that for eLua.
+</I>&gt;<i>
+</I>&gt;<i> Note that the choice of web server has zero impact in the upper layers
+</I>&gt;<i> due to a decoupling layer called WSAPI. Once you have WSAPI
+</I>&gt;<i> implemented for a certain web server or launching method (CGI, FastCGI
+</I>&gt;<i> etc) you are basically done. Everything else depends mostly on WSAPI
+</I>&gt;<i> to run.
+</I>&gt;<i>
+</I>&gt;<i> Implementing WSAPI for a webserver is usually quite easy. WSAPI is
+</I>&gt;<i> basically a protocol that normalizes how to read data from the
+</I>&gt;<i> webserver (the request) and how to send it back (the response). More
+</I>&gt;<i> details on WSAPI can be found here:
+</I>&gt;<i> <A HREF="http://wsapi.luaforge.net/">http://wsapi.luaforge.net/</A>
+</I>&gt;<i>
+</I>&gt;<i> Once you have WSAPI in place, you actually can start developing web
+</I>&gt;<i> applications using wsapi.request and wsapi.response. While this is
+</I>&gt;<i> considered &quot;low level&quot;, it could be enough for most of eLua needs.
+</I>&gt;<i>
+</I>&gt;<i> If you need something higher level, there are two imediate options.
+</I>&gt;<i> The first would be using CGILua, a PHP like library that handles Lua
+</I>&gt;<i> Pages and Lua Scripts:
+</I>&gt;<i> <A HREF="http://www.keplerproject.org/cgilua/">http://www.keplerproject.org/cgilua/</A>
+</I>&gt;<i>
+</I>&gt;<i> The other would be using Orbit, a MVC based library that offers some
+</I>&gt;<i> very nice abstractions:
+</I>&gt;<i> <A HREF="http://orbit.luaforge.net/">http://orbit.luaforge.net/</A>
+</I>&gt;<i>
+</I>&gt;<i> Note that there is no easy answer as which would be better for every
+</I>&gt;<i> case. One simple solution would be to integrate WSAPI with the
+</I>&gt;<i> embedded web server and then let CGILua and Orbit as options for those
+</I>&gt;<i> who needed it.
+</I>&gt;<i>
+</I>&gt;<i> Once you have one of the page generator solutions in place, you can
+</I>&gt;<i> start using higher level applications for them. One excellent
+</I>&gt;<i> candidate would be Sputnik, that uses only WSAPI.
+</I>&gt;<i>
+</I>&gt;<i> Sputnik is usually seen as just another wiki, but it is way more than
+</I>&gt;<i> that. It is basically an hierarchical node store with versioning. If
+</I>&gt;<i> that is truly useful for eLua applications or not is another
+</I>&gt;<i> question... :o)
+</I>&gt;<i>
+</I>&gt;<i> Sorry if the mail got too long.
+</I>&gt;<i>
+</I>&gt;<i> Andr&#233;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000590.html">[eLua-dev] Keplerizing eLua
+</A></li>
+	<LI>Next message: <A HREF="000534.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#549">[ date ]</a>
+              <a href="thread.html#549">[ thread ]</a>
+              <a href="subject.html#549">[ subject ]</a>
+              <a href="author.html#549">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

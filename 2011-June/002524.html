@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTinHMsEJ5QQZKm_sg2HQFCYe1%2BN6vQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002523.html">
+   <LINK REL="Next"  HREF="002526.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTinHMsEJ5QQZKm_sg2HQFCYe1%2BN6vQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Jun 16 11:56:24 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002523.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for	LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002526.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2524">[ date ]</a>
+              <a href="thread.html#2524">[ thread ]</a>
+              <a href="subject.html#2524">[ subject ]</a>
+              <a href="author.html#2524">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Thu, Jun 16, 2011 at 12:46 PM, Laurent Dufrechou &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">laurent.dufrechou at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> platform_i2c_master_send( 0, address, &amp;data, 3, do_stop=false );
+</I>&gt;<i> platform_i2c_master_recv( 0, address, &amp;data_rcv, 50, do_stop=true );
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Will work since first function:
+</I>&gt;<i>
+</I>&gt;<i> -           will send an address + data in write mode and do not send
+</I>&gt;<i> stop. (last parameter is =false).
+</I>&gt;<i>
+</I>&gt;<i> And next function:
+</I>&gt;<i>
+</I>&gt;<i> -          you resend address + get 50 data with a stop at end.(last
+</I>&gt;<i> parameter is =true).
+</I>&gt;<i>
+</I>&gt;<i> For the 2nd function since, you have not stop the transfer with 1stfunction, it will do logically a repeated start.
+</I>&gt;<i>
+</I>
+Thanks, it makes sense now :)
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> *De :* <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] *De la part de* Bogdan Marinescu
+</I>&gt;<i> *Envoy&#233; :* jeudi 16 juin 2011 08:22
+</I>&gt;<i>
+</I>&gt;<i> *&#192; :* eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> *Objet :* Re: [eLua-dev] Redefining the I2C Lua interface (was: I2C for
+</I>&gt;<i> LM3S devices)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thanks for this thread. I'll jump in as soon as I can, at this point I
+</I>&gt;<i> simply can't find enough time to get a better view of the I2C
+</I>&gt;<i> implementations on our supported targets and come up with a generic
+</I>&gt;<i> interface on top of them. It's a bit ironic that we're having such problems
+</I>&gt;<i> with an interface as simple as I2C, but life can be ironic at times :)
+</I>&gt;<i>
+</I>&gt;<i> Martin, please see below.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Jun 16, 2011 at 2:27 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> On 15 June 2011 21:58, Laurent Dufrechou &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">laurent.dufrechou at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt;What do you think of just two functions:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;platform_i2c_master_send( id, address, &amp;data, 20, false );
+</I>&gt;<i> &gt;&gt;platform_i2c_master_recv( id, address, &amp;data_rcv, 50, true ); //true
+</I>&gt;<i> means
+</I>&gt;<i> &gt; stop.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I love the simplicity of this and if it proves to be enough I'll not
+</I>&gt;<i> hesitate in implementing it. It hides some lower level I2C operations but as
+</I>&gt;<i> we learnt they aren't always possible to implement on our platforms. Still
+</I>&gt;<i> thinking what to do with the lower level ops (send start, send stop and so
+</I>&gt;<i> on). As I see it at the moment, since they're probably rarely needed in
+</I>&gt;<i> practice a good place for them would be in a platform specific module
+</I>&gt;<i> (stm32.i2c or str9.i2c for example). Or maybe still in the main I2C
+</I>&gt;<i> interface (since they are after all fundamental I2C operations), letting the
+</I>&gt;<i> user know if the platform is unable to implement them. I can see this
+</I>&gt;<i> turning into a philosophical discussion fast, so I'll leave it for now ;)
+</I>&gt;<i>
+</I>&gt;<i> One question: how does your interface above handle situations like reading
+</I>&gt;<i> from an I2C EEPROM? The sequence of operations is this:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 1. Send start and I2C address with WRITE bit on
+</I>&gt;<i>
+</I>&gt;<i> 2. Get acknowledge from slave (the EEPROM)
+</I>&gt;<i>
+</I>&gt;<i> 3. Send the memory address to read from to slave (2 or 3 bytes). Do NOT
+</I>&gt;<i> send stop.
+</I>&gt;<i>
+</I>&gt;<i> 4. Send start again (repeated start) and I2C address with READ bit on
+</I>&gt;<i>
+</I>&gt;<i> 5. Read data, acknowledge all bytes but the last one
+</I>&gt;<i>
+</I>&gt;<i> 6. Send STOP
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> (for a full reference of the protocol check for example the datasheet of
+</I>&gt;<i> 24LC256 here : <A HREF="http://wulfden.org/downloads/datasheets/24LC256.pdf">http://wulfden.org/downloads/datasheets/24LC256.pdf</A>)
+</I>&gt;<i>
+</I>&gt;<i> I don't know how to implement steps 3-4 above with your interface.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i>
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110616/73f6c48c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110616/73f6c48c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002523.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for	LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002526.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2524">[ date ]</a>
+              <a href="thread.html#2524">[ thread ]</a>
+              <a href="subject.html#2524">[ subject ]</a>
+              <a href="author.html#2524">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

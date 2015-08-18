@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 SPI clock frequency bug?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20SPI%20clock%20frequency%20bug%3F&In-Reply-To=%3CCAL4-wQpj6Q8s88sCi0O9vmckLhb9b7W%2BNLv9JgZ3W6_ywi8YdQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002801.html">
+   <LINK REL="Next"  HREF="002822.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 SPI clock frequency bug?</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20SPI%20clock%20frequency%20bug%3F&In-Reply-To=%3CCAL4-wQpj6Q8s88sCi0O9vmckLhb9b7W%2BNLv9JgZ3W6_ywi8YdQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 SPI clock frequency bug?">martinwguy at gmail.com
+       </A><BR>
+    <I>Fri Oct 14 13:14:06 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002801.html">[eLua-dev] Using '''eLua''' on the mbed LPC1768 under Linux
+</A></li>
+        <LI>Next message: <A HREF="002822.html">[eLua-dev] AVR32 SPI clock frequency bug?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2821">[ date ]</a>
+              <a href="thread.html#2821">[ thread ]</a>
+              <a href="subject.html#2821">[ subject ]</a>
+              <a href="author.html#2821">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I think I've spotted a bug in the calculation of the SPI clock
+frequency on AVR32:
+
+diff --git a/src/platform/avr32/platform.c b/src/platform/avr32/platform.c
+index 75a2d65..899a19a 100644
+--- a/src/platform/avr32/platform.c
++++ b/src/platform/avr32/platform.c
+@@ -213,10 +213,10 @@ int platform_init()
+   spiopt.modfdis = TRUE;
+   spiopt.pcs_decode = FALSE;
+   spiopt.delay = 0;
+-  spi_initMaster(&amp;AVR32_SPI0, &amp;spiopt, REQ_CPU_FREQ);
++  spi_initMaster(&amp;AVR32_SPI0, &amp;spiopt, REQ_PBA_FREQ);
+
+ #if NUM_SPI &gt; 4
+-  spi_initMaster(&amp;AVR32_SPI1, &amp;spiopt, REQ_CPU_FREQ);
++  spi_initMaster(&amp;AVR32_SPI1, &amp;spiopt, REQ_PBA_FREQ);
+ #endif
+
+ #endif
+
+where
+int spi_initMaster(volatile avr32_spi_t *spi, const
+spi_master_options_t *opt, U32 pba_hz)
+{
+   ...
+
+which I expect would really set a frequency of one quarter of that
+which was asked for (and reported) since CPU=60000000 and PBA=15000000
+
+but I don't have any SPI hardware to test this, so before I make this
+fairly obvious change, which affects all AVR32 boards, has anyone
+tried SPI on any of these boards? It seems a fairly obvious error but
+I wouldn't want to break something that was working... if it was
+working...
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002801.html">[eLua-dev] Using '''eLua''' on the mbed LPC1768 under Linux
+</A></li>
+	<LI>Next message: <A HREF="002822.html">[eLua-dev] AVR32 SPI clock frequency bug?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2821">[ date ]</a>
+              <a href="thread.html#2821">[ thread ]</a>
+              <a href="subject.html#2821">[ subject ]</a>
+              <a href="author.html#2821">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

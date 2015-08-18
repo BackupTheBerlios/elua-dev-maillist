@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua on 8-bit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20on%208-bit&In-Reply-To=%3C81fbe47d0909271117x68160abbubcdb607524663000%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001045.html">
+   <LINK REL="Next"  HREF="001047.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua on 8-bit</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20on%208-bit&In-Reply-To=%3C81fbe47d0909271117x68160abbubcdb607524663000%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua on 8-bit">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sun Sep 27 20:17:17 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001045.html">[eLua-dev] eLua on 8-bit
+</A></li>
+        <LI>Next message: <A HREF="001047.html">[eLua-dev] eLua on 8-bit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1046">[ date ]</a>
+              <a href="thread.html#1046">[ thread ]</a>
+              <a href="subject.html#1046">[ subject ]</a>
+              <a href="author.html#1046">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Sep 27, 2009 at 7:41 AM, Dean Hall &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dwhall256 at gmail.com</A>&gt; wrote:
+
+&gt;<i> John, the goal isn't to go 8-bit just for the sake of 8-bits.  It's to
+</I>&gt;<i> reduce the memory requirements of the VM so it can run on
+</I>&gt;<i> architectures with less RAM (such as 8-bit devices).
+</I>
+
+Yes, this is pretty much the point. Plus, with LuaRPC, you can do a lot of
+interesting stuff on small devices too :) You probably can't reduce the code
+size significantly without reducing the functionality quite a bit too, but
+then again, most of the time you'd be fine with reduced functionality in the
+real world. One of the ideas I had is to define a (small) number of
+different &quot;profiles&quot;, or, in other words, different levels of conformance
+with &quot;regular&quot; Lua. Then, obviously, a smaller device would implement a
+simpler profile, and more feature-rich devices would naturally go towards a
+more complex profile.
+
+
+&gt;<i> I have made a
+</I>&gt;<i> reduced Python VM (www.pythononachip.org) and was able to get it to
+</I>&gt;<i> run in 4 KB with features equivalent to a BASIC language.  I've added
+</I>&gt;<i> features expected in a Python VM (like classes and threads) and now
+</I>&gt;<i> the minimum footprint is 8 KB.  Considering the footprint of the
+</I>&gt;<i> standard desktop Python can be reduced by this much, I believe a
+</I>&gt;<i> language such as Lua--designed to be petite from the very beginning--
+</I>&gt;<i> stands a good chance of being reduced to a 4-8 KB footprint as well.
+</I>&gt;<i>
+</I>
+I don't know anything about the Python VM, but I can see a Lua VM running in
+8k (quite limited though) or maybe even 4k (severely limited :) ). Given
+that the code density on a 8-bit CPU is generally better than what you can
+find on an ARM, we can expect surprises in this area.
+One of the things that I really want to do is to let the VM execute code
+from arbitrary memories (for example SPI/I2C EEPROMs) and use different
+types of RAMs (for example SPI/I2C SRAMs :) ). Or simply use a serial FRAM
+that can work both as a SRAM and an EEPROM. These are small, relatively
+inexpensive devices, and having a VM that can take advantage of them can
+greatly expand the MCU capabilities.
+
+Best,
+Bogdan
+
+On Sep 26, 2009, at 05:01 , John Hind wrote:
+&gt;<i>
+</I>&gt;<i> &gt; What would be the objective of going 8 bit? As I see it, the
+</I>&gt;<i> &gt; roadblock at
+</I>&gt;<i> &gt; the moment is the memory footprint and if anything 8-bit would make
+</I>&gt;<i> &gt; that
+</I>&gt;<i> &gt; harder because there is generally fewer 8-bit chips with large
+</I>&gt;<i> &gt; memory (and
+</I>&gt;<i> &gt; large memory 8-bit devices are likely to be just as expensive as 16
+</I>&gt;<i> &gt; or 32
+</I>&gt;<i> &gt; bit ones). On the other hand a port to Microchip's 16 bit devices
+</I>&gt;<i> &gt; would be
+</I>&gt;<i> &gt; nice - they are about the only manufacturer still selling modern low
+</I>&gt;<i> &gt; pin
+</I>&gt;<i> &gt; count devices in PDIP packages. Trouble is they are not ARM at 32-
+</I>&gt;<i> &gt; bit and
+</I>&gt;<i> &gt; their memory sizes tend to top out too low.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; For me, the real breakpoint comes when you can sell chips with the
+</I>&gt;<i> &gt; firmware
+</I>&gt;<i> &gt; already loaded. If you could just plug one of these into any
+</I>&gt;<i> &gt; computer and
+</I>&gt;<i> &gt; have it present as an MSD flash drive you could simply copy Lua
+</I>&gt;<i> &gt; scripts onto
+</I>&gt;<i> &gt; it and even edit them in place (and you get cross-platform
+</I>&gt;<i> &gt; capability for
+</I>&gt;<i> &gt; free). If we could lose the need to bootstrap the chips from source
+</I>&gt;<i> &gt; code,
+</I>&gt;<i> &gt; there would be a much larger market for them! Pre-cooked toolchains
+</I>&gt;<i> &gt; would
+</I>&gt;<i> &gt; help, but ideally this is a Lua system so users should not have to
+</I>&gt;<i> &gt; mess
+</I>&gt;<i> &gt; about with C at all!
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Still seems to me we are either waiting for chips with more memory or
+</I>&gt;<i> &gt; seriously going the cross-development route, stripping back on the
+</I>&gt;<i> &gt; chip to
+</I>&gt;<i> &gt; bytecode runtime only and parsing on the host computer. But even
+</I>&gt;<i> &gt; there, lack
+</I>&gt;<i> &gt; of RAM is likely to be a constraint. (As we have discussed before,
+</I>&gt;<i> &gt; there is
+</I>&gt;<i> &gt; no point going multi-chip because if you go that route you may as
+</I>&gt;<i> &gt; well put
+</I>&gt;<i> &gt; Linux and standard Lua on it.)
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090927/62d0c5aa/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090927/62d0c5aa/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001045.html">[eLua-dev] eLua on 8-bit
+</A></li>
+	<LI>Next message: <A HREF="001047.html">[eLua-dev] eLua on 8-bit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1046">[ date ]</a>
+              <a href="thread.html#1046">[ thread ]</a>
+              <a href="subject.html#1046">[ subject ]</a>
+              <a href="author.html#1046">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

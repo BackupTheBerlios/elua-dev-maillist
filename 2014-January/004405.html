@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Binary for eLua on Arduino Due
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2014-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Binary%20for%20eLua%20on%20Arduino%20Due&In-Reply-To=%3C20140122010858.118840%40gmx.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004404.html">
+   <LINK REL="Next"  HREF="004406.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Binary for eLua on Arduino Due</H1>
+    <B>FP AB</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Binary%20for%20eLua%20on%20Arduino%20Due&In-Reply-To=%3C20140122010858.118840%40gmx.com%3E"
+       TITLE="[eLua-dev] Binary for eLua on Arduino Due">scdr at gmx.com
+       </A><BR>
+    <I>Wed Jan 22 02:08:57 CET 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004404.html">[eLua-dev] Binary for eLua on Arduino Due
+</A></li>
+        <LI>Next message: <A HREF="004406.html">[eLua-dev] Binary for eLua on Arduino Due
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4405">[ date ]</a>
+              <a href="thread.html#4405">[ thread ]</a>
+              <a href="subject.html#4405">[ subject ]</a>
+              <a href="author.html#4405">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+The port uses the Atmel Software Framework (ASF) drivers.
+As far as I can tell the Arduino seems to use an earlier version of the Atmel Software Framework as well.
+(At least the base drivers are similar to the ASF.)
+
+I used the Arduino source code as a reference (to figure out how some of the peripherals work).
+Many features of the ASF drivers are poorly documented, or are not documented at all as far as I can tell.
+I also temprorarily borrowed some of the Arduino code as starting point towards making the
+eLua platform code (e.g. in adapting timers to work as PWMs).
+I have tried to note in the code which modules are not working, and which bits are just placeholders/skeleton code
+to be evolved into something cleaner/neater/working.
+
+
+&gt;<i> ----- Original Message -----
+</I>&gt;<i> From: Gabriel Duarte
+</I>&gt;<i> Sent: 01/21/14 11:28 AM
+</I>&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> Subject: Re: [eLua-dev] Binary for eLua on Arduino Due
+</I>&gt;<i> 
+</I>&gt;<i> Just for knowledge,
+</I>&gt;<i> did you reuse the original Arduino source code to write this port or simply
+</I>&gt;<i> wrote from scratch?
+</I>&gt;<i> 
+</I>&gt;<i> Cheers
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 2014/1/21 georges King &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">georgestheking at gmail.com</A>&gt;
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Thanks for the link but i can not create a menber on this site.
+</I>&gt;<i> &gt; Please send me the HEX file.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks for all
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Best regards
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Georges
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 2014/1/21 Gabriel Duarte &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A>&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt; Congrats man!
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; 2014/1/20 &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A>&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; I put up a binary for eLua for the Arduino Due in this thread
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="http://forum.stellarisiti.com/topic/1770-elua-for-sam3-arduino-due/">http://forum.stellarisiti.com/topic/1770-elua-for-sam3-arduino-due/</A>
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Still very much a work in progress. Has some debug code that will spit
+</I>&gt;<i> &gt;&gt;&gt; out a few extra messages (mostly in the interrupt handlers at the moment).
+</I>&gt;<i> &gt;&gt;&gt; Let me know if you encounter any issues, or if parts not listed as
+</I>&gt;<i> &gt;&gt;&gt; tested actually do work.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; The version in that thread is pretty close to the current version.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; The source is on
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://github.com/ecdr/elua">https://github.com/ecdr/elua</A>
+</I>&gt;<i> &gt;&gt;&gt; in the SAM branch.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Suggestions/contributions/etc. welcome.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Somebody e-mailed me asking about where to get eLua for the arduino due.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Not sure if my messages to them got through, so thought I would post
+</I>&gt;<i> &gt;&gt;&gt; this to the list.
+</I>&gt;<i> &gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; --
+</I>&gt;<i> &gt;&gt; Gabriel Duarte
+</I>&gt;<i> &gt;&gt; Linux User #471185
+</I>&gt;<i> &gt;&gt; Rio de Janeiro / RJ
+</I>&gt;<i> &gt;&gt; <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Gabriel Duarte
+</I>&gt;<i> Linux User #471185
+</I>&gt;<i> Rio de Janeiro / RJ
+</I>&gt;<i> <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004404.html">[eLua-dev] Binary for eLua on Arduino Due
+</A></li>
+	<LI>Next message: <A HREF="004406.html">[eLua-dev] Binary for eLua on Arduino Due
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4405">[ date ]</a>
+              <a href="thread.html#4405">[ thread ]</a>
+              <a href="subject.html#4405">[ subject ]</a>
+              <a href="author.html#4405">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

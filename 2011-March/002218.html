@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Legal status of eluaproject
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Legal%20status%20of%20eluaproject&In-Reply-To=%3CAANLkTikbCxpKx57LAk49sJeWR8rHdeCJm7_jL%2B90Wuve%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002217.html">
+   <LINK REL="Next"  HREF="002219.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Legal status of eluaproject</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Legal%20status%20of%20eluaproject&In-Reply-To=%3CAANLkTikbCxpKx57LAk49sJeWR8rHdeCJm7_jL%2B90Wuve%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Legal status of eluaproject">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sun Mar 20 00:25:18 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002217.html">[eLua-dev] Legal status of eluaproject
+</A></li>
+        <LI>Next message: <A HREF="002219.html">[eLua-dev] Legal status of eluaproject
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2218">[ date ]</a>
+              <a href="thread.html#2218">[ thread ]</a>
+              <a href="subject.html#2218">[ subject ]</a>
+              <a href="author.html#2218">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Mar 19, 2011 at 5:52 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On Sun, Mar 20, 2011 at 12:44 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I see that most of the files in the lm3s port still say:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> // The software is owned by LMI and/or its suppliers, and is protected
+</I>&gt;&gt;<i> under
+</I>&gt;&gt;<i> // applicable copyright laws. &#160;All rights are reserved. &#160;You may not
+</I>&gt;&gt;<i> combine
+</I>&gt;&gt;<i> // this software with &quot;viral&quot; open-source software in order to form a
+</I>&gt;&gt;<i> larger
+</I>&gt;&gt;<i> // program. &#160;Any use in violation of the foregoing restrictions may
+</I>&gt;&gt;<i> subject
+</I>&gt;&gt;<i> // the user to criminal sanctions under applicable laws, as well as to
+</I>&gt;&gt;<i> civil
+</I>&gt;&gt;<i> // liability for the breach of the terms and conditions of this license.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I would guess that legally this is void until the &quot;viral&quot; term is
+</I>&gt;&gt;<i> tested in a court of law, but it doesn't sound like you can
+</I>&gt;&gt;<i> redistribute this under a MIT licence either.
+</I>
+The viral component they're referring to is specifically targeted at
+the GPL, however there are some GPL-based projects that do include the
+LM3S drivers, including a high profile one like FreeRTOS, although
+they're fairly explicit that certain files that they redistribute are
+not covered by the GPL:
+<A HREF="http://www.freertos.org/license.txt">http://www.freertos.org/license.txt</A>
+
+We don't imply that we're changing the license terms of the
+manufacturer provided header files, although admittedly sine if the
+text on our site isn't quite as explicit was what's stated on the
+FreeRTOS licence, we do note this:
+&quot;Manufacturer provided CPU support libraries are licensed under their
+own terms. Check src/platform/platform-name for details of each
+license.&quot;
+
+LM3S also has a requirement that their files not be reused on hardware
+other than their own and a few other limitations that make theirs one
+of the most complicated licenses associated with peripheral support
+and headers found among our supported platforms.  They've had this
+license since before they got absorbed into TI, and I don't believe
+they've made any indication that they're planning to change it in the
+mean time, though I wish they would.
+
+&gt;<i>
+</I>&gt;<i> We had this problem with the first version(s) of eLua which were GPL.&#160;GPL is
+</I>&gt;<i> &quot;viral&quot; in the sense that it touches other code that is distributed together
+</I>&gt;<i> with GPL code..&#160;Then we switched to MIT (mostly because of licenses such the
+</I>&gt;<i> one above). IANAL (NDIEWTBO) but the MIT license is as liberal as it gets:
+</I>&gt;<i> <A HREF="http://en.wikipedia.org/wiki/MIT_License#License_terms">http://en.wikipedia.org/wiki/MIT_License#License_terms</A>
+</I>&gt;<i> I believe this lets us redistribute their code as long as we specify that
+</I>&gt;<i> parts of the eLua code are copyrighted under different terms (and of course
+</I>&gt;<i> we do that). I hope I'm not wrong about this one.
+</I>
+I don't think the licenses are incompatible so long as we don't
+replace their copyright, change their terms or attempt to relicense
+the files.  The MIT license doesn't really care about that.  The GPL,
+on the other hand, might not like being distributed with the LM3S
+license due to the GPL's &quot;no additional restrictions&quot; clause. So I
+think the LM3S license and the GPL are actually mutually incompatible
+without explicit modification.
+
+So, IANAL (NDIEWTBO either), but I generally think we're OK.  If
+anything we could be perhaps more explicit in how we describe which
+files are under which license.  Also, Luminary is quite aware of the
+project, has donated hardware to test on, and they've even mentioned
+eLua on their site and some of their dev kit packaging.
+
+&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002217.html">[eLua-dev] Legal status of eluaproject
+</A></li>
+	<LI>Next message: <A HREF="002219.html">[eLua-dev] Legal status of eluaproject
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2218">[ date ]</a>
+              <a href="thread.html#2218">[ thread ]</a>
+              <a href="subject.html#2218">[ subject ]</a>
+              <a href="author.html#2218">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

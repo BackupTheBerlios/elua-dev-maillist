@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua Tiny RAM
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20Tiny%20RAM&In-Reply-To=%3CBANLkTimpe_LJW7yfDTGOs%2B679o99Nqra9Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002319.html">
+   <LINK REL="Next"  HREF="002320.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua Tiny RAM</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20Tiny%20RAM&In-Reply-To=%3CBANLkTimpe_LJW7yfDTGOs%2B679o99Nqra9Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Lua Tiny RAM">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Apr 28 20:48:36 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002319.html">[eLua-dev] Lua Tiny RAM
+</A></li>
+        <LI>Next message: <A HREF="002320.html">[eLua-dev] Panda Board status
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2316">[ date ]</a>
+              <a href="thread.html#2316">[ thread ]</a>
+              <a href="subject.html#2316">[ subject ]</a>
+              <a href="author.html#2316">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Thu, Apr 28, 2011 at 9:40 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi Bogdan,
+</I>&gt;<i>
+</I>&gt;<i> You suspect isrotable is returning the wrong thing?  I wondered about that.
+</I>&gt;<i>  How do the string ro tables interact with the regular stuff?
+</I>&gt;<i>
+</I>
+In short, the keys in a rotable are C strings as opposed to Lua strings in a
+regular table. The code had to be changed to take this into account.
+
+
+&gt;<i> Anyhow, stext is defined to be the start of the .text section, etext near
+</I>&gt;<i> the end.  My linker script is a hand-modified version of the one that comes
+</I>&gt;<i> with CodeSourcery lite for the PPC eabi.
+</I>&gt;<i>
+</I>&gt;<i> SECTIONS
+</I>&gt;<i> {
+</I>&gt;<i>   .text :
+</I>&gt;<i>   {
+</I>&gt;<i>     CREATE_OBJECT_SYMBOLS
+</I>&gt;<i>     stext = .;
+</I>&gt;<i>     __cs3_region_start_ram = .;
+</I>&gt;<i>     _ftext = .;
+</I>&gt;<i>     *(.cs3.region-head.ram)
+</I>&gt;<i>     ASSERT (. == __cs3_region_start_ram, &quot;.cs3.region-head.ram not
+</I>&gt;<i> permitted&quot;);
+</I>&gt;<i>
+</I>&gt;<i>     *(.cs3.reset)
+</I>&gt;<i>     __cs3_start_asm_uboot = DEFINED(__cs3_start_asm) ? __cs3_start_asm :
+</I>&gt;<i> __cs3_start_asm_uboot;
+</I>&gt;<i>
+</I>&gt;<i>     *(.text.cs3.init)
+</I>&gt;<i>     *(.text .text.* .gnu.linkonce.t.*)
+</I>&gt;<i>
+</I>&gt;<i>     . = ALIGN(0x4);
+</I>&gt;<i>     KEEP (*crtbegin.o(.jcr))
+</I>&gt;<i>     KEEP (*(EXCLUDE_FILE (*crtend.o) .jcr))
+</I>&gt;<i>     KEEP (*crtend.o(.jcr))
+</I>&gt;<i>
+</I>&gt;<i>     . = ALIGN(0x4);
+</I>&gt;<i>     *(.gcc_except_table .gcc_except_table.*)
+</I>&gt;<i>     etext = . ;
+</I>&gt;<i>     *(.ramtext)
+</I>&gt;<i>     . = ALIGN(0x10);
+</I>&gt;<i>    } &gt;ram
+</I>&gt;<i>
+</I>&gt;<i>
+</I>This is probably why it doesn't work. Currently all the eLua linker command
+scripts place all the .rodata sections (which also contain the rotables)
+inside .text and between .stext and .etext. You could either:
+
+- modify the linker script to include the .rodata sections (.rodata
+.rodata.*) between stext and etext
+- checkout the &quot;ltrwork&quot; branch. It has some improvements on the LTR
+mechanism; amongst other things it doesn't depend on stext and etext
+anymore. You could actually try this first, I doubt it would impact your
+port too much.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Apr 28, 2011 at 2:33 PM, Bogdan Marinescu &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Thu, Apr 28, 2011 at 9:20 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi Folks,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'm porting eLua to the power pc for a project I'm working on.  What I'm
+</I>&gt;&gt;&gt;<i> trying to figure out is why luaB_print dies when I compile with optram=yes.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> For example,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> =&quot;hello&quot;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> works fine with optram=no, but causes me trouble with optram=yes.  I've
+</I>&gt;&gt;&gt;<i> traced it down to the result of hashstr in luaH_getstr.  But my
+</I>&gt;&gt;&gt;<i> understanding of lua internals has hit a wall.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I will read over Bogdan's material on LTR, but if anything jumps out to
+</I>&gt;&gt;&gt;<i> those of you reading, please do let me know your theories.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> How are stext and etext defined in your linker command script?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110428/82bfe1e4/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110428/82bfe1e4/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002319.html">[eLua-dev] Lua Tiny RAM
+</A></li>
+	<LI>Next message: <A HREF="002320.html">[eLua-dev] Panda Board status
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2316">[ date ]</a>
+              <a href="thread.html#2316">[ thread ]</a>
+              <a href="subject.html#2316">[ subject ]</a>
+              <a href="author.html#2316">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

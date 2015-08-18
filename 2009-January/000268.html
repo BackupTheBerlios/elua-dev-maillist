@@ -1,0 +1,287 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Platform specific modules proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Platform%20specific%20modules%20proposal&In-Reply-To=%3C36dc677c0901091249k5d9efc2by54d3925cfd099260%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000266.html">
+   <LINK REL="Next"  HREF="000269.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Platform specific modules proposal</H1>
+    <B>Mike Panetta</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Platform%20specific%20modules%20proposal&In-Reply-To=%3C36dc677c0901091249k5d9efc2by54d3925cfd099260%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Platform specific modules proposal">panetta.mike at gmail.com
+       </A><BR>
+    <I>Fri Jan  9 21:49:40 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000266.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+        <LI>Next message: <A HREF="000269.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#268">[ date ]</a>
+              <a href="thread.html#268">[ thread ]</a>
+              <a href="subject.html#268">[ subject ]</a>
+              <a href="author.html#268">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Jan 9, 2009 at 3:01 PM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+&gt;<i> wrote:
+</I>
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Oh, but timers can do so much more then just generate delays.  This is why
+</I>&gt;&gt;<i> I proposed such a flexible interface.  As for caring what functionality a
+</I>&gt;&gt;<i> platform has, IMO, since this is an embedded system and users would be
+</I>&gt;&gt;<i> writing software that is closer to the hardware, I would argue that an eLua
+</I>&gt;&gt;<i> user *would* want to know if the timer was 8, 16, or 32 bits.  Even if they
+</I>&gt;&gt;<i> are just doing delays, that knowledge would be invaluable in that it could
+</I>&gt;&gt;<i> tell you minimum timer resolution and maximum timeout values.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> You're right, timers can do much more than just generate delays, I was
+</I>&gt;<i> simplifying to make a point, the same principle applies to any timer
+</I>&gt;<i> operation. As for your idea that the users would want to know what kind of
+</I>&gt;<i> hardware they're using, I could argue that since they're doing that, they
+</I>&gt;<i> might as well know if their timers can do capture or not :), so querying for
+</I>&gt;<i> capabilities becomes kinda redundant in this context. And for
+</I>&gt;<i> minimum/maximum timer resolution, we already have
+</I>&gt;<i> tmr.getmindelay/tmr.getmaxdelay. Which are much more useful in this
+</I>&gt;<i> particular situation, since knowing if a timer is 8/16/32 bits tells only
+</I>&gt;<i> half of the story, you'd also need the timer frequency and a calculator
+</I>&gt;<i> somewhere :) This is why I still stand by my initial point, which I'd like
+</I>&gt;<i> to reformulate a bit: yes, the user should know his platform, he just
+</I>&gt;<i> shouldn't care that much about it. To me it's more natural to call functions
+</I>&gt;<i> like &quot;getmindelay&quot; that completely hide the hardware (and allow for other
+</I>&gt;<i> neat stuff, like the virtual timers that I implemented recently) than to try
+</I>&gt;<i> to figure this out from the hardware. After all, Lua is a high level
+</I>&gt;<i> language, and although the programmer does indeed use it at a level that's
+</I>&gt;<i> very close to the hardware, he might not want to feel this. Much like most C
+</I>&gt;<i> programmer out there don't want to feel that there's some assembly code
+</I>&gt;<i> lurking in the shadows of their beautifully intended code blocks :)
+</I>&gt;<i>
+</I>
+Hmm, I think I understand where your coming from now.  I guess I am just the
+kind of guy that likes to get down to the nitty gritty some times. :)
+
+Maybe it would be possible to have it both ways? The reason its needed is
+because if someone wanted to use the timer as a PWM generator knowing the
+counter width is necessary... Unless everything is done in time units, in
+which case while it might be odd for the PWM case, I think every other case
+it would be more natural for, IE: pulse width measurements,  pulse
+generation, frequency generation, etc...
+
+Maybe you are turning me in your direction on this one ;)
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Yes actually I have done quite a bit, but in C and not Lua, where an array
+</I>&gt;&gt;<i> would take up less space.  Remember I specified that the array members are
+</I>&gt;&gt;<i> static constant objects (could be your rotable, or just light userdata
+</I>&gt;&gt;<i> preallocated in rom), so the only space used would be for the array itself,
+</I>&gt;&gt;<i> which could be forceably destroyed after its done being used by calling the
+</I>&gt;&gt;<i> garbage collector.  The table is basically just a function table so it need
+</I>&gt;&gt;<i> no dynamic storage itself.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Ah, OK, I got it now. You're right, with my patch this doesn't add at all
+</I>&gt;<i> to the RAM consumption.
+</I>&gt;<i>
+</I>&gt;<i> STM32 will allow this, and I believe some Coldfire processors can as well.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> But you probably still agree that most micros don't allow you to do this.
+</I>&gt;<i>
+</I>
+Yeah, well definately most of the smaller ones.  Maybe pairing could be
+dropped and made 'automatic' then.  Its definately not a required feature
+for the interface.
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Calling pair on a channel that does not support pairing is invalid. ;) I
+</I>&gt;&gt;<i> would assume that users of the interface would use the capabilities
+</I>&gt;&gt;<i> functionality to query channels before performing operations on them.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> This is the thing that I dislike the most in your approach: the continous
+</I>&gt;<i> query/execute operation. It kinda reminds me of COM :), but this is not the
+</I>&gt;<i> main reason I dislike it, it's because I find it very tiring to write code
+</I>&gt;<i> in this way (asking if you can do something before you actually do it; I
+</I>&gt;<i> like more the &quot;bad boy&quot; approach: do it directly. Also less safe, it's also
+</I>&gt;<i> much easier to code IMO). And again, I think this contradicts with the idea
+</I>&gt;<i> of &quot;the user must know his hardware&quot;, in the sense that the query
+</I>&gt;<i> capabilities step becomes unnecessary.
+</I>&gt;<i>
+</I>
+You can still do it the 'dangerous' way with this methodology, there is
+nothing keeping you from plugging random things in to the code. ;)  If thats
+the case we could remove the query interface completely, but still have the
+request channels by type and mode interfaces. Oh, and you only have to ask
+once, or not at all if you already know what it can do.
+
+Also, having the query interface makes it possible to write a simple Lua
+script that can run on *any* CPU that spewes all the available hardware and
+what capabilities it has, for the more novice user. For that alone I think
+it would be invaluable. Imagine being able to hand a student an embedded CPU
+board and this Lua script, and in 5 minutes they know all the capabilities
+of the CPU that Lua has access to.  They could even print the results (hell
+we could generate a PDF with them and inclue it in the source) so they would
+never have to do a query again.  If they forget for some reason what
+capabilities a particular module has, all they have to do is run a simple
+script to refresh their memory, never having to look at the documentation
+again!  Since I am the kind of person that *hates* having to leave his code
+editor, this is an awsome feature.
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Possibly, but thats why the capabilities functionality exists. I really
+</I>&gt;&gt;<i> love self documenting code. ;)
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I understand, and I think this is an important difference in our coding
+</I>&gt;<i> styles. I too like self-documenting code, but to the point where
+</I>&gt;<i> self-documentation becomes a purpose in itself, thus altering the code too
+</I>&gt;<i> much.
+</I>&gt;<i>
+</I>
+Nothing is altered, if you already know the capabilities of the hardware,
+dont run the query.
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> Very true, but I assume that the users of eLua know something about the
+</I>&gt;&gt;<i> hardware they are using (after all they have to at least know what pins the
+</I>&gt;&gt;<i> timers connect to!) and are familliar
+</I>&gt;&gt;<i>
+</I>&gt;<i> enough with embedded systems programming to know that all platforms are not
+</I>&gt;&gt;<i> created equal. :)
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> So, mister self-documenting guy :), don't you think that:
+</I>&gt;<i>
+</I>&gt;<i> lm3s.tmr.pair(0)
+</I>&gt;<i> tmr.delay(0, us)
+</I>&gt;<i>
+</I>&gt;<i> is more self documenting than:
+</I>&gt;<i>
+</I>&gt;<i> timers[0].pair(0).delay(us) (or something similar)? :P
+</I>&gt;<i>
+</I>
+Not really.  The only difference between the two for my eyes is that one is
+meant to run on an lm3s CPU and the other can run on anything that supports
+timer pairing.  The second is actually cleaner, because if you wanted to
+write portable code you would not have to have things like if (cpu.type() ==
+&quot;lm3s&quot;) do ... everywhere (assuming you knew that every platform you want to
+run it on supports timer pairing).
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Very true, and this is why I liked the idea very much. You do have another
+</I>&gt;<i> approach in this case(which is used by my virtual timers implementation): if
+</I>&gt;<i> a timer is dedicated to a specific set of operations and you don't want it
+</I>&gt;<i> disturbed, simply don't expose it to the Lua interface.
+</I>&gt;<i>
+</I>
+But what if you want to use it in Lua, just not have other Lua tasks be able
+to use it?
+
+
+&gt;<i>
+</I>&gt;<i> Also, real harware is eternal, how many times have you used a CPU that had
+</I>&gt;&gt;<i> a timer that disappeared when you forgot it was there? ;)
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I'd rather not answer this :D
+</I>&gt;<i>
+</I>
+Of course, it was meant to be silly. :)
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Basically I envision a timer to be lock()ed whenever its being used, even
+</I>&gt;&gt;<i> if its not currently referenced in any code in the current scope, and
+</I>&gt;&gt;<i> unlock()ed if the timer is idle and free to be retasked to do something
+</I>&gt;&gt;<i> else.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> And this is why your idea seems so good. I'll think of a nice, generic way
+</I>&gt;<i> to implement it.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Thanks for the discussion on this, I think if we keep this up we will end
+</I>&gt;&gt;<i> up with quite a robust code base!
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> So it seems! Thank you too.
+</I>&gt;<i>
+</I>
+Lets keep it up!  I would like others to join too though. :)  Also, this
+need not be confined to a timer interface, I was just thinking of the most
+complex peripheral I could use as an example. Technically these ideas should
+apply to anything.
+
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>
+Thanks,
+Mike
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090109/b1dbeabe/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090109/b1dbeabe/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000266.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+	<LI>Next message: <A HREF="000269.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#268">[ date ]</a>
+              <a href="thread.html#268">[ thread ]</a>
+              <a href="subject.html#268">[ subject ]</a>
+              <a href="author.html#268">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

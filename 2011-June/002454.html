@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTi%3D8bLCVu0ixq89C%2BFmuM0xynqrxmg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002453.html">
+   <LINK REL="Next"  HREF="002450.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTi%3D8bLCVu0ixq89C%2BFmuM0xynqrxmg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jun  6 17:40:01 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002453.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002450.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2454">[ date ]</a>
+              <a href="thread.html#2454">[ thread ]</a>
+              <a href="subject.html#2454">[ subject ]</a>
+              <a href="author.html#2454">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jun 6, 2011 at 8:09 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 6 June 2011 05:17, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> I would take a look at some other &quot;mature&quot; platform APIs:
+</I>&gt;<i>
+</I>&gt;<i> Many thanks for these suggestions. Whether they are mature or not
+</I>&gt;<i> doesn't necessarily mean they are well-designed. They may just be old
+</I>&gt;<i> ;-).
+</I>
+True.  I just meant they probably had been abused a little and maybe
+therefore could cover a variety of use cases.
+
+&gt;<i> In fact, they are all totally different:
+</I>&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://mbed.org/handbook/I2C">http://mbed.org/handbook/I2C</A>
+</I>&gt;<i>
+</I>&gt;<i> frequency() read() write() start() stop(). &#160; The same as eLua's current.
+</I>
+Well, except for the separate address command.  If you look at the
+usage example the read and write take the address, and length of
+command as well.
+
+&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://arduino.cc/en/Reference/Wire">http://arduino.cc/en/Reference/Wire</A>
+</I>&gt;<i>
+</I>&gt;<i> bizarre.
+</I>
+Kind of agree here, mentioned it though since it is the poster child
+hobbyist microcontroller platform and it has been replicated onto
+other platforms other than the 8-bit AVR now.  That said I prefer the
+mbed one to it.
+
+&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://labdasar.ee.itb.ac.id/lab/installer/embedded/ecos-3.0.cygwin/ecos-3.0/doc/html/ref/i2c-api.html">http://labdasar.ee.itb.ac.id/lab/installer/embedded/ecos-3.0.cygwin/ecos-3.0/doc/html/ref/i2c-api.html</A>
+</I>&gt;<i>
+</I>&gt;<i> Two functions:
+</I>&gt;<i> uint32 cyg_i2c_tx(const cyg_i2c_device* device, const cyg_uint8*
+</I>&gt;<i> tx_data, cyg_uint32 count)
+</I>&gt;<i> uint32 cyg_i2c_rx(const cyg_i2c_device* device, cyg_uint8* rx_data,
+</I>&gt;<i> cyg_uint32 count);
+</I>&gt;<i> where cyg_i2c_device encodes &quot;which i2c bus&quot;, &quot;slave address&quot; and &quot;speed&quot;
+</I>&gt;<i> looks like the closest yet... until you try to do a write-read
+</I>&gt;<i> combined message. Then you have to use a different, big hairy
+</I>&gt;<i> transaction-oriented interface, because the &quot;simple&quot; interface above
+</I>&gt;<i> doesn't allow tx-rx without an intervening stop.
+</I>
+Right, this actually also looks fairly close to one of the models
+supported by mbed.
+
+&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://code.bsd64.org/browse/freebsd/RELENG_8_0/src/sys/dev/iicbus/iic.h">http://code.bsd64.org/browse/freebsd/RELENG_8_0/src/sys/dev/iicbus/iic.h</A>
+</I>&gt;<i>
+</I>&gt;<i> start, stop, read, write, rdwr(?), and repeated-start. &#160;Again, too
+</I>&gt;<i> low-level for high level hardware
+</I>&gt;<i>
+</I>&gt;&gt;<i> eLua's platform C API can also be a bit lower level than the Lua API
+</I>&gt;&gt;<i> as well in case some commands might need to be bundled together for
+</I>&gt;&gt;<i> efficiency/timing purposes.
+</I>&gt;<i>
+</I>&gt;<i> No, I need to keep the whole I2C message, including a combined
+</I>&gt;<i> write-read sequence, intact down to the platform level, otherwise the
+</I>&gt;<i> hardware generates a STOP automatically if the read request doesn't
+</I>&gt;<i> arrive in time.
+</I>&gt;<i> If your basic primitives are start() stop() readbyte() writebyte(),
+</I>&gt;<i> the higher level description can easily be implemented in terms of
+</I>&gt;<i> them. &#160;But if the platform interface is at a lower level than this, it
+</I>&gt;<i> is quite difficlt to reconstruct the original combined message by
+</I>&gt;<i> spotting a special sequence of starts, tx and rx messages. &#160;You would
+</I>&gt;<i> still end up having to buffer everything from the start to the first
+</I>&gt;<i> stop and then performing the whole operation at that time.
+</I>
+I think I understand this better having read some of the additional
+messages from you and Bogdan about how the different hardware
+implementations are somewhat bizarre in automating or requiring
+certain behaviors and timings. *sigh*
+
+In light of this it sounds like the eLua and C APIs might need to be
+fairly high level, leaving the platform variability to the hardware
+platform and driver.
+
+&gt;<i>
+</I>&gt;&gt;<i> Perhaps we could aim for keeping things
+</I>&gt;&gt;<i> fairly generic, simple and atomic at the platform C API level
+</I>&gt;<i>
+</I>&gt;<i> Of these words I think understand &quot;atomic&quot;: it means &quot;a single
+</I>&gt;<i> operation that either completes in its entirety or doesn't happen at
+</I>&gt;<i> all&quot;, which suggests keeping entire I2C messages as single objects all
+</I>&gt;<i> the way down.
+</I>
+Simple/single all or nothing operations that don't do more than they
+have to, minimizing side effects.  I think what I was envisioning for
+this originally wasn't quite right, but what you're saying here
+probably sounds about right.  Keep the entire message as a single
+object or transaction all the way down and report associated
+error/status messages (ACK/NACK) as necessary if the attempt fails at
+some stage.
+
+&gt;<i>
+</I>&gt;<i> &#160;and then
+</I>&gt;&gt;<i> perhaps provide some convenience or group some operations within the
+</I>&gt;&gt;<i> higher level Lua API?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Some of them include
+</I>&gt;&gt;<i> semantics (like arduino) to use send to queue messages and then send
+</I>&gt;&gt;<i> them when the transmission is ended, then ACK/NACK status is returned.
+</I>&gt;<i>
+</I>&gt;<i> Exactly what I was hoping to avoid, since you have to copy and buffer
+</I>&gt;<i> a potentially infinite amount of data, then send it when they say
+</I>&gt;<i> &quot;stop&quot;, which means you have to be able to allocate arbitrary amounts
+</I>&gt;<i> of memory inside the device driver.
+</I>
+Yeah, I don't think this is a great idea either.  Although as with the
+single operation, you could return an error on the queuing telling the
+user that the message or buffer is too long. What I dislike more
+however is making some separate state object to keep track of in
+between queuing operations that is inconsistent with how the rest of
+eLua behaves for modules like this.
+
+&gt;<i>
+</I>&gt;&gt;<i> FWIW: I'm not too concerned about running in slave mode either at this point.
+</I>&gt;<i>
+</I>&gt;<i> Nor am I personally, but if we are designing a world-class API that
+</I>&gt;<i> will be with eLua forever, maybe thinking about it would be a good
+</I>&gt;<i> idea at this point.
+</I>
+Indeed.  I think we should plan for it in the API, I'm just not as
+worried about getting that tested and implemented on all platforms at
+this stage.  I'm not sure if that makes it difficult to design in or
+not :-)
+
+&gt;<i> &#160;I gather that the buttons on the Mizar32 LCD
+</I>&gt;<i> display are supposed to work in master mode with the AVR32 SoC as
+</I>&gt;<i> slave so that you don't have to do busy-wait polling to detect button
+</I>&gt;<i> presses (you prod the button-controlling PIC, go into slave mode and
+</I>&gt;<i> then wait for the buttons to poke you). &#160;However, this may just be a
+</I>&gt;<i> case of poor design, and the LCD/button hardware module is not one of
+</I>&gt;<i> those scheduled to be ready for the initial product release, so we can
+</I>&gt;<i> still review its design.
+</I>
+I'm not sure how common the use case is for slave mode.  Based on
+looking at some of the APIs mentioned previously it sounds like it
+wouldn't be terribly hard to incorporate the functionality.  As for
+Mizar32's use of it, that's another matter :-)
+
+&gt;<i>
+</I>&gt;<i> &#160; M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002453.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002450.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2454">[ date ]</a>
+              <a href="thread.html#2454">[ thread ]</a>
+              <a href="subject.html#2454">[ subject ]</a>
+              <a href="author.html#2454">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

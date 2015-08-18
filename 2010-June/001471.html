@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Code Modularization
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Code%20Modularization&In-Reply-To=%3C9D54B9E8-9970-4247-9E22-B59E311E1B80%40bike-nomad.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001470.html">
+   <LINK REL="Next"  HREF="001472.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Code Modularization</H1>
+    <B>ned at bike-nomad.com</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Code%20Modularization&In-Reply-To=%3C9D54B9E8-9970-4247-9E22-B59E311E1B80%40bike-nomad.com%3E"
+       TITLE="[eLua-dev] Code Modularization">ned at bike-nomad.com
+       </A><BR>
+    <I>Wed Jun 23 18:06:59 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001470.html">[eLua-dev] Code Modularization
+</A></li>
+        <LI>Next message: <A HREF="001472.html">[eLua-dev] STM32 UART Flash Tool
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1471">[ date ]</a>
+              <a href="thread.html#1471">[ thread ]</a>
+              <a href="subject.html#1471">[ subject ]</a>
+              <a href="author.html#1471">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Jun 23, 2010, at 7:18 AM, Stefan Brantschen wrote:
+&gt;<i> 
+</I>&gt;<i> How are you guys organizing your code into manageable parts like modules?
+</I>
+I was about to ask the same question.
+
+Couldn't you keep a list of &quot;active&quot; packages in a table (and a separate list of &quot;inactive but available&quot; packages)?
+
+The executive code would call functions from only the &quot;active&quot; packages as needed to deliver events, etc. 
+
+Presumably all of the available packages would be compiled at the same time and would live in flash as one big blob. They could all start in the &quot;active&quot; list; initialization code in each could be called to do the initial activation/deactivation (perhaps as simply as using a &quot;require&quot; mechanism that increments a use count in the package).
+
+&gt;<i> Background: to get my feet wet with eLua, I implemented a simple generic &quot;big loop&quot; into which handlers for all sorts of tasks can be plugged, like event-handling, signaling, or non-blocking timing, allowing to realize what I call agents that (logically) execute independently and concurrently.*) This basic run-time infrastructure I don't need to touch (unless I detect errors... :-), so I would like to put it into a separate module. I did this using a Lua module, which I can dynamically load from the /rom or /mmc of my LS3S board. But what would I do if there's no filesystem?!
+</I>
+There's an interesting discussion of using setfenv() and tables to manage package namespaces in chapter 15 of Programming in Lua .
+
+Ned Konz
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100623/fd9b75c5/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100623/fd9b75c5/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001470.html">[eLua-dev] Code Modularization
+</A></li>
+	<LI>Next message: <A HREF="001472.html">[eLua-dev] STM32 UART Flash Tool
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1471">[ date ]</a>
+              <a href="thread.html#1471">[ thread ]</a>
+              <a href="subject.html#1471">[ subject ]</a>
+              <a href="author.html#1471">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

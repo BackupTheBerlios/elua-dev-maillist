@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Running C task concurrently (in background) with eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Running%20C%20task%20concurrently%20%28in%20background%29%20with%20eLua&In-Reply-To=%3CCAMHCYBcDCa%3DQrPQSX7TjTmrOxZFo3%3DfEBoR_dTnU_K03rjt_Tw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004163.html">
+   <LINK REL="Next"  HREF="004165.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Running C task concurrently (in background) with eLua</H1>
+    <B>Thiago Naves</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Running%20C%20task%20concurrently%20%28in%20background%29%20with%20eLua&In-Reply-To=%3CCAMHCYBcDCa%3DQrPQSX7TjTmrOxZFo3%3DfEBoR_dTnU_K03rjt_Tw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Running C task concurrently (in background) with eLua">naves.thiago at gmail.com
+       </A><BR>
+    <I>Tue Jun  4 20:50:57 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004163.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+        <LI>Next message: <A HREF="004165.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4160">[ date ]</a>
+              <a href="thread.html#4160">[ thread ]</a>
+              <a href="subject.html#4160">[ subject ]</a>
+              <a href="author.html#4160">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Jun 4, 2013 at 1:25 PM, Ashu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">knowlog at hotmail.com</A>&gt; wrote:
+
+&gt;<i> Thanks Thiago,
+</I>&gt;<i>
+</I>&gt;<i> I am in the middle of trying out calling C code from timer IRQ handler.
+</I>&gt;<i> However, I would definitely like to explore the second suggestion - context
+</I>&gt;<i> switching between LuaVM and background task. How do I do that; is there any
+</I>&gt;<i> document or code that you can point me to?
+</I>&gt;<i>
+</I>
+There's nothing ready do be used for that in the eLua code (and I don't
+think there will be).
+That's usually a OS job (and we don't have one...).
+
+This leaves 2 choices: Grab the context switching functions for your
+platform from an OS (like FreeRTOS)
+or write your own.
+For writing your own, the ARM website has a lot of info on various arm
+architectures.
+There you can find which registers you need to save and what instructions
+do that.
+
+I would only go in this route as a last resort.
+As nether those options are simple.
+
+
+&gt;<i> Also looking through eLua source code, to understand how lc bytecode loaded
+</I>&gt;<i> in memory can be executed in chunks. Feeding/ executing Lua chunks (not lc
+</I>&gt;<i> bytecode) is already being done from shell; if I can find the Lua function
+</I>&gt;<i> that can do the same to lc bytecode(?) That will solve my problem too!
+</I>&gt;<i> Alternately calling  heartbeat and &quot;lc chunk&quot; vm interpreter functions from
+</I>&gt;<i> a tight while loop in main()
+</I>&gt;<i>
+</I>&gt;<i>
+</I>That or using the debug hooks, as James said, might be the solution.
+
+Best,
+Thiago
+
+
+
+&gt;<i> Please advise.
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Ash
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context:
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/Running-C-task-concurrently-in-background-with-eLua-tp7578047p7578052.html">http://elua-development.2368040.n2.nabble.com/Running-C-task-concurrently-in-background-with-eLua-tp7578047p7578052.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130604/6923e49a/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130604/6923e49a/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004163.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+	<LI>Next message: <A HREF="004165.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4160">[ date ]</a>
+              <a href="thread.html#4160">[ thread ]</a>
+              <a href="subject.html#4160">[ subject ]</a>
+              <a href="author.html#4160">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

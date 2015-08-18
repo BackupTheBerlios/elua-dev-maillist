@@ -1,0 +1,220 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C5FB76EBA-A7B8-4681-B68F-1A6223AAF9DA%40dnainternet.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000866.html">
+   <LINK REL="Next"  HREF="000870.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>Asko Kauppi</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C5FB76EBA-A7B8-4681-B68F-1A6223AAF9DA%40dnainternet.net%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">askok at dnainternet.net
+       </A><BR>
+    <I>Mon Jun 22 22:44:25 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000866.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="000870.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#869">[ date ]</a>
+              <a href="thread.html#869">[ thread ]</a>
+              <a href="subject.html#869">[ subject ]</a>
+              <a href="author.html#869">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+I'll share some part numbers recommended by my Atmel contact:
+
+&gt;<i> ==&gt; We have three chips with enough internal RAM.
+</I>&gt;<i> AT91SAM7X512    512 kB Flash &amp; 128 kB SRAM
+</I>&gt;<i> AT32UC3A3256           256 kB Flash &amp; 128 kB SRAM
+</I>&gt;<i> AT91FR40162SB    2 MB Flash and 256 kb SRAM.
+</I>&gt;<i>       Note that this is a multichip package in a 10 x 10 mm BGA
+</I>&gt;<i>       and the periperals set is sort of outdated.
+</I>&gt;<i>
+</I>&gt;<i> And by not needing to use those pins for external RAM interface, they
+</I>&gt;<i> would be spared for other usage.
+</I>
+BGA is perhaps a no-go.  AT32UC3A3256 is what we're trying to get.   
+AT91SAM7X512 some of you may have experience on?  (or is it a  
+newcomer, since it's marked as &quot;sampling&quot;)
+
+AT32UC3A3256
+- SRAM 128K
+- Flash 256K
+- IO pins 110
+- UARTs 4
+- USB
+- package LQFP 144 (or TFBGA 144)
+- 66 MHz max.
+
+<A HREF="http://www.atmel.com/dyn/resources/prod_documents/32072S.pdf">http://www.atmel.com/dyn/resources/prod_documents/32072S.pdf</A>
+
+AT91SAM7X512
+- package LQFP 100
+- Integrated Ethernet, USB _and_ CAN
+- Flash 512K
+- SRAM 128K
+- Status: sampling
+- 55 MHz max.
+
+<A HREF="http://www.atmel.com/dyn/resources/prod_documents/6120s.pdf">http://www.atmel.com/dyn/resources/prod_documents/6120s.pdf</A>
+
+-asko
+
+
+James Snyder kirjoitti 22.6.2009 kello 21:42:
+
+&gt;<i> This is true, however I think the non-custom parts actually go a
+</I>&gt;<i> pretty good distance towards what we're after.  Many of the chips on
+</I>&gt;<i> these devel boards are kind-of &quot;kitchen sink&quot; chips that have way more
+</I>&gt;<i> peripherals than are needed for any one single application.
+</I>&gt;<i>
+</I>&gt;<i> It seems like the problem is that we're asking for something that's
+</I>&gt;<i> even a bit more general, but not that much more.  Since these general
+</I>&gt;<i> parts already have most of the stuff we need and they're still not
+</I>&gt;<i> much more than $10 by themselves, I think we should be able to find
+</I>&gt;<i> something that meets a reasonable minimum set of peripherals, and,
+</I>&gt;<i> maybe, requires one or two added external chips at the max.
+</I>&gt;<i>
+</I>&gt;<i> It might be a good idea to start by speccing out some sort of common
+</I>&gt;<i> set of peripheral needs that would be satisfactory for a Lua stamp,
+</I>&gt;<i> and then go from there?
+</I>&gt;<i>
+</I>&gt;<i> Here's what I, personally, would like:
+</I>&gt;<i> - somewhere near 40 pins out, most/all of which can be used for GPIO,
+</I>&gt;<i> or configured for various peripherals
+</I>&gt;<i> - output pins are dip, compatible with standard-sized breadboards
+</I>&gt;<i> - 8+ A/D channels (10-bit, or 12-bit if possible)
+</I>&gt;<i> - 2+ D/A (10 or 12 bit)
+</I>&gt;<i> - Ethernet w/ PHY  or CAN
+</I>&gt;<i> - 2+ USART
+</I>&gt;<i> - 2+ I2C
+</I>&gt;<i> - can be powered over USB
+</I>&gt;<i> - 64+K of SRAM
+</I>&gt;<i> - 512+ K of Flash
+</I>&gt;<i> - optionally powered and programmed over a USB link
+</I>&gt;<i>
+</I>&gt;<i> I'd be happy with more, but I think this should work for a wide range
+</I>&gt;<i> of applications.  My first inclination if any one particular thing
+</I>&gt;<i> could be added would be: as much RAM as possible.
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i> On Jun 22, 2009, at 1:05 PM, Dado Sutter wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Thank you Louie,
+</I>&gt;&gt;<i>   The truth, and I think you made it very clear in your message, is
+</I>&gt;&gt;<i> that that chips are made to profitable targeted applications and not
+</I>&gt;&gt;<i> to fullfill our dreams on a general-purpose complete and cheap
+</I>&gt;&gt;<i> platform.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, Jun 22, 2009 at 12:21, Louis Mamakos &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">louie at transsys.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Jun 22, 2009, at 10:34 AM, John Hind wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi Dado, you had me googling &#8220;gronwup embedded environment&#8221; before
+</I>&gt;&gt;&gt;<i> realising it was a typo!
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> My posting was more born of frustration that the ARM
+</I>&gt;&gt;&gt;<i> microcontroller industry seems to have advanced so little in the
+</I>&gt;&gt;&gt;<i> last six months compared to the rate the X86 market moves on. I was
+</I>&gt;&gt;&gt;<i> really hoping someone would point me at some hope the next six
+</I>&gt;&gt;&gt;<i> months would bring me what I was looking for. I do not want to give
+</I>&gt;&gt;&gt;<i> up on distributed processing architectures yet, but it is hard when
+</I>&gt;&gt;&gt;<i> just one processing node ends up nearly as expensive as a central
+</I>&gt;&gt;&gt;<i> machine capable of handling the entire requirement!
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> It continues to baffle me that the industry does not get the market
+</I>&gt;&gt;&gt;<i> for high-functionality, highly integrated, low pin-count devices &#8211;
+</I>&gt;&gt;&gt;<i> this seems so obvious for intelligent sensors and actuators. Even
+</I>&gt;&gt;&gt;<i> in the 8-bit field, Microchip makes lovely 6- and 8- pin chips
+</I>&gt;&gt;&gt;<i> ideal for embedding in, for example, a single limit switch, but
+</I>&gt;&gt;&gt;<i> they have no serial comms capability! You are up to 16 pin devices
+</I>&gt;&gt;&gt;<i> before that starts to appear. In the ARM market, large on-chip
+</I>&gt;&gt;&gt;<i> memory seems to go hand in hand with high pin-count and therefore
+</I>&gt;&gt;&gt;<i> complex and expensive packages and PCBs.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> In the embedded space, parts get built to support specific
+</I>&gt;&gt;<i> (hopefully volume) applications.  This is why you might not see
+</I>&gt;&gt;<i> parts with a large number of on-chip peripherals, or lots of memory,
+</I>&gt;&gt;<i> etc.  In a previous professional gig, we built VoIP devices that
+</I>&gt;&gt;<i> shipped in moderate volume (1M-2M units/year).  This is a nice
+</I>&gt;&gt;<i> &quot;sweet spot&quot; for a part manufacturer who would build a device
+</I>&gt;&gt;<i> targeted to that application which also happens to be price
+</I>&gt;&gt;<i> sensitive.  You don't want to ship parts out with unused peripherals
+</I>&gt;&gt;<i> or lots of extra memory because an extra $2 of cost per unit turns
+</I>&gt;&gt;<i> into a pretty noticeable numbers at 1,000,000 units shipped.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If you're only talking about building a few hundred units, then the
+</I>&gt;&gt;<i> extra cost isn't really as much of a consideration, especially when
+</I>&gt;&gt;<i> you might be able to reduce the one-time engineering expense by
+</I>&gt;&gt;<i> optimizing time spent vs. &quot;extra&quot; hardware.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I think that Marvell is building some interesting  higher-end parts,
+</I>&gt;&gt;<i> with perhaps a lack of GPIO I/O, A/D, etc. capability but with
+</I>&gt;&gt;<i> networking, etc.  Otherwise, you're looking to repurpose devices
+</I>&gt;&gt;<i> built for some targeted applications.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> louie
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000866.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="000870.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#869">[ date ]</a>
+              <a href="thread.html#869">[ thread ]</a>
+              <a href="subject.html#869">[ subject ]</a>
+              <a href="author.html#869">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

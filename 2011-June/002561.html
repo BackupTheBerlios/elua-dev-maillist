@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20on%20LM3S%20Connection%20Issue%20%28was%20Re%3A%20eLua-dev%0A%20Digest%2C%20Vol%2035%2C%20Issue%2041%29&In-Reply-To=%3CBANLkTi%3D%3DznHH9qQeW5vhNDNjHVQiuJsLdQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002559.html">
+   <LINK REL="Next"  HREF="002545.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20on%20LM3S%20Connection%20Issue%20%28was%20Re%3A%20eLua-dev%0A%20Digest%2C%20Vol%2035%2C%20Issue%2041%29&In-Reply-To=%3CBANLkTi%3D%3DznHH9qQeW5vhNDNjHVQiuJsLdQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Jun 21 20:03:11 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002559.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+        <LI>Next message: <A HREF="002545.html">[eLua-dev] C library
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2561">[ date ]</a>
+              <a href="thread.html#2561">[ thread ]</a>
+              <a href="subject.html#2561">[ subject ]</a>
+              <a href="author.html#2561">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Jun 21, 2011 at 1:44 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Jun 21, 2011 at 7:13 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, Jun 20, 2011 at 7:00 AM, raman &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Hello,
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I tried building on Gnu/Linux Ubuntu, 10.10.
+</I>&gt;&gt;<i> &gt; 2.6.35-22-generic #33-Ubuntu SMP i686 GNU/Linux
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I only made a small change in the rpc-lua.py file to
+</I>&gt;&gt;<i> &gt; link with the ncurses library. There is no change in
+</I>&gt;&gt;<i> &gt; response. ./luarpc does not return the handle. Here
+</I>&gt;&gt;<i> &gt; too, it just waits on the console infinitely.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Are you having to link in ncurses in order to get it to work? &#160;I
+</I>&gt;&gt;<i> believe that for most modern unix platforms just linking against
+</I>&gt;&gt;<i> readline should work if a recent version is installed. On my Ubuntu
+</I>&gt;&gt;<i> box I installed libreadline5-dev I believe and linked against that for
+</I>&gt;&gt;<i> a readline library.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I also just checked in a version that uses linenoise instead to
+</I>&gt;&gt;<i> eliminate those dependencies. This should work fine for Linux &amp; OS X.
+</I>&gt;&gt;<i> There's not a full port of that library for Windows yet.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> All that said, I'm not sure if this would have any effect on the issue
+</I>&gt;&gt;<i> being encountered, but perhaps something strange is going on here. &#160;I
+</I>&gt;&gt;<i> believe I have had occasions at least on Windows where the timeouts
+</I>&gt;&gt;<i> don't seem to work correctly unless I have something within luarpc.c
+</I>&gt;&gt;<i> or one of the lower level layers print something like a debug
+</I>&gt;&gt;<i> statement.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Am I overlooking any additional configuration that
+</I>&gt;&gt;<i> &gt; is mandatory for the lrpc on my Linux box ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I don't believe so, but maybe something in the above might be relevant.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Awaiting your response.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On the windows side, I did find an issue that was preventing it from
+</I>&gt;&gt;<i> reading data, at least on my machine. &#160;I'm not sure why I've only
+</I>&gt;&gt;<i> experienced this with LM3S, perhaps it has to do with which FTDI chip
+</I>&gt;&gt;<i> is onboard? &#160;In any case by not setting the DTR control to disabled,
+</I>&gt;&gt;<i> and just leaving it in its default state (whatever that might be) it
+</I>&gt;&gt;<i> now works for me on Windows XP 32-bit:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> C:\elua&gt;luarpc test\test-rpc.lua
+</I>&gt;&gt;<i> Platform: LM3S
+</I>&gt;&gt;<i> CPU: LM3S6965
+</I>&gt;&gt;<i> Board: EK-LM3S6965
+</I>&gt;&gt;<i> CPU Clock: 50 MHz
+</I>&gt;&gt;<i> Memory Used: 10.009765625 kB
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I finally narrowed it down by a simple test program in C that just
+</I>&gt;&gt;<i> sent the 9 byte opening sequence and then tried to read the 8 byte
+</I>&gt;&gt;<i> header back. &#160;Since I found this worked, I then started removing
+</I>&gt;&gt;<i> things that weren't in this test setup from serial_win32 until I found
+</I>&gt;&gt;<i> that applying this one setting ( dcb.fDtrControl =
+</I>&gt;&gt;<i> DTR_CONTROL_DISABLE; ) would even prevent the test program from
+</I>&gt;&gt;<i> successfully running until I had unplugged/replugged the USB
+</I>&gt;&gt;<i> interface. &#160;I'm guessing that for some reason, even though the DTR
+</I>&gt;&gt;<i> line wouldn't even be used in this case, changing its state is messing
+</I>&gt;&gt;<i> something up or maybe it's having the opposite effect of disabling
+</I>&gt;&gt;<i> DTR? &#160;Some more investigation is warranted.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This leads me to another question for others on the list: has anyone
+</I>&gt;&gt;<i> been using either luarpc, mux or rfs with LM3S boards successfully
+</I>&gt;&gt;<i> prior to this fix? &#160;Bogdan, have you tried RFS or mux with an LM3S
+</I>&gt;&gt;<i> eval kit using the onboard FTDI JTAG/UART for a serial interface?
+</I>&gt;<i>
+</I>&gt;<i> Nope, never. This is very weird though, DTR_CONTROL_DISABLE always worked
+</I>&gt;<i> for me in the RFS server (I can't remember if I tested it with LM3S under
+</I>&gt;<i> Windows though). This might have something to do with the combined JTAG/UART
+</I>&gt;<i> interface that you're talking about, I have no idea how that is implemented
+</I>&gt;<i> internally. Glad it works, although I'm not sure that letting fDtrControl
+</I>&gt;<i> have whatever value it gets from the system is a good idea. Not that I have
+</I>&gt;<i> a better one :)
+</I>
+So, I think I've figured it out.  If you look at the manual at least
+for the 6965 EK:
+<A HREF="http://www.luminarymicro.com/index.php?option=com_remository&amp;func=download&amp;id=448&amp;chk=ceb37bdddb4dba7268d347df3d68fcf7&amp;Itemid=591">http://www.luminarymicro.com/index.php?option=com_remository&amp;func=download&amp;id=448&amp;chk=ceb37bdddb4dba7268d347df3d68fcf7&amp;Itemid=591</A>
+
+BDBUS4 (which is used at DTR for the B UART used for serial
+communication) is labeled as being connected to SWO_EN (Serial Wire
+Out Enable).  According to the manual:
+
+&quot;The evaluation board supports the Cortex-M3 serial-wire output (SWO)
+trace capabilities. Under
+debugger control, the CPLD can route the SWO datastream to the virtual
+communication port
+(VCP) transmit channel. The debugger can then decode and interpret the
+trace information
+received from the VCP. The normal VCP connection to UART0 is
+interrupted when using SWO. Not
+all debuggers support SWO. Refer to the Stellaris LM3S6965 data sheet
+for additional information
+on the trace port interface unit (TPIU).&quot;
+
+The following Ubuntu bug where someone mentions that their UART
+stopped working, and prints gibberish when OpenOCD is started.
+Presumably this is the serial wire output. The fix was to pull out
+some DTR/RTS toggling:
+<A HREF="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/655868">https://bugs.launchpad.net/ubuntu/+source/linux/+bug/655868</A>
+
+According to the FTDI manual, DTR is an &quot;active low&quot; signal, so if it
+were enabled by default I presume this SWO line would be held low.  By
+explicitly disabling DTR, it goes high changing the logic for for the
+PLD.  If you look at the schematic again, you'll see that the Tx line
+from the MCU goes through the debug PLD _before_ the FTDI chip.
+Presumably raising SWO_EN/DTR disables Tx, which would mirror what
+we've been seeing, replacing it with SWO data if that's available
+(which it isn't unless you have the debugger running).
+
+I certainly hear what you're saying regarding &quot;it feels bad to
+ambiguously leave DTR in the state it was left in&quot; but I think that
+TeraTerm either leaves it alone or enables it by default.  Leaving it
+active (held low) should be the equivalent of telling the other device
+&quot;I'm alive.&quot;  You could do this by setting DTR_CONTROL_ENABLE instead
+of DTR_CONTROL_DISABLE.  If you want DTR handshakes that's still
+available as a separate option.  This might explain why I've seen
+setup examples like the following, where the option isn't between
+turning on handshaking or disabling DTR, but between handshaking and
+holding it in enabled state:
+<A HREF="http://stackoverflow.com/questions/824029/how-to-do-serial-communication-in-c-program/824083#824083">http://stackoverflow.com/questions/824029/how-to-do-serial-communication-in-c-program/824083#824083</A>
+
+Additionally, we're not doing anything with its configuration on POSIX
+directly, and I'm not sure if it's sticky between sessions there or
+not.
+
+In any case, I think that pretty well explains the origins of the
+behavior we've seen.  I'm just surprised that this hadn't come up
+until now.
+
+Side Note:
+I did do a partial merge with the other serial code when I was
+experimenting with this, so I think I could fairly easily merge our
+two disparate serial layers (well, they're not that different, but the
+mux/rfs version has timeouts passed with each read call, and I think
+the select/readable function has different behavior). I'm thinking
+that it might be nice to use the overlapped I/O on windows as mux/rfs
+does, plus then we could have only one version of the serial layer to
+maintain.
+
+Side Note 2:
+Also ran across a cross-platform RS-232 library with a similar but a
+bit more granular API
+(<A HREF="https://github.com/ynezz/librs232/blob/master/include/librs232/rs232.h">https://github.com/ynezz/librs232/blob/master/include/librs232/rs232.h</A>)
+and Lua bindings, which could be nice:
+<A HREF="https://github.com/ynezz/librs232/">https://github.com/ynezz/librs232/</A>
+
+I think we're in fairly decent shape with our implementation at this
+point however, and it's not really doing hugely different things.  I'm
+tempted, though, slightly because it's also MIT license and has tests
+:<i>-)
+</I>
+&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Raman
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; A dmsg gave me the following information.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; usb 8-1: Detected FT2232C
+</I>&gt;&gt;<i> &gt; usb 8-1: Number of endpoints 2
+</I>&gt;&gt;<i> &gt; usb 8-1: Endpoint 1 MaxPacketSize 64
+</I>&gt;&gt;<i> &gt; usb 8-1: Endpoint 2 MaxPacketSize 64
+</I>&gt;&gt;<i> &gt; usb 8-1: Setting MaxPacketSize 64
+</I>&gt;&gt;<i> &gt; usb 8-1: FTDI USB Serial Device converter now attached to ttyUSB0
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; This was on Ubuntu, 10.10, i686, Kernel: 2.6.35-xx
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; This was not displayed. So, ftdi_sio was not registered.
+</I>&gt;&gt;<i> &gt; [10211.358498] usbcore: registered new interface driver ftdi_sio
+</I>&gt;&gt;<i> &gt; [10211.358500] ftdi_sio: v1.6.0:USB FTDI Serial Converters Driver
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I am not sure why this is not happening, but is there a conclusion we
+</I>&gt;&gt;<i> &gt; can
+</I>&gt;&gt;<i> &gt; draw ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It may be that it's just not printing the same information to the logs
+</I>&gt;&gt;<i> with the version of Ubuntu you're running. &#160; &#160;I can't imagine it's not
+</I>&gt;&gt;<i> running that driver since I think that provides the virtual UART
+</I>&gt;&gt;<i> functionality.
+</I>&gt;<i>
+</I>&gt;<i> Exactly. Since it's printing &quot;FTDI USB Serial Device converter now attached
+</I>&gt;<i> to ttyUSB0&quot; you can be sure that the driver is there.
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002559.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+	<LI>Next message: <A HREF="002545.html">[eLua-dev] C library
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2561">[ date ]</a>
+              <a href="thread.html#2561">[ thread ]</a>
+              <a href="subject.html#2561">[ subject ]</a>
+              <a href="author.html#2561">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

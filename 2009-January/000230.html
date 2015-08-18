@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Preprocessor Stuff
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Preprocessor%20Stuff&In-Reply-To=%3CCB944791-4658-4BA8-BFBA-AF0150753DAA%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000229.html">
+   <LINK REL="Next"  HREF="000231.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Preprocessor Stuff</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Preprocessor%20Stuff&In-Reply-To=%3CCB944791-4658-4BA8-BFBA-AF0150753DAA%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Preprocessor Stuff">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Jan  6 23:58:12 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000229.html">[eLua-dev] Remote Building eLua
+</A></li>
+        <LI>Next message: <A HREF="000231.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#230">[ date ]</a>
+              <a href="thread.html#230">[ thread ]</a>
+              <a href="subject.html#230">[ subject ]</a>
+              <a href="author.html#230">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi -
+
+I've got the toolchain up and running on a Mac, most of the  
+instructions worked fine for me with the one exception that (unlike on  
+a Linux machine I'd tried before) for the steps where an autoconf was  
+called for, doing so actually didn't go quite right and resulted in  
+the configure scripts not recognizing many of the options being  
+enabled.  Luckily, things seem to build OK with the out-of-the-box  
+configure scripts with the latest versions of the libraries required.
+
+My real reason for making this post, however, is related to the build  
+process and in particular how things are handled by the preprocessor.   
+I was trying to make a patch for the lm3s platform files so that  
+another type of display (the OSRAM type OLED display, which I later  
+realized isn't actually on my Rev C LM3S6965) could be used.  When I  
+was trying to use some if blocks so that display support could switch  
+between the RIT and OSRAM types, I noticed that the if statements  
+didn't seem to work as expected. with ELUA_CPU and ELUA_BOARD for  
+example.  An easy way to demonstrate this is to run the preprocessor  
+on platform.c in the lm3s platform folder.  In advance, I'll point out  
+that the following lines are found within:
+
+#if ELUA_CPU == LM3S8962
+   #define UARTS_COUNT 2
+#elif ELUA_CPU == LM3S6965
+   #define UARTS_COUNT 3
+#endif
+
+and as well, look at the function uarts_init(), which contains the line:
+
+for( i = 0; i &lt; UARTS_COUNT; i ++ )
+
+If I run the preprocessor with -DELUA_CPU= LM3S6965  I would expect  
+the UARTS_COUNT in the line from uarts_init() to be replaced with the  
+number 3, but this is not what I get.
+
+If I run the following: arm-elf-cpp -DELUA_CPU=LM3S6965 platform.c |  
+less
+
+and then locate the same for loop, instead I see:
+
+for( i = 0; i &lt; 2; i ++ )
+
+Is this handled correctly with a different compiler preprocessor?  I'm  
+using GCC 4.3.2, which I compiled per the instructions on the eLua  
+site.  Having looked at the documentation for the gcc preprocessor, I  
+don't think this would be expected to work either.  using the gcc -D  
+flags with numbers definitely works, but these tokens for the  
+different platforms doesn't, at least for me.
+
+I would make a patch for some sort of fix, but I figured I'd touch  
+base first.
+
+Love the project, and it runs great on my LM3S6965 :-)
+
+Best.
+
+
+P.S. I was also really really happy to see an ls command added since  
+the 0.5 release.
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090106/5a621cab/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090106/5a621cab/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090106/5a621cab/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090106/5a621cab/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000229.html">[eLua-dev] Remote Building eLua
+</A></li>
+	<LI>Next message: <A HREF="000231.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#230">[ date ]</a>
+              <a href="thread.html#230">[ thread ]</a>
+              <a href="subject.html#230">[ subject ]</a>
+              <a href="author.html#230">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

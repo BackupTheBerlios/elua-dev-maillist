@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] WOFS question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20WOFS%20question&In-Reply-To=%3CCAGgeDjSUa%3DdyC8y%3Dn5B-Bubre1XtmFZzdX2WW3LER-xN%2Bx8eHA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003711.html">
+   <LINK REL="Next"  HREF="003712.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] WOFS question</H1>
+    <B>Roger Lin</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20WOFS%20question&In-Reply-To=%3CCAGgeDjSUa%3DdyC8y%3Dn5B-Bubre1XtmFZzdX2WW3LER-xN%2Bx8eHA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] WOFS question">rogerlin at exosite.com
+       </A><BR>
+    <I>Mon Jul 16 17:34:46 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003711.html">[eLua-dev] WOFS question
+</A></li>
+        <LI>Next message: <A HREF="003712.html">[eLua-dev] WOFS question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3713">[ date ]</a>
+              <a href="thread.html#3713">[ thread ]</a>
+              <a href="subject.html#3713">[ subject ]</a>
+              <a href="author.html#3713">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yes, I start from jsnyder's branch. I adjust some different IOs, UART,
+clock. The flash access function is a little different between F1/F2.
+
+Thanks,
+
+Roger
+
+On Mon, Jul 16, 2012 at 11:14 PM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> Another question: are you using a special branch for your STM32F2
+</I>&gt;<i> board? I don't see any official support for STM32F2 in our master. In
+</I>&gt;<i> particular, the F1/F2 flash access function seem to be quite a bit
+</I>&gt;<i> different  ...
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Jul 16, 2012 at 1:46 PM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Mon, Jul 16, 2012 at 1:09 PM, Roger Lin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rogerlin at exosite.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt; HI,
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; I would like to add WOFS into my elua build but I see Hard fault handler
+</I>&gt;<i> &gt;&gt; print register value when I issue ls command in the shell,
+</I>&gt;<i> &gt;&gt; I found the problem may come from DM_INSTANCE_DATA. The name was never
+</I>&gt;<i> &gt;&gt; printed if the dir name is /wo.
+</I>&gt;<i> &gt;&gt; Did I lost something ?
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; My elua source are up to date except what I changed in
+</I>&gt;<i> /plateform/stm32f2.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Thanks,
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Roger
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; static void shell_ls( int argc, char **argv )
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; {
+</I>&gt;<i> &gt;&gt;   const DM_INSTANCE_DATA *pinst;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;   unsigned dev, i;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;   DM_DIR *d;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;   struct dm_dirent *ent;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;   u32 total;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;   ( void )argc;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;   ( void )argv;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;   // Iterate through all devices, looking for the ones that can do
+</I>&gt;<i> &quot;opendir&quot;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;   for( dev = 0; dev &lt; dm_get_num_devices(); dev ++ )
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;   {
+</I>&gt;<i> &gt;&gt;     pinst = dm_get_instance_at( dev );
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;     if( pinst-&gt;pdev-&gt;p_opendir_r == NULL || pinst-&gt;pdev-&gt;p_readdir_r ==
+</I>&gt;<i> NULL
+</I>&gt;<i> &gt;&gt; || pinst-&gt;pdev-&gt;p_closedir_r == NULL )
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;       continue;
+</I>&gt;<i> &gt;&gt;     d = dm_opendir( pinst-&gt;name );
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;     if( d )
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;     {
+</I>&gt;<i> &gt;&gt;       total = 0;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;       printf( &quot;\n%s&quot;, pinst-&gt;name );
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;       while( ( ent = dm_readdir( d ) ) != NULL )
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;       {
+</I>&gt;<i> &gt;&gt;         printf( &quot;\n%s&quot;, ent-&gt;fname );
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;         for( i = strlen( ent-&gt;fname ); i &lt;= DM_MAX_FNAME_LENGTH; i++ )
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;           printf( &quot; &quot; );
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;         printf( &quot;%u bytes&quot;, ( unsigned )ent-&gt;fsize );
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;         total = total + ent-&gt;fsize;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;       }
+</I>&gt;<i> &gt;&gt;       printf( &quot;\n\nTotal on %s: %u bytes\n&quot;, pinst-&gt;name, ( unsigned
+</I>&gt;<i> )total
+</I>&gt;<i> &gt;&gt; );
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;       dm_closedir( d );
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;     }
+</I>&gt;<i> &gt;&gt;   }
+</I>&gt;<i> &gt;&gt;   printf( &quot;\n&quot; );
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; }
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I don't have a STM32F2, thus I can't test this directly. I know it
+</I>&gt;<i> &gt; works on STM32F1, so I'm a bit confused. A few things:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; - did you erase the whole flash when programming the eLua firmware or
+</I>&gt;<i> &gt; only the needed flash sectors? You should erase the whole flash.
+</I>&gt;<i> &gt; - how is your Flash configuration defined?
+</I>&gt;<i> &gt; - can you add more printfs in the shell_ls function in order to debug
+</I>&gt;<i> &gt; the problem? For example, put a printf after 'pinst =
+</I>&gt;<i> &gt; dm_get_instance_at( dev );' that displays the value of &quot;pinst&quot;. Add
+</I>&gt;<i> &gt; more printfs until you can pinpont the exact area where the fault
+</I>&gt;<i> &gt; happens.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120716/1356d758/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120716/1356d758/attachment-0001.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003711.html">[eLua-dev] WOFS question
+</A></li>
+	<LI>Next message: <A HREF="003712.html">[eLua-dev] WOFS question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3713">[ date ]</a>
+              <a href="thread.html#3713">[ thread ]</a>
+              <a href="subject.html#3713">[ subject ]</a>
+              <a href="author.html#3713">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

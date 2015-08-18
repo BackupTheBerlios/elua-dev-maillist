@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] SD Card appears shows 0 files after running some	files
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20SD%20Card%20appears%20shows%200%20files%20after%20running%20some%0A%09files&In-Reply-To=%3CBANLkTinhrf347Ctchgk5nQMqJ0iXtrfUhw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002578.html">
+   <LINK REL="Next"  HREF="002580.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] SD Card appears shows 0 files after running some	files</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20SD%20Card%20appears%20shows%200%20files%20after%20running%20some%0A%09files&In-Reply-To=%3CBANLkTinhrf347Ctchgk5nQMqJ0iXtrfUhw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] SD Card appears shows 0 files after running some	files">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Jun 23 21:43:56 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002578.html">[eLua-dev] SD Card appears shows 0 files after running some	files
+</A></li>
+        <LI>Next message: <A HREF="002580.html">[eLua-dev] SD Card appears shows 0 files after running some	files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2579">[ date ]</a>
+              <a href="thread.html#2579">[ thread ]</a>
+              <a href="subject.html#2579">[ subject ]</a>
+              <a href="author.html#2579">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Jun 23, 2011 at 10:13 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> On Thu, Jun 23, 2011 at 1:55 PM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Thu, Jun 23, 2011 at 9:37 PM, Ed Hatfield &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ed at edhatfield.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Yes, it happens with other files too.  I think it _might_ be just when
+</I>&gt;<i> &gt;&gt; running files that use the display.
+</I>&gt;<i> &gt;&gt; -Ed
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks. A quick check of the code confirms that while the SPI card is
+</I>&gt;<i> &gt; initialized in SSI_FRF_MOTO_MODE_0 mode the display initialization
+</I>&gt;<i> function
+</I>&gt;<i> &gt; (RIT128x96x4Enable) changes the SSI mode to SSI_FRF_MOTO_MODE_2 (and also
+</I>&gt;<i> &gt; the SPI speed) which is most likely causing this issue. This kind of
+</I>&gt;<i> stuff
+</I>&gt;<i> &gt; happens from time to time when an interface is shared between more than
+</I>&gt;<i> one
+</I>&gt;<i> &gt; device. We could have the 'disp' module perform a 'restore SPI state'
+</I>&gt;<i> &gt; operation on close, but this would still mean that any program that uses
+</I>&gt;<i> the
+</I>&gt;<i> &gt; display won't be able to access the SD/MMC card. The best fix would be a
+</I>&gt;<i> &gt; hardware modification, obviously not applicable here. Apart from that, we
+</I>&gt;<i> &gt; could implement a &quot;SPI dispatcher&quot; in software that receives SPI requests
+</I>&gt;<i> &gt; (read/write) from different eLua modules (SD/MMC and 'disp' in this case)
+</I>&gt;<i> &gt; and knows how to setup the SPI interface (mode+speed) for each module in
+</I>&gt;<i> &gt; part before executing the request. If all the SPI-related code in the
+</I>&gt;<i> system
+</I>&gt;<i> &gt; uses this dispatcher the problem would be fixed. Kind of cumbersome
+</I>&gt;<i> though,
+</I>&gt;<i> &gt; but we might have to do it.
+</I>&gt;<i>
+</I>&gt;<i> As a workaround for this particular condition, we could have our mmcfs
+</I>&gt;<i> layer do one of the following:
+</I>&gt;<i> 1) attempt to reconfigure its communication with the card on failure
+</I>&gt;<i> (I think we want to do this anyways to handle some other situations,
+</I>&gt;<i> however it will usurp the display config and that might stop working
+</I>&gt;<i> if it doesn't have the same config)
+</I>&gt;<i>
+</I>
+This makes the SD/MMC the undisputed master of the SPI interface :) which
+would be a bad idea for applications that need to use both the SD/MMC card
+and the display (or other SPI peripherals, if applicable). This is probably
+not desired most of the time.
+
+
+&gt;<i>
+</I>&gt;<i> 2) on startup mmcfs will try to get the highest data rate it can with
+</I>&gt;<i> the card, so make note of this during config in global state.  every
+</I>&gt;<i> time an operation is subsequently performed read the current
+</I>&gt;<i> configuration (in case it has changed outside), change it back to the
+</I>&gt;<i> mmcfs config, run the operation, then revert the config to what was
+</I>&gt;<i> stored at the start.  For this I think the SPI modules might have to
+</I>&gt;<i> add some methods in order to be able to push and pop the configuration
+</I>&gt;<i> like that.
+</I>&gt;<i>
+</I>
+Sure, this could work. It will be slow as hell but that's the price one has
+to pay for sharing one's hardware :)
+
+
+&gt;<i>
+</I>&gt;<i> 3) keep track of what was configured at startup, revert to this every
+</I>&gt;<i> time mmcfs performs an operation, don't worry about existing state and
+</I>&gt;<i> expect that anyone else using spi will have to do the same.
+</I>&gt;<i>
+</I>
+I blieve that No 2 and 3 above are still better handled by a special module
+(the one I called &quot;SPI dispatcher&quot; in my previous e-mail). With a dispatcher
+you don't need to worry about what other modules would do, you just put your
+life in the hands of the dispatcher (and you know it does its job well). In
+this scenario, all that has to be done is make sure that all modules use the
+dispatcher. We can do this easily by making the platform interface itself
+reffer to the dispatcher. The modules that insist to access the SPI with
+direct I/O operations are on their own :)
+
+
+&gt;<i> Another approach which would actually change the API and would
+</I>&gt;<i> partially combine with one of the above would be to have spi.setup not
+</I>&gt;<i> actually perform configuration, but return a userdata or token that
+</I>&gt;<i> would be passed to spi.write or spi.readwrite so that the
+</I>&gt;<i> configuration would be available every time a read or write is
+</I>&gt;<i> performed?
+</I>&gt;<i>
+</I>
+Absolutely, this should work.
+
+Best,
+Bogdan
+
+&gt;&gt;<i>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Thu, Jun 23, 2011 at 2:17 PM, Bogdan Marinescu
+</I>&gt;<i> &gt;&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; On Thu, Jun 23, 2011 at 9:14 PM, Ed Hatfield &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ed at edhatfield.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Digging into the problem a bit more, I tried both SanDisk 4GB &amp; PNY
+</I>&gt;<i> 4GB
+</I>&gt;<i> &gt;&gt;&gt;&gt; micro SD cards.  All have the same problem. So that's (1) 2GB/FAT16
+</I>&gt;<i> and (2)
+</I>&gt;<i> &gt;&gt;&gt;&gt; 4GB/FAT32 cards.
+</I>&gt;<i> &gt;&gt;&gt;&gt; Here's the text from my terminal session...
+</I>&gt;<i> &gt;&gt;&gt;&gt; eLua# lua /mmc/pong.lua
+</I>&gt;<i> &gt;&gt;&gt;&gt; Press CTRL+Z to exit Lua
+</I>&gt;<i> &gt;&gt;&gt;&gt; eLua# lua /mmc/pong.lua
+</I>&gt;<i> &gt;&gt;&gt;&gt; Press CTRL+Z to exit Lua
+</I>&gt;<i> &gt;&gt;&gt;&gt; lua: cannot open /mmc/pong.lua: No such file or directory
+</I>&gt;<i> &gt;&gt;&gt;&gt; eLua#
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Hmmm. Does it happen when you run something else than pong.lua ?
+</I>&gt;<i> &gt;&gt;&gt; Best,
+</I>&gt;<i> &gt;&gt;&gt; Bogdan
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; -Ed
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; On Thu, Jun 23, 2011 at 12:33 PM, James Snyder &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; Is the procedure you describe able to consistently give you this
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; behavior?
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; Also could you provide any info about the brand/capacity/formatting
+</I>&gt;<i> of
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; the card?
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; --
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; James Snyder
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; Biomedical Engineering
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; Northwestern University
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; ph: (847) 448-0386
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; On Jun 23, 2011, at 4:00, Bogdan Marinescu &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; Hi,
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; On Thu, Jun 23, 2011 at 8:53 AM, Ed Hatfield &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ed at edhatfield.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; I've been trying to track down a strange problem with no success.
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;  When running some applications from the SD card on the LM3S board,
+</I>&gt;<i> the /mmc
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; directory sometimes reports 0 files.
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; An example using some of the LM3S games...After running
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; &quot;/mmc/tetrives.lua&quot;, &quot;ls&quot; shows the files on the SD card.  After
+</I>&gt;<i> running
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; &quot;/mmc/pong.lua&quot;, &quot;ls&quot; shows 0 files on the SD card.
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; Possibly related, it seems that running a lua script from the SD
+</I>&gt;<i> card
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; that attempts to open another file (dofile, io.open) on the SD card
+</I>&gt;<i> will
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; report that the file is not found.  The romfs doesn't seem to have
+</I>&gt;<i> this
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; problem.
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; Any thoughts?
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; The SD/MMC FS is known to cause problems on certain platforms/with
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; certain cards which makes this issue quite tricky to fix. I'm afraid
+</I>&gt;<i> I don't
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; have a good answer for you. If possible, try using another card. Is
+</I>&gt;<i> this
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; doesn't work either we'll have to do some debugging.
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; Best,
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; Bogdan
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110623/638b3ca6/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110623/638b3ca6/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002578.html">[eLua-dev] SD Card appears shows 0 files after running some	files
+</A></li>
+	<LI>Next message: <A HREF="002580.html">[eLua-dev] SD Card appears shows 0 files after running some	files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2579">[ date ]</a>
+              <a href="thread.html#2579">[ thread ]</a>
+              <a href="subject.html#2579">[ subject ]</a>
+              <a href="author.html#2579">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

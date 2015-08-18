@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] about RIT128x96x4ImageDraw
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20about%20RIT128x96x4ImageDraw&In-Reply-To=%3Ccb74783f0906090502r75159be0qdb0577da5ad11446%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000843.html">
+   <LINK REL="Next"  HREF="000845.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] about RIT128x96x4ImageDraw</H1>
+    <B>Pedro Bittencourt</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20about%20RIT128x96x4ImageDraw&In-Reply-To=%3Ccb74783f0906090502r75159be0qdb0577da5ad11446%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] about RIT128x96x4ImageDraw">pedrobittencourt87 at gmail.com
+       </A><BR>
+    <I>Tue Jun  9 14:02:15 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000843.html">[eLua-dev] about RIT128x96x4ImageDraw
+</A></li>
+        <LI>Next message: <A HREF="000845.html">[eLua-dev] Elua-dev Digest, Vol 11, Issue 4
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#844">[ date ]</a>
+              <a href="thread.html#844">[ thread ]</a>
+              <a href="subject.html#844">[ subject ]</a>
+              <a href="author.html#844">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Greetings Sindhu
+
+The C signature of the function is:
+
+extern void RIT128x96x4ImageDraw(const unsigned char *pucImage,
+                                  unsigned long ulX,
+                                  unsigned long ulY,
+                                  unsigned long ulWidth,
+                                  unsigned long ulHeight);
+
+The Lua bind to it is:
+
+static int disp_imageDraw(lua_State *L) {
+ const char *img;
+ unsigned long x;
+ unsigned long y;
+ unsigned long width;
+ unsigned long height;
+
+ img    = luaL_checkstring(L, 1);
+ x      = luaL_checkinteger(L, 2);
+ y      = luaL_checkinteger(L, 3);
+ width  = luaL_checkinteger(L, 4);
+ height = luaL_checkinteger(L, 5);
+ lm3s_disp_imageDraw(( const unsigned char* )img, x, y, width, height);
+ return 0;
+}
+
+That means the Lua function is something like
+disp.imagedraw(string,number,number,number,number)
+
+So, something like disp.imagedraw(string.char(15,15,15,15),0,0,2,2) may draw
+a 4-pixel square (2x2) at coordinate (0,0)
+Obs: Here I'm assuming 15 is as the brighter value in the display grayscale.
+
+--Pedro Bittencourt
+
+
+On Tue, Jun 9, 2009 at 2:44 AM, sai sindhu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">saisindhu.v at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> sir,i want a small sample code using RIT128x96x4ImageDraw to display a
+</I>rectangle.
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> regards
+</I>&gt;<i> sindhu
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090609/b9dda021/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090609/b9dda021/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000843.html">[eLua-dev] about RIT128x96x4ImageDraw
+</A></li>
+	<LI>Next message: <A HREF="000845.html">[eLua-dev] Elua-dev Digest, Vol 11, Issue 4
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#844">[ date ]</a>
+              <a href="thread.html#844">[ thread ]</a>
+              <a href="subject.html#844">[ subject ]</a>
+              <a href="author.html#844">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Nolua project proposal, good idea?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3CAANLkTi%3Dh25%2BCeh7KNj%2BLr5wuyYEaP6W%2BLrFuSLNVuif%3D%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001906.html">
+   <LINK REL="Next"  HREF="001908.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Nolua project proposal, good idea?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3CAANLkTi%3Dh25%2BCeh7KNj%2BLr5wuyYEaP6W%2BLrFuSLNVuif%3D%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Nolua project proposal, good idea?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jan 24 22:24:38 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001906.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+        <LI>Next message: <A HREF="001908.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1907">[ date ]</a>
+              <a href="thread.html#1907">[ thread ]</a>
+              <a href="subject.html#1907">[ subject ]</a>
+              <a href="author.html#1907">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jan 24, 2011 at 7:31 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;&gt;<i> One performance problem with compiling Lua scripts to C using the C API is the
+</I>&gt;&gt;<i> use of C strings. &#160;When C code passes a C string to Lua it must be
+</I>&gt;&gt;<i> internalized before it can be used. &#160;This will slow down all table accesses
+</I>&gt;&gt;<i> where the key is a string. &#160;The only way around that is to create an upvalue
+</I>&gt;&gt;<i> for each const. C string used in the C code. &#160;The last time I checked lua2c
+</I>&gt;&gt;<i> didn't use upvalues for string constants. &#160;Also I think the Lua C API has
+</I>&gt;&gt;<i> more checks (overhead) then the VM core has when executing bytecodes.
+</I>&gt;<i>
+</I>&gt;<i> Thanks for your insight. It always helps to have someone who's
+</I>&gt;<i> actually familiar with the Lua core around.
+</I>
+I had forgotten about the string internalization issue, this is a good point.
+
+&gt;<i>
+</I>&gt;&gt;<i> Some things could be made faster like loop counters (using integers instead of
+</I>&gt;&gt;<i> doubles). &#160;I had started porting my llvm-lua project over to a new slua [1]
+</I>&gt;&gt;<i> project that static compiles lua scripts/bytecode into C code that uses the
+</I>&gt;&gt;<i> same internal VM opcode instead of the Lua C API. &#160;The one big downside of
+</I>&gt;&gt;<i> using this method to compile script is that it requires some changes to the
+</I>&gt;&gt;<i> Lua VM core (not any major changes, just some hooks for static compiled Lua
+</I>&gt;&gt;<i> functions). &#160;slua can static compile a Lua script into a C source file that
+</I>&gt;&gt;<i> looks like a normal Lua C module, which can then be compiled with a standard
+</I>&gt;&gt;<i> C compiler.
+</I>&gt;<i>
+</I>&gt;<i> Thank you very much! This sounds very interesting and useful for eLua.
+</I>&gt;<i> I don't have time right now to look at it but I definitely will.
+</I>
+Using something like LLVM as a static compiler was one thing I was
+thinking of when reading through Patrick's proposal.  I thought of
+mentioning llvm-lua, but from my understanding the ARM support for
+MCUs isn't necessarily usable at this stage, although I believe I saw
+some Thumb-2 support make it into LLVM during this last year.  I
+suspect that one might get the greatest speed benefit by being able to
+statically compile Lua into machine code, perhaps using LLVM as an
+intermediate to get some optimization benefits.
+
+One question about what you're describing though:
+&quot;compiles lua scripts/bytecode into C code that uses the same internal
+VM opcode instead of the Lua C API&quot;
+
+I'm not completely clear on what advantages this has vs just using
+luac to generate a loadable but pre-compiled Lua module?  I could see
+in the case of eLua that we could maybe use this as another way to use
+Lua code and keep things in flash rather than in RAM on the heap.  Are
+there other advantages that aren't occurring to me?  From the readme
+it also sounds like it can generate stand-alone executables, which I
+would presume would allow one to save some space?
+
+In any case, I'll be downloading and checking out slua :-)
+
+Also, to Patrick:
+As Bogdan was saying, we don't wish to discourage you from trying
+things, crazy or not :-)  Sometimes the the only way to find out if
+something is viable is to try.  I believe that there should be some
+solution in the realm of what you're describing that would allow the
+creation of more compact distributions, it might be that another tack
+will get there more effectively.   Also, whether something works or
+not, you learn a lot from digging around in the guts of things like
+Lua, which can help a lot to shape future ideas and approaches.
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001906.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+	<LI>Next message: <A HREF="001908.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1907">[ date ]</a>
+              <a href="thread.html#1907">[ thread ]</a>
+              <a href="subject.html#1907">[ subject ]</a>
+              <a href="author.html#1907">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

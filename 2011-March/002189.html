@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Fwd%3A%20%5BGitHub%5D%20Decrease%20AVR32%20stack%20size%20from%208192%20to%0A%202048%2C%20the%20same%20as%20the%20other%20small%20%5Belua/elua%209a3abb6%5D&In-Reply-To=%3CAANLkTinXGa7e_BoK0fzDzHzP3coTabn3v0YNdn9xRec0%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002186.html">
+   <LINK REL="Next"  HREF="002178.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Fwd%3A%20%5BGitHub%5D%20Decrease%20AVR32%20stack%20size%20from%208192%20to%0A%202048%2C%20the%20same%20as%20the%20other%20small%20%5Belua/elua%209a3abb6%5D&In-Reply-To=%3CAANLkTinXGa7e_BoK0fzDzHzP3coTabn3v0YNdn9xRec0%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Mar 16 08:26:46 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002186.html">[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+</A></li>
+        <LI>Next message: <A HREF="002178.html">[eLua-dev] STM32. elua to open serial port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2189">[ date ]</a>
+              <a href="thread.html#2189">[ thread ]</a>
+              <a href="subject.html#2189">[ subject ]</a>
+              <a href="author.html#2189">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Mar 16, 2011 at 1:23 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> Confirmed. With stack of 2048 or 3072, life.lua either doesn't parse
+</I>&gt;<i> or doesn't run. 4096 seems to work for life.lua
+</I>&gt;<i> However, if it's a recursive descent parser, the amount of C stack
+</I>&gt;<i> that a piece of Lua code could require is potentially infinite.
+</I>&gt;<i>
+</I>&gt;<i> &gt;&gt; I don't really
+</I>&gt;<i> &gt;&gt; understand the need for this much stack especially since I manually
+</I>&gt;<i> moved
+</I>&gt;<i> &gt;&gt; many of the Lua parser internal data structures from heap to stack.
+</I>&gt;<i>
+</I>&gt;<i> From Lua 5 onwards, calls from Lua functions to Lua functions are
+</I>&gt;<i> &quot;stackless&quot;, i.e. do not consume any C stack.  There is just a hard
+</I>&gt;<i> limit of 20000 nested calls to trap infinite recursion.
+</I>&gt;<i> C stack is used in parsing (as you say) and, I gather from the
+</I>&gt;<i> following message, in calls from Lua to C functions that call back
+</I>&gt;<i> into Lua (sort, pcall...) but those should not be infinitely deep.
+</I>&gt;<i>
+</I>
+Exactly, those should not be infinitely deep. So I'm still confused.
+
+<A HREF="http://comments.gmane.org/gmane.comp.lang.lua.general/6376">http://comments.gmane.org/gmane.comp.lang.lua.general/6376</A>
+&gt;<i>
+</I>&gt;<i> &gt;&gt; Sure. But the reason I'm trying to keep it small in other platforms
+</I>&gt;<i> (even
+</I>&gt;<i> &gt;&gt; with the risk of stack overflows) is the lack of memory. Mizar32 doesn't
+</I>&gt;<i> &gt;&gt; have this problem
+</I>&gt;<i>
+</I>&gt;<i> With the speed difference of a factor of two between SRAM+SDRAM and
+</I>&gt;<i> only SDRAM for the Lua heap, I'd say it does.
+</I>&gt;<i>
+</I>
+Of course it depends on your optimization goal. So far it was always space
+in detriment of speed for me.
+
+
+&gt;<i> I confess I am confused by the assertion that simple and newlib can't
+</I>&gt;<i> use multiple memory blocks.
+</I>&gt;<i> Experience using SRAM, SRAM+SDRAM and just SDRAM, with simple and newlib is
+</I>&gt;<i> that
+</I>&gt;<i> - SRAM+SDRAM is markedly faster than just SDRAM: about 10% for 20
+</I>&gt;<i> generations of life.
+</I>&gt;<i> - You can allocate and access 100K of junk in a table when using
+</I>&gt;<i> SRAM+SDRAM in both allocators
+</I>&gt;<i> and inspection of the code seems to show that the newlib allocator in
+</I>&gt;<i> newlib/stubs.c, using newlib _sbrk_r is redefined to return memory
+</I>&gt;<i> from all blocks listed in MEM_{START,END}_ADDRESS, while the simple
+</I>&gt;<i> allocator also does this explicitly in its code.
+</I>&gt;<i>
+</I>
+'newlib' and 'multiple' are actually the same allocator: dlmalloc (
+<A HREF="http://g.oswego.edu/dl/html/malloc.html">http://g.oswego.edu/dl/html/malloc.html</A>). In the early days, when the first
+embedded eLua targets were brought to life, Newlib didn't have a dlmalloc
+version that supported non-contigous memory spaces (or it couldn't be
+compiled to support non-contigious memory spaces, I can't remember the exact
+reason) so I added a newever version of dlmalloc (that didn't have this
+problem) to the source tree. The only problem was that the newer version was
+also larger so I kept it as a separate option. Quite a bit of time have
+passed since then though and by your claims it seems that things have
+changed in Newlib. Thanks! I'll take a look at this when I have some time.
+On a somehow related note, I'll integrate your emBlod patch in the eLua
+mainline as soon as (you guessed it) I have some time, which should me this
+week. Again, sorry for the delay.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110316/464e51b7/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110316/464e51b7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002186.html">[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+</A></li>
+	<LI>Next message: <A HREF="002178.html">[eLua-dev] STM32. elua to open serial port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2189">[ date ]</a>
+              <a href="thread.html#2189">[ thread ]</a>
+              <a href="subject.html#2189">[ subject ]</a>
+              <a href="author.html#2189">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

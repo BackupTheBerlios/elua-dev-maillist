@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAL4-wQqBH5pHatsdcc7o5dZ6nd9P2FOg3j3HGq4OXry-3tMdUQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002682.html">
+   <LINK REL="Next"  HREF="002687.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAL4-wQqBH5pHatsdcc7o5dZ6nd9P2FOg3j3HGq4OXry-3tMdUQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Jul 28 19:01:22 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002682.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002687.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2685">[ date ]</a>
+              <a href="thread.html#2685">[ thread ]</a>
+              <a href="subject.html#2685">[ subject ]</a>
+              <a href="author.html#2685">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 25 July 2011 20:17, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+&gt;<i> On Wed, Jul 20, 2011 at 5:38 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt; - allowing more precise low sampling frequencies, like Etna's
+</I>&gt;&gt;&gt;<i> &gt; seismographs at 27.27Hz, for ADC (and I guess PWM).
+</I>&gt;&gt;&gt;<i> &gt; - getting higher precision for duty cycles
+</I>&gt;&gt;&gt;<i> &gt; - use of floating point
+</I>
+&gt;&gt;&gt;<i> This is the tough question. Generally I would be trying to minimize
+</I>&gt;&gt;&gt;<i> pain for implementation and ugliness in the interface I think.
+</I>&gt;&gt;<i> +1
+</I>
+&gt;<i> 2) Always use the same divisor as passed in.
+</I>
+
+There is already an industry convention for passing floating point
+values as integers. It's called fixed point arithmetic, and that is
+already in use in eLua: time delays are fixed-point with radix 1000000
+(microseconds), duty cycles are fixed point with radix 100.  The
+easiest-to-understand interface would be to allow people to specify
+the radix of the fixed-point values they are passing, and receive
+values back in that same radix they asked for.
+
+In eLua we have three separate usage cases of arbitrary numbers being
+passed/returned as integers:
+1. high frequencies for clocks, used in PWM clock, timer clock (also
+used in ADC), maybe also for I2C and SPI clocks and (even more maybe)
+UART baud rates.
+2. low frequencies for ADC sampling rates and PWM frequencies
+3. duty cycles for PWM
+
+Let's look at these:
+
+The high frequencies already seem precise enough to me for our
+purposes, since they're in the 100,000s and 1,000,000, already giving
+a precision of 1 part in 100.000 except for baud rates, but I've only
+ever seen integer baud rates, and with a minimum of 110. Checking the
+actual baud rate that was set and caring about whether it is  less
+than 0.5% different is Book 3 stuff, not really a design goal for eLua
+if it will make things more complicated.
+
+The resolution of the clock that the low frequencies depend on is
+already returned by their setclock() (or setup()) functions, which
+return the actual frequency set. This may be very different from the
+one requested, often a power-of-two divisor of some fixed system clock
+rate, still in the 100,000s or 1,000,000s range.
+
+[[[
+As a separate issue, I notice that there is a function in the ADC
+module, also called setclock, that does something different from the
+other setclock() functions.
+i2c, spi and tmr.setclock() all set their own underlying hardware
+independently of each other, and they all have a setclock() function
+that works the same way as the others (nice!).
+adc.setclock() is different: it sets a lower frequency sampling rate
+based on a number of cycles of a chosen timer. The user can find the
+real frequency of the timer in question, since they can called
+tmr.setclock() (or tmr.getclock()) on the timer they are associating
+with the adc channel.
+I suggest adc.setclock() be renamed to something different, since it's
+a different function with different parameters from the other
+setclock() functions. In fact, it's more similar in what it does to
+the other modules' *.setup() functions.
+]]]
+
+In the last case, the duty cycles' true precision is the period of one
+cycle of the PWM waveform expressed in PWM clock cycles. That
+information is available to the user through pwm.setclock() and
+getclock() interfaces.
+However, the underlying granularity of the available duty cycles as a
+fraction of the PWM wave period changes whenever you change the PWM
+frequency.
+Users who want to get the maximum precision from their PWM duty cycle
+will need to do some interesting math coding to achieve this, but it
+should be possible. The Lua code to do that would be good as an
+advanced example in the eLua manual. Such power users would need to
+figure out the period in clock cycles of the PWM at the actual
+frequency that was set, then set the duty cycle with a radix that is
+equal to that. That is awkward in the current pwm.setup() function,
+since it takes duty cycle and frequency at the same time, so they'd
+have to call it twice, once with the wrong duty cycle and once with
+the right one once you've found out the actual PWM frequency.
+
+Furthermore, on AVR32, being told to set both the frequency and duty
+cycle causes a glitch in the output because the stupid hardware
+interface can only set either the frequency or the duty cycle once per
+output cycle so you get one cycle either at the new frequency and old
+duty cycle or at the old frequency with the new duty cycle.
+
+Worse yet, pwm.setup(id, frequency, duty_cycle) takes two parameters
+both of which are in the proposed fixed-point format, which is ugly.
+Even in the naive case where you get higher precision by giving a duty
+cycle radix of 1000 or 1000000, you'd need to supply a bogus extra
+parameter for the undesired precision of the PWM output frequency.
+
+These are three arguments in favour of splitting pwm.setup() into two
+functions like pwm.setfreq() and pwm.setduty().  A fourth is that all
+the other modules' setup() functions are usually called once at start
+of program, then the output is varied as the program runs using
+module-specific functions, whereas the current pwm.setup() is used
+repeatedly while the programming is running to vary the output.
+
+&gt;<i> 3) The divisor returned is determined by the low-level code in order
+</I>&gt;<i> to provide best accuracy in conveying the frequency selected given the
+</I>&gt;<i> available variable size for storing the values.
+</I>
+Trying to select the most precise pair of integers to represent an
+arbitrary value is actually quite a difficult math-theoretical
+problem, not to mention the difficullty in the user code that would be
+necessary to correctly handle them.
+
+&gt;<i> As a potential additional option, 1) could be revised such that if no
+</I>&gt;<i> divisor is passed, return divisor is always 1, but if a 1 is passed
+</I>&gt;<i> than the divisor is allowed to float as in 3) above.
+</I>
+We already have the first part, and the defaults are 100 for the duty
+cycle, 1,000,000 for delays and 1 for frequencies.  I hink the second
+idea is a nightmare for us and for the users.
+
+&gt;<i> provide consistency with current behavior and maximum potential return
+</I>&gt;<i> value accuracy.
+</I>
+I don't value euther of these. On the one hand I'm not afraid to
+change the platform (or the Lua) interfaces if that gives a worthwhile
+improvement in what you can do or how easy it is to understand, and
+the current interface did not consider the practical problems that we
+are trying to improve now.
+  I seem to remember someone saying that, before we release eLua 1.0,
+maintaining backward compatability is not a problem, especially given
+the small user base.  Of course, we don't want to break things for no
+significant gain.
+  I don't think total laboratory-standard mathematical accuracy is as
+important a degisn goal for eLua as being simple to use and having an
+Lua interface that is pleasant to use and easy to understand.  It's a
+design tradeoff, since lab accuracy requires a different set of
+interfaces than one that is easy-to-use but adequate for most
+purposes.
+  Already, moving to optional variable radix fixed point for some
+values is a step towards higher accuracy and away from easy-to-use,
+but seems to bring some advantages.
+
+&gt;<i> As far as rethinking the API is concerned, I think either way we come
+</I>&gt;<i> back to an issue of fractional frequencies with integer expressions
+</I>&gt;<i> problem, unless the integer builds are to have different functionality
+</I>&gt;<i> than the floating point builds.
+</I>
+That was my first idea for low frequencies: optional FP, but I think
+your optional divisor (or radix in fixed-point math language) solution
+may be a better one.
+
+     M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002682.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002687.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2685">[ date ]</a>
+              <a href="thread.html#2685">[ thread ]</a>
+              <a href="subject.html#2685">[ subject ]</a>
+              <a href="author.html#2685">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

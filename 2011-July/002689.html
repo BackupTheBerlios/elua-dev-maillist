@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LTR compatible wrappers with SWIG for eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LTR%20compatible%20wrappers%20with%20SWIG%20for%20eLua&In-Reply-To=%3C1312036096331-6636280.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002688.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LTR compatible wrappers with SWIG for eLua</H1>
+    <B>raman</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LTR%20compatible%20wrappers%20with%20SWIG%20for%20eLua&In-Reply-To=%3C1312036096331-6636280.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] LTR compatible wrappers with SWIG for eLua">ramangopalan at gmail.com
+       </A><BR>
+    <I>Sat Jul 30 16:28:16 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002688.html">[eLua-dev] NXP LPC2468 Network Protocol
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2689">[ date ]</a>
+              <a href="thread.html#2689">[ thread ]</a>
+              <a href="subject.html#2689">[ subject ]</a>
+              <a href="author.html#2689">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hello,
+
+I have introduced two new language modules in SWIG&gt; elua and eluac. They can
+be used for automatic LTR compatible wrapper code generation for eLua which
+could
+be used for testing and prototyping of new eLua modules. For now, I have put
+the 
+entire source tree on sourceforge.  It's an unofficial SWIG-2.0.4 release
+with support 
+for eLua. (<A HREF="http://sourceforge.net/projects/eluaswig/files/">http://sourceforge.net/projects/eluaswig/files/</A>)
+
+Working with elua and eluac is the same as working with the SWIG Lua module.
+No additional information is required. I have written a small wiki post on
+how -elua
+is different from -eluac. (<A HREF="http://sourceforge.net/p/eluaswig/wiki/Home/">http://sourceforge.net/p/eluaswig/wiki/Home/</A>).
+
+Please follow the instructions on the 'README' file to install eluaswig from
+source.
+My system configuration: Linux raman 2.6.39-ARCH #1 SMP PREEMPT GNU/Linux
+I use a Stellaris ARM Cortex-M3 luminary LM3S8962 as my standard board. All
+my 
+wrapper code tests have worked fine. 
+
+This version does not support compatibility with both optram = 0 and optram
+= 1
+(It is not very hard to get this done though). If we don't use LTR, we can
+always use
+-lua with SWIG for eLua.
+
+Once you get eluaswig installed, invoke SWIG with -elua/c switch from your
+favourite 
+terminal and supply the SWIG interface file (extension '.i').
+
+The rotable we are interested in is 'swig_commands[]'. By default, -elua or
+-eluac will 
+put all the macro symbolic named constants (Eg: #define PI 3.14) and enum
+values
+in a rotable called 'swig_constants[]'
+
+A sample wrapper file:
+const LUA_REG_TYPE swig_commands[] = {
+    {LSTRKEY(&quot;new_int_array&quot;), LFUNCVAL(_wrap_new_int_array)},
+    {LSTRKEY(&quot;delete_int_array&quot;), LFUNCVAL(_wrap_delete_int_array)},
+    {LSTRKEY(&quot;int_array_getitem&quot;), LFUNCVAL(_wrap_int_array_getitem)},
+     ....
+};
+
+const LUA_REG_TYPE mt[] = {
+    {LSTRKEY(&quot;__index&quot;), LFUNCVAL(SWIG_Lua_module_get)},
+    {LSTRKEY(&quot;__newindex&quot;), LFUNCVAL(SWIG_Lua_module_set)},
+    {LSTRKEY(&quot;.get&quot;), LROVAL(dot_get)},
+    {LSTRKEY(&quot;.set&quot;), LROVAL(dot_set)},
+    {LNILKEY, LNILVAL}
+};
+
+const LUA_REG_TYPE swig_constants[] = {
+    {LSTRKEY(&quot;PI&quot;), LNUMVAL(3.14)},
+    {LSTRKEY(&quot;STRING&quot;), LSTRVAL(&quot;Free as in freedom, GNU-GPL V3&quot;)},
+    {LSTRKEY(&quot;C&quot;), LNUMVAL(C)},
+    {LSTRKEY(&quot;CPP&quot;), LNUMVAL(CPP)},
+    ...
+};
+
+Note that mt[] is only generated with the -elua switch. -eluac puts
+everything
+in one rotable, swig_commands.
+
+The wrapper introduces a new macro LSTRVAL, (just like LNUMVAL or LFUNCVAL)
+to 
+handle macros like #define STR &quot;Free as in freedom&quot;. To access such
+constants from 
+eLua, we can write: print(mod.const.PI) -- Will print 3.14. ('mod' is the
+module name)
+
+Please read the eLua/c section in the TODO file in the source directory for
+known 
+issues.
+
+I can write a detailed documentation for hacking around the language modules
+if 
+people are interested.
+
+Please try to get the source installed and test it out. Please give me
+suggestions on
+how to take this forward.
+
+Awaiting your response,
+
+Raman
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6636280.html">http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6636280.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002688.html">[eLua-dev] NXP LPC2468 Network Protocol
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2689">[ date ]</a>
+              <a href="thread.html#2689">[ thread ]</a>
+              <a href="subject.html#2689">[ subject ]</a>
+              <a href="author.html#2689">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua and yielding with lua_yield() function
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl38Dhed3c931f9ef607cfbf6455f%2C%0A%09jbsnyder%40fanplastic.org%2C%2037ACAED2-B590-4C7B-9354-85C%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000759.html">
+   <LINK REL="Next"  HREF="000763.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua and yielding with lua_yield() function</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl38Dhed3c931f9ef607cfbf6455f%2C%0A%09jbsnyder%40fanplastic.org%2C%2037ACAED2-B590-4C7B-9354-85C%3E"
+       TITLE="[eLua-dev] eLua and yielding with lua_yield() function">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Apr  9 20:43:40 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000759.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+        <LI>Next message: <A HREF="000763.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#762">[ date ]</a>
+              <a href="thread.html#762">[ thread ]</a>
+              <a href="subject.html#762">[ subject ]</a>
+              <a href="author.html#762">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Apr 9, 2009, at 11:42 AM, Mike Thompson wrote:
+
+&gt;<i> James Snyder wrote:
+</I>&gt;&gt;<i> I suppose this again brings up the whole lua interrupt concept, but  
+</I>&gt;&gt;<i> I'm wondering how this currently could work with hundreds of events.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I assume that you still need some kind of dispatcher like the  
+</I>&gt;&gt;<i> following: <A HREF="http://www.lua.org/pil/9.4.html">http://www.lua.org/pil/9.4.html</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Is the advantage one might get from something like coco a reduction  
+</I>&gt;&gt;<i> in overhead and bookkeeping, since you can resume something on the  
+</I>&gt;&gt;<i> C side rather than resuming something on the Lua side that calls  
+</I>&gt;&gt;<i> something in C?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I suppose you could replace the Lua dispatcher with some sort of  
+</I>&gt;&gt;<i> event coroutine that runs on the C side, and gives you an event  
+</I>&gt;&gt;<i> type or message if something has happened that is registered to be  
+</I>&gt;&gt;<i> reported.  I can see that sort of thing being fairly useful with a  
+</I>&gt;&gt;<i> few other bits to handle what to do with the messages in lua.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Am I off-track here?
+</I>&gt;<i>
+</I>&gt;<i> You're not off track at all.  I'm not yet familiar enough with Lua to
+</I>&gt;<i> understand what exactly is practical, but my thinking is creating a
+</I>&gt;<i> central scheduler/dispatcher written in C for efficiency and  
+</I>&gt;<i> compactness
+</I>&gt;<i> of implementation.  I'll then have a Lua component that initializes  
+</I>&gt;<i> and
+</I>&gt;<i> registers two pieces of code for each event handler within the  
+</I>&gt;<i> application.
+</I>&gt;<i>
+</I>&gt;<i> The first piece is a Lua/C function that defines a condition for  
+</I>&gt;<i> when an
+</I>&gt;<i> event should be handled.  Examples of event conditions could be a  
+</I>&gt;<i> button
+</I>&gt;<i> press, the distance sensor indicating an object at a specific  
+</I>&gt;<i> distance,
+</I>&gt;<i> the light sensor detecting light or dark, a timer going off, a  
+</I>&gt;<i> packet of
+</I>&gt;<i> data received over the USB port or virtual events generated from other
+</I>&gt;<i> pieces of code.  Certain conditions can be handled entirely within C
+</I>&gt;<i> such as system level events and timers while other will need the
+</I>&gt;<i> snippets of Lua code to handle more complex conditions such those
+</I>&gt;<i> involving math expressions being processed.
+</I>&gt;<i>
+</I>&gt;<i> The second piece is the the actual event handler which is really  
+</I>&gt;<i> just a
+</I>&gt;<i> coroutine within Lua.  Once a condition for an event is detected (i.e.
+</I>&gt;<i> the code above returns non-nil) the scheduler then schedules the
+</I>&gt;<i> co-routine to run.  I'll make provisions so that loops created within
+</I>&gt;<i> the code will yield appropriately so as not to drown out all other  
+</I>&gt;<i> event
+</I>&gt;<i> handling if a long loop is created.
+</I>&gt;<i>
+</I>&gt;<i> The scheduler is in a loop waiting for event handling code to yield  
+</I>&gt;<i> and
+</I>&gt;<i> then serially checking the conditions to see if other event handlers  
+</I>&gt;<i> are
+</I>&gt;<i> ready to be resumed.
+</I>
+I see you've thought this through :-)  I think this would be excellent  
+to have as a general facility that's easy to hook into.  In recent  
+weeks I've been trying to think about how to couple things like the  
+analog conversions with coroutines to make things more efficient than  
+just constantly polling from the lua side.
+
+I think, also, that Bogdan may be right about it being not hugely  
+painful to get Coco working.  While it can use POSIX facilities for  
+context switching, it looks like there are a number of other ways to  
+do that including inline assembler and setjmp, so that may be fairly  
+doable too.
+
+&gt;<i> My ultimate goal is to create a children's programming IDE for Lego
+</I>&gt;<i> robotics (and other robots) that is very much inspired by Scratch  
+</I>&gt;<i> which
+</I>&gt;<i> is created by the Life Long Kindergarten group at MIT.  Kids  
+</I>&gt;<i> graphically
+</I>&gt;<i> assemble their programs in the IDE (so they are really never exposed
+</I>&gt;<i> directly to the underlying Lua language) and then the IDE converts the
+</I>&gt;<i> GUI elements to Lua algorithmically, compiles it to bytecode and then
+</I>&gt;<i> downloads the code to the robot for execution.  I'm fairly certain  
+</I>&gt;<i> that
+</I>&gt;<i> with some care and imagination, I can create something much more
+</I>&gt;<i> friendly for kids than Lego's own NXT-G environment.  To achieve  
+</I>&gt;<i> this I
+</I>&gt;<i> need a bytecode interpreter running on the NXT and so far Lua seems to
+</I>&gt;<i> fit the bill nicely.  My alternative is Java bytecode which seems
+</I>&gt;<i> bloated compared to my experience so far with the lightness of Lua.
+</I>&gt;<i>
+</I>&gt;<i> My challenge is preserving Scratch-like programming semantics as  
+</I>&gt;<i> much as
+</I>&gt;<i> possible (i.e. keeping it highly event driven) yet still produce code
+</I>&gt;<i> that will execute well on a very low power Arm processor.
+</I>&gt;<i>
+</I>&gt;<i> Because the kids aren't programming directly in Lua I'll have control
+</I>&gt;<i> over the resulting code such as making sure that looping constructs
+</I>&gt;<i> appropriately call yield operations to allow other code to run.  Some
+</I>&gt;<i> aspects of this might be a challenge, but I have a feeling Lua's
+</I>&gt;<i> cooperative threading will be MUCH easier to deal with than if I had
+</I>&gt;<i> actual preemptive threads to deal with.
+</I>
+They certainly have downsides, but it does, by default, steer one away  
+from a lot of potential issues with making things thread-safe.
+
+It would be somewhat nice to have green threads in Lua, although I  
+guess you can sort of do that with Coco or with the debug hooks.
+
+Here are a few interesting discussions that are related:
+<A HREF="http://lists.luaforge.net/pipermail/kepler-project/2008-October/003004.html">http://lists.luaforge.net/pipermail/kepler-project/2008-October/003004.html</A>
+<A HREF="http://lua-users.org/lists/lua-l/2008-07/msg00666.html">http://lua-users.org/lists/lua-l/2008-07/msg00666.html</A>
+
+&gt;<i>
+</I>&gt;<i> As much fun as I'm having with embedded Lua, it's really just a  
+</I>&gt;<i> piece of
+</I>&gt;<i> the overall application I'm hoping to create.
+</I>
+Very neat project.  I don't have any NXT devices, but I'll be  
+interested in watching where this goes.
+
+It should also give us some interesting information about how eLua  
+works for these usage styles :-)
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090409/717ca6b6/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090409/717ca6b6/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000759.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+	<LI>Next message: <A HREF="000763.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#762">[ date ]</a>
+              <a href="thread.html#762">[ thread ]</a>
+              <a href="subject.html#762">[ subject ]</a>
+              <a href="author.html#762">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

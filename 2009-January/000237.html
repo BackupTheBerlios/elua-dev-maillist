@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Preprocessor Stuff
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Preprocessor%20Stuff&In-Reply-To=%3C81fbe47d0901062357w48c8e96ej437d7941a7fd5528%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000236.html">
+   <LINK REL="Next"  HREF="000238.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Preprocessor Stuff</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Preprocessor%20Stuff&In-Reply-To=%3C81fbe47d0901062357w48c8e96ej437d7941a7fd5528%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Preprocessor Stuff">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Jan  7 08:57:04 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000236.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+        <LI>Next message: <A HREF="000238.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#237">[ date ]</a>
+              <a href="thread.html#237">[ thread ]</a>
+              <a href="subject.html#237">[ subject ]</a>
+              <a href="author.html#237">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>...and by the way, this isn't completely true :) When I did -DAVR32 for the
+AVR32 fix, I ran /rom/info.lua, and I had the surprise to learn that I'm
+running on the platform called &quot;1&quot; instead of AVR32 :) (this is because of
+the way the PD module is built). You should use a descriptive name that is
+not the CPU or the platform name. The current fix for this (which I didn't
+have a chance to commit yet) is to do -D*FOR*AVR32 instead, and test for
+this.
+
+Best,
+Bogdan
+
+On Wed, Jan 7, 2009 at 9:54 AM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+&gt;<i> wrote:
+</I>
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> This is a mistake I keep making with the C preprocessor, I'll fix it as
+</I>&gt;<i> soon as possible. We need to define macros like LM3S8962 and test #ifdef
+</I>&gt;<i> LM3S8962 instead.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jan 7, 2009 at 12:58 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi -
+</I>&gt;&gt;<i> I've got the toolchain up and running on a Mac, most of the instructions
+</I>&gt;&gt;<i> worked fine for me with the one exception that (unlike on a Linux machine
+</I>&gt;&gt;<i> I'd tried before) for the steps where an autoconf was called for, doing so
+</I>&gt;&gt;<i> actually didn't go quite right and resulted in the configure scripts not
+</I>&gt;&gt;<i> recognizing many of the options being enabled.  Luckily, things seem to
+</I>&gt;&gt;<i> build OK with the out-of-the-box configure scripts with the latest versions
+</I>&gt;&gt;<i> of the libraries required.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> My real reason for making this post, however, is related to the build
+</I>&gt;&gt;<i> process and in particular how things are handled by the preprocessor.  I was
+</I>&gt;&gt;<i> trying to make a patch for the lm3s platform files so that another type of
+</I>&gt;&gt;<i> display (the OSRAM type OLED display, which I later realized isn't actually
+</I>&gt;&gt;<i> on my Rev C LM3S6965) could be used.  When I was trying to use some if
+</I>&gt;&gt;<i> blocks so that display support could switch between the RIT and OSRAM types,
+</I>&gt;&gt;<i> I noticed that the if statements didn't seem to work as expected. with
+</I>&gt;&gt;<i> ELUA_CPU and ELUA_BOARD for example.  An easy way to demonstrate this is to
+</I>&gt;&gt;<i> run the preprocessor on platform.c in the lm3s platform folder.  In advance,
+</I>&gt;&gt;<i> I'll point out that the following lines are found within:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> #if ELUA_CPU == LM3S8962
+</I>&gt;&gt;<i>   #define UARTS_COUNT 2
+</I>&gt;&gt;<i> #elif ELUA_CPU == LM3S6965
+</I>&gt;&gt;<i>   #define UARTS_COUNT 3
+</I>&gt;&gt;<i> #endif
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> and as well, look at the function uarts_init(), which contains the line:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> for( i = 0; i &lt; UARTS_COUNT; i ++ )
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If I run the preprocessor with -DELUA_CPU= LM3S6965  I would expect the
+</I>&gt;&gt;<i> UARTS_COUNT in the line from uarts_init() to be replaced with the number 3,
+</I>&gt;&gt;<i> but this is not what I get.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If I run the following: arm-elf-cpp -DELUA_CPU=LM3S6965 platform.c | less
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> and then locate the same for loop, instead I see:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> for( i = 0; i &lt; 2; i ++ )
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Is this handled correctly with a different compiler preprocessor?  I'm
+</I>&gt;&gt;<i> using GCC 4.3.2, which I compiled per the instructions on the eLua site.
+</I>&gt;&gt;<i>  Having looked at the documentation for the gcc preprocessor, I don't think
+</I>&gt;&gt;<i> this would be expected to work either.  using the gcc -D flags with numbers
+</I>&gt;&gt;<i> definitely works, but these tokens for the different platforms doesn't, at
+</I>&gt;&gt;<i> least for me.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I would make a patch for some sort of fix, but I figured I'd touch base
+</I>&gt;&gt;<i> first.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Love the project, and it runs great on my LM3S6965 :-)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> P.S. I was also really really happy to see an ls command added since the
+</I>&gt;&gt;<i> 0.5 release.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>   --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> ph: (847) 644-2322
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090107/e6b0a105/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090107/e6b0a105/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000236.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+	<LI>Next message: <A HREF="000238.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#237">[ date ]</a>
+              <a href="thread.html#237">[ thread ]</a>
+              <a href="subject.html#237">[ subject ]</a>
+              <a href="author.html#237">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

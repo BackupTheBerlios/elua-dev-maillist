@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 Port of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Port%20of%20eLua&In-Reply-To=%3CCAL4-wQprLQbgfQgAYwJAyLEOx%3DNJQch52VNCrA_J_2mz_CM01g%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003300.html">
+   <LINK REL="Next"  HREF="003302.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 Port of eLua</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Port%20of%20eLua&In-Reply-To=%3CCAL4-wQprLQbgfQgAYwJAyLEOx%3DNJQch52VNCrA_J_2mz_CM01g%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32 Port of eLua">martinwguy at gmail.com
+       </A><BR>
+    <I>Wed Feb 15 14:28:00 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003300.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+        <LI>Next message: <A HREF="003302.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3301">[ date ]</a>
+              <a href="thread.html#3301">[ thread ]</a>
+              <a href="subject.html#3301">[ subject ]</a>
+              <a href="author.html#3301">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 15 February 2012 10:02, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Currently, only the AVR32 port has an official maintainer.
+</I>
+Currently, only the AVR32 port has a maintainer.
+
+&gt;&gt;<i> I'd like to clean it up, so it
+</I>&gt;&gt;<i> is more like the AVR32 port. &#160;Basically break out the differences
+</I>&gt;&gt;<i> between the chips and boards into separate files.
+</I>
+For AVR32, someone did that by creating
+src/platform/avr32/EVK1100/evk1100.h
+src/platform/avr32/EVK1100/evk1100_conf.h
+src/platform/avr32/EVK1101/evk1101.h
+src/platform/avr32/EVK1101/evk1101_conf.h
+src/platform/avr32/MIZAR32/mizar32.h
+src/platform/avr32/MIZAR32/mizar32_conf.h
+
+then
+src/platform/avr32/board.h includes .../SOMETHING/something.h
+and
+src/platform/avr32.platform_conf.h includes .../SOMETHING/something_conf.h
+
+In practice the something.h are copies of one of the manufacturer's
+SDK headers and the something_conf.h are all eLua-dependent
+configurable items, and &quot;board.h&quot; is not architecture-wide, but is
+only present in the two Atmel ports with no similarity between the
+files' contents.
+
+the stm32 port instead has some other similar idea, with all the files
+in the same root (I wish the avr32 person has done this too. The
+capitalised directories just make for extra typing)
+
+So basically, the platform-independent files include
+src/platform/*/platform_conf.h
+and below that you can do whatever seems best to you, according to
+what your SDK suggests
+
+&gt;&gt;<i> On a related note, what is conf.lua in the port? &#160;It looks like
+</I>&gt;&gt;<i> conf.py for SCons.
+</I>&gt;<i>
+</I>&gt;<i> eLua has an (yet still mostly unnoficial) Lua based build system. For
+</I>&gt;<i> this build system, conf.lua does what conf.py does for SConstruct.
+</I>
+So you have to remember that any change you make to conf.py also has
+to be made in conf.lua. Or vice versa. The command-line syntax and
+functionality for both should be the same, except where people have
+modified one but not the other, introducing build system-dependent
+bugs, and the Lua one doesn't support parallel builds so the compile
+time is two, four or eight times longer, depending how many CPUs your
+hardware has.  I haven't noticed any other differences in
+functionality.
+
+   M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003300.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+	<LI>Next message: <A HREF="003302.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3301">[ date ]</a>
+              <a href="thread.html#3301">[ thread ]</a>
+              <a href="subject.html#3301">[ subject ]</a>
+              <a href="author.html#3301">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

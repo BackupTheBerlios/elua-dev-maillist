@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Keplerizing eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Keplerizing%20eLua&In-Reply-To=%3C92ab989c0902181014q18f1798fv4243871613838c91%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000531.html">
+   <LINK REL="Next"  HREF="000535.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Keplerizing eLua</H1>
+    <B>Andre Carregal</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Keplerizing%20eLua&In-Reply-To=%3C92ab989c0902181014q18f1798fv4243871613838c91%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Keplerizing eLua">carregal at pobox.com
+       </A><BR>
+    <I>Wed Feb 18 19:14:38 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000531.html">[eLua-dev] Keplerizing eLua
+</A></li>
+        <LI>Next message: <A HREF="000535.html">[eLua-dev] Keplerizing eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#533">[ date ]</a>
+              <a href="thread.html#533">[ thread ]</a>
+              <a href="subject.html#533">[ subject ]</a>
+              <a href="author.html#533">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>(long mail ahead...)
+
+On Wed, Feb 18, 2009 at 1:44 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+&gt;<i>    Kepler (www.keplerproject.org) is &quot;the Lua way of doing web&quot; :) (it is
+</I>&gt;<i> actually one of them but afaik, by far the most used, most mature and most
+</I>&gt;<i> complete web framework for Lua).
+</I>
+I wouldn't claim that so fast... let's see how things go first... :o)
+
+&gt;<i>    We do not plan to embedd a full fancy web server like Xavante (Kepler's
+</I>&gt;<i> web srv), even with it's incredibly small footprint. Bogdan's
+</I>&gt;<i> concept-proof-yet-to-be-enhanced lhttpd web server offers all I needed here
+</I>&gt;<i> for initial demos and real world small aplications.
+</I>
+I don't think Xavante would be a good option for eLua. Although
+Xavante has proved to be an excellent web server for certain
+applications, eLua needs something more &quot;fire and forget&quot; and Xavante
+needs some caring if it is supposed to be left running for long
+periods.
+
+The thing is that Xavante uses coroutines to allow multitasking
+without needing separate threads. While this is great for a developer
+setup and embedding into applications, it may not be the best solution
+for devices that need to be on &quot;forever&quot; for example. If one of the
+requests hang, the other also get stuck. Not a good scenario if you
+can't reset easily the server... :o)
+
+If you have the ability to run threads, then any C level webserver
+would probably be a better fit. The other solution would be to set a
+watchdog for Xavante, but I really would not recommend that for eLua.
+
+Note that the choice of web server has zero impact in the upper layers
+due to a decoupling layer called WSAPI. Once you have WSAPI
+implemented for a certain web server or launching method (CGI, FastCGI
+etc) you are basically done. Everything else depends mostly on WSAPI
+to run.
+
+Implementing WSAPI for a webserver is usually quite easy. WSAPI is
+basically a protocol that normalizes how to read data from the
+webserver (the request) and how to send it back (the response). More
+details on WSAPI can be found here:
+<A HREF="http://wsapi.luaforge.net/">http://wsapi.luaforge.net/</A>
+
+Once you have WSAPI in place, you actually can start developing web
+applications using wsapi.request and wsapi.response. While this is
+considered &quot;low level&quot;, it could be enough for most of eLua needs.
+
+If you need something higher level, there are two imediate options.
+The first would be using CGILua, a PHP like library that handles Lua
+Pages and Lua Scripts:
+<A HREF="http://www.keplerproject.org/cgilua/">http://www.keplerproject.org/cgilua/</A>
+
+The other would be using Orbit, a MVC based library that offers some
+very nice abstractions:
+<A HREF="http://orbit.luaforge.net/">http://orbit.luaforge.net/</A>
+
+Note that there is no easy answer as which would be better for every
+case. One simple solution would be to integrate WSAPI with the
+embedded web server and then let CGILua and Orbit as options for those
+who needed it.
+
+Once you have one of the page generator solutions in place, you can
+start using higher level applications for them. One excellent
+candidate would be Sputnik, that uses only WSAPI.
+
+Sputnik is usually seen as just another wiki, but it is way more than
+that. It is basically an hierarchical node store with versioning. If
+that is truly useful for eLua applications or not is another
+question... :o)
+
+Sorry if the mail got too long.
+
+Andr&#233;
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000531.html">[eLua-dev] Keplerizing eLua
+</A></li>
+	<LI>Next message: <A HREF="000535.html">[eLua-dev] Keplerizing eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#533">[ date ]</a>
+              <a href="thread.html#533">[ thread ]</a>
+              <a href="subject.html#533">[ subject ]</a>
+              <a href="author.html#533">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

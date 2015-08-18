@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Pure Lua multitasking with eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2014-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Pure%20Lua%20multitasking%20with%20eLua&In-Reply-To=%3C52CD7BCE.7070805%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004372.html">
+   <LINK REL="Next"  HREF="004371.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Pure Lua multitasking with eLua</H1>
+    <B>Jorge</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Pure%20Lua%20multitasking%20with%20eLua&In-Reply-To=%3C52CD7BCE.7070805%40gmail.com%3E"
+       TITLE="[eLua-dev] Pure Lua multitasking with eLua">xxopxe at gmail.com
+       </A><BR>
+    <I>Wed Jan  8 17:24:46 CET 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004372.html">[eLua-dev] Pure Lua multitasking with eLua
+</A></li>
+        <LI>Next message: <A HREF="004371.html">[eLua-dev] Pure Lua multitasking with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4374">[ date ]</a>
+              <a href="thread.html#4374">[ thread ]</a>
+              <a href="subject.html#4374">[ subject ]</a>
+              <a href="author.html#4374">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 01/08/2014 01:33 PM, Stefan Heinzmann wrote:
+&gt;<i> Yes, I think I understand how your proposal is supposed to work. The
+</I>&gt;<i> problem I'm having with it is that when nothing happens, the timeout
+</I>&gt;<i> will eventually wake up the lua loop, only to find that there's nothing
+</I>&gt;<i> to do, which consumes energy needlessly. In some embedded systems, this
+</I>&gt;<i> can be significant.
+</I>
+The purpose of the timeout is to wake-up tasks that went to sleep for a 
+set amount of time (like the blinker task in the test.lua), or are 
+waiting for signals with a timeout set. The call to sched.wait() returns 
+with a value that is the time you have available for your task before 
+some other task needs to do something. So if you have some other task 
+busy-looping this timeout value will be 0, but it they are idle 
+(sleeping or waiting) the timeout will be a positive number you can 
+safely use for whatever you want, for example go to low power mode.
+
+&gt;<i> I think there must be a
+</I>&gt;<i> better way. The interrupt handler needs a way to make the lua code
+</I>&gt;<i> handle the signal immediately after the interrupt handler returns.
+</I>
+That is achieve by waking the lua environment, which will continue on 
+running and proceed to pick the data and emit signals.
+
+&gt;<i> I acknowledge that you may not be keen on coding this in C, as you want
+</I>&gt;<i> to work in lua. Furthermore, the way how an interrupt handler interacts
+</I>&gt;<i> with the rest of the code is quite system dependent.
+</I>
+That's what my proposal does: when there are no lumen tasks to run (they 
+all are waiting for something), go to sleep mode, and when that sleep is 
+interrupted, immediately pick from lua and signal whatever happened. 
+Perhaps a more expanded pseudocode can explain it better:
+
+sched.run(function ()
+   while true do
+     local _, timeout = sched.wait()
+
+     if timeout==0 then
+       -- some task is busy-looping, so must return straight away:
+       -- read the data of interest, and emit sched.signal() as needed
+     else
+       -- set a timer to wake me timeout in the future
+       -- enable interrupts (timer and anything needed)
+       -- go to sleep (low power mode)
+       -- i was waken!
+       if not waken_on_timeout then -- there was a data interrupt
+         -- read the data of interest, and emit sched.signal() as needed
+       end
+     end
+
+   end
+end)
+
+
+If this works, it will be great! :)
+
+Jorge
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004372.html">[eLua-dev] Pure Lua multitasking with eLua
+</A></li>
+	<LI>Next message: <A HREF="004371.html">[eLua-dev] Pure Lua multitasking with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4374">[ date ]</a>
+              <a href="thread.html#4374">[ thread ]</a>
+              <a href="subject.html#4374">[ subject ]</a>
+              <a href="author.html#4374">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

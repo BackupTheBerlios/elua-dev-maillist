@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] interested in stm32 port
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20interested%20in%20stm32%20port&In-Reply-To=%3Cf95a87ff0812262039h2d38232dj4bee4cfb23a5ff2%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000190.html">
+   <LINK REL="Next"  HREF="000196.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] interested in stm32 port</H1>
+    <B>Alex Babkin</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20interested%20in%20stm32%20port&In-Reply-To=%3Cf95a87ff0812262039h2d38232dj4bee4cfb23a5ff2%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] interested in stm32 port">ababkin at gmail.com
+       </A><BR>
+    <I>Sat Dec 27 05:39:06 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000190.html">[eLua-dev] Site look
+</A></li>
+        <LI>Next message: <A HREF="000196.html">[eLua-dev] interested in stm32 port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#195">[ date ]</a>
+              <a href="thread.html#195">[ thread ]</a>
+              <a href="subject.html#195">[ subject ]</a>
+              <a href="author.html#195">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi there
+
+I am an stm32 platform enthusiast and would love to make an easily
+script-able platform out of it. eLua seems to fit the bill except that i
+really hope that 128kb of flash and 20kb of ram (that the stm32 chips i am
+using have) would be enough (even if barely) to be able to run lua scripts,
+even pre-compiled if needed, off an SD card.
+
+I had followed the toolchain building tutorial and built those successfully.
+But it seems to me that scons for the stm32 target uses arm-none-eabi prefix
+for toolchain. I suspect that the CodeSourcery's toolchain was used for this
+target.
+I have tried to build the elua for the stm32f103ze target and it breaks on
+the following step:
+
+
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mlittle-endian -Os
+-fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules
+-Isrc/platform/stm32 -Isrc/uip -Isrc/platform/stm32/FWLib/library/inc
+-ffunction-sections -fdata-sections -fno-strict-aliasing
+-DELUA_CPU=STM32F103ZE -DELUA_BOARD=STM3210E-EVAL -DELUA_PLATFORM=STM32
+-D__BUFSIZ__=128 -DLUA_NUMBER_INTEGRAL -Dgcc -Wall -c src/newlib/stubs.c -o
+src/newlib/stubs.o
+src/newlib/stubs.c:311: error: conflicting types for '_gettimeofday_r'
+/usr/bin/../lib/gcc/arm-none-eabi/4.3.2/../../../../arm-none-eabi/include/reent.h:84:
+error: previous declaration of '_gettimeofday_r' was here
+scons: *** [src/newlib/stubs.o] Error 1
+scons: building terminated because of errors.
+
+
+from the way it looks, something is wrong with newlib. Are there any
+suggestions as to how i go about fixing it? Is this happening because libnew
+wasn't compiled in a specific way that elua prescribes?
+
+would it be possible to just stick to the toolchain built as per
+instructions on elua site? or CS's toolchain is really necessary for stm32?
+
+btw, i am normally using CS's toolchain (binaries) for all my stm32 projects
+
+Thanks
+Alex
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081226/d2043bc4/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081226/d2043bc4/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000190.html">[eLua-dev] Site look
+</A></li>
+	<LI>Next message: <A HREF="000196.html">[eLua-dev] interested in stm32 port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#195">[ date ]</a>
+              <a href="thread.html#195">[ thread ]</a>
+              <a href="subject.html#195">[ subject ]</a>
+              <a href="author.html#195">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

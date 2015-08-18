@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Building eLua under windows
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20eLua%20under%20windows&In-Reply-To=%3CAANLkTinVrCFwbiEXwtqF57%2BPSaV8qZN_0wf-FogHcwie%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001647.html">
+   <LINK REL="Next"  HREF="001649.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Building eLua under windows</H1>
+    <B>Paul Verbeke</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20eLua%20under%20windows&In-Reply-To=%3CAANLkTinVrCFwbiEXwtqF57%2BPSaV8qZN_0wf-FogHcwie%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Building eLua under windows">paverbeke at gmail.com
+       </A><BR>
+    <I>Sat Sep 11 23:54:58 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001647.html">[eLua-dev] [OT] 2^5
+</A></li>
+        <LI>Next message: <A HREF="001649.html">[eLua-dev] Building eLua under windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1648">[ date ]</a>
+              <a href="thread.html#1648">[ thread ]</a>
+              <a href="subject.html#1648">[ subject ]</a>
+              <a href="author.html#1648">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I was able to build eLua under windows last week. Seems something has
+happened since then, and when I try to build now I get the following:
+
+C:\elua0.7&gt;scons board=ek-lm3s6965 toolchain=codesourcery prog
+scons: Reading SConscript files ...
+
+*********************************
+Compiling eLua ...
+CPU:             LM3S6965
+Board:           EK-LM3S6965
+Platform:        lm3s
+Allocator:       newlib
+Boot Mode:       standard
+Target:          fplua
+Toolchain:       codesourcery
+ROMFS mode:      verbatim
+*********************************
+
+Building ROM File System...
+Encoded file bisect.lua (646 bytes)
+Encoded file hangman.lua (3378 bytes)
+Encoded file pong.lua (10729 bytes)
+Encoded file led.lua (1198 bytes)
+Encoded file piano.lua (3080 bytes)
+Encoded file pwmled.lua (917 bytes)
+Encoded file hello.lua (23 bytes)
+Encoded file info.lua (134 bytes)
+Encoded file morse.lua (3560 bytes)
+Encoded file adcscope.lua (2055 bytes)
+Encoded file adcpoll.lua (1414 bytes)
+Encoded file logo.lua (2679 bytes)
+Encoded file logo.bin (2048 bytes)
+Encoded file HelloLua.lua (51 bytes)
+Encoded file LuaTest.lua (437 bytes)
+Encoded file EK-LM3S6965.lua (1276 bytes)
+Done, total size is 33832 bytes
+
+scons: done reading SConscript files.
+scons: Building targets ...
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+-Iinc\n
+ewlib -Isrc\lua -Isrc\modules -Isrc\platform\lm3s -Isrc\uip -Isrc\fatfs
+-ffuncti
+on-sections -fdata-sections -DELUA_CPU=LM3S6965 -DELUA_BOARD=EK-LM3S6965
+-DELUA_
+PLATFORM=LM3S -D__BUFSIZ__=128 -DELUA_CPU_LM3S6965 -DELUA_BOARD_EKLM3S6965
+-DELU
+A_PLATFORM_LM3S -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S6965 -Dgcc
+-Wall
+-c src\shell.c -o src\shell.o
+src\shell.c:274: error: 'shell_env' undeclared here (not in a function)
+scons: *** [src\shell.o] Error 1
+scons: building terminated because of errors.
+
+C:\elua0.7&gt;
+Also, when I try to build the cross compiler I get:
+
+
+C:\elua0.7&gt;scons -f cross-lua.py
+
+scons: *** An executable should have exactly one target with the suffix:
+.exe
+File &quot;C:\elua0.7\cross-lua.py&quot;, line 22, in &lt;module&gt;
+
+Any help would be appreciated.
+
+Paul
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100911/26f9613c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100911/26f9613c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001647.html">[eLua-dev] [OT] 2^5
+</A></li>
+	<LI>Next message: <A HREF="001649.html">[eLua-dev] Building eLua under windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1648">[ date ]</a>
+              <a href="thread.html#1648">[ thread ]</a>
+              <a href="subject.html#1648">[ subject ]</a>
+              <a href="author.html#1648">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

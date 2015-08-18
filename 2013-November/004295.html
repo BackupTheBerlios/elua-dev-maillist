@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] assembling commands for SPI
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20assembling%20commands%20for%20SPI&In-Reply-To=%3C20131118214826.146820%40gmx.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004294.html">
+   <LINK REL="Next"  HREF="004299.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] assembling commands for SPI</H1>
+    <B>scdr at gmx.com</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20assembling%20commands%20for%20SPI&In-Reply-To=%3C20131118214826.146820%40gmx.com%3E"
+       TITLE="[eLua-dev] assembling commands for SPI">scdr at gmx.com
+       </A><BR>
+    <I>Mon Nov 18 22:48:26 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004294.html">[eLua-dev] porting to STM32
+</A></li>
+        <LI>Next message: <A HREF="004299.html">[eLua-dev] assembling commands for SPI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4295">[ date ]</a>
+              <a href="thread.html#4295">[ thread ]</a>
+              <a href="subject.html#4295">[ subject ]</a>
+              <a href="author.html#4295">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Just a thought - have you looked at eLua bitarrays?
+I haven't studied what the raw output does, but there is an outside chance one might be able to
+define bitarrays with different element sizes and pass the contents back and forth.
+Not sure that would be any less nasty than using bit module and shifts, but it is another approach.
+
+As long as the format is consistent, not clear why using shifts cumbersome 
+(i.e. make a function to pack/unpack it) then all the bitshift nasties are hidden.
+
+Bitstring looks like a nice find though.
+
+&gt;<i> ----- Original Message -----
+</I>&gt;<i> From: Richard Graham
+</I>&gt;<i> Sent: 11/18/13 12:01 PM
+</I>&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> Subject: Re: [eLua-dev] assembling commands for SPI
+</I>&gt;<i> 
+</I>&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> Thanks James and Thiago for your replies.
+</I>&gt;<i> 
+</I>&gt;<i> I am aware of the bit module, though as far as I can tell it is not
+</I>&gt;<i> especially useful for me. As an example I need to assemble a 16 bit
+</I>&gt;<i> command of the form:
+</I>&gt;<i> &#160;2 1-bit flags, followed by a 6-bit number followed by an 8-bit number.
+</I>&gt;<i> This could be done with bit shifts but is cumbersome when I have a lot
+</I>&gt;<i> of commands to do. There doesn't seem to be an easy way to cast a lua
+</I>&gt;<i> number to a given precision. lua-bitstring seems to be a lot easier if
+</I>&gt;<i> it can be made to work.
+</I>&gt;<i> 
+</I>&gt;<i> Also, from a quick look at the SPI code it seems that if you pass a
+</I>&gt;<i> number as in your example, it will use lua_tointeger on the number and
+</I>&gt;<i> send that. It then seems from luaconf.h that the actual number of bits
+</I>&gt;<i> sent would depend on the platform or how lua is compiled. I suspect if I
+</I>&gt;<i> need to control the number of bytes sent I would need to send the data
+</I>&gt;<i> as a string.
+</I>&gt;<i> 
+</I>&gt;<i> Let me know if I have this wrong or if you have any thoughts.
+</I>&gt;<i> 
+</I>&gt;<i> Thanks,
+</I>&gt;<i> --
+</I>&gt;<i> Richard Graham
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On 11/18/2013 10:51 AM, James Snyder wrote:
+</I>&gt;<i> &gt; There is a bit module included with eLua but it's actually based on
+</I>&gt;<i> &gt; bitlib and the API is a little different:
+</I>&gt;<i> &gt; <A HREF="http://www.eluaproject.net/doc/master/en_refman_gen_bit.html">http://www.eluaproject.net/doc/master/en_refman_gen_bit.html</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; On Mon, Nov 18, 2013 at 6:48 AM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>
+</I>&gt;<i> &gt; &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;&gt; wrote:
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Hi Richard,
+</I>&gt;<i> &gt; You can use the bit module to do the usual bit operations (or, and,
+</I>&gt;<i> &gt; xor, ...):
+</I>&gt;<i> &gt; <A HREF="http://bitop.luajit.org/api.html">http://bitop.luajit.org/api.html</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; To assemble multiple bytes, you could do
+</I>&gt;<i> &gt; a = 3
+</I>&gt;<i> &gt; b = 5
+</I>&gt;<i> &gt; c = a..b
+</I>&gt;<i> &gt; and have c = &quot;35&quot;
+</I>&gt;<i> &gt; or spi.write(0, a, b)
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; Thiago
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; On Mon, Nov 18, 2013 at 4:06 AM, Richard Graham &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>
+</I>&gt;<i> &gt; &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>&gt;&gt; wrote:
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Hi elua people,
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; I am just getting started with elua. Looks pretty nice so far.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; I need to pack together data to make some commands for setting
+</I>&gt;<i> &gt; various
+</I>&gt;<i> &gt; registers on a device connected via SPI. I need to be able to set
+</I>&gt;<i> &gt; individual bits and also pack 8 and 16 bit numbers. This seems
+</I>&gt;<i> &gt; like it
+</I>&gt;<i> &gt; should be a common problem and I was wondering what the usual
+</I>&gt;<i> &gt; approach
+</I>&gt;<i> &gt; to this is.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; I see the 'pack' module, though it looks like it only supports
+</I>&gt;<i> &gt; packing
+</I>&gt;<i> &gt; whole bytes at a minimum. Packing and unpacking at the
+</I>&gt;<i> &gt; individual bit
+</I>&gt;<i> &gt; level is going to get messy.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; I have found lua-bitstring, which looks like it should be great
+</I>&gt;<i> &gt; for this
+</I>&gt;<i> &gt; purpose -- though I can hardly find any documentation or others
+</I>&gt;<i> &gt; using
+</I>&gt;<i> &gt; it. I was wondering if anyone has managed to use this in elua? Or is
+</I>&gt;<i> &gt; there something else I am missing?
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Thanks,
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; Richard
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; -- 
+</I>&gt;<i> &gt; James Snyder
+</I>&gt;<i> &gt; Biomedical Engineering
+</I>&gt;<i> &gt; Northwestern University
+</I>&gt;<i> &gt; ph: (847) 448-0386
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004294.html">[eLua-dev] porting to STM32
+</A></li>
+	<LI>Next message: <A HREF="004299.html">[eLua-dev] assembling commands for SPI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4295">[ date ]</a>
+              <a href="thread.html#4295">[ thread ]</a>
+              <a href="subject.html#4295">[ subject ]</a>
+              <a href="author.html#4295">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

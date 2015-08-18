@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Nolua project proposal, good idea?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3C201101232239.02970.bobby%40sharedrealm.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001905.html">
+   <LINK REL="Next"  HREF="001906.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Nolua project proposal, good idea?</H1>
+    <B>Robert G. Jakabosky</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3C201101232239.02970.bobby%40sharedrealm.com%3E"
+       TITLE="[eLua-dev] Nolua project proposal, good idea?">bobby at sharedrealm.com
+       </A><BR>
+    <I>Mon Jan 24 07:39:02 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001905.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+        <LI>Next message: <A HREF="001906.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1904">[ date ]</a>
+              <a href="thread.html#1904">[ thread ]</a>
+              <a href="subject.html#1904">[ subject ]</a>
+              <a href="author.html#1904">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sunday 23, James Snyder wrote:
+&gt;<i> On Sun, Jan 23, 2011 at 10:38 AM, Bogdan Marinescu
+</I>&gt;<i>
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt; Hi Bogdan
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Thanks for your feedback.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; I am not a professional programmer let alone an embedded one.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Would not most manufactures use much of the same code across different
+</I>&gt;<i> &gt;&gt; models?(i,e ten models of microwave ovens) Would it not be better to
+</I>&gt;<i> &gt;&gt; write the common components as C modules and then glue them together
+</I>&gt;<i> &gt;&gt; with eLua?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm looking for reasons that would make it &quot;better&quot;. If you want to
+</I>&gt;<i> &gt; write your firmware in C you're likely to find a lot of libraries that
+</I>&gt;<i> &gt; would make your job easier that using eLua as a glue layer between a
+</I>&gt;<i> &gt; number of modules.
+</I>&gt;<i>
+</I>&gt;<i> There is another model here which is that we now have a platform API
+</I>&gt;<i> that could be separated from the main Lua core and used as a
+</I>&gt;<i> cross-platform build environment for C applications.  I think we've
+</I>&gt;<i> talked a little about pulling this out before.  I don't think it would
+</I>&gt;<i> require a huge amount of effort, but it's not really a core project
+</I>&gt;<i> goal of eLua.
+</I>&gt;<i>
+</I>&gt;<i> &gt;&gt; If this statement is true then couldn't someone complete a new model
+</I>&gt;<i> &gt;&gt; with eLua using it as a rapid development environment and then in the
+</I>&gt;<i> &gt;&gt; final stages port the glue to C?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The glue would be Lua, which is already extremely portable and
+</I>&gt;<i> &gt; requires almost no porting effort at all (which the exception of some
+</I>&gt;<i> &gt; libraries like &quot;io&quot; and &quot;os&quot;).
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt; Nolua would allow the C modules to function as
+</I>&gt;<i> &gt;&gt; they did before and only the original Lua glue would need porting.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I understand the idea but I don't find it too appealing for the
+</I>&gt;<i> &gt; reasons outlined above. If you want to play with the concept you can
+</I>&gt;<i> &gt; probably start from here:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; <A HREF="https://github.com/davidm/lua2c">https://github.com/davidm/lua2c</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm actually curious to find the difference in size/speed after using
+</I>&gt;<i> &gt; lua2c. I don't expect major improvements on any front, but I'm still
+</I>&gt;<i> &gt; curious to see some actual results.
+</I>&gt;<i>
+</I>&gt;<i> I've been curious about this as well, and I've never given it a try.
+</I>&gt;<i>
+</I>&gt;<i> I'm not sure what potential roadblocks might exist, but there might be
+</I>&gt;<i> some value to providing a compile mode that uses lua2c to convert Lua
+</I>&gt;<i> scripts and then compiles for a specific platform to generate &quot;final&quot;
+</I>&gt;<i> firmware for a device. One thing about lua2c though is that it
+</I>&gt;<i> converts Lua scripts into C code that uses the Lua C API to do the
+</I>&gt;<i> same thing, so you would still need the VM.  You wouldn't need the
+</I>&gt;<i> compiler, but we can already skip that by pre-generating Lua bytecode.
+</I>&gt;<i>  It might be possible to cut out a few additional components when only
+</I>&gt;<i> using the C API code, but I suspect the size effect might be minimal.
+</I>
+One performance problem with compiling Lua scripts to C using the C API is the 
+use of C strings.  When C code passes a C string to Lua it must be 
+internalized before it can be used.  This will slow down all table accesses 
+where the key is a string.  The only way around that is to create an upvalue 
+for each const. C string used in the C code.  The last time I checked lua2c 
+didn't use upvalues for string constants.  Also I think the Lua C API has 
+more checks (overhead) then the VM core has when executing bytecodes.
+
+Some things could be made faster like loop counters (using integers instead of 
+doubles).  I had started porting my llvm-lua project over to a new slua [1] 
+project that static compiles lua scripts/bytecode into C code that uses the 
+same internal VM opcode instead of the Lua C API.  The one big downside of 
+using this method to compile script is that it requires some changes to the 
+Lua VM core (not any major changes, just some hooks for static compiled Lua 
+functions).  slua can static compile a Lua script into a C source file that 
+looks like a normal Lua C module, which can then be compiled with a standard 
+C compiler.
+
+slua needs a little bit of cleaning up, but it is able to create stand-alone 
+exe or Lua C modules (note the C modules only work with a modified Lua VM 
+core, they can't be loaded into a normal Lua VM).
+
+1. <A HREF="https://github.com/Neopallium/slua">https://github.com/Neopallium/slua</A>
+
+-- 
+Robert G. Jakabosky
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001905.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+	<LI>Next message: <A HREF="001906.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1904">[ date ]</a>
+              <a href="thread.html#1904">[ thread ]</a>
+              <a href="subject.html#1904">[ subject ]</a>
+              <a href="author.html#1904">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

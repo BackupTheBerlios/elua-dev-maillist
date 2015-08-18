@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua vs Python on Microcontrollers
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20vs%20Python%20on%20Microcontrollers&In-Reply-To=%3CBD75CEDD-C35D-47C6-8A68-7DA5A8218886%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000311.html">
+   <LINK REL="Next"  HREF="000305.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua vs Python on Microcontrollers</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20vs%20Python%20on%20Microcontrollers&In-Reply-To=%3CBD75CEDD-C35D-47C6-8A68-7DA5A8218886%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Lua vs Python on Microcontrollers">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jan 26 00:43:53 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000311.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+        <LI>Next message: <A HREF="000305.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#310">[ date ]</a>
+              <a href="thread.html#310">[ thread ]</a>
+              <a href="subject.html#310">[ subject ]</a>
+              <a href="author.html#310">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for the detailed reply Dean.  This certainly makes a lot of  
+things more clear, and I think we can have a good discussion around  
+this.
+
+On Jan 23, 2009, at 1:46 PM, Dean Hall wrote:
+
+&gt;<i> Good questions and discussion points, James.  I'd be happy to
+</I>&gt;<i> elaborate on PyMite.
+</I>&gt;<i>
+</I>&gt;<i> First, PyMite's first targets were 8-bit AVR microcontrollers with 64
+</I>&gt;<i> KB Flash and 8 KB RAM.  So the resources were *much* smaller than even
+</I>&gt;<i> eLua is targeting.  However, I have found that 8 KB of RAM is too
+</I>&gt;<i> small to do anything useful.  32 KB seems to be enough to do useful
+</I>&gt;<i> things according to 2 different reports from researchers in Germany
+</I>&gt;<i> and MIT.  But this means attaching external RAM to the AVR which is
+</I>&gt;<i> beyond the scope of the hobbyist (at whom I am targeting PyMite).
+</I>&gt;<i> Since PyMite's first incarnation in 2002, the variety of 32-bit
+</I>&gt;<i> microcontrollers has increased and their prices have fallen; now, 32
+</I>&gt;<i> and even 64 KB of SRAM is available on-board both ARM7 and AVR32
+</I>&gt;<i> devices.  These new devices are on par with what eLua runs on.  Right
+</I>&gt;<i> now PyMite (and a few developers) are begging me to develop PyMite to
+</I>&gt;<i> run on these devices with greater resources.
+</I>
+Yeah, the 1-8Kb space is reasonable for many purposes when one is  
+writing in ASM or C, so long as either the code or data aren't too  
+large.  If the project is very specialized, it's great, but I can't  
+imagine trying to squeeze a very large VM or compiler into that kind  
+of ram and flash space, so I'm quite impressed that you've managed to  
+get a significant portion of the VM to fit in such a small space.
+
+I think this is also why Arduino does well on this platform.  While it  
+is easy to outgrow the available flash on the ATMega168, adding  
+functionality is modular, and since one is still basically writing C  
+code, it's fairly efficient space-wise.  I think if you were to take  
+all of the optional libraries for interfacing with devices that come  
+with the default support software, and include them with minimal  
+additional code, you would likely be outgrowing the available flash.   
+When one wants to have a VM and/or compiler, plus all of the  
+peripheral libraries, the overhead is even greater, and therefore more  
+difficult.
+
+Also, external RAM could be an option, but I would guess there isn't  
+any dedicated pathway for that, requiring some sort of serial  
+interface to some SRAM or something similar, which would be somewhat  
+slow.
+
+Do you happen to have references for the papers you mention?  I'm  
+curious about what issues they were studying.  Were they looking at  
+interpreted languages or virtual machines on MCUs, or something  
+different?
+
+Also, there is at least one other VM on ATMega project that exists out  
+there, NanoVM, which I believe implements some portion of the Java VM: <A HREF="http://www.harbaum.org/till/nanovm/index.shtml">http://www.harbaum.org/till/nanovm/index.shtml</A>
+
+&gt;<i> In my early background research, I found previous attempts to reduce
+</I>&gt;<i> Python (Pippy, PythonCE) required around 256 KB of RAM and 1 M of
+</I>&gt;<i> program memory... so a total rewrite was necessary.  I rewrote the
+</I>&gt;<i> internal datastructures to reduce runtime memory requirements.  I
+</I>&gt;<i> rewrote the core interpreter, picking one at a time which bytecodes
+</I>&gt;<i> would make the cut to be included.  And I wrote the tools needed to
+</I>&gt;<i> take a .pyc compiled on a PC and compress it to a smaller format for
+</I>&gt;<i> inclusion into the program memory.  Literally, EVERY design decision
+</I>&gt;<i> was to reduce size.  Python was a very hard language to make small...
+</I>&gt;<i> and I'd say I still don't have it quite right.
+</I>
+OK, so is the VM by itself already consuming quite a bit of available  
+resources?  i.e. if I write a simple LED blinking application, am I  
+already consuming a majority of the available RAM?
+
+&gt;<i> One thing I added to PyMite was a pretty slick and easy way to call C
+</I>&gt;<i> functions from Python.  I call them native functions.  Briefly stated,
+</I>&gt;<i> you write a Python module with function defs, but put the C code in
+</I>&gt;<i> the docstring of the function and &quot;pass&quot; for the function body.  An
+</I>&gt;<i> included, automated tool finds these native functions and builds them
+</I>&gt;<i> into the executable and makes the lookup tables so it just works.
+</I>&gt;<i> This method was a lot better for smaller targets than CPython's
+</I>&gt;<i> method.  Using SWIG was never an option.  Lua has an easy way to write
+</I>&gt;<i> C functions and call them.
+</I>
+I've been working with building extensions to Lua in C for putting  
+together the ADC module, and I'm finding that it's fairly easy and  
+lightweight.  CPython does make it fairly easy to do quite a few  
+things interfacing with C libraries, but I can see where this would be  
+overkill on a microcontroller.
+
+&gt;<i> Lua was designed from the very start to be embedded (into other
+</I>&gt;<i> programs as well as into smaller systems).  Python was designed for
+</I>&gt;<i> the desktop and is rather big.  Even if I grow PyMite to use 256 KB
+</I>&gt;<i> Flash and 64 KB SRAM, I don't think I'll be able to fit every Python
+</I>&gt;<i> feature into PyMite.  Whereas, just recently, I showed that the eLua
+</I>&gt;<i> interpreter (minus its parser/lexer) will fit in 64 KB Flash and 16 KB
+</I>&gt;<i> SRAM.  So, in this respect, I believe Lua has the edge for size.
+</I>&gt;<i> However, I believe that due to my focus on internal data structure
+</I>&gt;<i> size, a PyMite program will use less RAM during runtime (but I admit
+</I>&gt;<i> this is difficult to quantify).
+</I>&gt;<i>
+</I>&gt;<i> PyMite is stack based, like CPython.  tinypy is register based, like
+</I>&gt;<i> Lua.  I joined the tinypy maillist specifically because it's approach
+</I>&gt;<i> (follow the Lua design, but use Python syntax) was what I thought I
+</I>&gt;<i> wanted to do for the next version of PyMite.  However, tinypy's
+</I>&gt;<i> developer is focused on the desktop target and speed for gaming.
+</I>&gt;<i> tinypy would need a fairly significant rewrite for it to run in a low-
+</I>&gt;<i> ram environment.
+</I>
+That's too bad about TinyPy.  It is an interesting project, but I also  
+have to admit that I was a bit less than happy when I started playing  
+with it and realized that there were a decent number of language  
+features that weren't implemented yet.  I'm guessing that some of the  
+&quot;significant rewrite&quot; would be slimming things down for a  
+microcontroller environment.  I might further guess that bringing  
+TinyPy closer to CPython (in language features) might conflict with  
+the goals of running in a microcontroller.
+
+&gt;<i> At this point, I believe eLua is in a great position: it offers the
+</I>&gt;<i> Lua language and useful modules.  I believe with further development
+</I>&gt;<i> PyMite could achieve a comparable level of ability as eLua on the same
+</I>&gt;<i> devices, but still not offer all of CPython's features (decorators,
+</I>&gt;<i> multiple inheritance, etc).
+</I>
+Right, especially if PyMite were targeting a 32-bit MCU with a bit  
+more RAM and flash.  I also think that some Python language features  
+might not be all that necessary on a microcontroller, and are better  
+suited towards desktop-type programming anyways.  Personally I might  
+not miss decorators or multiple inheritance, but would miss things  
+like iterators.
+
+Do you think that a compiler might fit in this slightly larger  
+environment, enabling a self-hosted interpreter?
+
+&gt;<i>  As a final note, I believe that since
+</I>&gt;<i> PyMite is completely re-implemented from scratch, it stands to
+</I>&gt;<i> introduce more design defects into the language.  So that is a
+</I>&gt;<i> drawback.  I haven't diffed eLua's src/lua directory against the
+</I>&gt;<i> standard Lua source tree, but I don't believe them to be vastly
+</I>&gt;<i> different.  So eLua has a high fidelity to the  Lua language and a
+</I>&gt;<i> common code base (fewer defects).
+</I>
+Right, especially given that Python doesn't really seem to have a spec  
+for implementation, aside from CPython.  That said, I think the  
+microcontroller environment makes this sort of issue better in some  
+ways. The projects implemented on top of it are likely simpler, and  
+might not have as many complex failure modes.
+
+I suppose, however, that debugging a VM can be fairly complicated  
+depending on the type of issue encountered.
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090125/668f9df2/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090125/668f9df2/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090125/668f9df2/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090125/668f9df2/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000311.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+	<LI>Next message: <A HREF="000305.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#310">[ date ]</a>
+              <a href="thread.html#310">[ thread ]</a>
+              <a href="subject.html#310">[ subject ]</a>
+              <a href="author.html#310">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

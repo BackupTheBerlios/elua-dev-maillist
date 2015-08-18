@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RPC over SOCK_STREAM
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3C1318343268013-6881171.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002765.html">
+   <LINK REL="Next"  HREF="002782.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RPC over SOCK_STREAM</H1>
+    <B>raman</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3C1318343268013-6881171.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] RPC over SOCK_STREAM">ramangopalan at gmail.com
+       </A><BR>
+    <I>Tue Oct 11 16:27:48 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002765.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+        <LI>Next message: <A HREF="002782.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2781">[ date ]</a>
+              <a href="thread.html#2781">[ thread ]</a>
+              <a href="subject.html#2781">[ subject ]</a>
+              <a href="author.html#2781">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+<A HREF="http://elua-development.2368040.n2.nabble.com/file/n6881171/rpc.socket.patch">http://elua-development.2368040.n2.nabble.com/file/n6881171/rpc.socket.patch</A>
+rpc.socket.patch 
+
+Hello,
+
+Thanks for your suggestions. I used the existing desktop socket code for
+LUARPC to test RPC over
+ethernet. I've been trying a whole lot of things to get this to work. I've
+been stuck. I've sent my
+work on this as a patch. Please look for attachment.
+
+I was able to establish a handshake between the micro and my laptop. It
+connects without a problem.
+
+A few things:
+
+// Test lua code from desktop
+require(&quot;rpc&quot;)
+slave, err = rpc.connect(&quot;192.168.100.90&quot;, 12346)
+print(slave, err)
+pio = slave.pio
+pio.pin.setdir(pio.OUTPUT, pio.PF_0)
+pio.pin.sethigh(pio.PF_0)
+
+// An extract: luarpc.c
+static void rpc_dispatch_helper( lua_State *L, ServerHandle *handle )
+{ 
+  struct exception e;
+
+  Try
+  {
+    // if accepting transport is open, read function calls
+    if ( transport_is_open( &amp;handle-&gt;atpt ) )
+    {
+      Try
+      {
+        switch ( transport_read_u8( &amp;handle-&gt;atpt ) )
+        {
+          case RPC_CMD_CALL:  // call function
+            transport_write_u8( &amp;handle-&gt;atpt, RPC_READY );
+            /* Control reaches this point without issues. After this point,
+               crashes */
+            read_cmd_call( &amp;handle-&gt;atpt, L );
+            break;
+            ....
+}
+
+// An extract: luarpc.c
+static void read_cmd_call( Transport *tpt, lua_State *L )
+{
+  int i, stackpos, good_function, nargs;
+  u32 len;
+  char *funcname;
+  char *token = NULL;
+
+  // read function name
+  len = transport_read_u32( tpt ); /* function name string length */
+  /* Control reaches this point without issues */
+  funcname = ( char * )alloca( len + 1 );
+  transport_read_string( tpt, funcname, len );
+    /* Here, at this point, the code crashes. I suspect
+     transport_read_string(###). */
+  funcname[ len ] = 0;
+   
+  // get function
+  // @@@ perhaps handle more like variables instead of using a long string?
+  // @@@ also strtok is not thread safe
+  token = strtok( funcname, &quot;.&quot; );
+  lua_getglobal( L, token );
+  token = strtok( NULL, &quot;.&quot; );
+  while( token != NULL )
+  {
+    lua_getfield( L, -1, token );
+    lua_remove( L, -2 );
+    token = strtok( NULL, &quot;.&quot; );
+  }
+  ....
+}
+
+I have modified the SConstruct file and introduced a two other boot options
+'socket'
+and 'serial'. So, scons cpu=lm3s8962 toolchain=codesourcery boot=socket prog
+works fine. I've also introduced the macros ELUA_BOOT_RPC_SERIAL and
+ELUA_BOOT_RPC_SOCKET
+to do come conditional compilation.
+
+Please give me your suggestions. Please let me know how we can take the
+development forward.
+
+Cheers!
+
+Raman
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6881171.html">http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6881171.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002765.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+	<LI>Next message: <A HREF="002782.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2781">[ date ]</a>
+              <a href="thread.html#2781">[ thread ]</a>
+              <a href="subject.html#2781">[ subject ]</a>
+              <a href="author.html#2781">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

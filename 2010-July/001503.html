@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] PATCH: fix std_get_desc() stub type
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PATCH%3A%20fix%20std_get_desc%28%29%20stub%20type&In-Reply-To=%3CAANLkTimF%2BD1RoJ1igAVZRB4gA7f8-M4qSuV0ZLu3T9Cw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001502.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] PATCH: fix std_get_desc() stub type</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PATCH%3A%20fix%20std_get_desc%28%29%20stub%20type&In-Reply-To=%3CAANLkTimF%2BD1RoJ1igAVZRB4gA7f8-M4qSuV0ZLu3T9Cw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] PATCH: fix std_get_desc() stub type">martinwguy at gmail.com
+       </A><BR>
+    <I>Fri Jul 30 16:18:48 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001502.html">[eLua-dev] PATCH: fix std_get_desc() stub type
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1503">[ date ]</a>
+              <a href="thread.html#1503">[ thread ]</a>
+              <a href="subject.html#1503">[ subject ]</a>
+              <a href="author.html#1503">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 7/30/10, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i>  &gt;  I guess I should introduce myself: I'm porting eLua to a new avr32
+</I>&gt;<i>  &gt; platform with 128KB of flash. The good news is that it *does* still
+</I>&gt;<i>  &gt; fit in 128KB, just, but only if all BUILD_ options and all ROM modules
+</I>&gt;<i>  &gt; are disabled, so apart from the porting, I'll be focussing on various
+</I>&gt;<i>  &gt; ways of reducing the static code size so that I can enable some of the
+</I>&gt;<i>  &gt; modules we will be needing.
+</I>&gt;<i>
+</I>&gt;<i> Excellent news. Some ideas:
+</I>&gt;<i>
+</I>&gt;<i>  - do you require the compiler? if no, you can build the image without
+</I>&gt;<i>  the Lua compiler (which is fine if you just need to execute bytecode).
+</I>&gt;<i>  There's no explicit support in eLua for this, but look in a standard
+</I>&gt;<i>  Lua 5.1.4 source distribution at etc/noparser.c for a good starting
+</I>&gt;<i>  point.
+</I>
+That's a very interesting idea, though we were hoping to allow people
+simply to write a Lua program on an SD card, put it in and have it
+work.
+
+&gt;<i>  - do you need floating point in eLua? If not, you can try to compile
+</I>&gt;<i>  in integer mode (lualong). Not sure if this will save much space
+</I>&gt;<i>  though.
+</I>
+It saves 44592 bytes of code and 44 of initialized data.
+
+&gt;<i>  - do you feel brave? :) If so, you can start re-writing the C library :)
+</I>Thanks! :)
+
+The current low-hanging fruit i see is the large number of strings in
+the binary, including 5KB of sys_errlist[], easily dropped by
+providing a dummy strerror() function, and lots of verbose syntax
+error messages in src/lua/ldebug.c. However, I am reluctant to change
+the src/lua section, since that makes it more difficult to follow the
+upstream sources. I might try ripping out the debug-hooks interface,
+if that is possible without breaking the interpreter.
+
+&gt;<i>  And finally, something that I'd like you to check since you're going
+</I>&gt;<i>  this route: can you please try and see if eLua compiles under AVR32
+</I>&gt;<i>  without libm (remove -lm from the link options) if you don't include
+</I>&gt;<i>  the Lua math library?
+</I>
+I can't see where to do that in the source (the only -lm I see is when
+linking the native cross-compiler in cross-lua.py) but I just ran the
+final &quot;avr32-gcc -l elua-lualong-* ...&quot; command without the -lm and it
+links fine giving the same output file - tested with atevk1100 with
+its usual selection of  modules and ROM libraries.
+
+Thanks again
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001502.html">[eLua-dev] PATCH: fix std_get_desc() stub type
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1503">[ date ]</a>
+              <a href="thread.html#1503">[ thread ]</a>
+              <a href="subject.html#1503">[ subject ]</a>
+              <a href="author.html#1503">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

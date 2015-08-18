@@ -1,0 +1,323 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New STM32 eLua platform / getting eLua binary working
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20STM32%20eLua%20platform%20/%20getting%20eLua%20binary%20working&In-Reply-To=%3CCANKDJfZCt%3Dvcf6dM50FiLKWC3w2KXdw%2BzF0HfFa-5aHnnQMVmQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003466.html">
+   <LINK REL="Next"  HREF="003461.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New STM32 eLua platform / getting eLua binary working</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20STM32%20eLua%20platform%20/%20getting%20eLua%20binary%20working&In-Reply-To=%3CCANKDJfZCt%3Dvcf6dM50FiLKWC3w2KXdw%2BzF0HfFa-5aHnnQMVmQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] New STM32 eLua platform / getting eLua binary working">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Apr  6 09:37:59 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003466.html">[eLua-dev] New STM32 eLua platform / getting eLua binary working
+</A></li>
+        <LI>Next message: <A HREF="003461.html">[eLua-dev] New STM32 eLua platform / getting eLua binary working
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3467">[ date ]</a>
+              <a href="thread.html#3467">[ thread ]</a>
+              <a href="subject.html#3467">[ subject ]</a>
+              <a href="author.html#3467">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Apr 6, 2012 at 9:37 AM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+&gt;<i> I have had weird problems regarding interrupts when running the board with
+</I>&gt;<i> the JTAG plugged...
+</I>
+Long story short: no matter what board/CPU you use, unplug your JTAG
+cable whenever you notice something that might be categorized as
+&quot;weird behaviour&quot;. I've had countless problems with this.
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> It was with the STR-E912 board, not STM32, but just something to keep an eye
+</I>&gt;<i> on.
+</I>&gt;<i> In my case it made things break in very subtle ways like some interrupts
+</I>&gt;<i> work and others don't ( which is quite troublesome when trying to write code
+</I>&gt;<i> for a new interrupt source ).
+</I>&gt;<i>
+</I>&gt;<i> I've never had issues with the terminal...
+</I>&gt;<i>
+</I>&gt;<i> Funny thing is that I work with 3 different boards with the same IC but only
+</I>&gt;<i> one appears to have this problem.
+</I>&gt;<i> If I find the exact source of the problem I'll post here.
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Thiago
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Apr 6, 2012 at 2:11 AM, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm currently using other non-eLua chip but it seems that the scripts work
+</I>&gt;&gt;<i> for any stm32f10x. You may need to change the WORKAREASIZE, and the
+</I>&gt;&gt;<i> interface.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Anyways here it goes:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ###################################################
+</I>&gt;&gt;<i> # FLASHING
+</I>&gt;&gt;<i> ###################################################
+</I>&gt;&gt;<i> # stm32f103vct6 256K / 48K
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> interface jlink
+</I>&gt;&gt;<i> source [find target/stm32f1x.cfg]
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> adapter_khz 500
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> echo
+</I>&gt;&gt;<i> ---------------------------------------------------------------------------
+</I>&gt;&gt;<i> echo flash
+</I>&gt;&gt;<i> echo
+</I>&gt;&gt;<i> ---------------------------------------------------------------------------
+</I>&gt;&gt;<i> init
+</I>&gt;&gt;<i> halt
+</I>&gt;&gt;<i> echo
+</I>&gt;&gt;<i> ---------------------------------------------------------------------------
+</I>&gt;&gt;<i> stm32f1x unlock 0
+</I>&gt;&gt;<i> echo
+</I>&gt;&gt;<i> ---------------------------------------------------------------------------
+</I>&gt;&gt;<i> stm32f1x mass_erase 0
+</I>&gt;&gt;<i> echo
+</I>&gt;&gt;<i> ---------------------------------------------------------------------------
+</I>&gt;&gt;<i> reset halt
+</I>&gt;&gt;<i> echo
+</I>&gt;&gt;<i> ---------------------------------------------------------------------------
+</I>&gt;&gt;<i> flash write_image main.elf
+</I>&gt;&gt;<i> reset
+</I>&gt;&gt;<i> shutdown
+</I>&gt;&gt;<i> ###################################################
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ###################################################
+</I>&gt;&gt;<i> # DEBUG
+</I>&gt;&gt;<i> ###################################################
+</I>&gt;&gt;<i> # stm32f103vct6 256K / 48K
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> interface jlink
+</I>&gt;&gt;<i> source [find target/stm32f1x.cfg]
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> set WORKAREASIZE 0x2000
+</I>&gt;&gt;<i> adapter_khz 500
+</I>&gt;&gt;<i> gdb_port 2332
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> echo
+</I>&gt;&gt;<i> ---------------------------------------------------------------------------
+</I>&gt;&gt;<i> echo debug
+</I>&gt;&gt;<i> echo
+</I>&gt;&gt;<i> ---------------------------------------------------------------------------
+</I>&gt;&gt;<i> init
+</I>&gt;&gt;<i> halt
+</I>&gt;&gt;<i> reset halt
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ###################################################
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2012/4/6 Brent Picasso &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">brent at autosportlabs.com</A>&gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Good news!
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I pulled a fresh source branch, compiled it for the STM32 stamp using
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> scons board=ET-STM32 toolchain=codesourcery
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> and programmed it via JTAG. I disconnected the JTAG connection, powered
+</I>&gt;&gt;&gt;<i> it via the FTDI-USB adapter (which supplies 5v to the board) - and the
+</I>&gt;&gt;&gt;<i> console was responsive! As a bonus, I recompiled with MMC support and was
+</I>&gt;&gt;&gt;<i> able to read card contents as well.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I believe the key was completely disconnecting the JTAG device; after
+</I>&gt;&gt;&gt;<i> writing the flash with openocd, it reset and outputted the eLua prompt, but
+</I>&gt;&gt;&gt;<i> immediately halted right after.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Now I'm on to troubleshooting openocd with the codesourcery gdb; I'm
+</I>&gt;&gt;&gt;<i> seeing Hard Fault errors when attempting to reset and then continue using
+</I>&gt;&gt;&gt;<i> gdb. Anyone out there using openocd with the STM32 target?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks again!
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Brent Picasso
+</I>&gt;&gt;&gt;<i> Autosport Labs
+</I>&gt;&gt;&gt;<i> Technology for Race and Street
+</I>&gt;&gt;&gt;<i> autosportlabs.com | twitter.com/AutosportLabs
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On 04/05/2012 08:27 PM, James Snyder wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Thu, Apr 5, 2012 at 7:58 PM, Brent Picasso &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">brent at autosportlabs.com</A>&gt;
+</I>&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On 04/05/2012 04:51 PM, James Snyder wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Thu, Apr 5, 2012 at 4:24 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On 5 April 2012 02:21, Brent Picasso &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">brent at autosportlabs.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> We're working on a new development board/platform using tere hhe
+</I>&gt;&gt;&gt;<i> STM32F103RE
+</I>&gt;&gt;&gt;<i> which will feature eLua as it's operating environment.
+</I>&gt;&gt;&gt;<i> when processor
+</I>&gt;&gt;&gt;<i> comes out of reset, we see the eLua prompt on USART1, but we cannot
+</I>&gt;&gt;&gt;<i> interact
+</I>&gt;&gt;&gt;<i> with it - it does not respond to keyboard input from the terminal.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I haven't had this exact problem, but there are two ways that the
+</I>&gt;&gt;&gt;<i> USART is driven. When BUF_ENABLE UART is undefined, it is polled, and
+</I>&gt;&gt;&gt;<i> when BUF_ENABLE_UART is on and CON_BUF_SIZE &gt; 0, it is
+</I>&gt;&gt;&gt;<i> interrupt-driven.
+</I>&gt;&gt;&gt;<i> &#160;Maybe trying the other of these options compared to what you're
+</I>&gt;&gt;&gt;<i> using might help home in on the problem.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I would suggest looking in this direction as well.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Is a completely unmodified port? Does it ever work over that USART or
+</I>&gt;&gt;&gt;<i> is it only under certain conditions. One other thing could be related
+</I>&gt;&gt;&gt;<i> to pin configurations if you've perhaps modified which pins the USART
+</I>&gt;&gt;&gt;<i> is available on and/or perform some reconfiguration of pins during
+</I>&gt;&gt;&gt;<i> startup (perhaps one thing is overriding another?)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> As I recall, the console may use some timer related facilities, but at
+</I>&gt;&gt;&gt;<i> least the last time I had a platform where the timer wasn't configured
+</I>&gt;&gt;&gt;<i> or available the main problem was that our code to try and handle
+</I>&gt;&gt;&gt;<i> different platforms' newline handling (\r, \n or \r\n) wouldn't work
+</I>&gt;&gt;&gt;<i> correctly, but it was still usable.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi James/ Martin -
+</I>&gt;&gt;&gt;<i> It's running a completely stock eLua compiled for the ET-STM32 module.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Looking at the schematics of our board, the only thing that might stick
+</I>&gt;&gt;&gt;<i> out
+</I>&gt;&gt;&gt;<i> is that we didn't bind RTS/CTS to the header for USART1- just RX/TX. Do
+</I>&gt;&gt;&gt;<i> you
+</I>&gt;&gt;&gt;<i> know if hardware flow control is enabled for the console? I will
+</I>&gt;&gt;&gt;<i> certainly
+</I>&gt;&gt;&gt;<i> look in the code as well.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> It shouldn't be unless &quot;CON_FLOW_TYPE&quot; is defined.  I'm wondering if
+</I>&gt;&gt;&gt;<i> something else strange might be going on.  I have an ET-STM32 stamp
+</I>&gt;&gt;&gt;<i> and just tried loading an image on and it seems to work.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Images here:
+</I>&gt;&gt;&gt;<i> <A HREF="http://dl.dropbox.com/u/169337/elua_et_stm32/elua_lua_stm32f103re.bin">http://dl.dropbox.com/u/169337/elua_et_stm32/elua_lua_stm32f103re.bin</A>
+</I>&gt;&gt;&gt;<i> <A HREF="http://dl.dropbox.com/u/169337/elua_et_stm32/elua_lua_stm32f103re.elf">http://dl.dropbox.com/u/169337/elua_et_stm32/elua_lua_stm32f103re.elf</A>
+</I>&gt;&gt;&gt;<i> <A HREF="http://dl.dropbox.com/u/169337/elua_et_stm32/elua_lua_stm32f103re.hex">http://dl.dropbox.com/u/169337/elua_et_stm32/elua_lua_stm32f103re.hex</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Those are stock builds for what I have on the master branch with the
+</I>&gt;&gt;&gt;<i> exception that I left sieve.lua on ROMFS.  I'd be interested in
+</I>&gt;&gt;&gt;<i> knowing if those have any difference, since they work for me.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I know you mentioned that you ruled out hardware, but I'll mention
+</I>&gt;&gt;&gt;<i> this just in case it might be related:
+</I>&gt;&gt;&gt;<i> One other thing about that particular board that might be of
+</I>&gt;&gt;&gt;<i> importance is whether you're using the pins on the side of the board
+</I>&gt;&gt;&gt;<i> with a TTL-level serial device (connected to PA9/10 or you're going
+</I>&gt;&gt;&gt;<i> through the built-in RS-232 level shifter.  The level shifter at least
+</I>&gt;&gt;&gt;<i> on the boards I have isn't one of the ones that automatically shuts
+</I>&gt;&gt;&gt;<i> down when nothing is connected to it on the serial side.  At least on
+</I>&gt;&gt;&gt;<i> mine there's a 100 Ohm resistor between the ICL level shifter and the
+</I>&gt;&gt;&gt;<i> RX pin on the MCU, I believe in the mode it likely would be defaulting
+</I>&gt;&gt;&gt;<i> to with no RS-323 connection it tries to pull this pin down.  If you
+</I>&gt;&gt;&gt;<i> have an adapter that doesn't have enough current to exceed the
+</I>&gt;&gt;&gt;<i> pulldown, you could end up with issues like what you're describing.
+</I>&gt;&gt;&gt;<i> We had a discussion starting about this last year starting here:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/ET-STM32-program-via-TTL-or-suggest-me-a-USB-to-serial-converter-cable-tt6128274.html#a6145330">http://elua-development.2368040.n2.nabble.com/ET-STM32-program-via-TTL-or-suggest-me-a-USB-to-serial-converter-cable-tt6128274.html#a6145330</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> One other thing: If you have a scope around, that would also let you
+</I>&gt;&gt;&gt;<i> know what's happening here.  A permanent workaround to the issue, as I
+</I>&gt;&gt;&gt;<i> recall is removing that resistor (or cutting the trace) or replacing
+</I>&gt;&gt;&gt;<i> it with a higher resistance part.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The other sample code we used that worked correctly was not using
+</I>&gt;&gt;&gt;<i> RTS/CTS.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks for your help so far!
+</I>&gt;&gt;&gt;<i> Brent
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Good luck!
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &#160; &#160;M
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Brent Picasso
+</I>&gt;&gt;&gt;<i> Autosport Labs
+</I>&gt;&gt;&gt;<i> Technology for Race and Street
+</I>&gt;&gt;&gt;<i> autosportlabs.com | twitter.com/AutosportLabs
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> []s,
+</I>&gt;&gt;<i> Marcelo
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003466.html">[eLua-dev] New STM32 eLua platform / getting eLua binary working
+</A></li>
+	<LI>Next message: <A HREF="003461.html">[eLua-dev] New STM32 eLua platform / getting eLua binary working
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3467">[ date ]</a>
+              <a href="thread.html#3467">[ thread ]</a>
+              <a href="subject.html#3467">[ subject ]</a>
+              <a href="author.html#3467">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

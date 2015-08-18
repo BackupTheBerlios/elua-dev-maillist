@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLuaWebDevice Project
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLuaWebDevice%20Project&In-Reply-To=%3C1292A1DA-3C26-431F-AF10-817F7A643497%40ProductCreationStudio.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003003.html">
+   <LINK REL="Next"  HREF="003005.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLuaWebDevice Project</H1>
+    <B>Ned Konz</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLuaWebDevice%20Project&In-Reply-To=%3C1292A1DA-3C26-431F-AF10-817F7A643497%40ProductCreationStudio.com%3E"
+       TITLE="[eLua-dev] eLuaWebDevice Project">ned at productcreationstudio.com
+       </A><BR>
+    <I>Mon Nov 21 22:19:14 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003003.html">[eLua-dev] eLuaWebDevice Project
+</A></li>
+        <LI>Next message: <A HREF="003005.html">[eLua-dev] eLuaWebDevice Project
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3004">[ date ]</a>
+              <a href="thread.html#3004">[ thread ]</a>
+              <a href="subject.html#3004">[ subject ]</a>
+              <a href="author.html#3004">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>You might consider an alternative IP stack:
+
+I've just been working with the FNET IP stack, which is currently only available for Freescale devices but is open source:
+
+<A HREF="http://fnet.sf.net">http://fnet.sf.net</A>
+
+It's very clean code, and includes an HTTP server, DHCP client, telnet server (and client), and much more.
+
+It looks as if it wouldn't be too hard to bend this to use with eLua (or with other ethernet peripherals).
+
+It needs only a callback from timer interrupts and from Ethernet received frames.
+
+On Nov 21, 2011, at 12:46 PM, heinz wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> These things should be done (orderd by priority, the first would be the most importend - at least for me)
+</I>&gt;<i> 1. Making TCP/IP fully working to be able to have http get and post work.
+</I>&gt;<i>    This is important for the server (getting ride of the lua server) as well as for the application.
+</I>&gt;<i>    At least I would like to communicate with http/JSON servers
+</I>&gt;<i> 2. attaching a gprs/umts modem including http as well
+</I>&gt;<i> 3. Establish a common log channel into the IDE and lua code by redirecting print
+</I>&gt;<i> 
+</I>&gt;<i> It took me more then half a year to get to this point. I will not be much faster now. So any help is welcome
+</I>&gt;<i> 
+</I>&gt;<i> Heinz
+</I>&gt;<i> 
+</I>&gt;<i> Am 21.11.2011 08:53, schrieb Bogdan Marinescu:
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> On Mon, Nov 21, 2011 at 12:48 AM, heinz &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">kheinz57 at gmx.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">kheinz57 at gmx.de</A>&gt;&gt; wrote:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i>    Hi eLua folk,
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i>    I set up a small project for programming devices via the internet
+</I>&gt;&gt;<i>    just using a browser.
+</I>&gt;&gt;<i>    I had the idea for a long time. But eLua made it possible.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i>    Thank you guys!
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i>    I didn't even had to modify anything in eLua - although I did
+</I>&gt;&gt;<i>    first, not realising that there is an 'autoexec.bat' ;-).
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i>    Take a look at:
+</I>&gt;&gt;<i>    <A HREF="https://github.com/kheinz57/eLuaWebDevice">https://github.com/kheinz57/eLuaWebDevice</A>
+</I>&gt;&gt;<i>    or watch the screencasts I have just uploaded to youtube:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i>    <A HREF="http://www.youtube.com/watch?v=_jLPY-GeYa0">http://www.youtube.com/watch?v=_jLPY-GeYa0</A>
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i>    Comments are welcome of course
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Very nice idea. I considered a web based development environment for eLua, but I didn't follow that direction. Glad to see someone did. Please let us know if we can help you with anything.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i>    Heinz
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i>    _______________________________________________
+</I>&gt;&gt;<i>    eLua-dev mailing list
+</I>&gt;&gt;<i>    <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;<i>    <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003003.html">[eLua-dev] eLuaWebDevice Project
+</A></li>
+	<LI>Next message: <A HREF="003005.html">[eLua-dev] eLuaWebDevice Project
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3004">[ date ]</a>
+              <a href="thread.html#3004">[ thread ]</a>
+              <a href="subject.html#3004">[ subject ]</a>
+              <a href="author.html#3004">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

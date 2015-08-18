@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Bug%20in%20builder%20for%20LM3%20platform%20Re%3A%20IMPORTANT%3A%20new%0A%20build%20system%20in%20master&In-Reply-To=%3CCANKDJfZStNbrs977W7LO_YBXqYVrAn%2BNN3tNobrTeTpkiHrxYg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004181.html">
+   <LINK REL="Next"  HREF="004183.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Bug%20in%20builder%20for%20LM3%20platform%20Re%3A%20IMPORTANT%3A%20new%0A%20build%20system%20in%20master&In-Reply-To=%3CCANKDJfZStNbrs977W7LO_YBXqYVrAn%2BNN3tNobrTeTpkiHrxYg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Jun 21 08:33:17 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004181.html">[eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master
+</A></li>
+        <LI>Next message: <A HREF="004183.html">[eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4182">[ date ]</a>
+              <a href="thread.html#4182">[ thread ]</a>
+              <a href="subject.html#4182">[ subject ]</a>
+              <a href="author.html#4182">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+On Fri, Jun 21, 2013 at 4:22 AM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> Finally got eLua to compile using the new builder system.
+</I>&gt;<i> Targeting LM3s8962 and LM4F120
+</I>&gt;<i>
+</I>&gt;<i> One thing that was lost in transition to the new build system were the
+</I>&gt;<i> switches telling the compiler and
+</I>&gt;<i> the assembler about the target CPU.  (-mcpu=cortex-m3 -mthumb )
+</I>&gt;<i>
+</I>&gt;<i> I got it to compile by adding the following lines to build_elua.lua (right
+</I>&gt;<i> near the other tests for things like lualong ).
+</I>&gt;<i>
+</I>&gt;<i> if bd.get_arch_of_cpu( comp.cpu ) == 'cortexm3' then addcf( {
+</I>&gt;<i> '-mcpu=cortex-m3', '-mthumb' }) dprint(&quot;CortexM3&quot;) end
+</I>&gt;<i> if bd.get_arch_of_cpu( comp.cpu ) == 'cortexm4' then addcf( {
+</I>&gt;<i> '-mcpu=cortex-m4', '-mthumb' }) dprint(&quot;CortexM4&quot;) end
+</I>&gt;<i>
+</I>
+I don't know how you're using the build system, but If I do this on master:
+
+$ lua build_elua.lua board=ek-lm3s8962 disp_mode=all
+
+I can see the '-mcpu=cortex-m3 -mthumb' flags in the compiler command line.
+Support for STM32F4 is not on master yet; if you need it, check the stm32f4
+branch. It will be merged to the master soon.
+
+
+&gt;<i> Not sure if this omission affects other cortex platforms as well.
+</I>&gt;<i>
+</I>&gt;<i> Took me quite a while to figure out where to add these.
+</I>&gt;<i> The old build system was a lot easier to add tweaks like this without
+</I>&gt;<i> having to hunt so much.
+</I>&gt;<i> Would be good to make the code clearer for quick tweaking - making it more
+</I>&gt;<i> obvious where to insert or change compiler arguments, etc.
+</I>&gt;<i>
+</I>
+That is coming as a separate commit which deals with the build system
+refactoring. Soon.
+
+
+&gt;<i> (No, I don't understand how the old builder worked, and I don't understand
+</I>&gt;<i> the new one either, and I shouldn't have to
+</I>&gt;<i> just to build the program, or to tell the compiler the options I want
+</I>&gt;<i> used.)
+</I>&gt;<i>
+</I>
+The compiler switches come from three places:
+
+- build_elua.lua: various generic macros, libraries and include paths +
+configurator related switches
+- build_data.lua: platform-specific compiler switches (but generic amongst
+all CPUs in that platform)
+- src/platform/&lt;platform&gt;/conf.lua: CPU/board specific
+macros/includes/libraries. This is also where you add the
+platform/CPU/board specific files that you need.
+
+
+&gt;<i>
+</I>&gt;<i> ---
+</I>&gt;<i>
+</I>&gt;<i> One downside of the new build system, it seems to assume that all boards
+</I>&gt;<i> that use the same platform will also use the
+</I>&gt;<i> same CPU architecture.
+</I>
+
+This is the idea behind the concept of &quot;platform&quot;, yes. This is
+intentional.The CPU _architecture_ is the same, but the actual architecture
+implementation can vary between various CPUs.
+
+
+&gt;<i> The LM4F120 (Stellaris/Tiva launchpad) is a cortex M4 processor, but it
+</I>&gt;<i> uses the
+</I>&gt;<i> same libraries/platform as the LM3s.  I found the table in build_data.lua,
+</I>&gt;<i> which has the aforementioned assumption
+</I>&gt;<i> built into it.  How do I add the LM4F120, making it use the LM3s platform,
+</I>&gt;<i> but tell the build system that it is a cortex m4 processor?
+</I>&gt;<i> Some tweaking of build_data.lua should make it possible to handle this
+</I>&gt;<i> situation gracefully.
+</I>&gt;<i>
+</I>
+build_data.lua is generic. It doesn't know anything at all about platform
+libraries and platform specific files. This is the kind of stuff you
+specify in the platform's conf.lua files. Look for example at
+src/platform/lm3s/conf.lua.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> Hope this helps
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130621/64221475/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130621/64221475/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004181.html">[eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master
+</A></li>
+	<LI>Next message: <A HREF="004183.html">[eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4182">[ date ]</a>
+              <a href="thread.html#4182">[ thread ]</a>
+              <a href="subject.html#4182">[ subject ]</a>
+              <a href="author.html#4182">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

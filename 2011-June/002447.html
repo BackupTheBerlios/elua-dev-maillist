@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTik8xH%2Beb-0K3xR-ATZR0k22jqON%2Bg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002446.html">
+   <LINK REL="Next"  HREF="002448.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTik8xH%2Beb-0K3xR-ATZR0k22jqON%2Bg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">martinwguy at gmail.com
+       </A><BR>
+    <I>Sun Jun  5 22:12:51 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002446.html">[eLua-dev] I2C for LM3S devices
+</A></li>
+        <LI>Next message: <A HREF="002448.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for	LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2447">[ date ]</a>
+              <a href="thread.html#2447">[ thread ]</a>
+              <a href="subject.html#2447">[ subject ]</a>
+              <a href="author.html#2447">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 5 June 2011 17:47, Laurent Dufrechou &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">laurent.dufrechou at gmail.com</A>&gt; wrote:
+&gt;<i> Ok here is a proposal to allow the lm3s and str912 to work altogether:
+</I>&gt;<i>
+</I>&gt;<i> void platform_i2c_send_start( unsigned id )
+</I>&gt;<i>
+</I>&gt;<i> void platform_i2c_send_stop( unsigned id )
+</I>&gt;<i>
+</I>&gt;<i> int platform_i2c_send_address( unsigned id, u16 address, int direction )
+</I>&gt;<i>
+</I>&gt;<i> int platform_i2c_send_byte( unsigned id, u8 data )
+</I>&gt;<i>
+</I>&gt;<i> int platform_i2c_recv_byte( unsigned id, int ack )
+</I>&gt;<i>
+</I>&gt;<i> +
+</I>&gt;<i>
+</I>&gt;<i> int platform_i2c_send_byte_and_stop( unsigned id, u8 data )
+</I>&gt;<i>
+</I>&gt;<i> int platform_i2c_recv_byte_and_stop( unsigned id, int ack )
+</I>[...]
+&gt;<i> int platform_i2c_start_and_send_address( unsigned id, u16 address, int
+</I>&gt;<i> direction )
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+Hi Laurent
+
+&gt;<i> Am I missing any use case?
+</I>On the contrary, you have too many and inappropriate ones!
+
+I am currently looking at implementing I2C on avr32 platforms, so
+maybe we can define a common platform interface for the i2c platform
+interface.
+
+The ideal would be the smallest set of primitives that
+1) allows us to generate all possible I2C protocols, reacting to (and
+informing the caller about) all possible error conditions during
+reception/transmission, such as lack of ACK when it is required, or
+loss of bus arbitration.
+2) covers all hardware implementations, from the highest level
+intelligent hardware that does everything for you automatically, down
+to bit-banging interfaces where you toggle and read the signals
+explicitly.
+
+An example of the lowest level can be found at
+<A HREF="https://secure.wikimedia.org/wikipedia/en/wiki/I2C#Example_of_bit-banging_the_I2C_Master_protocol">https://secure.wikimedia.org/wikipedia/en/wiki/I2C#Example_of_bit-banging_the_I2C_Master_protocol</A>
+whose user interface to this code fragment seems to consist of two
+byte-oriented functions:
+  bool nak = i2c_write_byte(bool send_start, bool send_stop, unsigned char data)
+  unsigned char data = i2c_read_byte(bool nack, bool send_stop).
+
+For the AVR32, to send data you program the 7-bit device address and
+the direction bit into one control register, then write you write the
+first byte of data to be transmitted into another and this second
+write triggers the hardware to do the whole sequence: start, address
+and the first data byte all in one go. You then have to poke more data
+into the second register while the first set of data is being
+transmitted if you want to transmit multiple bytes in one message:
+failure to do so automatically ends the current packet with a STOP.
+
+Unfortunately, the current elua module interface is too low level for
+either of these implementations in that it has i2c.start(),
+i2c.address() and i2c.write() as separate functions.  For both of
+these above interfaces, the bit-banging and the AVR32, this forces the
+driver to collect up information from a predefined sequence of start()
+address() read() write() calls, storing them in private, persistent
+data, and then use these data when the final call happens (read or
+write) that gives sense to the single I2C operation.
+  It also creates the question of whether the driver should detect
+improper sequences of these Lua primitives, or how it should react to
+them, for example, you call read() without a preceding address() or
+address() without a preceding start().
+It also fails to allow you to detect loss of bus arbitration when
+there are multiple masters on the same bus.
+
+The interface in wikipedia seems to be about the lowest possible
+sensible level: (read/write byte with optional start, stop, ack/nak
+bits), though it doesn't really handle loss of bus arbitration, and
+there is no distinction between addresses and data.
+
+By comparison, the AVR32 hardware performs combined write/read
+sequences with a second start bit in a single operation, such as are
+used to access EEPROMs. Trying to map a sequence of
+i2c.start/address/write/read calls into this single operation would
+require a semi-intelligent state machine to parse the sequence of
+calls.
+
+So how about changing the eLua Lua primitives for i2c to something a
+bit higher level, that reflects the range of possible I2C protocol
+sequences. There are only about three major variants as far as I can
+see: master write, master read and combined write-read sequences, plus
+a probe no-op to see if there is a slave present on a given address.
+Expressing a meaningful i2c transaction in a single Lua function call
+would also means that, on loss of bus arbitration during a message,
+the generic i2c code could just wait for the bus to become free again
+and retry the message without making client Lua cose detect and handle
+this condition.
+It would also mean that the more intelligent devices that perform
+whole I2C operations in hardware could be used.  With the present
+i2c.*() Lua interface (and the resulting C platform interface),
+implementing eLua I2C on such devices is needlessly complex, even
+without contempleting its DMA capabilities direct to from EEPROM...
+
+I've been staring at this all day and have now had enough, but I
+thought I'd write to let you know you're not alone, and to raise the
+issue of changing the Lua module interface, since this impacts on the
+C platform interface.
+
+My own difficulty with changing the i2c interfaces is that I wouldn't
+want to reimplement the existing str9 code and I don't have str9 (or
+lm3s) hardware to test such hings on
+
+Thoughts?
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002446.html">[eLua-dev] I2C for LM3S devices
+</A></li>
+	<LI>Next message: <A HREF="002448.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for	LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2447">[ date ]</a>
+              <a href="thread.html#2447">[ thread ]</a>
+              <a href="subject.html#2447">[ subject ]</a>
+              <a href="author.html#2447">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

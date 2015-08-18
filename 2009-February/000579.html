@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GCC Versions
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GCC%20Versions&In-Reply-To=%3CEMEWEMEW2_DELIMl1J9U44571e67ec87572d79feaf6%2C%0A%09jbsnyder%40fanplastic.org%2C%20484C8400-3D5D-4A5B-8A7D-D30%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000576.html">
+   <LINK REL="Next"  HREF="000578.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GCC Versions</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GCC%20Versions&In-Reply-To=%3CEMEWEMEW2_DELIMl1J9U44571e67ec87572d79feaf6%2C%0A%09jbsnyder%40fanplastic.org%2C%20484C8400-3D5D-4A5B-8A7D-D30%3E"
+       TITLE="[eLua-dev] GCC Versions">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Feb 20 16:30:02 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000576.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+        <LI>Next message: <A HREF="000578.html">[eLua-dev] Wiki Edits?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#579">[ date ]</a>
+              <a href="thread.html#579">[ thread ]</a>
+              <a href="subject.html#579">[ subject ]</a>
+              <a href="author.html#579">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've recently been experimenting with different toolchains (different  
+versions of GCC anyways) based on the build instructions Rob Emanuele  
+posted a little while ago.
+
+The bare instructions he provides, I believe work, but I've since  
+customized them to include some of the optimizations that are in the  
+eLua docs for GCC compilation (I've attached the makefile) trying to  
+get things as small as possible.  In order for it to work with eLua  
+(at least for LM3S) the linker script needs to be updated to support  
+builds for an arm eabi target (the eagle_mmc branch has the updates  
+needed).  I think what I have now should actually be able to build for  
+thumb2, thumb, and arm targets, since it has multilib enabled, but I  
+don't have any other targets to test :-)
+
+One interesting thing I've noticed in all of this, however is that I  
+tried using my build script with both GCC 4.3.3 and with the latest  
+CodeSourcery G++ Lite sources, and they generate somewhat different  
+code.  Aside from some changes in instruction choices, I've noticed  
+that the CodeSourcery version generates code that is 5-10% smaller  
+than regular GCC with otherwise exactly the same options.  I'm not  
+sure if this because of some changes to GCC since CodeSourcery did  
+their last branch (they merge patches back to gcc, but sometimes it  
+takes some time), or if they are changes/optimizations CS have made  
+themselves.  In any case, it is pretty impressive :-)
+
+One minor downside is that after starting up eLua,  
+collectgarbage(&quot;count&quot;) seems to start out around 6kb instead of  
+5.7kb, but that seems like it could be not a bad tradeoff given that  
+it can shave 10-20kb off of the flash size.  I've not done a lot of  
+additional memory usage testing so I'm not sure if there are other  
+areas where things are better or worse :-)
+
+The same general instructions apply from Rob's post from Feb 4, grab  
+gcc, newlib, binutils, gdb and extract them in the same directory.   
+Make sure the dirs are named gcc, newlib, binutils and gcc.  The same  
+basic approach works with codesourcery.
+
+
+
+
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Makefile
+Type: application/octet-stream
+Size: 1806 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment.obj">https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment.obj</A>&gt;
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment-0001.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: build.sh
+Type: application/octet-stream
+Size: 123 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment-0001.obj">https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment-0001.obj</A>&gt;
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment-0002.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment-0002.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/45aded30/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000576.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+	<LI>Next message: <A HREF="000578.html">[eLua-dev] Wiki Edits?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#579">[ date ]</a>
+              <a href="thread.html#579">[ thread ]</a>
+              <a href="subject.html#579">[ subject ]</a>
+              <a href="author.html#579">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

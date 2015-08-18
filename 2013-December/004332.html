@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problem communicating over USB-CDC
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20communicating%20over%20USB-CDC&In-Reply-To=%3C52A286E0.8040607%40rdg.cc%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004331.html">
+   <LINK REL="Next"  HREF="004333.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problem communicating over USB-CDC</H1>
+    <B>Richard Graham</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20communicating%20over%20USB-CDC&In-Reply-To=%3C52A286E0.8040607%40rdg.cc%3E"
+       TITLE="[eLua-dev] Problem communicating over USB-CDC">richard at rdg.cc
+       </A><BR>
+    <I>Sat Dec  7 03:24:32 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004331.html">[eLua-dev] STM32F4Discovery + tcpip
+</A></li>
+        <LI>Next message: <A HREF="004333.html">[eLua-dev] Problem communicating over USB-CDC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4332">[ date ]</a>
+              <a href="thread.html#4332">[ thread ]</a>
+              <a href="subject.html#4332">[ subject ]</a>
+              <a href="author.html#4332">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I have finally got elua built and working on my custom board (uses a
+AVR32UC3-0512. It was a bit of a challenge since I have a slightly
+unusual clock configuration. But that is sorted now. But I am not able
+to get a console up over the USB-CDC interface. I was wondering if
+anyone would have any hints or debugging suggestions.
+
+When connected the USB device enumerates and shows up on linux as
+/dev/ttyACM0. lsusb shows the device as &quot;03eb:2307 Atmel Corp.&quot;. I am
+able to connect to it with a terminal program. I just can't send or
+receive any data. The port settings are correct and I have tried various
+terminal programs and also tried it on windows. I also tried forcing the
+usbserial module to manage the device rather than cdc_acm but that
+doesn't make any difference. Shell is ofcourse included in my board
+configuration build file.
+
+I am programming and debugging using an AvrDragon over JTAG. Using gdb I
+am able to see that code is running and when I interrupt it usually find
+it in 'repearstat' function, line 1035 of lparser.c.
+
+The debugger continuously shows packets being received. Strangely after
+each packet it shows a joystick key pressed event. I don't know where
+this is coming from -- I don't think there is any code in there anything
+to do with a joystick.
+
+I have also tried spying on the raw usb data with usbmon and wireshark.
+I have seen 64 byte data packets going back and forward when the device
+is plugged in and when the serial connection is opened. However I
+haven't been able to make any sense of these yet.
+
+Any thoughts would be most appreciated. Thanks!
+
+--
+Richard Graham
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004331.html">[eLua-dev] STM32F4Discovery + tcpip
+</A></li>
+	<LI>Next message: <A HREF="004333.html">[eLua-dev] Problem communicating over USB-CDC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4332">[ date ]</a>
+              <a href="thread.html#4332">[ thread ]</a>
+              <a href="subject.html#4332">[ subject ]</a>
+              <a href="author.html#4332">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

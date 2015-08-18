@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] WOFS question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20WOFS%20question&In-Reply-To=%3CCAGgeDjS1AUXat73H8tAKhOyBj5RKcuwwGVh5FEKQsXZsR7sVqA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003713.html">
+   <LINK REL="Next"  HREF="003709.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] WOFS question</H1>
+    <B>Roger Lin</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20WOFS%20question&In-Reply-To=%3CCAGgeDjS1AUXat73H8tAKhOyBj5RKcuwwGVh5FEKQsXZsR7sVqA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] WOFS question">rogerlin at exosite.com
+       </A><BR>
+    <I>Mon Jul 16 17:24:17 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003713.html">[eLua-dev] WOFS question
+</A></li>
+        <LI>Next message: <A HREF="003709.html">[eLua-dev] lpc17xx timers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3712">[ date ]</a>
+              <a href="thread.html#3712">[ thread ]</a>
+              <a href="subject.html#3712">[ subject ]</a>
+              <a href="author.html#3712">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Thanks for your reply.
+-- I did not erase whole flash. I used the last 2 sectors (total 256 KB) to
+store some data before but it wastes a lot of space. When I download new
+build, I did not erase these 2 sectors.
+-- The STM32F2 flash sectors have different sizes, so I use the sectors 5
+~11 for WOFS. They all have 128K. I also modified flash_find_sector to make
+sure the return sector number start from sector 5. Below is the flash
+sector address:
+
+#define ADDR_FLASH_SECTOR_0  ((uint32_t)0x08000000) /* Base @ of Sector 0,
+16 Kbytes */
+#define ADDR_FLASH_SECTOR_1  ((uint32_t)0x08004000) /* Base @ of Sector 1,
+16 Kbytes */
+#define ADDR_FLASH_SECTOR_2  ((uint32_t)0x08008000) /* Base @ of Sector 2,
+16 Kbytes */
+#define ADDR_FLASH_SECTOR_3  ((uint32_t)0x0800C000) /* Base @ of Sector 3,
+16 Kbytes */
+#define ADDR_FLASH_SECTOR_4  ((uint32_t)0x08010000) /* Base @ of Sector 4,
+64 Kbytes */
+#define ADDR_FLASH_SECTOR_5  ((uint32_t)0x08020000) /* Base @ of Sector
+5,128 Kbytes */
+#define ADDR_FLASH_SECTOR_6  ((uint32_t)0x08040000) /* Base @ of Sector
+6,128 Kbytes */
+#define ADDR_FLASH_SECTOR_7  ((uint32_t)0x08060000) /* Base @ of Sector
+7,128 Kbytes */
+#define ADDR_FLASH_SECTOR_8  ((uint32_t)0x08080000) /* Base @ of Sector
+8,128 Kbytes */
+#define ADDR_FLASH_SECTOR_9  ((uint32_t)0x080A0000) /* Base @ of Sector
+9,128 Kbytes */
+#define ADDR_FLASH_SECTOR_10 ((uint32_t)0x080C0000) /* Base @ of Sector
+10,128 Kbytes */
+#define ADDR_FLASH_SECTOR_11 ((uint32_t)0x080E0000) /* Base @ of Sector
+11,128 Kbytes */
+
+--Yes, I can. It's my only way to find problem. I don't know how to online
+debug just like IAR or Keil IDE. I develop elua on windows 7 with PSpad.
+
+Thanks,
+Roger
+
+
+- did you erase the whole flash when programming the eLua firmware or
+only the needed flash sectors? You should erase the whole flash.
+- how is your Flash configuration defined?
+- can you add more printfs in the shell_ls function in order to debug
+the problem? For example, put a printf after 'pinst =
+dm_get_instance_at( dev );' that displays the value of &quot;pinst&quot;. Add
+more printfs until you can pinpont the exact area where the fault
+happens.
+
+On Mon, Jul 16, 2012 at 6:46 PM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Jul 16, 2012 at 1:09 PM, Roger Lin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rogerlin at exosite.com</A>&gt; wrote:
+</I>&gt;<i> &gt; HI,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I would like to add WOFS into my elua build but I see Hard fault handler
+</I>&gt;<i> &gt; print register value when I issue ls command in the shell,
+</I>&gt;<i> &gt; I found the problem may come from DM_INSTANCE_DATA. The name was never
+</I>&gt;<i> &gt; printed if the dir name is /wo.
+</I>&gt;<i> &gt; Did I lost something ?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; My elua source are up to date except what I changed in
+</I>&gt;<i> /plateform/stm32f2.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Roger
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; static void shell_ls( int argc, char **argv )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; {
+</I>&gt;<i> &gt;   const DM_INSTANCE_DATA *pinst;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   unsigned dev, i;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   DM_DIR *d;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   struct dm_dirent *ent;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   u32 total;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   ( void )argc;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   ( void )argv;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   // Iterate through all devices, looking for the ones that can do
+</I>&gt;<i> &quot;opendir&quot;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   for( dev = 0; dev &lt; dm_get_num_devices(); dev ++ )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   {
+</I>&gt;<i> &gt;     pinst = dm_get_instance_at( dev );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     if( pinst-&gt;pdev-&gt;p_opendir_r == NULL || pinst-&gt;pdev-&gt;p_readdir_r ==
+</I>&gt;<i> NULL
+</I>&gt;<i> &gt; || pinst-&gt;pdev-&gt;p_closedir_r == NULL )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;       continue;
+</I>&gt;<i> &gt;     d = dm_opendir( pinst-&gt;name );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     if( d )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     {
+</I>&gt;<i> &gt;       total = 0;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;       printf( &quot;\n%s&quot;, pinst-&gt;name );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;       while( ( ent = dm_readdir( d ) ) != NULL )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;       {
+</I>&gt;<i> &gt;         printf( &quot;\n%s&quot;, ent-&gt;fname );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;         for( i = strlen( ent-&gt;fname ); i &lt;= DM_MAX_FNAME_LENGTH; i++ )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;           printf( &quot; &quot; );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;         printf( &quot;%u bytes&quot;, ( unsigned )ent-&gt;fsize );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;         total = total + ent-&gt;fsize;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;       }
+</I>&gt;<i> &gt;       printf( &quot;\n\nTotal on %s: %u bytes\n&quot;, pinst-&gt;name, ( unsigned
+</I>&gt;<i> )total
+</I>&gt;<i> &gt; );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;       dm_closedir( d );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     }
+</I>&gt;<i> &gt;   }
+</I>&gt;<i> &gt;   printf( &quot;\n&quot; );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; }
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> I don't have a STM32F2, thus I can't test this directly. I know it
+</I>&gt;<i> works on STM32F1, so I'm a bit confused. A few things:
+</I>&gt;<i>
+</I>&gt;<i> - did you erase the whole flash when programming the eLua firmware or
+</I>&gt;<i> only the needed flash sectors? You should erase the whole flash.
+</I>&gt;<i> - how is your Flash configuration defined?
+</I>&gt;<i> - can you add more printfs in the shell_ls function in order to debug
+</I>&gt;<i> the problem? For example, put a printf after 'pinst =
+</I>&gt;<i> dm_get_instance_at( dev );' that displays the value of &quot;pinst&quot;. Add
+</I>&gt;<i> more printfs until you can pinpont the exact area where the fault
+</I>&gt;<i> happens.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>  _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120716/8ed80095/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120716/8ed80095/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003713.html">[eLua-dev] WOFS question
+</A></li>
+	<LI>Next message: <A HREF="003709.html">[eLua-dev] lpc17xx timers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3712">[ date ]</a>
+              <a href="thread.html#3712">[ thread ]</a>
+              <a href="subject.html#3712">[ subject ]</a>
+              <a href="author.html#3712">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

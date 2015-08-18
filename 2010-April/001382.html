@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Changing%20gcc%20between%20ARM9%20and%20ARM-cortex%0A%09automatically.&In-Reply-To=%3Co2o33644d3c1004291149g7ace979em8f5b96ab07068fc5%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001377.html">
+   <LINK REL="Next"  HREF="001383.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Changing%20gcc%20between%20ARM9%20and%20ARM-cortex%0A%09automatically.&In-Reply-To=%3Co2o33644d3c1004291149g7ace979em8f5b96ab07068fc5%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Apr 29 20:49:49 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001377.html">[eLua-dev] Changing gcc between ARM9 and ARM-cortex automatically.
+</A></li>
+        <LI>Next message: <A HREF="001383.html">[eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1382">[ date ]</a>
+              <a href="thread.html#1382">[ thread ]</a>
+              <a href="subject.html#1382">[ subject ]</a>
+              <a href="author.html#1382">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Interesting approach.  I haven't checked, but the build scripts you've
+also posted perhaps could do all of this automatically as well?
+
+Another approach, although a bit more complicated to build is to use a
+multilib version of GCC to build for both.  This can be a bit tricky,
+but I do actually have an example Makefile that will download, build,
+and install such a toolchain at least on OS X.  I believe it should
+also work on Linux without too much modification (just install latex,
+mpfr, etc.. before trying to build the toolchain):
+
+I'd love to hear how well it works for people on Linux targets, since
+perhaps there are just some small changes needed.
+
+<A HREF="http://github.com/jsnyder/arm-eabi-toolchain">http://github.com/jsnyder/arm-eabi-toolchain</A>
+
+-jsnyder
+
+On Thu, Apr 29, 2010 at 1:16 AM, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Hello eLuers,
+</I>&gt;<i>
+</I>&gt;<i> I've been getting a hard time while doing eLua development with diferent
+</I>&gt;<i> CPUs using GCC.
+</I>&gt;<i> As the gcc to arm9 and the gcc to arm-cortex have the same name I have to
+</I>&gt;<i> manualy change the
+</I>&gt;<i> PATH environment variable to switch between the two gcc versions. ( Learned
+</I>&gt;<i> the method from Dado ).
+</I>&gt;<i> After getting a lot of frustration caused by forgetting to change, happened
+</I>&gt;<i> a it a few times already and I've come to a solution.
+</I>&gt;<i>
+</I>&gt;<i> Why don't create symbolic links with different names to each of them like
+</I>&gt;<i> arm-elf-gcc-79 and arm-elf-gcc-cortex to avoid this conflict.
+</I>&gt;<i> ( also did the symlinks with the other binutils )
+</I>&gt;<i>
+</I>&gt;<i> So I gave it a shot, and after creating the links at
+</I>&gt;<i> /usr/local/cross-arm/bin and at /usr/local/cross-cortex/bin ( the originals
+</I>&gt;<i> stayed intact ).
+</I>&gt;<i>
+</I>&gt;<i> I've realized that the SConstruct needed some modifications as well (
+</I>&gt;<i> changes documented at the bottom of the email ).
+</I>&gt;<i> After all this change it worked like a charm and automatically choosing the
+</I>&gt;<i> toolchain.
+</I>&gt;<i> As I think it is a good solution I came to share it with the list and check
+</I>&gt;<i> if it worth the change in the SConstruct and make people change their SO.
+</I>&gt;<i> But would be a Great new feature to eLua and help make it more frendly. Some
+</I>&gt;<i> more thoughts about it.
+</I>&gt;<i>
+</I>&gt;<i> Pros:
+</I>&gt;<i> - Part of the building complexity gets transparent to user as SConstruct
+</I>&gt;<i> automatically choses the toolchain to use.
+</I>&gt;<i> - There is no more need to prepend path to change the toolchain.
+</I>&gt;<i> - the systems without the symbolic links still works perfectly ( need to add
+</I>&gt;<i> toolchain=arm-gcc, peaple don't need to create symlinks if they don't want
+</I>&gt;<i> to )
+</I>&gt;<i>
+</I>&gt;<i> Cons:
+</I>&gt;<i> - People used to: &quot;$scons board=elua-puc&quot; prog will have to add
+</I>&gt;<i> toolchain=arm-gcc
+</I>&gt;<i> - can't think any more else...
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> And here is the documentation of how I did it and some comments as it goes:
+</I>&gt;<i>
+</I>&gt;<i> The symbolinc links wore done in the following way for arm7 and arm9:
+</I>&gt;<i>
+</I>&gt;<i> $ cd /usr/local/cross-arm
+</I>&gt;<i> $ for file in *; do ln -s &quot;$f&quot; &quot;$f&quot;-79; done
+</I>&gt;<i>
+</I>&gt;<i> and for arm cortex:
+</I>&gt;<i>
+</I>&gt;<i> $ cd /usr/local/cross-cortex
+</I>&gt;<i> $ for file in *; do ln -s &quot;$f&quot; &quot;$f&quot;-cortex-m3; done
+</I>&gt;<i>
+</I>&gt;<i> Here are the changes at SConstruct: added two more toolchains, the symbolic
+</I>&gt;<i> linked ones.
+</I>&gt;<i>
+</I>&gt;<i> toolchain_list = {
+</I>&gt;<i>
+</I>&gt;<i> &#160; 'arm-gcc-79' : {
+</I>&gt;<i> &#160;&#160;&#160; 'compile' : 'arm-elf-gcc-79',
+</I>&gt;<i> &#160;&#160;&#160; 'link' : 'arm-elf-ld-79',
+</I>&gt;<i> &#160;&#160;&#160; 'asm' : 'arm-elf-as-79',
+</I>&gt;<i> &#160;&#160;&#160; 'bin' : 'arm-elf-objcopy-79',
+</I>&gt;<i> &#160;&#160;&#160; 'size' : 'arm-elf-size-79',
+</I>&gt;<i> &#160;&#160;&#160; 'cross_cpumode' : 'little',
+</I>&gt;<i> &#160;&#160;&#160; 'cross_lua' : 'float_arm 64',
+</I>&gt;<i> &#160;&#160;&#160; 'cross_lualong' : 'int 32'
+</I>&gt;<i> &#160; },
+</I>&gt;<i> &#160; 'arm-gcc-cortex-m3' : {
+</I>&gt;<i> &#160;&#160;&#160; 'compile' : 'arm-elf-gcc-cortex-m3',
+</I>&gt;<i> &#160;&#160;&#160; 'link' : 'arm-elf-ld-cortex-m3',
+</I>&gt;<i> &#160;&#160;&#160; 'asm' : 'arm-elf-as-cortex-m3',
+</I>&gt;<i> &#160;&#160;&#160; 'bin' : 'arm-elf-objcopy-cortex-m3',
+</I>&gt;<i> &#160;&#160;&#160; 'size' : 'arm-elf-size-cortex-m3',
+</I>&gt;<i> &#160;&#160;&#160; 'cross_cpumode' : 'little',
+</I>&gt;<i> &#160;&#160;&#160; 'cross_lua' : 'float_arm 64',
+</I>&gt;<i> &#160;&#160;&#160; 'cross_lualong' : 'int 32'
+</I>&gt;<i> &#160; },
+</I>&gt;<i>
+</I>&gt;<i> ...
+</I>&gt;<i>
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> Also at SConstruct but a little further: the toolchain used by each
+</I>&gt;<i> platform. ( after some tests, I've noticed that the first acts as default,
+</I>&gt;<i> so no toolchain= is the &quot;auto&quot; one. )
+</I>&gt;<i> As arm-gcc is not the first anymore, it needs to be explicitly called when
+</I>&gt;<i> used. so if the user calls &quot;$scons board=elua-puc&quot; on a system without the
+</I>&gt;<i> symbolic links it will issue an error like: &quot;arm-gcc-79 not found&quot; as
+</I>&gt;<i> mentioned earlier.
+</I>&gt;<i>
+</I>&gt;<i> platform_list = {
+</I>&gt;<i> &#160; 'at91sam7x' : { 'cpus' : [ 'AT91SAM7X256', 'AT91SAM7X512' ], 'toolchains'
+</I>&gt;<i> : [ 'arm-gcc-79', 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ]
+</I>&gt;<i> },
+</I>&gt;<i> &#160; 'lm3s' : { 'cpus' : [ 'LM3S8962', 'LM3S6965', 'LM3S6918', 'LM3S9B92' ],
+</I>&gt;<i> 'toolchains' : [ 'arm-gcc-cortex-m3', 'codesourcery', 'devkitarm',
+</I>&gt;<i> 'arm-eabi-gcc' ] },
+</I>&gt;<i> &#160; 'str9' : { 'cpus' : [ 'STR912FAW44' ], 'toolchains' : [ 'arm-gcc-79',
+</I>&gt;<i> 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ] },
+</I>&gt;<i> &#160; 'i386' : { 'cpus' : [ 'I386' ], 'toolchains' : [ 'i686-gcc' ] },
+</I>&gt;<i> &#160; 'sim' : { 'cpus' : [ 'LINUX' ], 'toolchains' : [ 'i686-gcc' ] },
+</I>&gt;<i> &#160; 'lpc288x' : { 'cpus' : [ 'LPC2888' ], 'toolchains' : [ 'arm-gcc-79',
+</I>&gt;<i> 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ] },
+</I>&gt;<i> &#160; 'str7' : { 'cpus' : [ 'STR711FR2' ], 'toolchains' : [ 'arm-gcc-79',
+</I>&gt;<i> 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ] },
+</I>&gt;<i> &#160; 'stm32' : { 'cpus' : [ 'STM32F103ZE', 'STM32F103RE' ], 'toolchains' : [
+</I>&gt;<i> 'arm-gcc-79', 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ] },
+</I>&gt;<i> &#160; 'avr32' : { 'cpus' : [ 'AT32UC3A0512' ], 'toolchains' : [ 'avr32-gcc' ] },
+</I>&gt;<i> &#160; 'lpc24xx' : { 'cpus' : [ 'LPC2468' ], 'toolchains' : [ 'arm-gcc-79',
+</I>&gt;<i> 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ] },
+</I>&gt;<i> &#160; 'lpc17xx' : { 'cpus' : [ 'LPC1768' ], 'toolchains' : [
+</I>&gt;<i> 'arm-gcc-cortex-m3', 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc'
+</I>&gt;<i> ] }
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> Thank you for the attention.
+</I>&gt;<i> Best Regards,
+</I>&gt;<i>
+</I>&gt;<i> Marcelo Politzer Couto.
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001377.html">[eLua-dev] Changing gcc between ARM9 and ARM-cortex automatically.
+</A></li>
+	<LI>Next message: <A HREF="001383.html">[eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1382">[ date ]</a>
+              <a href="thread.html#1382">[ thread ]</a>
+              <a href="subject.html#1382">[ subject ]</a>
+              <a href="author.html#1382">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] str9.rtc code missing?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20str9.rtc%20code%20missing%3F&In-Reply-To=%3CCAJ%3DY9Y2rsx3UO9ydV328mxMVn_Vr2cREnBhJWhoTXaYNnPFD%3Dg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002679.html">
+   <LINK REL="Next"  HREF="002680.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] str9.rtc code missing?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20str9.rtc%20code%20missing%3F&In-Reply-To=%3CCAJ%3DY9Y2rsx3UO9ydV328mxMVn_Vr2cREnBhJWhoTXaYNnPFD%3Dg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] str9.rtc code missing?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jul 25 21:06:36 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002679.html">[eLua-dev] str9.rtc code missing?
+</A></li>
+        <LI>Next message: <A HREF="002680.html">[eLua-dev] New Mizar32 character LCD module?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2683">[ date ]</a>
+              <a href="thread.html#2683">[ thread ]</a>
+              <a href="subject.html#2683">[ subject ]</a>
+              <a href="author.html#2683">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Jul 23, 2011 at 1:58 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> Hi
+</I>&gt;<i> &#160;I just noticed that the str9.rtc platform-specific module only
+</I>&gt;<i> exists in the documentation, but has no associated code.
+</I>&gt;<i> Did a patch get missed out to include this?
+</I>
+I don't see it either.  Perhaps it's in a branch that never got merged?
+
+&gt;<i>
+</I>&gt;<i> &#160;Incidentally, that doc says to use str9.rtc.setdate(&quot;21/12/2012&quot;),
+</I>&gt;<i> which will confuse Americans, who say &quot;12/21/2012&quot;.
+</I>&gt;<i> &quot;2012/12/21&quot; would be unambiguous and has the same endianness as HH:MM:SS
+</I>
+I would agree with this.  How about just using ISO 8601 (
+<A HREF="http://en.wikipedia.org/wiki/ISO_8601">http://en.wikipedia.org/wiki/ISO_8601</A> )
+
+This would look like: 2012-12-21
+
+I don't think we want to get into locales on MCUs.
+
+&gt;<i> It would be more Lua-like to use the os.date() routines (which
+</I>&gt;<i> unfortunately lack &quot;set&quot; primitives). Otherwise we will end up with
+</I>&gt;<i> str9.rtc.* mizar32.rtc.* and probably str7, stm32 anc lpc.17.rtc.* all
+</I>&gt;<i> with the same interface.
+</I>
+I agree here as well. I assume str9 might have grown this
+functionality for a specific project and that the intention was to
+ultimately bring this to other platforms.  There's undoubtedly value
+in common RTC functionality across many platforms since many of them
+incorporate such a peripheral or, if not, could make use of an
+external one to provide the functionality.
+
+Are you suggesting using os.date to handle getting of date/time
+information and maybe a common rtc module to set date or growing the
+os pool of functions to include some sort of &quot;set&quot; primitive?
+
+One complication there might be with using the os.date function is
+that it does have some localization-related features like providing
+full/abbreviated month/day names that presumably respect the locale
+setting.  Would we pick one locale and support that? Would we leave
+out this functionality?
+
+&gt;<i>
+</I>&gt;<i> &#160; &#160; M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002679.html">[eLua-dev] str9.rtc code missing?
+</A></li>
+	<LI>Next message: <A HREF="002680.html">[eLua-dev] New Mizar32 character LCD module?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2683">[ date ]</a>
+              <a href="thread.html#2683">[ thread ]</a>
+              <a href="subject.html#2683">[ subject ]</a>
+              <a href="author.html#2683">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How can I read the AD samples simultaneously?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20can%20I%20read%20the%20AD%20samples%20simultaneously%3F&In-Reply-To=%3CAANLkTinZXfMkdheSsKCwdt0VqrhrAeh762zJL%2BOmYhMH%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002053.html">
+   <LINK REL="Next"  HREF="002005.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How can I read the AD samples simultaneously?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20can%20I%20read%20the%20AD%20samples%20simultaneously%3F&In-Reply-To=%3CAANLkTinZXfMkdheSsKCwdt0VqrhrAeh762zJL%2BOmYhMH%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How can I read the AD samples simultaneously?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Feb 22 18:40:31 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002053.html">[eLua-dev] How can I read the AD samples simultaneously?
+</A></li>
+        <LI>Next message: <A HREF="002005.html">[eLua-dev] [ANN] Source control versioning system migration to GIT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2063">[ date ]</a>
+              <a href="thread.html#2063">[ thread ]</a>
+              <a href="subject.html#2063">[ subject ]</a>
+              <a href="author.html#2063">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Feb 22, 2011 at 8:38 AM, Ives Cunha &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ivesncc at gmail.com</A>&gt; wrote:
+&gt;<i> 2011/2/9 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Check out these examples:
+</I>&gt;&gt;<i> <A HREF="http://wiki.eluaproject.net/ADCPoll">http://wiki.eluaproject.net/ADCPoll</A>
+</I>&gt;&gt;<i> <A HREF="http://wiki.eluaproject.net/ADCScope">http://wiki.eluaproject.net/ADCScope</A>
+</I>&gt;<i>
+</I>&gt;<i> Thanks Snyder, sorry for the delay.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You can just pass multiple channels instead of one.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Note, however
+</I>&gt;&gt;<i> that I'm not using all three ADCs, just one and using multiplexing, so
+</I>&gt;&gt;<i> the samples won't be at precisely the same time. &#160;If
+</I>&gt;&gt;<i> scanning/multiplexing isn't suitable, it's certainly possible to use
+</I>&gt;&gt;<i> the additional channels, but it likely wouldn't fit too well with the
+</I>&gt;&gt;<i> existing API and might require a platform specific module to
+</I>&gt;&gt;<i> configure.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Multiplex channels of ADC should work. I just didn't knew how do that in
+</I>&gt;<i> eLua.
+</I>
+Perhaps this should be made a little clearer in the docs. In all cases
+it currently means it will multiplex on the supported platforms and
+all we say about adc.sample is: &quot;Optionally, this may be a table
+containing a list of channel IDs (i.e.: {0, 2, 3}), allowing
+synchronization of acquisition.&quot;
+
+I've filed an issue related to this so that it doesn't get lost:
+<A HREF="http://tracker.eluaproject.net/issues/184">http://tracker.eluaproject.net/issues/184</A>
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> I would have to dig around a bit to figure out what clock the ADC
+</I>&gt;&gt;<i> peripheral is running at and what the window size is in terms of us or
+</I>&gt;&gt;<i> ns, but I believe I have the peripheral clock set pretty high, so the
+</I>&gt;&gt;<i> delay between scanned channels might be somewhere in the microsecond
+</I>&gt;&gt;<i> range.
+</I>&gt;&gt;<i>
+</I>&gt;<i> You're right. The delay is very small, so there is no problem at all.
+</I>&gt;<i> I did some testing and I am happy to say that it working well.
+</I>
+Glad to hear it :-)
+
+Also, if you're comfortable with it, feel free to share anything you'd
+like about your project on the wiki or the list.
+
+&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Regardless if you need help or more details let me know.
+</I>&gt;&gt;<i>
+</I>&gt;<i> If I need more help I ask here.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -jsnyder
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thanks again,
+</I>&gt;<i> Ives
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Feb 8, 2011 at 1:49 PM, Ives Cunha &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ivesncc at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; Hello guys,
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I'm doing an AC power meter using STM32F103RET6 to collect samples, but
+</I>&gt;&gt;<i> &gt; to
+</I>&gt;&gt;<i> &gt; read the phase between voltage and current I need to take two samples
+</I>&gt;&gt;<i> &gt; simultaneously.
+</I>&gt;&gt;<i> &gt; I know that the STM32F103RET6 has three ADCs, and that they can take
+</I>&gt;&gt;<i> &gt; simultaneous samples.
+</I>&gt;&gt;<i> &gt; I looked at the eLua documentation and found nothing about it.
+</I>&gt;&gt;<i> &gt; Is there a way to get two readings on two different channels
+</I>&gt;&gt;<i> &gt; simultaneously
+</I>&gt;&gt;<i> &gt; using eLua?
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Thanks,
+</I>&gt;&gt;<i> &gt; Ives
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> Phone: (847) 448-0386
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002053.html">[eLua-dev] How can I read the AD samples simultaneously?
+</A></li>
+	<LI>Next message: <A HREF="002005.html">[eLua-dev] [ANN] Source control versioning system migration to GIT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2063">[ date ]</a>
+              <a href="thread.html#2063">[ thread ]</a>
+              <a href="subject.html#2063">[ subject ]</a>
+              <a href="author.html#2063">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

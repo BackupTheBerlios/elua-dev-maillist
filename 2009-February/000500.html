@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] /mmc
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20/mmc&In-Reply-To=%3C00a901c9914d%2461047080%24230d5180%24%40com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000498.html">
+   <LINK REL="Next"  HREF="000502.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] /mmc</H1>
+    <B>Jesus Alvarez</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20/mmc&In-Reply-To=%3C00a901c9914d%2461047080%24230d5180%24%40com%3E"
+       TITLE="[eLua-dev] /mmc">jalvarez at micromint.com
+       </A><BR>
+    <I>Tue Feb 17 23:16:19 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000498.html">[eLua-dev] /mmc
+</A></li>
+        <LI>Next message: <A HREF="000502.html">[eLua-dev] /mmc
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#500">[ date ]</a>
+              <a href="thread.html#500">[ thread ]</a>
+              <a href="subject.html#500">[ subject ]</a>
+              <a href="author.html#500">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dado,
+
+The EK-LM3S8962 should support microSD cards. The mmc.c file assumes the
+card chip select is on PG0 (see section &quot;GPIO for card chip select&quot;). Please
+confirm that is the case on your board. The EK-LM3S6965 uses PD0 and the
+Eagle-100 uses PG1 so that varies with the design of the board.
+
+If your card does not show any files with 'ls', I suspect the FatFs code is
+not able to read the directory.
+
+I have not used FatFs with FAT32 cards, although the code does support them.
+If your card is 4 GB or less I would suggest formatting it using FAT instead
+of FAT32. The FatFs site refers to FAT32 mainly for cards &gt;4GB.
+
+You do not need to use a special mkfs for the card. Formatting the card on a
+PC works fine.
+
+Regards,
+Jesus Alvarez
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000498.html">[eLua-dev] /mmc
+</A></li>
+	<LI>Next message: <A HREF="000502.html">[eLua-dev] /mmc
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#500">[ date ]</a>
+              <a href="thread.html#500">[ thread ]</a>
+              <a href="subject.html#500">[ subject ]</a>
+              <a href="author.html#500">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

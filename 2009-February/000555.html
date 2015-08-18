@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Timing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Timing&In-Reply-To=%3C81fbe47d0902181402s13541a86u55fcbcb887b0a560%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000554.html">
+   <LINK REL="Next"  HREF="000557.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Timing</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Timing&In-Reply-To=%3C81fbe47d0902181402s13541a86u55fcbcb887b0a560%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Timing">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Feb 18 23:02:15 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000554.html">[eLua-dev] Timing
+</A></li>
+        <LI>Next message: <A HREF="000557.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#555">[ date ]</a>
+              <a href="thread.html#555">[ thread ]</a>
+              <a href="subject.html#555">[ subject ]</a>
+              <a href="author.html#555">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Same. LM3S8962 (which is basically equivalent to LM3S6965 in terms of
+performance).
+
+Best,
+Bogdan
+
+On Thu, Feb 19, 2009 at 12:01 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+
+&gt;<i> On which platform ?
+</I>&gt;<i>
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Feb 18, 2009 at 18:57, Bogdan Marinescu &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I get 21us with this slighly modified version (of the original post):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> local tmr, dtime, t1, t2 = tmr
+</I>&gt;&gt;<i> term.clrscr()
+</I>&gt;&gt;<i> while 1 do
+</I>&gt;&gt;<i>  t1 = tmr.start(0)
+</I>&gt;&gt;<i>  t2 = tmr.read(0)
+</I>&gt;&gt;<i>  dtime = tmr.diff(0,t2,t1)
+</I>&gt;&gt;<i>  term.gotoxy(1,1)
+</I>&gt;&gt;<i>  term.putstr(string.format(&quot;Time (us): %06d&quot;,dtime))
+</I>&gt;&gt;<i> end
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Not that bad IMO.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Feb 18, 2009 at 11:46 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Fernando, could you run this simple script on the EK-1100 and report
+</I>&gt;&gt;&gt;<i> AVR32 performance ?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> We have a MOD711, with an ST711 (ARM7) too but after strugling (and
+</I>&gt;&gt;&gt;<i> achieving ! :) to make it work on Linux,  OpenOCD now refuses to flash our
+</I>&gt;&gt;&gt;<i> kit :( :( :( :(
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best
+</I>&gt;&gt;&gt;<i> Dado
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Wed, Feb 18, 2009 at 17:15, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> OK. At least I know my compiler isn't messed up :-)
+</I>&gt;&gt;&gt;&gt;<i> I'm curious now though whether similarly clocked ARM7 vs AVR vs
+</I>&gt;&gt;&gt;&gt;<i> Cortex-M3 (ARM Thumb2) vs etc.. do for these types of tests.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> -jsnyder
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Feb 18, 2009, at 10:24 AM, Dado Sutter wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hello,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Wed, Feb 18, 2009 at 10:59, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> &gt; On Wed, Feb 18, 2009 at 02:19, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> So, one of the things I've been doing recently is tracking timing data
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> for adcscope.lua when running it.  I've found certain things that increase
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> or decrease the amount of time spent getting samples, but I hadn't actually
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> checked what the bare minimum time would be for a dry loop like the
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> following:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt; term.clrscr()
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt; while 1 do
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt;  t1 = tmr.start(0)
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt;  t2 = tmr.read(0)
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt;  dtime = tmr.diff(0,t2,t1)
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt;  term.gotoxy(1,1)
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt;  term.putstr(string.format(&quot;Time (us): %06d&quot;,dtime))
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt; end
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> &gt; For LM3S6965, I get 79 us.  Is this correct?
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> 79us exactly in my EK-LM3S8962 too.
+</I>&gt;&gt;&gt;&gt;<i> (And I've figured out that you have disabled XMODEM Xfer on your build
+</I>&gt;&gt;&gt;&gt;<i> :)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Abra&#231;osssssssssss
+</I>&gt;&gt;&gt;&gt;<i> Dado
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>   --
+</I>&gt;&gt;&gt;&gt;<i> James Snyder
+</I>&gt;&gt;&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;&gt;&gt;<i> ph: (847) 644-2322
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/c990acb5/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/c990acb5/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000554.html">[eLua-dev] Timing
+</A></li>
+	<LI>Next message: <A HREF="000557.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#555">[ date ]</a>
+              <a href="thread.html#555">[ thread ]</a>
+              <a href="subject.html#555">[ subject ]</a>
+              <a href="author.html#555">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

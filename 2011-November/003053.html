@@ -1,0 +1,297 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%0A%09%3D%3Fiso-8859-2%3Fq%3FSTM32f4DSCY_-_MCU_settings_-_flash_pref%3F%3D%0A%09%3D%3Fiso-8859-2%3Fq%3Fetch_on%3F%3D&In-Reply-To=%3C09271d271a8986df0df632d653744dec%40mail3.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003052.html">
+   <LINK REL="Next"  HREF="003054.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%0A%09%3D%3Fiso-8859-2%3Fq%3FSTM32f4DSCY_-_MCU_settings_-_flash_pref%3F%3D%0A%09%3D%3Fiso-8859-2%3Fq%3Fetch_on%3F%3D&In-Reply-To=%3C09271d271a8986df0df632d653744dec%40mail3.volny.cz%3E"
+       TITLE="[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on">pito at volna.cz
+       </A><BR>
+    <I>Tue Nov 29 21:28:44 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003052.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+        <LI>Next message: <A HREF="003054.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3053">[ date ]</a>
+              <a href="thread.html#3053">[ thread ]</a>
+              <a href="subject.html#3053">[ subject ]</a>
+              <a href="author.html#3053">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>f100	f4_p	f4_g
+429800	1286180	1367420
+501116	1669036	1844568
+689800	2022172	2151998
+1106436	3010608	2685712
+642236	1799912	1886020
+
+2.993	3.182
+3.331	3.681
+2.932	3.120
+2.721	2.427
+2.803	2.937
+
+
+----- P&#366;VODN&#205; ZPR&#193;VA -----
+Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>,
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+P&#345;edm&#283;t: Re: [eLua-dev] STM32f4DSCY - MCU settings - flash prefetch
+on
+Datum: 29.11.2011 - 21:09:07
+
+&gt;<i> For the analysis:
+</I>&gt;<i> This is from the chibios rtos benchmark I ran on
+</I>&gt;<i> stm32VL discoboard,
+</I>&gt;<i> stm32f100 overclocked to 56MHz, 0(zero)ws by
+</I>&gt;<i> default:
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.8 (Benchmark, round robin context
+</I>&gt;<i> switching)
+</I>&gt;<i> --- Score : 429800 ctxswc/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.9 (Benchmark, I/O Queues
+</I>&gt;<i> throughput)
+</I>&gt;<i> --- Score : 501116 bytes/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.10 (Benchmark, virtual timers
+</I>&gt;<i> set/reset)
+</I>&gt;<i> --- Score : 689800 timers/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.11 (Benchmark, semaphores
+</I>&gt;<i> wait/signal)
+</I>&gt;<i> --- Score : 1106436 wait+signal/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.12 (Benchmark, mutexes
+</I>&gt;<i> lock/unlock)
+</I>&gt;<i> --- Score : 642236 lock+unlock/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> 
+</I>&gt;<i> This is from chibios rtos test I ran on
+</I>&gt;<i> stm32f4discoboard default
+</I>&gt;<i> chibios settings (settings most probably 168MHz,
+</I>&gt;<i> 5ws, pref/caches
+</I>&gt;<i> on):
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.8 (Benchmark, round robin context
+</I>&gt;<i> switching)
+</I>&gt;<i> --- Score : 1286180 ctxswc/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.9 (Benchmark, I/O Queues
+</I>&gt;<i> throughput)
+</I>&gt;<i> --- Score : 1669036 bytes/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.10 (Benchmark, virtual timers
+</I>&gt;<i> set/reset)
+</I>&gt;<i> --- Score : 2022172 timers/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.11 (Benchmark, semaphores
+</I>&gt;<i> wait/signal)
+</I>&gt;<i> --- Score : 3010608 wait+signal/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.12 (Benchmark, mutexes
+</I>&gt;<i> lock/unlock)
+</I>&gt;<i> --- Score : 1799912 lock+unlock/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> 
+</I>&gt;<i> This is what Giovanni has run on his
+</I>&gt;<i> stm32f4discobard(a different
+</I>&gt;<i> compiler):
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.8 (Benchmark, round robin context
+</I>&gt;<i> switching)
+</I>&gt;<i> --- Score : 1367420 ctxswc/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.9 (Benchmark, I/O Queues
+</I>&gt;<i> throughput)
+</I>&gt;<i> --- Score : 1844568 bytes/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.10 (Benchmark, virtual timers
+</I>&gt;<i> set/reset)
+</I>&gt;<i> --- Score : 2151998 timers/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.11 (Benchmark, semaphores
+</I>&gt;<i> wait/signal)
+</I>&gt;<i> --- Score : 2685712 wait+signal/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> ----------------------------------------------------------------------------
+</I>&gt;<i> &gt; --- Test Case 11.12 (Benchmark, mutexes
+</I>&gt;<i> lock/unlock)
+</I>&gt;<i> --- Score : 1886020 lock+unlock/S
+</I>&gt;<i> --- Result: SUCCESS
+</I>&gt;<i> 
+</I>&gt;<i> The stm32f100(@56MHz,0ws) against
+</I>&gt;<i> stm32f4(168MHz,5ws,ART) - it seems
+</I>&gt;<i> the results are ~1:3 (56/168 0ws/0ws).
+</I>&gt;<i> You may double check..
+</I>&gt;<i> p.
+</I>&gt;<i> 
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;James Snyder&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> Komu: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] STM32f4DSCY - MCU settings
+</I>&gt;<i> - flash prefetch
+</I>&gt;<i> on
+</I>&gt;<i> Datum: 29.11.2011 - 20:32:55
+</I>&gt;<i> 
+</I>&gt;<i> &gt; 2011/11/29 pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;:
+</I>&gt;<i> &gt; &gt;&gt; Also I can confirm the ~13% performance
+</I>&gt;<i> &gt; &gt;&gt; difference
+</I>&gt;<i> &gt; &gt;&gt; &gt;&gt; on my own hardware,
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I am still not sure the prefetch cache works
+</I>&gt;<i> &gt; &gt; full speed as the 13%
+</I>&gt;<i> &gt; &gt; &gt; we measured is not much, indeed (but it
+</I>&gt;<i> &gt; &gt; &gt; could be
+</I>&gt;<i> &gt; &gt; &gt; &gt; &gt; masked by some
+</I>&gt;<i> &gt; &gt; &gt; processes within eLua however). When we did
+</I>&gt;<i> &gt; &gt; &quot;prefetch on&quot; on pic32mx
+</I>&gt;<i> &gt; &gt; &gt; (retrobsd) the filesystem performance went
+</I>&gt;<i> &gt; &gt; &gt; up by
+</I>&gt;<i> &gt; &gt; &gt; &gt; &gt; ~30% (where the
+</I>&gt;<i> &gt; &gt; &gt; most time we wait on sdcard's responses..)
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; I think it would be helpful to try one or more
+</I>&gt;<i> &gt; of
+</I>&gt;<i> &gt; &gt; the following:
+</I>&gt;<i> &gt; 1) Try this on one of ST's other MCUs that has
+</I>&gt;<i> &gt; known working prefetch
+</I>&gt;<i> &gt; and toggle it
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 2) Simplify the test case to sequential code
+</I>&gt;<i> &gt; that
+</I>&gt;<i> &gt; &gt; definitely doesn't
+</I>&gt;<i> &gt; branch and would always pull instructions from
+</I>&gt;<i> &gt; flash.  I haven't
+</I>&gt;<i> &gt; evaluated what's going on at the C level in this
+</I>&gt;<i> &gt; code to know how
+</I>&gt;<i> &gt; effective prefetch _should_ be.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 3) Lower the clock to one where you can run with
+</I>&gt;<i> &gt; zero wait states and
+</I>&gt;<i> &gt; compare performance between prefetch enabled
+</I>&gt;<i> &gt; with
+</I>&gt;<i> &gt; &gt; wait states and zero
+</I>&gt;<i> &gt; wait states. Given that a previous test in which
+</I>&gt;<i> &gt; the wait state
+</I>&gt;<i> &gt; setting was reduced resulted in a performance
+</I>&gt;<i> &gt; gain
+</I>&gt;<i> &gt; &gt; might suggest that
+</I>&gt;<i> &gt; this would yield a significant difference.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Also note that this thing has an instruction
+</I>&gt;<i> &gt; cache
+</I>&gt;<i> &gt; &gt; and data cache,
+</I>&gt;<i> &gt; which may or may not be helping significantly
+</I>&gt;<i> &gt; depending on the code
+</I>&gt;<i> &gt; and how many hits and misses we might get.  I
+</I>&gt;<i> &gt; haven't traced through
+</I>&gt;<i> &gt; what Lua would be doing on the hardware level in
+</I>&gt;<i> &gt; the inner loop of the
+</I>&gt;<i> &gt; code example, but a quick test yielded this:
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Count: 54, 1000x 5.656045 sec -- prefetch &amp;
+</I>&gt;<i> &gt; caches
+</I>&gt;<i> &gt; &gt; on
+</I>&gt;<i> &gt; Count: 54, 1000x 7.241642 sec -- prefetch on,
+</I>&gt;<i> &gt; caches off
+</I>&gt;<i> &gt; Count: 54, 1000x 8.561787 sec -- prefetch off,
+</I>&gt;<i> &gt; caches off
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; There's about a 15% time reduction between w/o
+</I>&gt;<i> &gt; and
+</I>&gt;<i> &gt; &gt; w/ prefetch, and
+</I>&gt;<i> &gt; about 21% for caches being enabled.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; None of this seems to meet with the marketing
+</I>&gt;<i> &gt; speak that says that
+</I>&gt;<i> &gt; prefetch should make it behave like zero wait
+</I>&gt;<i> &gt; state, but It's
+</I>&gt;<i> &gt; difficult to know if what we see is related to a
+</I>&gt;<i> &gt; hardware
+</I>&gt;<i> &gt; implementation deficiency or the nature of the
+</I>&gt;<i> &gt; test case.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; &gt; p.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; --
+</I>&gt;<i> &gt; &gt; &#381;ijte &#382;ivot gangstera ve velk&#233;m m&#283;st&#283;. Pl&#328;te
+</I>&gt;<i> &gt; &gt; mise pro kmotra,
+</I>&gt;<i> &gt; &gt; &gt; bojujte s ostatn&#237;mi hr&#225;&#269;i z cel&#233;ho sv&#283;ta.
+</I>&gt;<i> &gt; &gt; Zahrajte si hru Mafia na
+</I>&gt;<i> &gt; &gt; &gt; <A HREF="http://web.volny.cz/data/click.php?id=1305">http://web.volny.cz/data/click.php?id=1305</A>
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Videokurzy MS Office zdarma! Port&#225;l VOLN&#221;.cz
+</I>&gt;<i> p&#345;in&#225;&#353;&#237; online v&#253;ukov&#225;
+</I>&gt;<i> videa, kter&#225; v&#225;s rychle, n&#225;zorn&#283; a z&#225;bavnou formou
+</I>&gt;<i> nau&#269;&#237; ovl&#225;dat
+</I>&gt;<i> programy Excel, Word a PowerPoint. Seri&#225;l najdete
+</I>&gt;<i> na
+</I>&gt;<i> <A HREF="http://web.volny.cz/data/click.php?id=1293">http://web.volny.cz/data/click.php?id=1293</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+
+-- 
+&#381;ijte &#382;ivot gangstera ve velk&#233;m m&#283;st&#283;. Pl&#328;te mise pro kmotra,
+bojujte s ostatn&#237;mi hr&#225;&#269;i z cel&#233;ho sv&#283;ta. Zahrajte si hru Mafia na
+<A HREF="http://web.volny.cz/data/click.php?id=1305">http://web.volny.cz/data/click.php?id=1305</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003052.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+	<LI>Next message: <A HREF="003054.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3053">[ date ]</a>
+              <a href="thread.html#3053">[ thread ]</a>
+              <a href="subject.html#3053">[ subject ]</a>
+              <a href="author.html#3053">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

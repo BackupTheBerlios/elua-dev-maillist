@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua net module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module&In-Reply-To=%3C33644d3c1002221040v32aa068bp7c38730b134b35e7%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001200.html">
+   <LINK REL="Next"  HREF="001202.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua net module</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module&In-Reply-To=%3C33644d3c1002221040v32aa068bp7c38730b134b35e7%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua net module">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Feb 22 19:40:17 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001200.html">[eLua-dev] eLua net module
+</A></li>
+        <LI>Next message: <A HREF="001202.html">[eLua-dev] eLua net module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1201">[ date ]</a>
+              <a href="thread.html#1201">[ thread ]</a>
+              <a href="subject.html#1201">[ subject ]</a>
+              <a href="author.html#1201">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I haven't worked much with the net module, but it looks like it should
+be recycling socket numbers as they are closed, since the socket
+function needs to reserve the socket before connect can use it.
+
+Do you get errors from any of the functions that can return error states?
+
+Though I haven't noticed any obvious problems in a quick glance over
+the code, it sounds like there might be some sort of disconnect in
+terms of flagging sockets as having been closed, and the socket
+function in checking for a closed/free one.
+
+Are the used and closed socket numbers ever available again at later
+times (perhaps after uip has had some time to iterate through the main
+loops a few times?)
+
+On Mon, Feb 22, 2010 at 10:20 AM, T&#233;o Benjamin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">teo.benjamin at gmail.com</A>&gt; wrote:
+&gt;<i> Can someone have a look at this?
+</I>&gt;<i> I really couldn't find a good way to make it work.
+</I>&gt;<i>
+</I>&gt;<i> Thanks
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Feb 12, 2010 at 4:45 PM, T&#233;o Benjamin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">teo.benjamin at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I've done that, but it did not work. The function net.send didn't send
+</I>&gt;&gt;<i> nothing at all.
+</I>&gt;&gt;<i> I really think I have to close the socket and use another one (in this
+</I>&gt;&gt;<i> case, it would be the same, but coming from another call of net.socket)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Fri, Feb 12, 2010 at 5:08 PM, Pedro Bittencourt
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I think that's the way it works
+</I>&gt;&gt;&gt;<i> net.close closes the connection of a socket, but the socket itself is
+</I>&gt;&gt;&gt;<i> still there. You may create a new connection on the same socket after
+</I>&gt;&gt;&gt;<i> closing another.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> something like:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> local sock = net.socket(0)
+</I>&gt;&gt;&gt;&gt;<i> err&#160; = net.connect(sock,ip,port)
+</I>&gt;&gt;&gt;&gt;<i> ...do something (send stuff for exemple)
+</I>&gt;&gt;&gt;&gt;<i> net.close(sock)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> now to connect with other host, do something like:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> net.connect(sock,anotherIp,anotherPort)
+</I>&gt;&gt;&gt;&gt;<i> ...do something
+</I>&gt;&gt;&gt;&gt;<i> net.close(sock)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> with the same socket
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --Pedro Bittencourt
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Fri, Feb 12, 2010 at 4:42 PM, T&#233;o Benjamin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">teo.benjamin at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;&gt;<i> I think we have found a bug in the eLua net module.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> We were trying to use the net module to send messages to a local server
+</I>&gt;&gt;&gt;&gt;<i> here from a LM3S board.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> The problem is: when we call&#160; net.socket( net.SOCK_STREAM ), it works
+</I>&gt;&gt;&gt;&gt;<i> fine, giving us the socket 0. The second time we do it (after calling
+</I>&gt;&gt;&gt;&gt;<i> net.close( socket ), the function returns the socket 1 as the next avaiable
+</I>&gt;&gt;&gt;&gt;<i> socket. After that, it returns 2, 3 ... At some point, it return -1, because
+</I>&gt;&gt;&gt;&gt;<i> there are, supposedly, any free sockets left.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> After a lot of tests here, I think the function net.close( socket ) is
+</I>&gt;&gt;&gt;&gt;<i> not working fine. It seems to close the connection (apparently), but it
+</I>&gt;&gt;&gt;&gt;<i> don't free the socket.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Is there a bug in the eLua module or we just missunderstood the
+</I>&gt;&gt;&gt;&gt;<i> implementation?
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Any guess?
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Thanks,
+</I>&gt;&gt;&gt;&gt;<i> T&#233;o
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001200.html">[eLua-dev] eLua net module
+</A></li>
+	<LI>Next message: <A HREF="001202.html">[eLua-dev] eLua net module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1201">[ date ]</a>
+              <a href="thread.html#1201">[ thread ]</a>
+              <a href="subject.html#1201">[ subject ]</a>
+              <a href="author.html#1201">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

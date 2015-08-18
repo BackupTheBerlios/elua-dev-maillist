@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Preprocessor Stuff
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Preprocessor%20Stuff&In-Reply-To=%3C1610463772.1274801231338090963.JavaMail.root%40mail-1.01.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000239.html">
+   <LINK REL="Next"  HREF="000241.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Preprocessor Stuff</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Preprocessor%20Stuff&In-Reply-To=%3C1610463772.1274801231338090963.JavaMail.root%40mail-1.01.com%3E"
+       TITLE="[eLua-dev] Preprocessor Stuff">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Jan  7 15:21:31 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000239.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+        <LI>Next message: <A HREF="000241.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#240">[ date ]</a>
+              <a href="thread.html#240">[ thread ]</a>
+              <a href="subject.html#240">[ subject ]</a>
+              <a href="author.html#240">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yeah, so far I am running the flash tool in a VM :(
+
+I have gotten OpenOCD to burn something to flash on the board, but unfortunately, so far, it doesn't seem to start up after I reset the board.  I'm going to continue to mess around with it to see if I can get it working.  OpenOCD at least supposedly supports this board for flashing.  The debug stuff seems to work OK (though I've not tested it extensively).  I'll post something if I manage to get another solution working.
+
+I wouldn't say that the port is really broken, more just that I think a few things like that if statement an define aren't.
+
+I've attached some patches for updated lm3s driver libraries, which seem to have allowed the OLED display to work on my device.  The &quot;piano&quot; application still makes no sound at the moment, and so I'm still investigating that.
+
+One quick question Fred:  what terminal program were you using on the Mac?  Were you using minicom?  I've tried kermit, screen and a few other things.  I've found that it's difficult to get the terminal settings quite right, it doesn't do carriage returns in all cases which results in the prompt moving towards the right side of the screen if one keeps hitting enter.  Any ideas?
+
+Is anyone on the dev team familiar with git?  I've checked out the eLua repo using git svn, and I might throw up my branch to GitHub just so that I have an online location where I can access things from multiple machines.  It would also make it easy to show changes to you guys without having commit access.  Would that be OK?
+
+-jsnyder
+
+----- Original Message -----
+From: &quot;Fr&#233;d&#233;ric Thomas&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">berlios.de at thomascorner.com</A>&gt;
+To: &quot;eLua development list&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+Sent: Wednesday, January 7, 2009 6:11:34 AM GMT -06:00 US/Canada Central
+Subject: Re: [eLua-dev] Preprocessor Stuff
+
+Hi there,
+
+I did the early LM3S6965 port using a Mac built toolchain, and it used  
+to work. That was 6 months ago however, and I have not maintained it.  
+In the meantime, toolchain components certainly changed, and eLua as  
+well. No display nor ethernet support back then.
+
+James, I am curious as to how you send your code to the board using  
+the Mac ? The only reliable method I had was to use the Luminary tool  
+under Windows (in a VM) :(
+
+Fred
+
+
+On Jan 6, 2009, at 23:58 , James Snyder wrote:
+
+&gt;<i> Hi -
+</I>&gt;<i>
+</I>&gt;<i> I've got the toolchain up and running on a Mac, most of the  
+</I>&gt;<i> instructions worked fine for me with the one exception that (unlike  
+</I>&gt;<i> on a Linux machine I'd tried before) for the steps where an autoconf  
+</I>&gt;<i> was called for, doing so actually didn't go quite right and resulted  
+</I>&gt;<i> in the configure scripts not recognizing many of the options being  
+</I>&gt;<i> enabled.  Luckily, things seem to build OK with the out-of-the-box  
+</I>&gt;<i> configure scripts with the latest versions of the libraries required.
+</I>&gt;<i>
+</I>&gt;<i> My real reason for making this post, however, is related to the  
+</I>&gt;<i> build process and in particular how things are handled by the  
+</I>&gt;<i> preprocessor.  I was trying to make a patch for the lm3s platform  
+</I>&gt;<i> files so that another type of display (the OSRAM type OLED display,  
+</I>&gt;<i> which I later realized isn't actually on my Rev C LM3S6965) could be  
+</I>&gt;<i> used.  When I was trying to use some if blocks so that display  
+</I>&gt;<i> support could switch between the RIT and OSRAM types, I noticed that  
+</I>&gt;<i> the if statements didn't seem to work as expected. with ELUA_CPU and  
+</I>&gt;<i> ELUA_BOARD for example.  An easy way to demonstrate this is to run  
+</I>&gt;<i> the preprocessor on platform.c in the lm3s platform folder.  In  
+</I>&gt;<i> advance, I'll point out that the following lines are found within:
+</I>&gt;<i>
+</I>&gt;<i> #if ELUA_CPU == LM3S8962
+</I>&gt;<i>   #define UARTS_COUNT 2
+</I>&gt;<i> #elif ELUA_CPU == LM3S6965
+</I>&gt;<i>   #define UARTS_COUNT 3
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> and as well, look at the function uarts_init(), which contains the  
+</I>&gt;<i> line:
+</I>&gt;<i>
+</I>&gt;<i> for( i = 0; i &lt; UARTS_COUNT; i ++ )
+</I>&gt;<i>
+</I>&gt;<i> If I run the preprocessor with -DELUA_CPU= LM3S6965  I would expect  
+</I>&gt;<i> the UARTS_COUNT in the line from uarts_init() to be replaced with  
+</I>&gt;<i> the number 3, but this is not what I get.
+</I>&gt;<i>
+</I>&gt;<i> If I run the following: arm-elf-cpp -DELUA_CPU=LM3S6965 platform.c |  
+</I>&gt;<i> less
+</I>&gt;<i>
+</I>&gt;<i> and then locate the same for loop, instead I see:
+</I>&gt;<i>
+</I>&gt;<i> for( i = 0; i &lt; 2; i ++ )
+</I>&gt;<i>
+</I>&gt;<i> Is this handled correctly with a different compiler preprocessor?   
+</I>&gt;<i> I'm using GCC 4.3.2, which I compiled per the instructions on the  
+</I>&gt;<i> eLua site.  Having looked at the documentation for the gcc  
+</I>&gt;<i> preprocessor, I don't think this would be expected to work either.   
+</I>&gt;<i> using the gcc -D flags with numbers definitely works, but these  
+</I>&gt;<i> tokens for the different platforms doesn't, at least for me.
+</I>&gt;<i>
+</I>&gt;<i> I would make a patch for some sort of fix, but I figured I'd touch  
+</I>&gt;<i> base first.
+</I>&gt;<i>
+</I>&gt;<i> Love the project, and it runs great on my LM3S6965 :-)
+</I>&gt;<i>
+</I>&gt;<i> Best.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> P.S. I was also really really happy to see an ls command added since  
+</I>&gt;<i> the 0.5 release.
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 644-2322
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+_______________________________________________
+Elua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: elua-lm3s-driverlibupdate.patch.gz
+Type: application/x-gzip
+Size: 15087 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090107/7bff3e0e/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090107/7bff3e0e/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000239.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+	<LI>Next message: <A HREF="000241.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#240">[ date ]</a>
+              <a href="thread.html#240">[ thread ]</a>
+              <a href="subject.html#240">[ subject ]</a>
+              <a href="author.html#240">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

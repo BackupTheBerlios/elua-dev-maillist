@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLuaMIDI
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLuaMIDI&In-Reply-To=%3C305dffcb1002021900j2f5aa47dg9160727e92e80671%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001175.html">
+   <LINK REL="Next"  HREF="001177.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLuaMIDI</H1>
+    <B>Vaughan McAlley</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLuaMIDI&In-Reply-To=%3C305dffcb1002021900j2f5aa47dg9160727e92e80671%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLuaMIDI">ockegheim at gmail.com
+       </A><BR>
+    <I>Wed Feb  3 04:00:45 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001175.html">[eLua-dev] Building v0.7 with MMCFS for EK-LM3S8962	(SDC_SPI_NUM undefined)
+</A></li>
+        <LI>Next message: <A HREF="001177.html">[eLua-dev] eLuaMIDI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1176">[ date ]</a>
+              <a href="thread.html#1176">[ thread ]</a>
+              <a href="subject.html#1176">[ subject ]</a>
+              <a href="author.html#1176">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I&#8217;m working on an algorithm (in Lua) to process MIDI data, mainly to
+do with tuning. The reason I joined this list was that eventually I
+want to move it from my Mac to an embedded board, but I want to get
+the algorithm right first...
+
+So I know Lua and MIDI pretty well, but not much about embedded
+boards. I understand what you&#8217;re trying to do with eLuaMIDI.
+
+One thing I&#8217;ve found is that MIDI messages fit very neatly into Lua
+strings, as embedded zeros are allowed. This allows you to parse
+messages using the string library. For example, instead of lines
+364-370 (validating sysex messages):
+
+-- Validate data ( i.e look for bytes with the bit #7 set )
+  for i=1, string.len( data ) do
+    if string.byte( string.sub( data, i, i) ) &gt; 127 then
+      error( &quot;Error: Invalid byte in data pos &quot; .. i .. &quot;\n&quot; )
+      return false
+    end
+  end
+
+... you could use string.find:
+
+local i = string.find(data, &quot;[\128-\255]&quot;)
+if i then
+    error( &quot;Error: Invalid byte in data pos &quot; .. i .. &quot;\n&quot; )
+    return false
+end
+
+Cheers,
+Vaughan
+
+
+On 28 January 2010 20:32, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Very cool! I've been thinking about something like this too, but my MIDI
+</I>&gt;<i> knowledge is quite limited. I'm willing to help as much as possible with the
+</I>&gt;<i> coding part, so we can get some serious music out of eLua :)
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Jan 28, 2010 at 2:12 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hello eLuers,
+</I>&gt;&gt;<i> &#160;&#160; Thiago Naves is developing a Lua Module that implements a MIDI protocol
+</I>&gt;&gt;<i> API for eLua.
+</I>&gt;&gt;<i> &#160;&#160; It is hosted in Google Code @ <A HREF="https://code.google.com/p/eluamidi/">https://code.google.com/p/eluamidi/</A> and
+</I>&gt;&gt;<i> we'll be glad to grant commit access for those who want to collaborate.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001175.html">[eLua-dev] Building v0.7 with MMCFS for EK-LM3S8962	(SDC_SPI_NUM undefined)
+</A></li>
+	<LI>Next message: <A HREF="001177.html">[eLua-dev] eLuaMIDI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1176">[ date ]</a>
+              <a href="thread.html#1176">[ thread ]</a>
+              <a href="subject.html#1176">[ subject ]</a>
+              <a href="author.html#1176">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

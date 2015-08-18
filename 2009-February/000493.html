@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Port Aliases
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Port%20Aliases&In-Reply-To=%3Cd3b6d880902170747w368f2132y96420db62e882d79%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000488.html">
+   <LINK REL="Next"  HREF="000490.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Port Aliases</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Port%20Aliases&In-Reply-To=%3Cd3b6d880902170747w368f2132y96420db62e882d79%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Port Aliases">dadosutter at gmail.com
+       </A><BR>
+    <I>Tue Feb 17 16:47:47 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000488.html">[eLua-dev] Port Aliases
+</A></li>
+        <LI>Next message: <A HREF="000490.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#493">[ date ]</a>
+              <a href="thread.html#493">[ thread ]</a>
+              <a href="subject.html#493">[ subject ]</a>
+              <a href="author.html#493">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Feb 17, 2009 at 12:25, Jesus Alvarez &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jalvarez at micromint.com</A>&gt; wrote:
+
+&gt;<i> With time eLua will support many dozens of boards.
+</I>
+
+Indeed, we're close to our first dozen now :)
+
+
+&gt;<i> Using many IF's to make a
+</I>&gt;<i> script portable (like in the current led.lua example) does not look very
+</I>&gt;<i> elegant as the number of boards increases.
+</I>
+
+I agree but it works well for the simple example and it all depends on what
+you need to make portable. Good solutions with the native require(module)
+Lua mechanism can help here and eLua also provides a &quot;system module&quot;, with
+platform-dependent information for this matters.
+
+Should the language support port aliases in the GPIOs? For example, on the
+&gt;<i> EK-LM3S6965 port LED_0 could be aliased to PF_0, BTN_0 to PF_1, BTN_1 to
+</I>&gt;<i> PE_0, etc. That could make scripts more portable without the large number
+</I>&gt;<i> of
+</I>&gt;<i> IF statements. LEDs and buttons are two good uses for this but there are
+</I>&gt;<i> probably others.
+</I>
+
+This is used on our LM3S.lua require/module example. Similar modules would
+be available for diferent platforms (actually kits, that have devices like
+leds, buttons, buzzers, ....), binding them to the actual port/pins used. A
+simple require(LM3S.lua) in the beginning of the program does the job.
+
+BTW - What is the proper way of checking whether a port exists from a script
+&gt;<i> (e.g. whether PZ_0 is available on a particular build)?
+</I>
+
+If I remember, Bogdan wrote some low-level portexists and pinexists
+functions. But I can't remember now if they were made available to the upper
+(Lua) level, I need to check.
+
+Within a few days, I'll be offline for a ~week (yeap, the whole country
+stops for Carnival and I'll hide somewhere on the mountains close to Rio),
+working mostly on our new doc structure, that will power  both the online
+site and the offline doc included in the distros. I should be able to learn
+all the functions we have now :) :)
+Hopefully I'll manage to find a connection in a friend's house to hear you
+and say hello :)
+
+Regards,
+&gt;<i> Jesus Alvarez
+</I>
+
+Best
+Dado
+
+
+
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/d2aaa89d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/d2aaa89d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000488.html">[eLua-dev] Port Aliases
+</A></li>
+	<LI>Next message: <A HREF="000490.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#493">[ date ]</a>
+              <a href="thread.html#493">[ thread ]</a>
+              <a href="subject.html#493">[ subject ]</a>
+              <a href="author.html#493">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

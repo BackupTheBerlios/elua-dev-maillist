@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua-RPC Coming
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua-RPC%20Coming&In-Reply-To=%3CEMEWEMEW2_DELIMl44ELv6e2ede2c6dd34796a3b5fe%2C%0A%09jbsnyder%40fanplastic.org%2C%20DB7684AE-03CB-4EE4-81ED-24C%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000781.html">
+   <LINK REL="Next"  HREF="000783.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua-RPC Coming</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua-RPC%20Coming&In-Reply-To=%3CEMEWEMEW2_DELIMl44ELv6e2ede2c6dd34796a3b5fe%2C%0A%09jbsnyder%40fanplastic.org%2C%20DB7684AE-03CB-4EE4-81ED-24C%3E"
+       TITLE="[eLua-dev] Lua-RPC Coming">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue May  5 21:21:55 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000781.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+        <LI>Next message: <A HREF="000783.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#782">[ date ]</a>
+              <a href="thread.html#782">[ thread ]</a>
+              <a href="subject.html#782">[ subject ]</a>
+              <a href="author.html#782">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Actually, I've just realized that one could do something similar to  
+the following:
+LOCAL:
+fstring = string.dump(func)
+
+remote.execfunc(fstring, inputval)
+
+REMOTE:
+function execfunc( fstring, input )
+	func = loadstring(fstring)
+	return func(input)
+end
+
+The are some limitations on the functions that can be used (only pure  
+lua, no upvalues, etc..), but it seems to work :-)
+
+This method then just makes use of the RPC mechanism for sending  
+strings as input values for functions.
+
+I don't think I'll be aiming to support sending anything other than  
+chunks of Lua code over the wire, so I think this can be implemented  
+with just a bit of syntactic sugar :-)
+
+-jsnyder
+
+On May 5, 2009, at 12:33 PM, James Snyder wrote:
+
+&gt;<i> Hi -
+</I>&gt;<i>
+</I>&gt;<i> I just wanted to let folks know that I'm working on getting LuaRPC (<A HREF="http://q12.org/lua/index.html">http://q12.org/lua/index.html</A> 
+</I>&gt;<i> ) up and running for eLua.  I've gotten it going with Lua 5.1.4 on  
+</I>&gt;<i> the desktop, and it seems to be working to the degree that can  
+</I>&gt;<i> initiate procedure calls with tables, numbers, etc.. as arguments,  
+</I>&gt;<i> and get return values back over local socket connections.
+</I>&gt;<i>
+</I>&gt;<i> The original code doesn't support shipping functions over the wire,  
+</I>&gt;<i> but I think it should be possible to do this with lua_dump, so that  
+</I>&gt;<i> one could modify functions on the remote &quot;server&quot; device (which in  
+</I>&gt;<i> this case would be eLua).  I'll drop it into eLua when I get it  
+</I>&gt;<i> working over serial, which I think, at least in principle, should be  
+</I>&gt;<i> fairly easy.
+</I>&gt;<i>
+</I>&gt;<i> If anyone is interested in looking at what I've done so far, you can  
+</I>&gt;<i> find my modifications here:
+</I>&gt;<i> <A HREF="http://github.com/jsnyder/luarpc/tree/master">http://github.com/jsnyder/luarpc/tree/master</A>
+</I>&gt;<i>
+</I>&gt;<i> The Lua API has gone through some interesting changes between 4.0.x  
+</I>&gt;<i> and 5.1.x. I think I've mostly covered the bases as far as handling  
+</I>&gt;<i> those differences, but the only testing I've done is with some  
+</I>&gt;<i> examples provided by the original author.
+</I>&gt;<i>
+</I>&gt;<i> Best.
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 448-0386
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090505/bc1831fb/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090505/bc1831fb/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000781.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+	<LI>Next message: <A HREF="000783.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#782">[ date ]</a>
+              <a href="thread.html#782">[ thread ]</a>
+              <a href="subject.html#782">[ subject ]</a>
+              <a href="author.html#782">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

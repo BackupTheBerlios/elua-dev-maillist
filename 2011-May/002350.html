@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] NetDuino: Serial TX to board fails
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20NetDuino%3A%20Serial%20TX%20to%20board%20fails&In-Reply-To=%3C1304521835452-6331248.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002346.html">
+   <LINK REL="Next"  HREF="002357.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] NetDuino: Serial TX to board fails</H1>
+    <B>sweetlilmre</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20NetDuino%3A%20Serial%20TX%20to%20board%20fails&In-Reply-To=%3C1304521835452-6331248.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] NetDuino: Serial TX to board fails">sweetlilmre at gmail.com
+       </A><BR>
+    <I>Wed May  4 17:10:35 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002346.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+        <LI>Next message: <A HREF="002357.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2350">[ date ]</a>
+              <a href="thread.html#2350">[ thread ]</a>
+              <a href="subject.html#2350">[ subject ]</a>
+              <a href="author.html#2350">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Some more debugging later:
+
+I have compiled mux under VS2010 (which was pretty easy considering the nice
+clean code!).
+Debugging it I was able to observe the following interesting behaviour:
+
+After typing a character 'a' into the terminal, the first call to
+ser_select_byte() succeeds.
+The vUART service becomes active for CON and service ID (D1) is sent to the
+board followed by 0x61 or 'a'.
+
+Then ser_select_byte() is called again and things get weird.
+WaitForMultipleObjects() returns immediately with a value of zero (which
+should be the rfs vUART) and finally GetOverlappedResult() succeeds but
+reads zero bytes.
+
+This causes a return of -1 from ser_select_byte() and the subsequent
+failure.
+
+I have no idea why this happens, but will look into it some more tonight if
+I get the chance.
+-(e)
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/NetDuino-Serial-TX-to-board-fails-tp6323539p6331248.html">http://elua-development.2368040.n2.nabble.com/NetDuino-Serial-TX-to-board-fails-tp6323539p6331248.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002346.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+	<LI>Next message: <A HREF="002357.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2350">[ date ]</a>
+              <a href="thread.html#2350">[ thread ]</a>
+              <a href="subject.html#2350">[ subject ]</a>
+              <a href="author.html#2350">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

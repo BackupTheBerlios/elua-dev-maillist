@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Renaud's AVR32 EVK1100 and SPI patch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Renaud%27s%20AVR32%20EVK1100%20and%20SPI%20patch&In-Reply-To=%3CAANLkTikZmKnn99HSxuQwQUw8bD2GzcGX7UkoD1mGKbLw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001525.html">
+   <LINK REL="Next"  HREF="001527.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Renaud%27s%20AVR32%20EVK1100%20and%20SPI%20patch&In-Reply-To=%3CAANLkTikZmKnn99HSxuQwQUw8bD2GzcGX7UkoD1mGKbLw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Aug  4 11:13:53 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001525.html">[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch
+</A></li>
+        <LI>Next message: <A HREF="001527.html">[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1526">[ date ]</a>
+              <a href="thread.html#1526">[ thread ]</a>
+              <a href="subject.html#1526">[ subject ]</a>
+              <a href="author.html#1526">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Aug 4, 2010 at 12:09 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;&gt;<i> On Tue, Aug 3, 2010 at 11:39 PM, Bogdan Marinescu
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; On Sun, Aug 1, 2010 at 12:14 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; &gt; Hi Renaud
+</I>&gt;&gt;<i> &gt; &gt; &#160; I've updated your patch to svn head and we've tested it on an EVK1100.
+</I>&gt;&gt;<i> &gt; Are you sure the patch is made for rev 765? This is what I get:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdanm at bogdanm-desktop</A>:~/work/elua/trunk_765$ patch &lt;
+</I>&gt;&gt;<i> &gt; /home/bogdanm/dl/evk1101_and_spi_for_svn765.patch
+</I>&gt;&gt;<i> &gt; patching file led.lua
+</I>&gt;&gt;<i> &gt; Hunk #1 FAILED at 17.
+</I>&gt;&gt;<i> &gt; 1 out of 1 hunk FAILED -- saving rejects to file led.lua.rej
+</I>&gt;&gt;<i> &gt; ...
+</I>&gt;<i>
+</I>&gt;<i> Yes. Before I posted, I did a fresh svn co, applied the patch,
+</I>&gt;<i> configured and built to be sure.
+</I>&gt;<i> However, I used patch -p0; I am surprised that plain &quot;patch&quot; works for
+</I>&gt;<i> you; for me that fails to find the target files (on Linux with FSF
+</I>&gt;<i> patch 2.5.9)
+</I>
+I also tried with '-p0' (which is indeed the right invocation in
+theory) and got somewhat similar results.
+
+&gt;<i> It also works fine today with svn head r767. Is it possible that your
+</I>&gt;<i> copy of trunk has been modified (&quot;svn status&quot; and/or &quot;svn revert -R
+</I>&gt;<i> .&quot;) or that the patch got mangled in the mailer (space/tab issues?)
+</I>
+I'm using a fresh trunk copy. I don't know about the space/tab issues,
+I guess that might happen.
+
+&gt;<i> If the patch file got corrupted, you will find a clean copy to
+</I>&gt;<i> download from here
+</I>&gt;<i> <A HREF="http://martinwguy.co.uk/martin/evk1101_and_spi_for_svn765.patch">http://martinwguy.co.uk/martin/evk1101_and_spi_for_svn765.patch</A>
+</I>
+Thanks! I'll try this later today.
+
+Thanks,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> On 8/4/10, Renaud &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">renaud at myboyfriendisageek.com</A>&gt; wrote:
+</I>&gt;&gt;<i> My initial patch was made with Tortoise. Does it succeed ? If yes, maybe
+</I>&gt;&gt;<i> Martin did something wrong ?
+</I>&gt;<i>
+</I>&gt;<i> It needs some work to apply it to svn head. In particular a lot of
+</I>&gt;<i> magic incantations changed to use comp[ 'foo' ] instead.
+</I>&gt;<i> If I remember correctly, the original patch applies to r740 cleanly,
+</I>&gt;<i> but doesn't compile due to an undefined preprocessor constant.
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001525.html">[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch
+</A></li>
+	<LI>Next message: <A HREF="001527.html">[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1526">[ date ]</a>
+              <a href="thread.html#1526">[ thread ]</a>
+              <a href="subject.html#1526">[ subject ]</a>
+              <a href="author.html#1526">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ET-STM32%20program%20via%20TTL%20%28or%20suggest%20me%20a%20USB%20to%0A%20serial%20converter%20cable%29&In-Reply-To=%3CAANLkTikdFNBw-a5Aj2ycmgVJqTQ0yvzmmWHdmj%2B%3DVyRn%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002143.html">
+   <LINK REL="Next"  HREF="002145.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)</H1>
+    <B>Ronan Paix&#227;o</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ET-STM32%20program%20via%20TTL%20%28or%20suggest%20me%20a%20USB%20to%0A%20serial%20converter%20cable%29&In-Reply-To=%3CAANLkTikdFNBw-a5Aj2ycmgVJqTQ0yvzmmWHdmj%2B%3DVyRn%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)">ronan at dapaixao.com.br
+       </A><BR>
+    <I>Wed Mar  9 21:06:59 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002143.html">[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+</A></li>
+        <LI>Next message: <A HREF="002145.html">[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2146">[ date ]</a>
+              <a href="thread.html#2146">[ thread ]</a>
+              <a href="subject.html#2146">[ subject ]</a>
+              <a href="author.html#2146">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I have no such problem. Most JTAGs that use the same chip use the FT2232
+one, and even then most customize at least the device's PID (yes, some use
+FTDI's VID, but FTDI assigns PIDs to some vendors, so they don't use the
+same PID). To that end, at least OpenOCD checks VID/PID/Description for a
+match, before actually using the device.
+
+Also, normal serial programmers do come with the same VID/PID, but usually
+they also have a different serial number. Since the serial number differs,
+the driver recognizes that it's a different device and assigns a different
+COM port.
+
+The only problem I find with those serial programmers is that if I connect
+them to a different USB port in my laptop, the system assigns a different
+COM port, so I either have to connect them always in the same USB port or I
+have to reconfigure the loader program each time I change it.
+
+So far I've seen no such problem with the JTAG adapters, since they are
+accessed with either the FT2XX driver or the libusb one, not with FTDI's
+Virtual Com Port driver.
+
+Ronan
+
+2011/3/9 cbayona &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cbayona at cbayona.com</A>&gt;
+
+&gt;<i> Other chipsets have a lot of problems because rather than get their own
+</I>&gt;<i> enumeration which cost money the different vendors use the same public
+</I>&gt;<i> enumerations so the software gets confused when you have several similar
+</I>&gt;<i> devices.
+</I>&gt;<i>
+</I>&gt;<i> I work with several CPUs and  several of their JTAG or programmer devises
+</I>&gt;<i> use the same chips so Windows gets all confused, I ended having to resort
+</I>&gt;<i>  to have different CPU chips in different PCs.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> At 09:17 AM 3/9/2011, you wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hmm: sorry, the DLP-USB1232H is an FTDI chip -- the hated prolific
+</I>&gt;&gt;<i> chipset.
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Cecil
+</I>&gt;<i> K5NWA
+</I>&gt;<i> &lt;  www.softrockradio.org  &gt; &lt;  <A HREF="http://thepartsplace.k5nwa.com/">http://thepartsplace.k5nwa.com/</A>  &gt;
+</I>&gt;<i> &lt;  <A HREF="http://parts.softrockradio.org/">http://parts.softrockradio.org/</A>  &gt;
+</I>&gt;<i>
+</I>&gt;<i> When life gives you lemons, you'd better wait for it to give you some sugar
+</I>&gt;<i> first or else you'll have some really nasty-tasting lemonade.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110309/cca5514a/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110309/cca5514a/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002143.html">[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+</A></li>
+	<LI>Next message: <A HREF="002145.html">[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2146">[ date ]</a>
+              <a href="thread.html#2146">[ thread ]</a>
+              <a href="subject.html#2146">[ subject ]</a>
+              <a href="author.html#2146">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

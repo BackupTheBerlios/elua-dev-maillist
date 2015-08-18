@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Multitasking Proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Multitasking%20Proposal&In-Reply-To=%3C012c01cbc23c%24fceb81b0%24f6c28510%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001970.html">
+   <LINK REL="Next"  HREF="001972.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Multitasking Proposal</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Multitasking%20Proposal&In-Reply-To=%3C012c01cbc23c%24fceb81b0%24f6c28510%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] Multitasking Proposal">john.hind at zen.co.uk
+       </A><BR>
+    <I>Tue Feb  1 19:22:30 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001970.html">[eLua-dev] Multitasking Proposal
+</A></li>
+        <LI>Next message: <A HREF="001972.html">[eLua-dev] Multitasking Proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1971">[ date ]</a>
+              <a href="thread.html#1971">[ thread ]</a>
+              <a href="subject.html#1971">[ subject ]</a>
+              <a href="author.html#1971">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>You are right, Bogdan, about not being able to force a context switch within
+C code called from Lua. I had not thought about that. But I guess my answer
+would be: let's get rid of (or just refrain from using) those blocking C
+functions! After all, the intention here is to provide a more flexible way
+of handling the same programming situations. Replace them either with the
+&quot;yield until&quot; syntax, or functions hooked to events or both. Both these
+solutions can be done with cooperative or preemptive coroutines.
+
+The key point we need to think about is that the current INT system already
+exposes us to the objections to shared memory multitasking: spliced INT code
+can (indeed to be useful, must) operate on the same variables that the code
+it is injected into operates on.
+
+&gt;<i> -----Original Message-----
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+</I>&gt;<i> Sent: 01 February 2011 16:15
+</I>&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> Subject: Re: [eLua-dev] Multitasking Proposal
+</I>&gt;<i> 
+</I>&gt;<i> Wow, this is getting a lot of respones which is nice. A few random
+</I>&gt;<i> thoughts on the subject:
+</I>&gt;<i> 
+</I>&gt;<i> 1. while the current interrupt model in eLua might change a bit more
+</I>&gt;<i> in the future I expect that the cetral idea will remain the same. The
+</I>&gt;<i> reason is quite simple: most of the expected audience of eLua (people
+</I>&gt;<i> with little or no programming experience at all) might not like to
+</I>&gt;<i> hear about multitasking (be it preemptive or not). An interrupt-based
+</I>&gt;<i> system is easier to understand than a non-preemptive multitasking
+</I>&gt;<i> system and much easier to understand than a preemprive multitasking
+</I>&gt;<i> system. Also, I'm trying to keep the original Lua usage model which
+</I>&gt;<i> offers both easy to understand concepts and more advanced (sometimes
+</I>&gt;<i> almost philosophycal :) ) ones which suits lots of users. So John,
+</I>&gt;<i> don't worry that the current interrupt system might prevent your work
+</I>&gt;<i> from entering eLua. In the end they'll most likely work in parallel.
+</I>&gt;<i> 2. most of the time I',m a big fan of what Fabien mentione ealier:
+</I>&gt;<i> cooperative systems are powerful enough to fulfill the needs of most
+</I>&gt;<i> applications out there. Preemptive multitasking is a very powerful
+</I>&gt;<i> tool, but with great power comes great responsability, as always :) In
+</I>&gt;<i> practice this translates into increased development and maintenance
+</I>&gt;<i> effort on preemptive systems (I used them quite a bit and I know how
+</I>&gt;<i> tricky they can be ever for seemingly innocent tasks). And I always
+</I>&gt;<i> try to use the simplest tool for the job I have to do.
+</I>&gt;<i> 3. I managed to take a quick look at John's proposal and at the
+</I>&gt;<i> interpreter bailout patch. Thanks for the idea, it's very good and I
+</I>&gt;<i> loved the concept of forcefully inserting &quot;yield&quot; calls into the Lua
+</I>&gt;<i> VM instruction stream to achieve preemptive multitasking. I'll have
+</I>&gt;<i> more to say on the subject, but until then an observation: this still
+</I>&gt;<i> isn't &quot;real&quot; preemptive multitasking. All you have to do is call a
+</I>&gt;<i> blocking C function from the Lua VM and the multitasking is gone. And
+</I>&gt;<i> there are quite a few such blocking functions in eLua (tmr.delay or
+</I>&gt;<i> uart.read with an infinite timeout are the usual examples). They don't
+</I>&gt;<i> even have to be blocking actually, if they take a long time to execute
+</I>&gt;<i> (take the same uart.read function but this time with a timeout of one
+</I>&gt;<i> second or more) the net effect is that preemptive multitasking isn't
+</I>&gt;<i> really preemptive anymore. This limits the applicability of the idea
+</I>&gt;<i> as the user must be specifically instructed to avoid these calls. In
+</I>&gt;<i> the light of this I don't know how much actual advantage you'd gain
+</I>&gt;<i> from this kind of pseudo-preemptive multitasking (and I mean that BTW,
+</I>&gt;<i> I really don't know :) I'd like to hear people's oppinions on this). I
+</I>&gt;<i> thought long and hard about true multitasking capabilities in eLua and
+</I>&gt;<i> my conclusion is that this can't be achieved without a C level threads
+</I>&gt;<i> library and all the complexity that comes with this.
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> 
+</I>&gt;<i> On Tue, Feb 1, 2011 at 5:39 PM, Fabien &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">fleutot+lua at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; On Tue, Feb 1, 2011 at 12:59 PM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Roberto's hellgate of non-determinism has already been opened by the
+</I>&gt;<i> debug
+</I>&gt;<i> &gt;&gt; hooks
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Indeed, but the debug module is quite openly&#160;advertised&#160;as the
+</I>&gt;<i> official Lua
+</I>&gt;<i> &gt; hellgate, the only module which can break Lua's safety principles. It
+</I>&gt;<i> is of
+</I>&gt;<i> &gt; notoriously bad taste to have production code relying on debug APIs,
+</I>&gt;<i> so if
+</I>&gt;<i> &gt; it breaks your code, you had it coming.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Personally I have never had a problem with shared memory
+</I>&gt;<i> multitasking, but
+</I>&gt;<i> &gt;&gt; it is true you can easily get in a subtle mess if you do not follow
+</I>&gt;<i> the
+</I>&gt;<i> &gt;&gt; rules.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I am not very confident in my ability to always follow the rules, and
+</I>&gt;<i> &gt; totally unconfident in other people's ability to do so. Since I
+</I>&gt;<i> sometimes
+</I>&gt;<i> &gt; have to maintain code written by others, I'd rather have the rules
+</I>&gt;<i> strictly
+</I>&gt;<i> &gt; enforced by default!
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Your ability to hook a Lua function to an interrupt generated event
+</I>&gt;<i> so it
+</I>&gt;<i> &gt;&gt; gets queued for execution synchronously during the next non-blocking
+</I>&gt;<i> wait is
+</I>&gt;<i> &gt;&gt; also a good additional feature since it avoids the RAM overhead of a
+</I>&gt;<i> &gt;&gt; coroutine in some simpler cases.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; It's worse than that actually, it prevents from loosing events
+</I>&gt;<i> together.
+</I>&gt;<i> &gt; Imagine that you have a signal('ping', 'ping', &lt;packetnumber&gt;)
+</I>&gt;<i> arriving
+</I>&gt;<i> &gt; every second, and you try to catch it in a loop:
+</I>&gt;<i> &gt; function catch_pings()
+</I>&gt;<i> &gt; &#160;&#160; while true
+</I>&gt;<i> &gt; &#160;&#160; &#160; &#160;local emitter, event, arg = sched.wait('ping', 'ping')
+</I>&gt;<i> &gt; &#160;&#160; &#160; &#160;printf(&quot;received packet #%d&quot;, arg)
+</I>&gt;<i> &gt; &#160;&#160; &#160; &#160;do_something_complicated_with(arg)
+</I>&gt;<i> &gt; &#160;&#160; end
+</I>&gt;<i> &gt; end
+</I>&gt;<i> &gt; sched.run (catch_pings)
+</I>&gt;<i> &gt; if do_something_complicated_with(arg) takes more than one second, the
+</I>&gt;<i> &gt; sched.wait() in the next iteration of the loop will miss one packet.
+</I>&gt;<i> You
+</I>&gt;<i> &gt; need some form of synchronous hook to handle this. It is very common
+</I>&gt;<i> to use
+</I>&gt;<i> &gt; a hook simply to buffer some data into a pipe, and maybe we should
+</I>&gt;<i> integrate
+</I>&gt;<i> &gt; a simplified support for such signal piping in the API.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001970.html">[eLua-dev] Multitasking Proposal
+</A></li>
+	<LI>Next message: <A HREF="001972.html">[eLua-dev] Multitasking Proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1971">[ date ]</a>
+              <a href="thread.html#1971">[ thread ]</a>
+              <a href="subject.html#1971">[ subject ]</a>
+              <a href="author.html#1971">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

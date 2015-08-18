@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Adding code to the common code space
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Adding%20code%20to%20the%20common%20code%20space&In-Reply-To=%3C0D9BFCE8-895D-491D-812E-A6739BC93439%40bigpond.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004176.html">
+   <LINK REL="Next"  HREF="004180.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Adding code to the common code space</H1>
+    <B>Graham Henstridge</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Adding%20code%20to%20the%20common%20code%20space&In-Reply-To=%3C0D9BFCE8-895D-491D-812E-A6739BC93439%40bigpond.com%3E"
+       TITLE="[eLua-dev] Adding code to the common code space">grahamhenstridge at bigpond.com
+       </A><BR>
+    <I>Wed Jun 19 05:42:07 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004176.html">[eLua-dev] Adding code to the common code space
+</A></li>
+        <LI>Next message: <A HREF="004180.html">[eLua-dev] Adding code to the common code space
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4177">[ date ]</a>
+              <a href="thread.html#4177">[ thread ]</a>
+              <a href="subject.html#4177">[ subject ]</a>
+              <a href="author.html#4177">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+
+On 18/06/2013, at 9:29 PM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> On Mon, Jun 17, 2013 at 6:26 AM, Graham Henstridge &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">graham at capgo.com</A>&gt; wrote:
+</I>&gt;<i>  In my ongoing eLua familiarisation process, I have been looking at the build
+</I>&gt;<i>  system with the aim of conditionally adding a C library module. I expected
+</I>&gt;<i>  to find somewhere list of files for building the common code but could not
+</I>&gt;<i>  find any. So, I chased down xmodem support as an example, but the process
+</I>&gt;<i>  becomes very complex. Are there any guidelines or description of what needs
+</I>&gt;<i>  to be done to add a static library to the build process.
+</I>&gt;<i> 
+</I>&gt;<i> So would you like to add a C library module or a static library module? I'm not sure I understood your question completely.
+</I>
+To put the requirements in context, the module is for a general purpose deterministic data acquisition, that managers sensor sampling, error detection, filtering, linearisation, data fusion, feature extraction and logging. A purpose built analog system is assumed although the platform's ADC will be used for housekeeping and lower precision functions. The hardware is driven by an SPI interface and channel expansion units via CAN, both of which I would like to drive in C at the eLua &quot;platform interface&quot; level. The intensive work is done in C, but the setup and higher level data processing done in Lua. The work can be floating point intensive, hence the preference for Cortex M4 processors.
+
+Since my post I have dug deeper and better understand how the build process works. I would like to add a C module as cleanly and conventionally as possible, with conditional inclusion in the &quot;common code&quot; area of the build. Apart from simply getting my code ported (from its linux environment) and working, it may be worthy of merging into eLua mainline at some point, so right from the start, I would like to follow the spirit of the eLua design.
+
+Graham
+
+&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> Graham
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130619/e9c33ba4/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130619/e9c33ba4/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004176.html">[eLua-dev] Adding code to the common code space
+</A></li>
+	<LI>Next message: <A HREF="004180.html">[eLua-dev] Adding code to the common code space
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4177">[ date ]</a>
+              <a href="thread.html#4177">[ thread ]</a>
+              <a href="subject.html#4177">[ subject ]</a>
+              <a href="author.html#4177">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

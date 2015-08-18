@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] uart module and 9 bit characters
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20uart%20module%20and%209%20bit%20characters&In-Reply-To=%3C1F77575C-A979-413B-B805-B48D13A14F5E%40transsys.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002975.html">
+   <LINK REL="Next"  HREF="002981.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] uart module and 9 bit characters</H1>
+    <B>Louis Mamakos</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20uart%20module%20and%209%20bit%20characters&In-Reply-To=%3C1F77575C-A979-413B-B805-B48D13A14F5E%40transsys.com%3E"
+       TITLE="[eLua-dev] uart module and 9 bit characters">louie at transsys.com
+       </A><BR>
+    <I>Fri Nov 18 23:38:05 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002975.html">[eLua-dev] Finally! A small-footprint text editor written in Lua
+</A></li>
+        <LI>Next message: <A HREF="002981.html">[eLua-dev] uart module and 9 bit characters
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2979">[ date ]</a>
+              <a href="thread.html#2979">[ thread ]</a>
+              <a href="subject.html#2979">[ subject ]</a>
+              <a href="author.html#2979">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm working on a little project where I want to drop an STM32F103RB based eLua &quot;stamp&quot; module (from Futurlec) on an RS-485 multi-dropped serial bus.  The protocol in question uses 9-bit characters, with the 9th bit being set to indicate an &quot;address&quot; for the frame.  This seems a common trick with some embedded controllers that can turn off interrupts from the UART until a frame with the right 9-bit address starts by to wake up the serial port and collect the rest of the frame.  I have, of course, an RS-485 transceiver to interface to the UART 1 peripheral on the STM32 CPU.
+
+I'm not yet trying to do anything clever in the filtering operation, but it looks like despite being able to set the UART in 9 bit mode with uart.setup(), only 8 bits seem to get passed around inside eLua.  And there doesn't seem to be an user API that returns other than individual characters or strings.  Has anyone done any work in this area?  I thought I'd ask around a bit prior to contemplating doing violence to the existing code.
+
+Thanks in advance for your help or suggestions.
+
+Louis Mamakos
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002975.html">[eLua-dev] Finally! A small-footprint text editor written in Lua
+</A></li>
+	<LI>Next message: <A HREF="002981.html">[eLua-dev] uart module and 9 bit characters
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2979">[ date ]</a>
+              <a href="thread.html#2979">[ thread ]</a>
+              <a href="subject.html#2979">[ subject ]</a>
+              <a href="author.html#2979">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

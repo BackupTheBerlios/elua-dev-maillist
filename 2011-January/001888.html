@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20GPIO%3A%20Use%20PX_00%20pin%20names%20instead%20of%20PD_%2A%20and%0A%09PE_%2A&In-Reply-To=%3CAANLkTi%3DuN5Z%2B-trG8MREnXVX8xP%3DU7%2BDsa4vi79H7TDi%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001884.html">
+   <LINK REL="Next"  HREF="001889.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20GPIO%3A%20Use%20PX_00%20pin%20names%20instead%20of%20PD_%2A%20and%0A%09PE_%2A&In-Reply-To=%3CAANLkTi%3DuN5Z%2B-trG8MREnXVX8xP%3DU7%2BDsa4vi79H7TDi%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*">martinwguy at gmail.com
+       </A><BR>
+    <I>Sun Jan 16 19:39:41 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001884.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+        <LI>Next message: <A HREF="001889.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1888">[ date ]</a>
+              <a href="thread.html#1888">[ thread ]</a>
+              <a href="subject.html#1888">[ subject ]</a>
+              <a href="author.html#1888">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 16 January 2011 18:33, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> I'll think about this patch a bit more. It fixes things for Lua code
+</I>&gt;<i> that uses the &quot;pio&quot; module but doesn't do much for the C part of the
+</I>&gt;<i> code. For example, if your SD/MMC card chip select would be on PX36
+</I>&gt;<i> you still don't have a good way to specify this in platform_conf.h. I
+</I>&gt;<i> can see two options here:
+</I>&gt;<i>
+</I>&gt;<i> - make the C code use a different port/pin mapping than the Lua code.
+</I>&gt;<i> Very confusing and I'd rather try to avoid it but it might still be an
+</I>&gt;<i> option (definitely easier to implement).
+</I>&gt;<i> - rewrite your change at C code level. A bit more work but seems to be
+</I>&gt;<i> the right thing to do.
+</I>
+Thanks.
+
+As I understand it, the GPIO numbers (0-105) are the canonical form to
+refer to port/pin settings,
+while the PA/PB/PC/PX stuff are names for the electrical signals on
+the chip die.
+
+In platform_conf.h (on AVR32) I have only seen pin selection done by
+referring to macros in the /usr/avr32/include/avr32/ header files, not
+by PA/PB/PC/PX.  If you think that will be useful for C code, I can
+probably cook up some macros that turn PA(25) or PX(39) into the
+appropriate GPIO numbers.
+
+As it happens, the AVR32 GPIO numbers and the internal word
+representing a port/pin pair are the same (pin in the bottom 5 bits,
+port in the ones above).  What sort of interface does the C interface
+want for specifying port pins?
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001884.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+	<LI>Next message: <A HREF="001889.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1888">[ date ]</a>
+              <a href="thread.html#1888">[ thread ]</a>
+              <a href="subject.html#1888">[ subject ]</a>
+              <a href="author.html#1888">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

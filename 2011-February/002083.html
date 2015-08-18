@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 PX patch (again/still)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20PX%20patch%20%28again/still%29&In-Reply-To=%3CAANLkTimg4mFrnQwxc9mWNb-Sq3Cz%2B9n%2B8OU2sXMO%3DZ-0%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002081.html">
+   <LINK REL="Next"  HREF="002092.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 PX patch (again/still)</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20PX%20patch%20%28again/still%29&In-Reply-To=%3CAANLkTimg4mFrnQwxc9mWNb-Sq3Cz%2B9n%2B8OU2sXMO%3DZ-0%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 PX patch (again/still)">martinwguy at gmail.com
+       </A><BR>
+    <I>Wed Feb 23 14:23:01 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002081.html">[eLua-dev]  AVR32 PX patch (again/still)
+</A></li>
+        <LI>Next message: <A HREF="002092.html">[eLua-dev] Porting eLua to AT91SAM7s
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2083">[ date ]</a>
+              <a href="thread.html#2083">[ thread ]</a>
+              <a href="subject.html#2083">[ subject ]</a>
+              <a href="author.html#2083">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 23 February 2011 09:06, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> a target
+</I>&gt;<i> downloader program should NOT write the .bss segment into Flash.
+</I>
+Absolutely. This is verified by the fact that the same image, written
+with dfu-programmer, fits.
+Long live open source.
+
+&gt;<i> Try this if you have some time:
+</I>&gt;<i>
+</I>&gt;<i> 1. svn update the Lua trunk
+</I>&gt;<i> 2. $ sudo luarocks install lpack
+</I>&gt;<i> 3. $ sudo luarocks install luafilesystem
+</I>&gt;<i> 4. put your board in DFU mode and connect it to the PC
+</I>&gt;<i> 5. $ lua build_elua.lua board=mizar32 target=lualong burn
+</I>
+Works fine, and fits even without the optram and allocator options.
+Great! Unlike most programs, eLua is getting smaller! :)
+
+&gt;&gt;<i> Well, in the AVR stuff there was the EVK1100 serial port not working
+</I>&gt;&gt;<i> at all due to being configured in SERMUX mode,
+</I>&gt;<i>
+</I>&gt;<i> Hmmmm. I can understand why that would be regarded as an issue by some
+</I>&gt;<i> and as a feature by others :) The rationale behind this decision
+</I>&gt;<i> (leaving RFS + sermux enabled for ATEVK1100) was that EVK1100 has
+</I>&gt;<i> enough resources to accomodate a larger configuration and RFS is a
+</I>&gt;<i> nice thing to have.
+</I>
+In default configurations, one usually gives a standard setup that is
+similar for all boards, in this case console on first serial port,
+which was also the eLua config for evk1100 up to 0.799999.  The effect
+is that one tries the release with the expected setup and gets garbage
+on the console.
+SERMUX + RFS seems to me a &quot;Book 2&quot; feature, not a basic config, or if
+it's &quot;the way to go&quot;, maybe all boards should be configured that way
+by default.
+
+&gt;<i> I think another issue was the HW flow control not working properly on
+</I>&gt;<i> AVK1100 and possibly other AVR32 targets. I didn't have time to
+</I>&gt;<i> investigate, sorry.
+</I>
+Yes, the recent fix for flow control on AVR32 didn't seem to work when
+I tried to test it.
+My results were not definitely conclusive.
+However, that's not an issue for a release, since it has never worked.
+
+Oh, and I apologise for the term &quot;disaster release&quot;. Too strong.
+However, my expectation of a release is that it basically works out of
+the box, and that hasn't been true of either of the releases I've
+seen. Maybe I'm just being unlucky to be using the AVR32 platforms,
+but what I'm seeing is that the range of supported platforms is not
+tested much, and the releases seem to push a lot of new features into
+eLua at the last minute.
+
+The first can be fixed by adding a short phase of community testing to
+the release procedure, either as release candidates or as post-release
+correction steps (0.8.1 or whatever) to the release branch, the same
+as Linux, GCC and other projects.
+The second is a common effect in open source releases, the rush to
+finish and include various works in progress in the last days before a
+release. Again, a phase of release testing would help with this;
+better if merging of new functionality happens just after a release,
+not just before.
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002081.html">[eLua-dev]  AVR32 PX patch (again/still)
+</A></li>
+	<LI>Next message: <A HREF="002092.html">[eLua-dev] Porting eLua to AT91SAM7s
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2083">[ date ]</a>
+              <a href="thread.html#2083">[ thread ]</a>
+              <a href="subject.html#2083">[ subject ]</a>
+              <a href="author.html#2083">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

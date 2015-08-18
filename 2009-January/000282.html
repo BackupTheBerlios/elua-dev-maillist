@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] reducing rom size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20reducing%20rom%20size&In-Reply-To=%3CE0760ED4-CF75-4154-8D95-A064BAD3B5FF%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000279.html">
+   <LINK REL="Next"  HREF="000283.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] reducing rom size</H1>
+    <B>Dean Hall</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20reducing%20rom%20size&In-Reply-To=%3CE0760ED4-CF75-4154-8D95-A064BAD3B5FF%40gmail.com%3E"
+       TITLE="[eLua-dev] reducing rom size">dwhall256 at gmail.com
+       </A><BR>
+    <I>Wed Jan 14 05:50:14 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000279.html">[eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+</A></li>
+        <LI>Next message: <A HREF="000283.html">[eLua-dev] reducing rom size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#282">[ date ]</a>
+              <a href="thread.html#282">[ thread ]</a>
+              <a href="subject.html#282">[ subject ]</a>
+              <a href="author.html#282">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The reason I was so happy to see Bogdan reduce the RAM footprint was  
+that I was hoping to get eLua to run on the Atmel AT91SAM7S64 that has  
+64 KB Flash and 16 KB SRAM.  eLua is small, but I want to see how much  
+smaller I can make it and still run pre-compiled code.  Here's what  
+I've done:
+
+- Copied Atmel's SAM7S development files into a new platform directory
+- Copied the platform.c from the SAM7X platform directory
+- Removed Lua's lexer, parser and dump following instructions in  
+lua-5.1.4/etc/noparser.c
+- Removed Lua's libs except base and math
+- Removed uip
+- Removed demo source in romfs
+- Removed all modules except pio and uart
+- Build line: scons board=AT91SAM7S-EK target=lualong cpumode=thumb  
+noparser=true
+
+(aside: I did all of the above without modifying any eLua source code  
+except SConstruct and adding src/noparser.c.  That is a sign of a well- 
+conceived project and build system.)
+
+The result is &quot;region flash overflowed by 4380 bytes.&quot;  I'm so close!   
+Size details are below for those interested.  I welcome any ideas to  
+further reduce flash usage.
+
+!!Dean
+
+
+
+
+    text	   data	    bss	    dec	    hex	filename
+     532	      0	      0	    532	    214	src/main.o
+     572	     36	     52	    660	    294	src/romfs.o
+     592	      0	      8	    600	    258	src/xmodem.o
+    1739	      0	      4	   1743	    6cf	src/shell.o
+     544	      0	     28	    572	    23c	src/term.o
+       0	      0	      0	      0	      0	src/dlmalloc.o
+     636	      1	     19	    656	    290	src/common.o
+4615 subtotal
+
+     272	      0	      0	    272	    110	src/platform/at91sam7s/ 
+board_cstartup.o
+     248	      0	      0	    248	     f8	src/platform/at91sam7s/ 
+board_lowlevel.o
+      64	      0	      0	     64	     40	src/platform/at91sam7s/ 
+board_memories.o
+    1472	     12	      0	   1484	    5cc	src/platform/at91sam7s/ 
+platform.o
+     440	      0	      0	    440	    1b8	src/platform/at91sam7s/pmc/ 
+pmc.o
+     276	      0	      0	    276	    114	src/platform/at91sam7s/pio/ 
+pio.o
+     168	      0	      0	    168	     a8	src/platform/at91sam7s/tc/tc.o
+      64	      0	      0	     64	     40	src/platform/at91sam7s/aic/ 
+aic.o
+     468	      0	      0	    468	    1d4	src/platform/at91sam7s/pwmc/ 
+pwmc.o
+     383	      0	      0	    383	    17f	src/platform/at91sam7s/usart/ 
+usart.o
+3855 subtotal
+
+     328	      0	    580	    908	    38c	src/newlib/devman.o
+     718	      0	      8	    726	    2d6	src/newlib/stubs.o
+     356	     36	      8	    400	    190	src/newlib/genstd.o
+       0	      0	      0	      0	      0	src/newlib/stdtcp.o
+1402 subtotal
+
+      54	      0	      0	     54	     36	src/lua/noparser.o
+    4048	      0	      0	   4048	    fd0	src/lua/lapi.o
+    4661	      0	      0	   4661	   1235	src/lua/lcode.o
+    3455	      0	      0	   3455	    d7f	src/lua/ldebug.o
+    2614	      0	      0	   2614	    a36	src/lua/ldo.o
+     652	      0	      0	    652	    28c	src/lua/lfunc.o
+    2916	      0	      0	   2916	    b64	src/lua/lgc.o
+     219	      0	      0	    219	     db	src/lua/lmem.o
+    1129	      0	      0	   1129	    469	src/lua/lobject.o
+     436	      0	      0	    436	    1b4	src/lua/lopcodes.o
+     814	      0	      0	    814	    32e	src/lua/lstate.o
+     456	      0	      0	    456	    1c8	src/lua/lstring.o
+    2388	      0	      0	   2388	    954	src/lua/ltable.o
+     550	      0	      0	    550	    226	src/lua/ltm.o
+    1288	      0	      0	   1288	    508	src/lua/lundump.o
+    5457	      0	      0	   5457	   1551	src/lua/lvm.o
+     220	      0	      0	    220	     dc	src/lua/lzio.o
+     194	      0	      0	    194	     c2	src/lua/linit.o
+    2624	      4	      4	   2632	    a48	src/lua/lua.o
+     508	      0	      0	    508	    1fc	src/lua/lrotable.o
+34683 subtotal
+
+    4984	      0	      0	   4984	   1378	src/lua/lbaselib.o
+    2094	      0	      0	   2094	    82e	src/lua/lmathlib.o
+7078 subtotal
+
+    1425	      0	     64	   1489	    5d1	src/modules/pio.o
+     695	      0	      0	    695	    2b7	src/modules/uart.o
+2120 subtotal
+=======
+53753 TOTAL
+
+(yes I'm under 64 KB here, but I believe arm-elf-gcc is adding in libc  
+and libm that takes up the remaining space and more)
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000279.html">[eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+</A></li>
+	<LI>Next message: <A HREF="000283.html">[eLua-dev] reducing rom size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#282">[ date ]</a>
+              <a href="thread.html#282">[ thread ]</a>
+              <a href="subject.html#282">[ subject ]</a>
+              <a href="author.html#282">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

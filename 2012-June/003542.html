@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Extending MCU memory with SPI?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Extending%20MCU%20memory%20with%20SPI%3F&In-Reply-To=%3CCANKDJfbm_AawMFY4FmCk5%2B6_rRZR-3f_KLkot4MuLvOj-90OuA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003541.html">
+   <LINK REL="Next"  HREF="003546.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Extending MCU memory with SPI?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Extending%20MCU%20memory%20with%20SPI%3F&In-Reply-To=%3CCANKDJfbm_AawMFY4FmCk5%2B6_rRZR-3f_KLkot4MuLvOj-90OuA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Extending MCU memory with SPI?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Jun  5 20:55:31 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003541.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+        <LI>Next message: <A HREF="003546.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3542">[ date ]</a>
+              <a href="thread.html#3542">[ thread ]</a>
+              <a href="subject.html#3542">[ subject ]</a>
+              <a href="author.html#3542">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Jun 5, 2012 at 9:40 PM, Paul Curtis &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">plc at rowley.co.uk</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> On 5 Jun 2012, at 19:31, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On Tue, Jun 5, 2012 at 8:56 PM, pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> According to the IEEE Embedded C standard ISO/IEC TR 18037 (see p.74
+</I>&gt;&gt;&gt;<i> Annex B - Named address spaces and named-register storage classes) a
+</I>&gt;&gt;&gt;<i> compiler shall provide a capability for creating such qualifiers
+</I>&gt;&gt;&gt;<i> thus you may create variables in any kind of a memory device (with
+</I>&gt;&gt;&gt;<i> any kind of interface to the memory). Such identifier can be then
+</I>&gt;&gt;&gt;<i> used with any data types, including structures, unions, arrays, and
+</I>&gt;&gt;&gt;<i> pointers etc. So it is a matter of compiler not the actual hardware.
+</I>&gt;&gt;&gt;<i> Having such compiler you can extend MCU memory via SPI to
+</I>&gt;&gt;&gt;<i> fram/mram/sram or a punched card. We do not discuss a potential
+</I>&gt;&gt;&gt;<i> execution speed penalty here, of course :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> That sounds extremely good. That is, until you manage to cast a
+</I>&gt;&gt;<i> pointer to a different memory space or simply cast away a &quot;const&quot;
+</I>&gt;&gt;<i> (something extremely easy to do in C). I actually implemented
+</I>&gt;&gt;<i> something like this in a compiler a while ago. It's spectacular, but
+</I>&gt;&gt;<i> also error prone and a nightmare to use and especially maintain. Some
+</I>&gt;&gt;<i> compilers take this to the extreme, encoding a pointer with an extra
+</I>&gt;&gt;<i> byte that specifies what memory space the pointer belongs to (I've
+</I>&gt;&gt;<i> seen this done on 8051, where it actually makes a lot of sense). This
+</I>&gt;&gt;<i> works nice, but the extra level of indirection has quite an obvious
+</I>&gt;&gt;<i> impact on the speed.
+</I>&gt;<i>
+</I>&gt;<i> The Keil compiler did (does) do this for &quot;general pointers&quot;. &#160;True Harvard machines, with separate code and data address spaces, and machines like the 8051 (xdata, idata, code, and sfr and all that) make coding in portable C a nightmare. &#160;Yes, the memory-space-qualified pointer means that you don't need to care what type of pointer you have, but it makes every single access through that pointer so very slow...
+</I>&gt;<i>
+</I>&gt;&gt;<i> Paul is right: the memory has to be directly
+</I>&gt;&gt;<i> accesible by the CPU core in order to be useful. And again, as Paul
+</I>&gt;&gt;<i> said, this isn't generally the case for serial memories on &quot;usual&quot;
+</I>&gt;&gt;<i> CPUs. I believe some NXP Cortex M3 or M4 core MCUs have this
+</I>&gt;&gt;<i> capability.
+</I>&gt;<i>
+</I>&gt;<i> This would be the SPIFI memory:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://dkc1.digikey.com/uk/en/tod/NXP/SPIFI-Introduction_NoAudio/SPIFI-Introduction_NoAudio.html">http://dkc1.digikey.com/uk/en/tod/NXP/SPIFI-Introduction_NoAudio/SPIFI-Introduction_NoAudio.html</A>
+</I>
+Thanks! That's a clear, no-nonsense presentation. I'll probably give
+SPIFI a try at some point, just for the heck of it :) I don't expect
+miracles, but I have to admit that I like the concept. I envisioned
+something like this and I'm glad to see that somebody actually made it
+happen.
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> What make SPIFI viable is that all you see is slower access, the magic memory system takes care of all the nastiness of reading the SPI device. &#160;At the C level, a pointer is a pointer is a pointer, and it points anywhere, and if it points into the SPIFI address space, that's OK, the hardware (not software) takes care of it. &#160;Great! &#160;No need for crap C-level madness.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> In this case, extending the memory with SPI chips would be
+</I>&gt;&gt;<i> possible, but I'm willing to bet you're going to throw your board away
+</I>&gt;&gt;<i> after running eLua from a serial RAM for more than 5 minutes. Lua's
+</I>&gt;&gt;<i> speed is extremely dependent on the RAM speed (which is
+</I>&gt;&gt;<i> understandable, given the fact that every instance or every type in
+</I>&gt;&gt;<i> Lua is allocated on the heap). The difference in speed is easily
+</I>&gt;&gt;<i> visible even when switching from internal SRAM to external SRAM/SDRAM.
+</I>&gt;&gt;<i> SPI would be inhumanly slow.
+</I>&gt;<i>
+</I>&gt;<i> Having seen the speed that SPIFI works at, you are not really going to use it for anything compute intensive.
+</I>&gt;<i>
+</I>&gt;<i> -- Paul.
+</I>&gt;<i>
+</I></PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003541.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+	<LI>Next message: <A HREF="003546.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3542">[ date ]</a>
+              <a href="thread.html#3542">[ thread ]</a>
+              <a href="subject.html#3542">[ subject ]</a>
+              <a href="author.html#3542">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

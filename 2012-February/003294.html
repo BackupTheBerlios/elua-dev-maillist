@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 Port of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Port%20of%20eLua&In-Reply-To=%3CCAE98Ua9yLtDVdsr3d49wQd3gWO9BY%3DNGeuvgkzHzno21AKtCSg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003293.html">
+   <LINK REL="Next"  HREF="003295.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 Port of eLua</H1>
+    <B>Rob Emanuele</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Port%20of%20eLua&In-Reply-To=%3CCAE98Ua9yLtDVdsr3d49wQd3gWO9BY%3DNGeuvgkzHzno21AKtCSg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32 Port of eLua">rob at emanuele.us
+       </A><BR>
+    <I>Tue Feb 14 19:44:19 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003293.html">[eLua-dev] Embedded C Library Candidate
+</A></li>
+        <LI>Next message: <A HREF="003295.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3294">[ date ]</a>
+              <a href="thread.html#3294">[ thread ]</a>
+              <a href="subject.html#3294">[ subject ]</a>
+              <a href="author.html#3294">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Greetings,
+
+We've started developing an STM32 port of eLua for our family of
+products such as, <A HREF="http://www.crystalfontz.com/product/CFA735YYKKR1">http://www.crystalfontz.com/product/CFA735YYKKR1</A>
+
+We just completed a patch set for I2C and I have a question about the
+methodology to enabling ports and clocks.  In the current STM32 port
+the platform code initializes all of the clocks for each peripheral
+supported in functions such as cans_init(), spis_init(), etc.  Having
+all the clocks enabled when some may be unused wastes power and more
+importantly, can cause unexpected behaviour if two peripherals that
+share the same resources (pins, memory) conflict.  We do use some of
+the pins in a remap state for their alternate functions.
+
+I propose that we should not clock any peripheral (within reason,
+GPIOs and peripherals internal to lua need to be clocked) until it is
+setup.  For example, in this snip of my I2C code, I've created a &quot;3rd&quot;
+I2C port which is really just the first port remapped to new pins.  I
+am open to suggestions for better ways to do the remaps.  Anyway, the
+example:
+
+// ****************************************************************************
+// I2C support
+static const GPIO_TypeDef* i2c_port_data[] = { GPIOB, GPIOB, GPIOB };
+static const I2C_TypeDef* i2cs[] = { I2C1, I2C2, I2C1 };
+static const u32 i2c_clks[] = { RCC_APB1Periph_I2C1,
+RCC_APB1Periph_I2C2, RCC_APB1Periph_I2C1 };
+static const u16 i2c_clock_pin[] = { GPIO_Pin_6, GPIO_Pin_10, GPIO_Pin_8 };
+static const u16 i2c_data_pin[] = { GPIO_Pin_7, GPIO_Pin_11, GPIO_Pin_9 };
+
+#define I2C_TIMEOUT (500000)
+
+u32 platform_i2c_setup( unsigned id, u32 speed )
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  I2C_InitTypeDef I2C_InitStructure;
+
+  if (id == 2)
+      GPIO_PinRemapConfig(GPIO_Remap_I2C1, ENABLE);
+
+  // Setup PIO
+  GPIO_StructInit( &amp;GPIO_InitStructure );
+  GPIO_InitStructure.GPIO_Pin = i2c_clock_pin[ id ] | i2c_data_pin[ id ];
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init( (GPIO_TypeDef*)i2c_port_data[ id ], &amp;GPIO_InitStructure );
+
+  // Setup and interface
+  /* I2C configuration */
+  I2C_StructInit( &amp;I2C_InitStructure );
+  I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
+  I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
+  I2C_InitStructure.I2C_OwnAddress1 = 0x0;
+  I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
+  I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+  I2C_InitStructure.I2C_ClockSpeed = speed;
+
+  RCC_APB1PeriphClockCmd(i2c_clks[ id ], ENABLE);
+
+  I2C_DeInit( (I2C_TypeDef*)i2cs[ id ] );
+
+  I2C_Cmd((I2C_TypeDef*)i2cs[ id ], ENABLE);
+
+  I2C_Init( (I2C_TypeDef*)i2cs[ id ], &amp;I2C_InitStructure );
+
+
+  // Return actual speed
+  return speed;
+}
+//****************************************************************************
+
+How do people feel about this?  Would it also be good to have a way to
+disable ports?
+
+Once we come to a nice solution, our changes will be found:
+<A HREF="https://github.com/crystalfontz/elua">https://github.com/crystalfontz/elua</A>
+
+Thank you,
+
+Rob
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003293.html">[eLua-dev] Embedded C Library Candidate
+</A></li>
+	<LI>Next message: <A HREF="003295.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3294">[ date ]</a>
+              <a href="thread.html#3294">[ thread ]</a>
+              <a href="subject.html#3294">[ subject ]</a>
+              <a href="author.html#3294">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

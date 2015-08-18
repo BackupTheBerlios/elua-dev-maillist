@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] scripts to build toolchains ( arm79 and cortex-m3 )
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20scripts%20to%20build%20toolchains%20%28%20arm79%20and%20cortex-m3%20%29&In-Reply-To=%3Cw2tef1c4a821004282355tf1c1bdb4z42504f75835805de%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001386.html">
+   <LINK REL="Next"  HREF="001379.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] scripts to build toolchains ( arm79 and cortex-m3 )</H1>
+    <B>Marcelo Politzer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20scripts%20to%20build%20toolchains%20%28%20arm79%20and%20cortex-m3%20%29&In-Reply-To=%3Cw2tef1c4a821004282355tf1c1bdb4z42504f75835805de%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] scripts to build toolchains ( arm79 and cortex-m3 )">mpolitzer.c at gmail.com
+       </A><BR>
+    <I>Thu Apr 29 08:55:11 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001386.html">[eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.
+</A></li>
+        <LI>Next message: <A HREF="001379.html">[eLua-dev] AVR32 : EVK1101 board and SPI added. Need a EVK1100	tester.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1378">[ date ]</a>
+              <a href="thread.html#1378">[ thread ]</a>
+              <a href="subject.html#1378">[ subject ]</a>
+              <a href="author.html#1378">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello eLuers,
+
+After some changes of SO ( Gentoo 64bits to Ubuntu 64bits to Ubuntu 32bits
+... ) and some rebuilds of the toolchains.
+I've decided to create a bash script to do it for me.
+
+It download the required files ( binutils, gcc, newlib ), do the apt-gets,
+do the patches to get thumb2 and finaly build ( and also creates the
+symbolic links, to remove this step read Obs1. )
+
+A Special thanks to Bogdan who created the tutorial that I've folowed a few
+times and shamelessly copied to create the script. :)
+
+
+   - To run it `sudo ./build_arm79.sh &amp;&amp; sudo ./build_arm_cortex_m3.sh'
+   - If you already have the needed files: &quot;*gcc-4.3.3.tar,bz2,
+   binutils-2.19.50.tar.bz2, newlib-1.17.0.tar.gz*&quot; you can create a folder
+   named *workdir* at the same folder as the scripts and put the files
+   inside to not re download them. If you you don't the script downloads them
+   automagicaly ( tnx to wget ).
+
+
+The Idea is to put it at the wiki after some more testing.
+But before that I'm posting to know
+
+   - if it worth mantaining
+   - someone would like to add/remove/say anything about it.
+
+add something more importantly, to share it :)
+
+so...
+
+feedbacks are welcome.
+
+
+   - Obs1: The script creates the symbolic links I've talked on the other
+   thread. don't know if people aready read about it, but you can comment out
+   the following lines to avoid this:
+
+
+on file *build_arm79.sh:*
+lines 86 to 88
+
+on file *build_arm_cortex_m3.sh:*
+lines 77 to 81
+
+
+   - Obs2: The script already adds */usr/local/cross-arm/bin* and *
+   /usr/local/cross-cortex/bin* to the path via .bashrc, to avoid this
+   comment out:
+
+on file *build_arm79.sh:*
+lines 90 to 97
+
+on file *build_arm_cortex_m3.sh:*
+lines 83 to 90
+
+
+   - Obs3: If you have a diferent linux then *ubuntu* or *gentoo*, you have
+   to comment lines 7 to 11 and manualy get the packages. And also you can send
+   me the line to do the job for a path to it. :)
+
+And That's about it...
+
+Best Regards,
+Marcelo Politzer Couto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100429/b5c66c5a/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100429/b5c66c5a/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: build_arm79.sh
+Type: application/x-sh
+Size: 2666 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100429/b5c66c5a/attachment.sh">https://lists.berlios.de/pipermail/elua-dev/attachments/20100429/b5c66c5a/attachment.sh</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: build_arm_cortex_m3.sh
+Type: application/x-sh
+Size: 2607 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100429/b5c66c5a/attachment-0001.sh">https://lists.berlios.de/pipermail/elua-dev/attachments/20100429/b5c66c5a/attachment-0001.sh</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001386.html">[eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.
+</A></li>
+	<LI>Next message: <A HREF="001379.html">[eLua-dev] AVR32 : EVK1101 board and SPI added. Need a EVK1100	tester.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1378">[ date ]</a>
+              <a href="thread.html#1378">[ thread ]</a>
+              <a href="subject.html#1378">[ subject ]</a>
+              <a href="author.html#1378">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

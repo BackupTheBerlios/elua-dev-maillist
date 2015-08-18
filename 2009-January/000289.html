@@ -1,0 +1,233 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ADC platform interface proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20platform%20interface%20proposal&In-Reply-To=%3C0327733F-C15F-4084-AD2C-FBD5EA6AFD0B%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000267.html">
+   <LINK REL="Next"  HREF="000290.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ADC platform interface proposal</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20platform%20interface%20proposal&In-Reply-To=%3C0327733F-C15F-4084-AD2C-FBD5EA6AFD0B%40fanplastic.org%3E"
+       TITLE="[eLua-dev] ADC platform interface proposal">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Jan 14 23:40:21 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000267.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+        <LI>Next message: <A HREF="000290.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#289">[ date ]</a>
+              <a href="thread.html#289">[ thread ]</a>
+              <a href="subject.html#289">[ subject ]</a>
+              <a href="author.html#289">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Bogdan, any thoughts on these points?
+
+I'm a little busy at the moment (work pileup, plus a not quite cheap  
+linear actuator broke on a project of mine.. AC servos can pack quite  
+a punch), but I'm going to resume work on this in a day or two.
+
+My reasoning on including the filtering/smoothing is that doing  
+averaging and data handling in C might be lighter weight than having  
+them converted to tables and then iterating in Lua, but I could be  
+wrong :-)
+
+One other thought is that, I suppose triggering could be handled with  
+an ISR in Lua I suppose?  I guess I might worry about how  
+deterministic something like this might be, as well as how many extra  
+clock cycles might go by with such a trigger made in Lua vs some sort  
+of direct hardware configuration or C ISR.  I guess one way to know  
+would be to give it a go and see how many samples one might drop  
+between trigger and sampling onset, with different configurations.
+
+On Jan 9, 2009, at 2:16 PM, James Snyder wrote:
+
+&gt;<i> Overall, those make a good core for the ADC functions.  I think a  
+</I>&gt;<i> few additions might be nice as well.
+</I>&gt;<i>
+</I>&gt;<i> On Jan 8, 2009, at 3:07 PM, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Following is my proposal for a platform interface for the ADC  
+</I>&gt;&gt;<i> peripheral. I have only very limited experience with ADCs/DACs, in  
+</I>&gt;&gt;<i> fact the only two &quot;serious&quot; applications that I wrote and used ADCs  
+</I>&gt;&gt;<i> were based on external components and were quite basic on the data  
+</I>&gt;&gt;<i> acquisition part, so you might find this specification incomplete  
+</I>&gt;&gt;<i> or just plain strange. If so, please let me know so we can refine  
+</I>&gt;&gt;<i> it to a better form.
+</I>&gt;&gt;<i> I tried to extract a common set of features of ADCs from all the  
+</I>&gt;&gt;<i> CPUs that eLua currently supports, and this is what I came up with:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - most (or maybe all) of them support both &quot;single shot&quot; and  
+</I>&gt;&gt;<i> &quot;continous&quot; modes
+</I>&gt;&gt;<i> - some of them let the user select ADC timings (like startup time  
+</I>&gt;&gt;<i> and sample&amp;hold time). This seems to be quite rare though, so I  
+</I>&gt;&gt;<i> won't include it in the platform interface.
+</I>&gt;&gt;<i> - some of them also support a special mode in which they are  
+</I>&gt;&gt;<i> &quot;paired&quot; with a hardware timer and use that timer as a conversion  
+</I>&gt;&gt;<i> clock. This is useful, and it can be emulated even on platforms  
+</I>&gt;&gt;<i> that don't support this feature.
+</I>&gt;<i>
+</I>&gt;<i> I agree with the use of the timer as a conversion clock.
+</I>&gt;<i>
+</I>&gt;<i> In a related vein, one thing that I've not used on micros that much,  
+</I>&gt;<i> but have on dedicated ADC boards is the use of triggers for  
+</I>&gt;<i> sampling.  This would be particularly useful for burst sampling.   
+</I>&gt;<i> Sometimes this is done based on the signal itself, but often with a  
+</I>&gt;<i> digital trigger.  The digital trigger should be pretty easy to do by  
+</I>&gt;<i> having the kickoff be interrupt driven.  If a board doesn't support  
+</I>&gt;<i> external interrupts, you could always emulate it by polling,  
+</I>&gt;<i> although it's not as good.
+</I>&gt;<i>
+</I>&gt;<i> I guess this brings up the question:  do we allow arbitrary pin  
+</I>&gt;<i> selection regardless of whether it will generate interrupts?  I have  
+</I>&gt;<i> less knowledge of how this is supported on various 32-bit platforms  
+</I>&gt;<i> that eLua is running on.  IIRC, the LM3S boards can do interrupts on  
+</I>&gt;<i> any pin.
+</I>&gt;<i>
+</I>&gt;&gt;<i> With this in mind, this is what I came up with:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> int platform_adc_exists( unsigned id ); // generic, it will be part  
+</I>&gt;&gt;<i> of src/common.c
+</I>&gt;&gt;<i> u16 platform_adc_sample( unsigned id ); // sample the specified ADC  
+</I>&gt;&gt;<i> channel
+</I>&gt;<i>
+</I>&gt;<i> OK.  So this will return the latest sample collected?  Does it block  
+</I>&gt;<i> waiting for completion if the latest one hasn't finished yet?
+</I>&gt;<i>
+</I>&gt;<i> Also, should this behavior be different in continuous vs single  
+</I>&gt;<i> shot? i.e.:
+</I>&gt;<i>
+</I>&gt;<i> Single Shot: wait for sample if not ready
+</I>&gt;<i> Continuous: take whatever the last completed sample was?  wait for  
+</I>&gt;<i> next sample? (I think the former would make more sense as a reason  
+</I>&gt;<i> to use continuous sampling).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> void platform_adc_start( unsigned id ); // starts a conversion on  
+</I>&gt;&gt;<i> the specified ADC channel and returns immediately
+</I>&gt;&gt;<i> int platform_adc_is_done( unsigned id ); // returns 1 if the  
+</I>&gt;&gt;<i> conversion on the specified channel ended, 0 otherwise
+</I>&gt;<i>
+</I>&gt;<i> I wonder if in the case of using an interpreted language like Lua  
+</I>&gt;<i> that one might be converting values fast enough that having some  
+</I>&gt;<i> sort of loop waiting for the data to be done might not be fruitful,  
+</I>&gt;<i> at least in single shot mode?  Certainly, one is more likely to need  
+</I>&gt;<i> this if one wants to know if a burst has completed.
+</I>&gt;<i>
+</I>&gt;&gt;<i> void platform_adc_set_mode( unsigned id, int mode ); // sets the  
+</I>&gt;&gt;<i> mode on the specified ADC channel to either &quot;single shot&quot; or  
+</I>&gt;&gt;<i> &quot;continuous&quot;
+</I>&gt;<i>
+</I>&gt;<i> Hmm.. what about adding a filtered/smoothed mode? By this I don't  
+</I>&gt;<i> mean anything particularly intense, perhaps just a ring buffer of a  
+</I>&gt;<i> set length that gets averaged whenever platform_adc_sample is  
+</I>&gt;<i> called.  I find myself frequently doing things like this when  
+</I>&gt;<i> sampling things that are noisier than the best resolution the ADC  
+</I>&gt;<i> can deliver.  My only thought here would be that the C code might do  
+</I>&gt;<i> this faster than doing the averaging in Lua.
+</I>&gt;<i>
+</I>&gt;<i> One way to handle this somewhat elegantly would be to not even add  
+</I>&gt;<i> anything to the mode function, just have the default buffer be of  
+</I>&gt;<i> length 1, and under this condition, no smoothing is done.  If you  
+</I>&gt;<i> want it, use the following function to enable the rolling average:
+</I>&gt;<i>
+</I>&gt;<i> void platform_adc_set_smoothing( unsigned id, int length ); // sets  
+</I>&gt;<i> window length/buffer size for moving average filter
+</I>&gt;<i>
+</I>&gt;<i> Does this seem too much to have in the library?
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> void platform_adc_burst( unsigned id, u16* buf, unsigned count, u32  
+</I>&gt;&gt;<i> frequency ); // burst conversion: read &quot;count&quot; samples from the ADC  
+</I>&gt;&gt;<i> channel &quot;id&quot;, storing the results in &quot;buf&quot;. The samples are read at  
+</I>&gt;&gt;<i> periodic intervals, the period is given by &quot;frequency&quot;.
+</I>&gt;<i>
+</I>&gt;<i> I like this as well.
+</I>&gt;<i>
+</I>&gt;<i> One thing that might be interesting to provide as well, would be  
+</I>&gt;<i> some method to do this type of recording directly to a binary file  
+</I>&gt;<i> in the mini filesystem or onto an SD card or something similar.   
+</I>&gt;<i> This could be useful if one wants to capture more data than can be  
+</I>&gt;<i> held in SRAM at once, but the sampling rate would have to drop down  
+</I>&gt;<i> to much to record and transfer data a machine connected to the micro.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I realize some of these things might extend beyond what could be  
+</I>&gt;<i> appropriate for a simple module, but  I think they could be useful  
+</I>&gt;<i> just the same.  Also, I think the original functions make sense to  
+</I>&gt;<i> get working as an initial implementation before making any of the  
+</I>&gt;<i> extensions I'm proposing.
+</I>&gt;<i>
+</I>&gt;<i> Thoughts?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 644-2322
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090114/e79a816b/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090114/e79a816b/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090114/e79a816b/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090114/e79a816b/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000267.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+	<LI>Next message: <A HREF="000290.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#289">[ date ]</a>
+              <a href="thread.html#289">[ thread ]</a>
+              <a href="subject.html#289">[ subject ]</a>
+              <a href="author.html#289">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New linux platform for eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20linux%20platform%20for%20eLua&In-Reply-To=%3C200905201158.21827.bobby%40sharedrealm.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000824.html">
+   <LINK REL="Next"  HREF="000826.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New linux platform for eLua</H1>
+    <B>Robert G. Jakabosky</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20linux%20platform%20for%20eLua&In-Reply-To=%3C200905201158.21827.bobby%40sharedrealm.com%3E"
+       TITLE="[eLua-dev] New linux platform for eLua">bobby at sharedrealm.com
+       </A><BR>
+    <I>Wed May 20 20:58:21 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000824.html">[eLua-dev] New linux platform for eLua
+</A></li>
+        <LI>Next message: <A HREF="000826.html">[eLua-dev] New linux platform for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#825">[ date ]</a>
+              <a href="thread.html#825">[ thread ]</a>
+              <a href="subject.html#825">[ subject ]</a>
+              <a href="author.html#825">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+First make sure you have the latest svn revision, since Bogdan renamed the 
+platform to &quot;sim&quot; and made it easier to add support for other host OS.  Still 
+use &quot;cpu=linux&quot; with the build command.
+
+You will need the i686-elf toolchain built with newlib support.  Glibc is not 
+used when building the &quot;sim&quot; plantform, so the syscalls to the host OS need 
+to be manually written.  As far as I know you can't use a copy of the gcc 
+toolchain that was built for glibc.
+
+On Wednesday 20, James Snyder wrote:
+&gt;<i> Quick question about this again:
+</I>&gt;<i>
+</I>&gt;<i> Are you using the i686 elf build of the toolchain to make this work?
+</I>&gt;<i> I'm trying to get it going on Darwin (Mac OS X), and I'm wondering if
+</I>&gt;<i> I can use newlib with a gcc toolchain that was originally set up for
+</I>&gt;<i> glibc, or if it needs to be a full toolchain built around newlib...
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i> On May 11, 2009, at 7:37 AM, Robert G. Jakabosky wrote:
+</I>&gt;<i> &gt; Attached is a patch to add a linux platform that allows eLua to be
+</I>&gt;<i> &gt; compiled
+</I>&gt;<i> &gt; and tested as a linux app.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; eLua will still use it's romfs/newlib/etc.. libraries.  The only linux
+</I>&gt;<i> &gt; syscalls eLua uses are read/write/mmap.  read/write are used to
+</I>&gt;<i> &gt; emulate a
+</I>&gt;<i> &gt; keyboard &amp; monitor.  mmap is used to allocate a 64Kbyte block of ram
+</I>&gt;<i> &gt; for eLua
+</I>&gt;<i> &gt; as memory.  You can configure the amount of memory in platform_conf.h
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; This platform is just to make it easier to use gdb for debugging.  It
+</I>&gt;<i> &gt; shouldn't be to hard to add other simulated devices.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; One bug I found is that longjmp is broken since it uses the 'cli'
+</I>&gt;<i> &gt; intruction
+</I>&gt;<i> &gt; which causes eLua to segfault.  It should be possible to override the
+</I>&gt;<i> &gt; setjmp/longjmp implementations and maybe pull in the one from
+</I>&gt;<i> &gt; linux.  If
+</I>&gt;<i> &gt; someone looks into overrideing/replacing those symbols I could write a
+</I>&gt;<i> &gt; setjmp/longjmp in assembly that should work.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Trying to run life.lua in eLua with only 64Kbyte will cause an out
+</I>&gt;<i> &gt; of memory
+</I>&gt;<i> &gt; error and crash eLua.  If eLua is also compiled with the EGC patch
+</I>&gt;<i> &gt; life.lua
+</I>&gt;<i> &gt; runs fine. :)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; Robert G. Jakabosky
+</I>&gt;<i> &gt; &lt;elua_linux.patch&gt;_______________________________________________
+</I>&gt;<i> &gt; Elua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 448-0386
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+-- 
+Robert G. Jakabosky
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000824.html">[eLua-dev] New linux platform for eLua
+</A></li>
+	<LI>Next message: <A HREF="000826.html">[eLua-dev] New linux platform for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#825">[ date ]</a>
+              <a href="thread.html#825">[ thread ]</a>
+              <a href="subject.html#825">[ subject ]</a>
+              <a href="author.html#825">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

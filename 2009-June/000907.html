@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ARM Float Endianness
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ARM%20Float%20Endianness&In-Reply-To=%3CEMEWEMEW2_DELIMl5PDOR5018a12df38d931b6fa7b1%2C%0A%09jbsnyder%40fanplastic.org%2C%208736BBD6-C0E2-46F6-8538-42F%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000887.html">
+   <LINK REL="Next"  HREF="000877.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ARM Float Endianness</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ARM%20Float%20Endianness&In-Reply-To=%3CEMEWEMEW2_DELIMl5PDOR5018a12df38d931b6fa7b1%2C%0A%09jbsnyder%40fanplastic.org%2C%208736BBD6-C0E2-46F6-8538-42F%3E"
+       TITLE="[eLua-dev] ARM Float Endianness">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jun 26 20:24:35 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000887.html">[eLua-dev] ARM Float Endianness
+</A></li>
+        <LI>Next message: <A HREF="000877.html">[eLua-dev] Quick Notes on LuaRPC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#907">[ date ]</a>
+              <a href="thread.html#907">[ thread ]</a>
+              <a href="subject.html#907">[ subject ]</a>
+              <a href="author.html#907">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Anyone have any further thoughts?
+
+here's a section from ldump.c that handles swapping if the particular  
+mode is enabled:
+
+     // ARM FPA mode: keep endianness, but swap high and low parts of  
+the
+     // memory representation. This is the default compilation mode  
+for ARM
+     // targets (at least with GCC)
+     if(D-&gt;target.is_arm_fpa)
+     {
+       char *pnum=(char*)&amp;y, temp[4];
+       memcpy(temp,pnum,4);
+       memcpy(pnum,pnum+4,4);
+       memcpy(pnum+4,temp,4);
+     }
+
+In the beta docs, for stock standard gcc (I assume non-EABI) it is  
+suggested that this is needed, however it does not suggest enabling  
+this when using CodeSourcery's toolchain (EABI compliant).
+
+-jsnyder
+
+On Jun 23, 2009, at 9:46 AM, James Snyder wrote:
+
+&gt;<i>
+</I>&gt;<i> On Jun 23, 2009, at 2:14 AM, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I have a quick question about ARM float endianness, since I can't  
+</I>&gt;&gt;<i> seem to find a concise listing of what devices &amp; compiler  
+</I>&gt;&gt;<i> situations result in the four upper and lower bytes in an ARM float  
+</I>&gt;&gt;<i> being flipped.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It's not really a compiler issue, it's about the ARM core  
+</I>&gt;&gt;<i> implementation. Although the ARM architecture manual states that an  
+</I>&gt;&gt;<i> ARM core should be able to support both little and big endian, I  
+</I>&gt;&gt;<i> personally don't know of any ARM-based micro that actually gives  
+</I>&gt;&gt;<i> you a choice here. The vaste majority are little endian and stay  
+</I>&gt;&gt;<i> like that.
+</I>&gt;<i>
+</I>&gt;<i> What I mean here are the cases where you have everything little  
+</I>&gt;<i> endian except for the floats where the first four bytes are flipped  
+</I>&gt;<i> with the last four bytes.  That's what I'm getting the impression  
+</I>&gt;<i> may be toolchain based.
+</I>&gt;<i>
+</I>&gt;<i> I'm thinking of the arm_float option provided by the cross  
+</I>&gt;<i> compiler.  In the updated docs you mention using arm_float for a non- 
+</I>&gt;<i> EABI toolchain, and just float for an EABI toolchain.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm thinking about trying to include some sort of test for this,  
+</I>&gt;&gt;<i> but I'd like to be able to use a configuration that has things  
+</I>&gt;&gt;<i> flipped so that I can test things, and also know when to expect  
+</I>&gt;&gt;<i> this behavior.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Think AVR32 then :) Currently the only eLua target that can do big  
+</I>&gt;&gt;<i> endian.
+</I>&gt;<i>
+</I>&gt;<i> Hmm... I don't have one unfortunately... maybe what I should do is  
+</I>&gt;<i> get an emulator going with PowerPC or something similar running  
+</I>&gt;<i> Linux and at least test things there to make sure that stuff gets  
+</I>&gt;<i> negotiated properly.
+</I>&gt;<i>
+</I>&gt;<i> It currently is set up to use the native format for both ends (if  
+</I>&gt;<i> they're the same), and default to network order (big endian) if they  
+</I>&gt;<i> differ.  I think this should be a reasonable compromise for speed  
+</I>&gt;<i> (though with the current implementation I'm not sure how much of a  
+</I>&gt;<i> speed hit is incurred by flipping everything).
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It looks like, from the beta docs, that it simply depends on  
+</I>&gt;&gt;<i> whether or not one is using an EABI or non-EABI compiler toolchain.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Big or little endian have nothing to do with the toolchain. All the  
+</I>&gt;&gt;<i> toolchains I know are capable of compiling little or big endian  
+</I>&gt;&gt;<i> without problems, all you need to do is give the compiler/linker/ 
+</I>&gt;&gt;<i> assembler the correct options.
+</I>&gt;<i>
+</I>&gt;<i> I suppose I should check compiling with these options too.  That  
+</I>&gt;<i> might be one way to try big-endian on ARM.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm thinking that it would be nice to do something like the  
+</I>&gt;&gt;<i> following for float enabled cases:
+</I>&gt;&gt;<i> 1. set some float to a particular value
+</I>&gt;&gt;<i> 2. use a union or cast to look at the individual bytes and  
+</I>&gt;&gt;<i> determine what pattern it might match.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You don't even need a float, the test is actually easier to  
+</I>&gt;&gt;<i> implement with integers:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> int is_big_endian()
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>   u32 test = 0x12345678;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>   return *( ( u8 * )&amp;test ) == 0x12;
+</I>&gt;&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> Currently I'm just using the same test Lua does on an int:
+</I>&gt;<i>
+</I>&gt;<i> int test=1;
+</I>&gt;<i>  target.little_endian=*(char*)&test;
+</I>&gt;<i>
+</I>&gt;<i> I suppose this works so long as int isn't only a single byte (or  
+</I>&gt;<i> some other weird ordering can confuse it).
+</I>&gt;<i>
+</I>&gt;<i> Perhaps some efficient byte swapping and configuration checking  
+</I>&gt;<i> functions would be good to have in the general toolchest of  
+</I>&gt;<i> functions on eLua?
+</I>&gt;<i>
+</I>&gt;<i> It looks like on ARM platforms there are some fairly efficient ways  
+</I>&gt;<i> to do this in the instruction set (not sure if this is exposed in C):
+</I>&gt;<i> <A HREF="http://www.doulos.com/knowhow/arm/Hints_and_Tips/Byte_Swapping/">http://www.doulos.com/knowhow/arm/Hints_and_Tips/Byte_Swapping/</A>
+</I>&gt;<i>
+</I>&gt;<i> I'm not that worried about speed, and it's probably the last thing  
+</I>&gt;<i> I'll touch, but as with everything else, I prefer to leave as much  
+</I>&gt;<i> time for the VM as possible, rather than wasting cycles on mundane  
+</I>&gt;<i> stuff like byte swapping.  I also figure this sort of thing might  
+</I>&gt;<i> actually matter on faster links.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Certainly there could also be some defines or something else to  
+</I>&gt;&gt;<i> clue things in at compile time, but autodetection would be nice in  
+</I>&gt;&gt;<i> the sense that it isn't dependent on the compiler defining  
+</I>&gt;&gt;<i> something to clue the code in.  I'm not sure if there's fragility  
+</I>&gt;&gt;<i> built into such an approach though.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Autodetection is so easy to do that you don't need any other  
+</I>&gt;&gt;<i> macros. At least at runtime. Of course, if you're doing conditional  
+</I>&gt;&gt;<i> compilation, you will need some macro to tell you if you're  
+</I>&gt;&gt;<i> compiling for little or big endian.
+</I>&gt;<i>
+</I>&gt;<i> Right, I figure that this is actually more cross-compiler friendly  
+</I>&gt;<i> as well.  Since if integer or floating point representations don't  
+</I>&gt;<i> match some pre-defined pattern anyways, they're going to require  
+</I>&gt;<i> some additional mangling to get things to communicate anyways.
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: 847.448.0386
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 4012 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090626/8be1afa4/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090626/8be1afa4/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000887.html">[eLua-dev] ARM Float Endianness
+</A></li>
+	<LI>Next message: <A HREF="000877.html">[eLua-dev] Quick Notes on LuaRPC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#907">[ date ]</a>
+              <a href="thread.html#907">[ thread ]</a>
+              <a href="subject.html#907">[ subject ]</a>
+              <a href="author.html#907">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

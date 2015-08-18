@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New user introduction!
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20user%20introduction%21&In-Reply-To=%3C1323614912.6422.YahooMailNeo%40web161203.mail.bf1.yahoo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003102.html">
+   <LINK REL="Next"  HREF="003105.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New user introduction!</H1>
+    <B>Tim michals</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20user%20introduction%21&In-Reply-To=%3C1323614912.6422.YahooMailNeo%40web161203.mail.bf1.yahoo.com%3E"
+       TITLE="[eLua-dev] New user introduction!">tcmichals at yahoo.com
+       </A><BR>
+    <I>Sun Dec 11 15:48:32 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003102.html">[eLua-dev] New user introduction!
+</A></li>
+        <LI>Next message: <A HREF="003105.html">[eLua-dev] SAM7x/SAM7s USB
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3103">[ date ]</a>
+              <a href="thread.html#3103">[ thread ]</a>
+              <a href="subject.html#3103">[ subject ]</a>
+              <a href="author.html#3103">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>In the Atmel has a chip library AT91lib that contains CDC RS232 or <A HREF="http://www.atmel.com/dyn/products/product_docs.asp?category_id=163&amp;family_id=605&amp;subfamily_id=1724&amp;part_id=3755">http://www.atmel.com/dyn/products/product_docs.asp?category_id=163&amp;family_id=605&amp;subfamily_id=1724&amp;part_id=3755</A>
+
+I was working on a simple framework for USB but got pulled off due to number of work related projects.&#160; One project is using Lua and libev.&#160; libev, goal is to use events for I/O using epoll, select or kqueue.&#160; So it is possible to have several 100 or 1000 of sockets, file handles, timers etc. using a simple event loop.&#160; There are several Lua wrappers for libev or libevent.&#160; One wrapper for libevent and uses co-routines/continuations for threading.&#160; i.e <A HREF="http://repo.or.cz/w/luaevent.git&#160;&#160;">http://repo.or.cz/w/luaevent.git&#160;&#160;</A>
+
+So, the original goal was to use a libevent type of framework to be able to process USB events and possible other IO.&#160; 
+
+
+
+
+________________________________
+ From: Brent Picasso &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">brent at autosportlabs.com</A>&gt;
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A> 
+Sent: Sunday, December 11, 2011 12:28 AM
+Subject: Re: [eLua-dev] New user introduction!
+ 
+
+Hi Thiago,
+
+Taking a look at your sam7s branch this weekend.
+
+looking at the platform code for the sam7s (and sam7x) it seem
+    there's no USB device code present- I was specifically looking for
+    code implementing a USB CDC and couldn't find anything. 
+
+Is that sam7x/7s port making the shell available over UART?
+
+if so, would we want to instead expose it over USB, as with the
+    LPC1768?
+
+Thanks,
+
+Brent Picasso
+Autosport Labs
+Technology for Race and Street
+autosportlabs.com | twitter.com/AutosportLabs 
+On 12/04/2011 02:32 PM, Thiago Naves wrote: 
+One more thing, I put both linker scripts on the
+src/platform/at91sam7s/at91sam7s256 folder.
+The flash_sam7x.lds is the one being used. The other 2 are for the sam7s.
+You can change this in conf.py ( src/platform/at91sam7s/conf.py )
+Also, I've only changed the scons build. The Lua build system will not work. Thiago On Sun, Dec 4, 2011 at 5:54 PM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote: 
+&gt;<i>On Sun, Dec 4, 2011 at 5:39 PM, Brent Picasso &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">brent at autosportlabs.com</A>&gt; wrote: 
+</I>&gt;&gt;<i>Hi Thiago, 
+</I>&gt;&gt;<i>Hi Brent, 
+</I>&gt;&gt;<i>The sam7s accepted the image, but as suspected, the USB pullup line was not
+</I>enabled via PA16, so the host did not enumerate the device. 
+&gt;&gt;<i>Hmm... 
+</I>&gt;&gt;<i>Why Atmel chose to waste a PIO for activating the USB pullup instead of
+</I>providing an internal one is still a mystery to me - it's one item of many
+questions I'd like to ask their design engineers! 
+&gt;&gt;<i>Yeah, go figure... 
+</I>&gt;&gt;<i>if you could push the code you have to a branch I'd be happy to take a look
+</I>at it and move it forward! 
+&gt;&gt;<i>I just did =) I was working on this right now...
+</I>I uploaded this to my fork on github ( <A HREF="https://github.com/naves-thiago/elua/tree/sam7s">https://github.com/naves-thiago/elua/tree/sam7s</A> ) as I would rather
+not do this on the official repo at this point. A fiew things I would like to note here:
+This is using the sam7x linker script ( as the image I sent you was )
+because I can't make it link with the sam7s script I got from atmel...
+I have changed the lib files ( pio.c pwm.c pwmc.c trace.h etc ) to the
+ones from atmel ( instead of using the ones from the sam7x port as
+before ).
+I had to make a fiew changes to these files ( mostly changing include
+paths and removing trace stuff ). Best,
+Thiago 
+&gt;&gt;<i>Thanks, Brent Picasso
+</I>Autosport Labs
+Technology for Race and Street
+autosportlabs.com | twitter.com/AutosportLabs On 12/03/2011 11:04 PM, Thiago Naves wrote: On Sun, Dec 4, 2011 at 2:53 AM, Brent Picasso &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">brent at autosportlabs.com</A>&gt; wrote: Thanks for the binary! I will give it a try when I get back to ny workbench. If you can push your tweaks to a branch I could pull them down and make
+further fixes as necessary - perhaps we can get another port on the list! yeah, sure. I'll do some cleanup and try to make this a new platform
+instead of overwriting the sam7x256 as I did for generating this for a
+test ;)
+Then I'll upload it to my fork and send you the link. I dug into the differences between the&#160; Sam7s and the sam7x and one
+prominent thing that came up was with the USB pullup. The sam7s commonly
+uses PA16 for enabling the USB pullup to match the SAM-BA bootloader. Is
+this the same on the 7x? I don't know... I haven't used any of these platforms before... Otherwise it's exciting to hear how compatible the two devices are! Yeah! this was rather trivial... I just replaced the atmel's files for
+the sam7x with the ones for sam7s and edited platform.c to remove PIO
+port B and PWM 3 and changed 2 includes in board.h and added 2 missing
+defines and it built =) I will be surprised if this run on the first try ! Regards, Brent Connected by DROID on Verizon Wireless -----Original message----- From: Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; To: &quot;eLua Users and Development List (www.eluaproject.net)&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt; Sent: Sun, Dec 4, 2011 04:00:43 GMT+00:00 Subject: Re: [eLua-dev] New user introduction! _______________________________________________
+eLua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> _______________________________________________
+eLua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> _______________________________________________
+eLua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+&gt;<i>_______________________________________________
+</I>eLua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111211/1a8f3239/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111211/1a8f3239/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003102.html">[eLua-dev] New user introduction!
+</A></li>
+	<LI>Next message: <A HREF="003105.html">[eLua-dev] SAM7x/SAM7s USB
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3103">[ date ]</a>
+              <a href="thread.html#3103">[ thread ]</a>
+              <a href="subject.html#3103">[ subject ]</a>
+              <a href="author.html#3103">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

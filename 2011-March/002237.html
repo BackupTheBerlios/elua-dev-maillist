@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Instrumenting stack usage
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Instrumenting%20stack%20usage&In-Reply-To=%3CAANLkTi%3DTEb%3Dj-UtnANnLTAqNtwoUCrBpkpb29Vm%3DqgZB%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002236.html">
+   <LINK REL="Next"  HREF="002238.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Instrumenting stack usage</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Instrumenting%20stack%20usage&In-Reply-To=%3CAANLkTi%3DTEb%3Dj-UtnANnLTAqNtwoUCrBpkpb29Vm%3DqgZB%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Instrumenting stack usage">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Mar 29 09:45:51 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002236.html">[eLua-dev] Instrumenting stack usage
+</A></li>
+        <LI>Next message: <A HREF="002238.html">[eLua-dev] Instrumenting stack usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2237">[ date ]</a>
+              <a href="thread.html#2237">[ thread ]</a>
+              <a href="subject.html#2237">[ subject ]</a>
+              <a href="author.html#2237">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Mar 29, 2011 at 10:27 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 28 March 2011 08:31, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; On Mon, Mar 28, 2011 at 7:38 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt; I've checked to see how much C stack is used in reality and attach a
+</I>&gt;<i> &gt;&gt; nasty patch that does the job.
+</I>&gt;<i> &gt;&gt; 2380 bytes of stack have been used
+</I>&gt;<i> &gt;&gt; &gt; require &quot;life&quot;
+</I>&gt;<i> &gt;&gt; 3264 bytes of stack have been used
+</I>&gt;<i> &gt;&gt; &gt; require &quot;ed&quot;
+</I>&gt;<i> &gt;&gt; 3948 bytes of stack have been used
+</I>&gt;<i>
+</I>&gt;<i> &gt; The next step is to understand why this happens.
+</I>&gt;<i>
+</I>&gt;<i> Why what happens? Why it uses 2K of stack during starup? Or why it
+</I>&gt;<i> uses 3 to 3.9K to parse programs?
+</I>&gt;<i>
+</I>
+Both. 2K on startup happens most likely because of some large automatic
+variables. Which reminds me of a very nifty little script called
+checkstack.pl:
+
+<A HREF="http://stackoverflow.com/questions/126036/checking-stack-usage-at-compile-time">http://stackoverflow.com/questions/126036/checking-stack-usage-at-compile-time</A>
+
+&lt;<A HREF="http://stackoverflow.com/questions/126036/checking-stack-usage-at-compile-time">http://stackoverflow.com/questions/126036/checking-stack-usage-at-compile-time</A>&gt;I
+used it once (quite a while ago), I should probably do it again. It does
+something very simple, yet very effective: it disassembles the object files
+and looks for instructions that decrement the stack pointer (something like
+&quot;sub (e)sp,xxxx&quot; on i386 (I remember that it can work with other
+architectures too)). I was able to somehow sort its output by the ammount of
+bytes substracted from the stack pointer. Quite an easy way to find the
+functions that use too much stack space.
+
+
+&gt;<i> As you say, parsing the programs is the big one.  Running the Lua
+</I>&gt;<i> programs requires very little stack, since the Lua stack is on the
+</I>&gt;<i> heap and recursive Lua functions use no C stack.
+</I>
+
+&gt;<i> There is an email post from Roberto about what contribures to using
+</I>&gt;<i> stack. He says the compiled limits on upvalues and local variables
+</I>&gt;<i> make a difference, but I've experimented increasing LUAI_MAXUPVALUES
+</I>&gt;<i> from 20 to 250 in eLua and it made absolutely no difference whatsoever
+</I>&gt;<i> to the stack high water mark. Not a byte!
+</I>&gt;<i>
+</I>
+That doesn't really surprise me. Upvalues are not kept on the stack. I don't
+understand Roberto's statement.
+
+
+&gt;<i> However, at least now we can play with the settings and see the
+</I>&gt;<i> difference that it really makes... in all this free time that we
+</I>&gt;<i> have... ;-)
+</I>&gt;<i>
+</I>
+... or build an instrumentation framework :D Yes, I have that in mind too.
+Only for Cortex M3 for now. I should invent the 96 hours day before starting
+to work on that though :)
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110329/1b932eeb/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110329/1b932eeb/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002236.html">[eLua-dev] Instrumenting stack usage
+</A></li>
+	<LI>Next message: <A HREF="002238.html">[eLua-dev] Instrumenting stack usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2237">[ date ]</a>
+              <a href="thread.html#2237">[ thread ]</a>
+              <a href="subject.html#2237">[ subject ]</a>
+              <a href="author.html#2237">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

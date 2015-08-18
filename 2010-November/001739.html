@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Reducing code size of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTi%3D6%3Duj7jJUATDzB%2B0SsmRaTXgi6yA5nRR8JiREm%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001738.html">
+   <LINK REL="Next"  HREF="001740.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Reducing code size of eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTi%3D6%3Duj7jJUATDzB%2B0SsmRaTXgi6yA5nRR8JiREm%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Reducing code size of eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Nov 30 15:52:50 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001738.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+        <LI>Next message: <A HREF="001740.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1739">[ date ]</a>
+              <a href="thread.html#1739">[ thread ]</a>
+              <a href="subject.html#1739">[ subject ]</a>
+              <a href="author.html#1739">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Nov 30, 2010 at 4:34 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> Hi
+</I>&gt;<i> &#160; I'm investigating how to reduce the size of the flash-rom image of
+</I>&gt;<i> eLua for a 128KB platform with 120KB available. I've already made some
+</I>&gt;<i> optimizations and found some size-reducing configurations, and would
+</I>&gt;<i> appreciate some input as to which parts of Lua are not relevant when
+</I>&gt;<i> the interpreter is running stand-alone instead of as a scripting
+</I>&gt;<i> language inside a larger program. I'm new to Lua and eLua and wouldn't
+</I>&gt;<i> want to remove some feature just because I don't understand it.
+</I>&gt;<i>
+</I>&gt;<i> My current list of hacks is:
+</I>&gt;<i> - configs: build lualong (no FP, saving 46KB!)
+</I>
+Hmmm, only 46k? Is this coming from the absence of libm alone, or the
+compiler's floating point support is also not linked in the image? It
+shouldn't be, as I specifically tried not to use floats or doubles in
+the eLua source code. But it might be worth checking anyway, errors
+are always possible.
+
+&gt;<i> - optram=0
+</I>
+This is going to hurt you on the RAM side, big time. Also many modules
+from the eLua distribution don't work at all in this mode. How much
+space are you saving with this setting anyway?
+
+&gt;<i> - allocator=newlib (=simple is smaller but takes 5 seconds to start up)
+</I>
+This is a bug, it doesn't have any good reason to do that. I'll take a
+look at it when I have some time. Might be something related to AVR32
+being a big endian architecture, I never tested the simple allocator
+on big endian targets.
+
+&gt;<i> - enable CCFLAGS = ['-DLUAC_TRUST_BINARIES']
+</I>
+Thanks for this tip :)
+
+&gt;<i> - reduce the huge number of strings in the Lua interpreter by
+</I>&gt;<i> simplifying some of the more verbose error messages (example: &quot;too
+</I>&gt;<i> many results to unpack&quot; and &quot;too many results to resume&quot; both become
+</I>&gt;<i> &quot;too many results&quot;, which generates a single copy of the string)
+</I>
+Does the linker optimize this globally? I thought this happens only at
+file object level.
+
+&gt;<i> - replacing strerror with something that just prints the value of
+</I>&gt;<i> errno, so that the 3KB table of Unix system call error messages is not
+</I>&gt;<i> pulled in from the C library
+</I>
+Nice (and see my remarks at the end of this e-mail).
+
+&gt;<i> - disable lua 5.0 and 4.9 compatability flags
+</I>
+Again, thanks for the tip.
+
+&gt;<i> - disable things which seem only to be used when Lua is included in a
+</I>&gt;<i> larger C program as an embedded scripting language:
+</I>
+Such as ? I'm curious.
+
+&gt;<i> &#160;- parts of the debug interface (lua_{getupvalue,setupvalue,setlocal}
+</I>
+You might want to remove registration for the &quot;debug&quot; module
+altogether, it might save even more space.
+
+&gt;<i> &#160;- the hook interface
+</I>
+If you remove the hook interface you won't be able to use Lua
+interrupt support on your platform. Which probably won't fit anyway :)
+so you're probably OK.
+
+&gt;<i> Also, is the dump/undump code likely to be used in Lua applications?
+</I>&gt;<i> It seems to be used to write/read compiled Lua code to files or for
+</I>&gt;<i> transmission over the net, and to load precompiled Lua applications.
+</I>
+This is exactly what it is used for. You need it for romfs='compile'
+mode, for cross-compiling and maybe for LuaRPC (not sure about this
+last one).
+
+&gt;<i> Lastly, are the &quot;bit&quot;, &quot;pack&quot; and &quot;term&quot; modules specific to eLua,
+</I>&gt;<i> hence unikely to be used in existing Lua applications?
+</I>
+&quot;bit&quot; and &quot;pack&quot; are taken from lhf's page
+(<A HREF="http://www.tecgraf.puc-rio.br/~lhf/ftp/lua/">http://www.tecgraf.puc-rio.br/~lhf/ftp/lua/</A>) and chances are there
+are used in Lua applications, especially the &quot;bit&quot; module. &quot;term&quot; is
+100% eLua specific.
+
+&gt;<i> Other?
+</I>
+Did you remove all the BUILD_xxxx stuff that you don't need from
+platform_conf.h? What about all the modules that you don't need?
+In the end you can always restart what I tried to do a while ago and
+rewrite the C library, at least partially :) You don't even have to
+rewrite it. I was planning to include the Minix libc (you can find it
+in the Minix source tree) in eLua, as it is very small (and BSD
+licensed unlike other small libcs out there). It's perfectly doable, I
+just don't have the time to do it right now. Actually you started this
+yourself when rewriting strerror, so why not continue it? :)
+It always helps to have a size report on this. Try something like
+'find . -name &quot;*.o&quot; | xargs avr32-size' and we can analyze that.
+Also, are you doing this for Mizar32? If so, is executing code from
+RAM not an option for you?
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001738.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+	<LI>Next message: <A HREF="001740.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1739">[ date ]</a>
+              <a href="thread.html#1739">[ thread ]</a>
+              <a href="subject.html#1739">[ subject ]</a>
+              <a href="author.html#1739">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

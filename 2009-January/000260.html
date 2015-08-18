@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ADC platform interface proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20platform%20interface%20proposal&In-Reply-To=%3C81fbe47d0901081307j6e56a316i2c2d09132a25d43c%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000259.html">
+   <LINK REL="Next"  HREF="000267.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ADC platform interface proposal</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20platform%20interface%20proposal&In-Reply-To=%3C81fbe47d0901081307j6e56a316i2c2d09132a25d43c%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] ADC platform interface proposal">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Jan  8 22:07:35 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000259.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+        <LI>Next message: <A HREF="000267.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#260">[ date ]</a>
+              <a href="thread.html#260">[ thread ]</a>
+              <a href="subject.html#260">[ subject ]</a>
+              <a href="author.html#260">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Following is my proposal for a platform interface for the ADC peripheral. I
+have only very limited experience with ADCs/DACs, in fact the only two
+&quot;serious&quot; applications that I wrote and used ADCs were based on external
+components and were quite basic on the data acquisition part, so you might
+find this specification incomplete or just plain strange. If so, please let
+me know so we can refine it to a better form.
+I tried to extract a common set of features of ADCs from all the CPUs that
+eLua currently supports, and this is what I came up with:
+
+- most (or maybe all) of them support both &quot;single shot&quot; and &quot;continous&quot;
+modes
+- some of them let the user select ADC timings (like startup time and
+sample&amp;hold time). This seems to be quite rare though, so I won't include it
+in the platform interface.
+- some of them also support a special mode in which they are &quot;paired&quot; with a
+hardware timer and use that timer as a conversion clock. This is useful, and
+it can be emulated even on platforms that don't support this feature.
+
+With this in mind, this is what I came up with:
+
+int platform_adc_exists( unsigned id ); // generic, it will be part of
+src/common.c
+u16 platform_adc_sample( unsigned id ); // sample the specified ADC channel
+void platform_adc_start( unsigned id ); // starts a conversion on the
+specified ADC channel and returns immediately
+int platform_adc_is_done( unsigned id ); // returns 1 if the conversion on
+the specified channel ended, 0 otherwise
+void platform_adc_set_mode( unsigned id, int mode ); // sets the mode on the
+specified ADC channel to either &quot;single shot&quot; or &quot;continuous&quot;
+void platform_adc_burst( unsigned id, u16* buf, unsigned count, u32
+frequency ); // burst conversion: read &quot;count&quot; samples from the ADC channel
+&quot;id&quot;, storing the results in &quot;buf&quot;. The samples are read at periodic
+intervals, the period is given by &quot;frequency&quot;.
+
+That's about it for now. What do you think?
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090108/5205151c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090108/5205151c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000259.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+	<LI>Next message: <A HREF="000267.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#260">[ date ]</a>
+              <a href="thread.html#260">[ thread ]</a>
+              <a href="subject.html#260">[ subject ]</a>
+              <a href="author.html#260">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

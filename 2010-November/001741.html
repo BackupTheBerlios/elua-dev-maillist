@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Reducing code size of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTik-jmqucipVit%2BpU%3DqEr-cCxVWKhU6ZqXiXHCG%3D%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001740.html">
+   <LINK REL="Next"  HREF="001742.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Reducing code size of eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTik-jmqucipVit%2BpU%3DqEr-cCxVWKhU6ZqXiXHCG%3D%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Reducing code size of eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Nov 30 18:56:36 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001740.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+        <LI>Next message: <A HREF="001742.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1741">[ date ]</a>
+              <a href="thread.html#1741">[ thread ]</a>
+              <a href="subject.html#1741">[ subject ]</a>
+              <a href="author.html#1741">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Nov 30, 2010 at 6:27 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> uOn Tue, Nov 30, 2010 at 3:52 PM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> On Tue, Nov 30, 2010 at 4:34 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> Hi
+</I>&gt;&gt;&gt;<i> &#160; I'm investigating how to reduce the size of the flash-rom image of
+</I>&gt;&gt;&gt;<i> eLua for a 128KB platform with 120KB available.
+</I>&gt;&gt;&gt;<i> ...
+</I>&gt;&gt;&gt;<i> My current list of hacks is:
+</I>&gt;&gt;&gt;<i> - configs: build lualong (no FP, saving 46KB!)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hmmm, only 46k? Is this coming from the absence of libm alone, or the
+</I>&gt;&gt;<i> compiler's floating point support is also not linked in the image? It
+</I>&gt;&gt;<i> shouldn't be, as I specifically tried not to use floats or doubles in
+</I>&gt;&gt;<i> the eLua source code. But it might be worth checking anyway, errors
+</I>&gt;&gt;<i> are always possible.
+</I>&gt;<i>
+</I>&gt;<i> libm is absent, yes, and looking at the binary I don't see any
+</I>&gt;<i> floating point emulation library functions, so you seem to have
+</I>&gt;<i> succeeded.
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> - optram=0
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is going to hurt you on the RAM side, big time.
+</I>&gt;<i> That's ok, we have 32MB of RAM but only 120K flash.
+</I>
+Yes, I realised that after sending the e-mail :)
+&gt;<i>
+</I>&gt;&gt;<i> Also many modules
+</I>&gt;&gt;<i> from the eLua distribution don't work at all in this mode. How much
+</I>&gt;&gt;<i> space are you saving with this setting anyway?
+</I>&gt;<i>
+</I>&gt;<i> Thanks. Do you know which and why? The saving is 4096 bytes.
+</I>
+I can make you a list if you want, or (even better) fix the ones that
+don't work.
+
+&gt;<i>
+</I>&gt;&gt;&gt;<i> - reduce the huge number of strings in the Lua interpreter by
+</I>&gt;&gt;&gt;<i> simplifying some of the more verbose error messages (example: &quot;too
+</I>&gt;&gt;&gt;<i> many results to unpack&quot; and &quot;too many results to resume&quot; both become
+</I>&gt;&gt;&gt;<i> &quot;too many results&quot;, which generates a single copy of the string)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Does the linker optimize this globally? I thought this happens only at
+</I>&gt;&gt;<i> file object level.
+</I>&gt;<i>
+</I>&gt;<i> It does.
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> - disable things which seem only to be used when Lua is included in a
+</I>&gt;&gt;&gt;<i> larger C program as an embedded scripting language:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Such as ? I'm curious.
+</I>&gt;<i>
+</I>&gt;<i> The following points were a list of them. I'm wondering if there are others.
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> &#160;- parts of the debug interface (lua_{getupvalue,setupvalue,setlocal}
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You might want to remove registration for the &quot;debug&quot; module
+</I>&gt;&gt;<i> altogether, it might save even more space.
+</I>&gt;<i>
+</I>&gt;<i> That's how I'm doing it, leaving the linker to optimise the unused
+</I>&gt;<i> functions and data out.
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> Lastly, are the &quot;bit&quot;, &quot;pack&quot; and &quot;term&quot; modules specific to eLua,
+</I>&gt;&gt;&gt;<i> hence unikely to be used in existing Lua applications?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &quot;bit&quot; and &quot;pack&quot; are taken from lhf's page
+</I>&gt;&gt;<i> (<A HREF="http://www.tecgraf.puc-rio.br/~lhf/ftp/lua/">http://www.tecgraf.puc-rio.br/~lhf/ftp/lua/</A>) and chances are there
+</I>&gt;&gt;<i> are used in Lua applications, especially the &quot;bit&quot; module. &quot;term&quot; is
+</I>&gt;&gt;<i> 100% eLua specific.
+</I>&gt;<i>
+</I>&gt;<i> Good. They are relatively small. bit:1024 pack:2048 term: 2076
+</I>&gt;<i>
+</I>&gt;&gt;<i> Did you remove all the BUILD_xxxx stuff that you don't need from
+</I>&gt;&gt;<i> platform_conf.h? What about all the modules that you don't need?
+</I>&gt;<i> Yes and yes.
+</I>&gt;<i>
+</I>&gt;&gt;<i> In the end you can always restart what I tried to do a while ago and
+</I>&gt;&gt;<i> rewrite the C library, at least partially :) You don't even have to
+</I>&gt;&gt;<i> rewrite it. I was planning to include the Minix libc (you can find it
+</I>&gt;&gt;<i> in the Minix source tree) in eLua, as it is very small (and BSD
+</I>&gt;&gt;<i> licensed unlike other small libcs out there). It's perfectly doable, I
+</I>&gt;&gt;<i> just don't have the time to do it right now. Actually you started this
+</I>&gt;&gt;<i> yourself when rewriting strerror, so why not continue it? :)
+</I>&gt;&gt;<i> It always helps to have a size report on this. Try something like
+</I>&gt;&gt;<i> 'find . -name &quot;*.o&quot; | xargs avr32-size' and we can analyze that.
+</I>&gt;<i>
+</I>&gt;<i> The libraries -lgcc and -lc add 25600 of text (tested by linking
+</I>&gt;<i> without -lc -lgcc and with -r).
+</I>
+Interesting. I would've guessed at least 50k. I believe you can do
+better with the lib from Minix, but I can't estimate how much better.
+
+&gt;<i> It's difficult to analyse from the .o files because a lot of code is
+</I>&gt;<i> compiled into the .o's and then eliminated by the linker.
+</I>
+True, but it still might give us some clues.
+
+&gt;<i> Yes and yes; we are also working on a small bootloader to load the
+</I>&gt;<i> executable from SDcard instead of flash to allow full FP lua with all
+</I>&gt;<i> modules.
+</I>
+This is definitely what I'd do. Compiling eLua in less that 128k of
+Flash is an achievement, unfortunately what you're going to end up
+with is not a very useful product. It might work extremely well for
+very specific tasks, but for generic development you'll most certainly
+want more features.
+Which reminds me: another thing you might want to remote is the Lua
+parser. You'll end up with something that can only execute bytecode,
+but that might be acceptable for some.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001740.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+	<LI>Next message: <A HREF="001742.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1741">[ date ]</a>
+              <a href="thread.html#1741">[ thread ]</a>
+              <a href="subject.html#1741">[ subject ]</a>
+              <a href="author.html#1741">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

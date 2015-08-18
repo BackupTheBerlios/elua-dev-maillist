@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Device Manager
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Device%20Manager&In-Reply-To=%3C81fbe47d0905111456p183a1816xcba51ab0eb3982bf%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000813.html">
+   <LINK REL="Next"  HREF="000811.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Device Manager</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Device%20Manager&In-Reply-To=%3C81fbe47d0905111456p183a1816xcba51ab0eb3982bf%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Device Manager">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon May 11 23:56:30 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000813.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+        <LI>Next message: <A HREF="000811.html">[eLua-dev] Device Manager
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#808">[ date ]</a>
+              <a href="thread.html#808">[ thread ]</a>
+              <a href="subject.html#808">[ subject ]</a>
+              <a href="author.html#808">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Linux has had v9fs included for some time:
+</I>&gt;<i> <A HREF="http://en.wikipedia.org/wiki/V9fs">http://en.wikipedia.org/wiki/V9fs</A>
+</I>&gt;<i>
+</I>
+Somehow, I'm not surprised :) Even if it wasn't, there's always FUSE in
+Linux.
+
+
+&gt;<i>  &lt;<A HREF="http://en.wikipedia.org/wiki/V9fs">http://en.wikipedia.org/wiki/V9fs</A>&gt;There are also numerous
+</I>&gt;<i> implementations of the server/client in various languages:
+</I>&gt;<i> <A HREF="http://9p.cat-v.org/implementations">http://9p.cat-v.org/implementations</A>
+</I>&gt;<i> I can't imagine it would be too hard to take a C implementation and hook it
+</I>&gt;<i> in with Lua.
+</I>&gt;<i>
+</I>
+Apparently there's at least a FUSE-like software for Windows and MAC too :
+<A HREF="http://yukoba.accelart.jp/2008/05/windows-fuse-dokan-become-open-source.html.">http://yukoba.accelart.jp/2008/05/windows-fuse-dokan-become-open-source.html.</A>
+Then again, if we have FUSE, we can implement pretty much everything we like
+:<i>), as simple or complex as we want it.
+</I>
+
+&gt;<i> I wouldn't necessarily expect that it show up as a real filesystem on all
+</I>&gt;<i> the platforms that would interface with it, I think in most cases they would
+</I>&gt;<i> just be used through a library that speaks the protocol.
+</I>&gt;<i>
+</I>
+Nice too, but having it as another file system would be simply beautiful.
+
+
+&gt;<i> I'm not sure either.  I also don't know what the overhead looks like for
+</I>&gt;<i> the implementations that are out there.  Conceptually it's quite powerful,
+</I>&gt;<i> but I'm not convinced whether it is a good or bad fit.  The Styx-on-a-brick
+</I>&gt;<i> project was particularly of interest because it suggests that it can be used
+</I>&gt;<i> on the class of devices eLua considers home :-)
+</I>&gt;<i>
+</I>
+That's what caught my attention too. Their MCU is far less limited than any
+of eLua's current targets, so it should be more than OK for us.
+
+Yeah, I don't think it supports double.  He uses the &quot;flong&quot; (
+&gt;<i> <A HREF="http://lua-users.org/lists/lua-l/2007-05/msg00306.html">http://lua-users.org/lists/lua-l/2007-05/msg00306.html</A>)&lt;<A HREF="http://lua-users.org/lists/lua-l/2007-05/msg00306.html%29">http://lua-users.org/lists/lua-l/2007-05/msg00306.html%29</A>&gt;to handle things as longs if there's no decimal point and floats if they
+</I>&gt;<i> have one.  It's an interesting tradeoff, but I don't think we'd want to give
+</I>&gt;<i> up support for higher precision (when wanted/needed).
+</I>&gt;<i>
+</I>
+Nope, we don't want that.
+
+
+&gt;<i> I would tend towards whatever solution requires minimal maintenance and
+</I>&gt;<i> code.  I suspect any transition could be done gradually rather than having
+</I>&gt;<i> to wholesale make a switch?
+</I>&gt;<i>
+</I>
+Sure. Whatever is missing will be linked in from Newlib, and eventually
+Newlib will vanish completely. Hopefully before the mayan calendar ends ...
+:<i>) Mind you, it's not only a question of libraries, we also have to
+</I>(almost?) completely replace the header files without upsetting the
+toolchain. And do this in a platform-independent manner. All in all, not an
+easy task.
+
+
+&gt;<i> Does the branch you've put together work as-is or is it more of a
+</I>&gt;<i> work-in-progress?
+</I>&gt;<i>
+</I>
+It is 100% WIP. Although I'm pretty sure that the basic stuff (like
+string-related functions for example) are already working. But I didn't test
+them yet.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090512/a894d71b/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090512/a894d71b/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000813.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+	<LI>Next message: <A HREF="000811.html">[eLua-dev] Device Manager
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#808">[ date ]</a>
+              <a href="thread.html#808">[ thread ]</a>
+              <a href="subject.html#808">[ subject ]</a>
+              <a href="author.html#808">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

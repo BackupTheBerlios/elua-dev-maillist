@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] [Elua-svn] compiling the toolchain error
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BElua-svn%5D%20compiling%20the%20toolchain%20error&In-Reply-To=%3C20101123164659.63703ade%40linux%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001722.html">
+   <LINK REL="Next"  HREF="001725.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] [Elua-svn] compiling the toolchain error</H1>
+    <B>rogerb</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BElua-svn%5D%20compiling%20the%20toolchain%20error&In-Reply-To=%3C20101123164659.63703ade%40linux%3E"
+       TITLE="[eLua-dev] [Elua-svn] compiling the toolchain error">rjb at ripnet.com
+       </A><BR>
+    <I>Tue Nov 23 22:46:59 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001722.html">[eLua-dev] [Elua-svn] compiling the toolchain error
+</A></li>
+        <LI>Next message: <A HREF="001725.html">[eLua-dev] [Elua-svn] compiling the toolchain error
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1723">[ date ]</a>
+              <a href="thread.html#1723">[ thread ]</a>
+              <a href="subject.html#1723">[ subject ]</a>
+              <a href="author.html#1723">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, 23 Nov 2010 23:33:07 +0200
+Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> Try add this somewhere (for example in main.c):
+</I>&gt;<i> 
+</I>&gt;<i> void abort(void)
+</I>&gt;<i> {
+</I>&gt;<i>   while( 1 );
+</I>&gt;<i> }
+</I>&gt;<i> 
+</I>&gt;<i> Kind of weird that it doesn't find this function though.
+</I>&gt;<i>
+</I>Added it to main.c and it worked thanks a lot 
+&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> 
+</I>&gt;<i> On Tue, Nov 23, 2010 at 11:30 PM, rogerb &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rjb at ripnet.com</A>&gt; wrote:
+</I>&gt;<i> &gt; On Tue, 23 Nov 2010 14:32:38 -0600
+</I>&gt;<i> &gt; James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt; Hi -
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Just to clarify did eLua build before with the same toolchain or
+</I>&gt;<i> &gt;&gt; has your toolchain changed? I'm not familiar with this particular
+</I>&gt;<i> &gt;&gt; toolchain creation script.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt; I was using codesourcery and it build ok but I thought i would try
+</I>&gt;<i> &gt; the build script at <A HREF="http://fun-tech.se/stm32/gcc/index.php">http://fun-tech.se/stm32/gcc/index.php</A> It
+</I>&gt;<i> &gt; builds the toolchain ok but when I compile elua it gets as far as
+</I>&gt;<i> &gt; building all the object files but fails in the linker stage.
+</I>&gt;<i> &gt; It's very close to the build stuff on the elua website but with
+</I>&gt;<i> &gt; insight and gdb and it has the gcc patch. I'll enclose &#160;the error
+</I>&gt;<i> &gt; text
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt; If you want to try my own toolchain builder, it should work on
+</I>&gt;<i> &gt;&gt; Ubuntu: <A HREF="https://github.com/jsnyder/arm-eabi-toolchain">https://github.com/jsnyder/arm-eabi-toolchain</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; This should, in general, work with eLua.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; -jsnyder
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Tue, Nov 23, 2010 at 1:35 PM, rogerb &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rjb at ripnet.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt; &gt; &#160; &#160; &#160; &#160;I'm trying the toolchain built from
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="http://fun-tech.se/stm32/gcc/index.php">http://fun-tech.se/stm32/gcc/index.php</A> with the libgloss
+</I>&gt;<i> &gt;&gt; &gt; thing in the newlib &#160;configure.ac (target-libgloss)
+</I>&gt;<i> &gt;&gt; &gt; added.Everything builds ok but when I try to build elua from
+</I>&gt;<i> &gt;&gt; &gt; this weeks cvs I get this
+</I>&gt;<i> &gt;&gt; &gt; error./usr/local/stm32/lib/gcc/arm-none-eabi/4.4.4/thumb/libgcc.a(unwind-arm.o):
+</I>&gt;<i> &gt;&gt; &gt; In function `unwind_phase2': &#160;then a bunch of &quot;unwind-arm.c:698:
+</I>&gt;<i> &gt;&gt; &gt; undefined reference to `abort&quot; errors. Does anyone know what they
+</I>&gt;<i> &gt;&gt; &gt; are?? Everything seems to be built except the binaries.
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; The cvs build using codesourcery if you uncomment the
+</I>&gt;<i> &gt;&gt; &gt; #ifdef FORSTM3210E_EVAL part in
+</I>&gt;<i> &gt;&gt; &gt; src/platform/stm32/platform_conf.h Thanks
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001722.html">[eLua-dev] [Elua-svn] compiling the toolchain error
+</A></li>
+	<LI>Next message: <A HREF="001725.html">[eLua-dev] [Elua-svn] compiling the toolchain error
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1723">[ date ]</a>
+              <a href="thread.html#1723">[ thread ]</a>
+              <a href="subject.html#1723">[ subject ]</a>
+              <a href="author.html#1723">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

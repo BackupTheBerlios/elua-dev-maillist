@@ -1,0 +1,270 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua light
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20light&In-Reply-To=%3C81fbe47d0901281155x224b94d4kc3e4b9bf0d84e565%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000324.html">
+   <LINK REL="Next"  HREF="000328.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua light</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20light&In-Reply-To=%3C81fbe47d0901281155x224b94d4kc3e4b9bf0d84e565%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua light">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Jan 28 20:55:27 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000324.html">[eLua-dev] eLua light
+</A></li>
+        <LI>Next message: <A HREF="000328.html">[eLua-dev] eLua light
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#325">[ date ]</a>
+              <a href="thread.html#325">[ thread ]</a>
+              <a href="subject.html#325">[ subject ]</a>
+              <a href="author.html#325">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>For eLua: yes, you need to do more changes (and it doesn't seem that you
+need this).
+For Lua: just download the latest distribution (5.1.4) and change from &quot;gcc&quot;
+to &quot;arm-elf-gcc&quot; in the makefile, in should do the trick (please note that I
+didn't actually try this though). If it doesn't work, try to copy/paste the
+error(s) here and we'll try to help more.
+
+Best,
+Bogdan
+
+On Wed, Jan 28, 2009 at 9:49 PM, Gilberto Hiroshi Sacomoto &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">gilberto.sacomoto at eldorado.org.br</A>&gt; wrote:
+
+&gt;<i>  Then, I am using this toolchain:
+</I>&gt;<i> <A HREF="http://download.ronetix.info/toolchains/arm/ronetix-gnutools-arm-elf-4.1.1-linux.tar.bz2">http://download.ronetix.info/toolchains/arm/ronetix-gnutools-arm-elf-4.1.1-linux.tar.bz2</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I used this toolchain to compile eLua for ARM920T. I just changed
+</I>&gt;<i> -mcpu=arm966e-s to -mcpu=arm920t and make the build. However, I think that
+</I>&gt;<i> are necessary more changes for I have the eLua for other platform. J
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Anyway, do you know how I can make a build of standard Lua using this
+</I>&gt;<i> toolchain? Is it possible?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i>
+</I>&gt;<i> *----------------------------------------**
+</I>&gt;<i> **Gilberto Hiroshi Sacomoto**
+</I>&gt;<i> **Engenheiro de Computa&#231;&#227;o**
+</I>&gt;<i> **<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">gilberto.sacomoto at eldorado.org.br</A>* &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">gilberto.sacomoto at eldorado.org.br</A>&gt;
+</I>&gt;<i> *Avenida &#201;rico Ver&#237;ssimo s/n&#176;*
+</I>&gt;<i>
+</I>&gt;<i> *Cidade Universit&#225;ria - Campinas - SP**
+</I>&gt;<i> CEP 13083-851 - Brasil
+</I>&gt;<i> Tel: (19) 3757-3149
+</I>&gt;<i> **<A HREF="http://www.eldorado.org.br/*">http://www.eldorado.org.br/*</A> &lt;<A HREF="http://www.eldorado.org.br/">http://www.eldorado.org.br/</A>&gt;
+</I>&gt;<i> *----------------------------------------*
+</I>&gt;<i>   ------------------------------
+</I>&gt;<i>
+</I>&gt;<i> *From:* <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] *On Behalf Of *Bogdan Marinescu
+</I>&gt;<i> *Sent:* quarta-feira, 28 de janeiro de 2009 Giba 16:42
+</I>&gt;<i>
+</I>&gt;<i> *To:* eLua Users and Development List
+</I>&gt;<i> *Subject:* Re: [eLua-dev] eLua light
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I second that. You need to match the eLua compilation process with your
+</I>&gt;<i> toolchain's libc, so try the same toolchain you're usually using (I'm
+</I>&gt;<i> assuming you have one :) ).
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jan 28, 2009 at 8:37 PM, Pedro Bittencourt &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> Gilberto,
+</I>&gt;<i>
+</I>&gt;<i> You may try a toolchain based on gcc to arm, but any ANSI C compiler to
+</I>&gt;<i> your particular target (theorically) will work to build Lua.
+</I>&gt;<i>
+</I>&gt;<i> --Pedro Bittencourt
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  On Wed, Jan 28, 2009 at 4:22 PM, Gilberto Hiroshi Sacomoto &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">gilberto.sacomoto at eldorado.org.br</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> Hi Bogdan and Pedro, how you doing?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>             Which complier do you think that I should use to compile the
+</I>&gt;<i> standard Lua distribution for this architecture (ARM920T)?
+</I>&gt;<i>
+</I>&gt;<i>             Can I use the same compiler that you used to eLua?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thanks again.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i>
+</I>&gt;<i> *----------------------------------------
+</I>&gt;<i> **Gilberto Hiroshi Sacomoto
+</I>&gt;<i> **Engenheiro de Computa&#231;&#227;o
+</I>&gt;<i> **<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">gilberto.sacomoto at eldorado.org.br</A>* &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">gilberto.sacomoto at eldorado.org.br</A>&gt;
+</I>&gt;<i> *Avenida &#201;rico Ver&#237;ssimo s/n&#176;*
+</I>&gt;<i>
+</I>&gt;<i> *Cidade Universit&#225;ria - Campinas - SP
+</I>&gt;<i> CEP 13083-851 - Brasil
+</I>&gt;<i> Tel: (19) 3757-3149
+</I>&gt;<i> **<A HREF="http://www.eldorado.org.br/*">http://www.eldorado.org.br/*</A> &lt;<A HREF="http://www.eldorado.org.br/">http://www.eldorado.org.br/</A>&gt;
+</I>&gt;<i> *----------------------------------------*
+</I>&gt;<i>   ------------------------------
+</I>&gt;<i>
+</I>&gt;<i> *From:* <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] *On Behalf Of *Bogdan Marinescu
+</I>&gt;<i> *Sent:* quarta-feira, 28 de janeiro de 2009 Giba 15:25
+</I>&gt;<i> *To:* eLua Users and Development List
+</I>&gt;<i> *Subject:* Re: [eLua-dev] eLua light
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> I don't think you need eLua at all for this, the standard Lua distribution
+</I>&gt;<i> should be fine (I assume you have enough memory on that board). Did you try
+</I>&gt;<i> to compile the standard Lua distribution?
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jan 28, 2009 at 7:21 PM, Pedro Bittencourt &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> Ni Gilberto,
+</I>&gt;<i>
+</I>&gt;<i> I believe it's possible to build Lua to an ARM target from the source code
+</I>&gt;<i> provided at www.lua.org, it worth a try =)
+</I>&gt;<i>
+</I>&gt;<i> --Pedro Bittencourt
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jan 28, 2009 at 2:49 PM, Gilberto Hiroshi Sacomoto &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">gilberto.sacomoto at eldorado.org.br</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i>   Hi all,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>             Would like to know if it is possible to create an eLua project
+</I>&gt;<i> just with Lua interpreter?
+</I>&gt;<i>
+</I>&gt;<i>             I need to compile the source Lua interpreter for a specific
+</I>&gt;<i> architecture (AMR920T exactly), because I already have an OS embedded to
+</I>&gt;<i> execute the Lua interpreter. I don't need boot, term, etc. I just need a Lua
+</I>&gt;<i> interpreter executable for this architecture.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thanks for your attention.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i>
+</I>&gt;<i> *----------------------------------------
+</I>&gt;<i> **Gilberto Hiroshi Sacomoto
+</I>&gt;<i> **Engenheiro de Computa&#231;&#227;o
+</I>&gt;<i> **<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">gilberto.sacomoto at eldorado.org.br</A>* &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">gilberto.sacomoto at eldorado.org.br</A>&gt;
+</I>&gt;<i> *Avenida &#201;rico Ver&#237;ssimo s/n&#176;*
+</I>&gt;<i>
+</I>&gt;<i> *Cidade Universit&#225;ria - Campinas - SP
+</I>&gt;<i> CEP 13083-851 - Brasil
+</I>&gt;<i> Tel: (19) 3757-3149
+</I>&gt;<i> **<A HREF="http://www.eldorado.org.br/*">http://www.eldorado.org.br/*</A> &lt;<A HREF="http://www.eldorado.org.br/">http://www.eldorado.org.br/</A>&gt;
+</I>&gt;<i> *----------------------------------------*
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090128/19b220c5/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090128/19b220c5/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000324.html">[eLua-dev] eLua light
+</A></li>
+	<LI>Next message: <A HREF="000328.html">[eLua-dev] eLua light
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#325">[ date ]</a>
+              <a href="thread.html#325">[ thread ]</a>
+              <a href="subject.html#325">[ subject ]</a>
+              <a href="author.html#325">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

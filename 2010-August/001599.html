@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Patch for AVR32 platforms without 32kHz crystal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Patch%20for%20AVR32%20platforms%20without%2032kHz%20crystal&In-Reply-To=%3CAANLkTima0TRtmn4LnYA9igYs0aKO%3D6opMSQanAknESOi%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001598.html">
+   <LINK REL="Next"  HREF="001600.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Patch for AVR32 platforms without 32kHz crystal</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Patch%20for%20AVR32%20platforms%20without%2032kHz%20crystal&In-Reply-To=%3CAANLkTima0TRtmn4LnYA9igYs0aKO%3D6opMSQanAknESOi%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Patch for AVR32 platforms without 32kHz crystal">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Aug 26 12:33:40 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001598.html">[eLua-dev] optimisation for 16 bits system
+</A></li>
+        <LI>Next message: <A HREF="001600.html">[eLua-dev] Patch for AVR32 platforms without 32kHz crystal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1599">[ date ]</a>
+              <a href="thread.html#1599">[ thread ]</a>
+              <a href="subject.html#1599">[ subject ]</a>
+              <a href="author.html#1599">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+   AVR32 board usually have two crystals: a 12MHz one from which the
+CPU and bus clocks are derived, and a 32768Hz one for the real time
+counters.
+   The following patch makes eLua timers work on AVR32 boards that
+don't have the 32768Hz crystal mounted (just the 12MHz one), such as
+our forthcoming project. I need to check a few other thing before I
+submit our board config files, but this patch can be tested on EVK1100
+by undefining FOSC32 in src/platform/avr32/EVK1100/evk1100_conf.h
+
+   Background: AVR32UC3 parts have 3 independent timers, which can be
+clocked at one of five frequencies:
+0 - the 32768Hz crystal
+1-4 - PBA frequency (which is configured in platform_conf.h (i.e.
+src/platform/avr32/BOARD/board_conf.h) and is usually 15MHz) divided
+by 2, 8, 32 or 128, giving 7.5MHz, 1.875MHz, 468.750kHz or 117.187kHz
+By default the clock selection register starts at 0, which selects the
+32768Hz crystal clock.
+  On boards with no 32768Hz crystal, this means that the timers do not
+run at all until you explicitly select a clock frequency of 100kHz(*)
+or above (thereby selecting a PBA-derived clock for that timer) with
+tmr.setclock(0, 100000)
+
+(*) More exactly, one higher than the arithmetic mean of 32768 and the
+PBA frequency/128.
+
+The effect of this patch, if FOSC32 is undefined, is to make hardware
+and virtual timers work by selecting the slowest available PBA clock
+at startup and never selecting the 32768Hz clock when a slow clock
+frequency is requested.
+This also reduces the maximum delay when using the hardware timers
+(ids 0 and 1) from 2 seconds to just over half a second (due to its
+16-bit counters) when FOSC32 is undefined.
+
+The patch also replaces explicit &quot;32768&quot;s in the code with the FOSC32
+macro, whose value is 32768.
+
+    M
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: elua-avr32-without-FOSC32.patch
+Type: text/x-patch
+Size: 2909 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100826/01b749fc/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20100826/01b749fc/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001598.html">[eLua-dev] optimisation for 16 bits system
+</A></li>
+	<LI>Next message: <A HREF="001600.html">[eLua-dev] Patch for AVR32 platforms without 32kHz crystal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1599">[ date ]</a>
+              <a href="thread.html#1599">[ thread ]</a>
+              <a href="subject.html#1599">[ subject ]</a>
+              <a href="author.html#1599">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

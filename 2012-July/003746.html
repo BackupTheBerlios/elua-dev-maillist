@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] handling events.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20handling%20events.&In-Reply-To=%3CCANKDJfZsBPpwRFL_YYMq2OgLtXjaJUwPvqOiKVHEO4BqVK7_1w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003745.html">
+   <LINK REL="Next"  HREF="003752.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] handling events.</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20handling%20events.&In-Reply-To=%3CCANKDJfZsBPpwRFL_YYMq2OgLtXjaJUwPvqOiKVHEO4BqVK7_1w%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] handling events.">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Jul 26 22:28:31 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003745.html">[eLua-dev] handling events.
+</A></li>
+        <LI>Next message: <A HREF="003752.html">[eLua-dev] web server.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3746">[ date ]</a>
+              <a href="thread.html#3746">[ thread ]</a>
+              <a href="subject.html#3746">[ subject ]</a>
+              <a href="author.html#3746">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Jul 26, 2012 at 10:01 PM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+&gt;<i> The lost ones will give you elua_int_add errors on terminal.
+</I>&gt;<i> I think you always loose the last ones.
+</I>
+Yes, that is correct. All the interrupts handled on the Lua side are
+put in a queue (the size of the queue is given by the
+PLATFORM_INT_QUEUE_LOG_SIZE macro at build time, currently this is set
+to 5 on all platform, which gives a queue of 32 entries). This queue
+is NOT circular. If it fills, you'll get &quot;elua_int_add&quot; errors on the
+terminal (a debatable decision, I agree, we might change this
+behaviour in the future).
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Thiago
+</I>&gt;<i>
+</I>&gt;<i> On Jul 25, 2012 5:49 PM, &quot;Tim Van Der Hulst&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tim at agfirstbop.co.nz</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Martin,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> How does this work if you want to track only one event, for example your
+</I>&gt;&gt;<i> interupt is trigger happy and generates a bunch of interupts in a very short
+</I>&gt;&gt;<i> period of time but you only want one. In C you could simply disable the
+</I>&gt;&gt;<i> interupt until you have finished processing.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Cheers,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Web guy..
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ----- Original Message -----
+</I>&gt;&gt;<i> From: &quot;Martin Guy&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;<i> Sent: Wednesday, July 25, 2012 9:44:08 PM
+</I>&gt;&gt;<i> Subject: Re: [eLua-dev] handling events.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 24 July 2012 22:24, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; Can elua scripts be called on the basis of timer interrupts?
+</I>&gt;&gt;<i> &gt; James
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yes.
+</I>&gt;&gt;<i> With the Lua interrupt mechanism available from eLua 0.8, you can make
+</I>&gt;&gt;<i> timer, UART, ADC or GPIO-edge-triggered interrupts cause a Lua
+</I>&gt;&gt;<i> function to be called. The only caveat is that the Lua interpreter
+</I>&gt;&gt;<i> must be doing running code (not waiting for an event) for the
+</I>&gt;&gt;<i> interrupts to be serviced, as it can only call the Lua interrupt
+</I>&gt;&gt;<i> routine when the interpreter is in a clean state, i.e. between
+</I>&gt;&gt;<i> &quot;instructions&quot;. In practice this just means that your main routine has
+</I>&gt;&gt;<i> to be a busy-wait loop.
+</I>&gt;&gt;<i> See <A HREF="http://www.eluaproject.net/doc/v0.8/en_inthandlers.html">http://www.eluaproject.net/doc/v0.8/en_inthandlers.html</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>      M
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003745.html">[eLua-dev] handling events.
+</A></li>
+	<LI>Next message: <A HREF="003752.html">[eLua-dev] web server.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3746">[ date ]</a>
+              <a href="thread.html#3746">[ thread ]</a>
+              <a href="subject.html#3746">[ subject ]</a>
+              <a href="author.html#3746">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

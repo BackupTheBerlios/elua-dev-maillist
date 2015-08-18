@@ -1,0 +1,323 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4 discovery board?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4%20discovery%20board%3F&In-Reply-To=%3CCAJB6QeeygjHz%3DYLK1tAwvq9f_yWE%3DBuyX2H%3DSRw1Qs6Pc25Wig%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002808.html">
+   <LINK REL="Next"  HREF="002816.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4 discovery board?</H1>
+    <B>Mike Panetta</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4%20discovery%20board%3F&In-Reply-To=%3CCAJB6QeeygjHz%3DYLK1tAwvq9f_yWE%3DBuyX2H%3DSRw1Qs6Pc25Wig%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] stm32f4 discovery board?">panetta.mike at gmail.com
+       </A><BR>
+    <I>Thu Oct 13 23:37:55 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002808.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+        <LI>Next message: <A HREF="002816.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2815">[ date ]</a>
+              <a href="thread.html#2815">[ thread ]</a>
+              <a href="subject.html#2815">[ subject ]</a>
+              <a href="author.html#2815">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Oct 13, 2011 at 3:02 PM, Roger Critchlow &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rec at elf.org</A>&gt; wrote:
+
+&gt;<i> I am confused about that, too.
+</I>&gt;<i>
+</I>&gt;<i> So the board has an stlink processor on the mini-usb connector which
+</I>&gt;<i> twiddles the SWD.  This project <A HREF="http://code.google.com/p/arm-utilities/">http://code.google.com/p/arm-utilities/</A> claims
+</I>&gt;<i> to be a download/upload/debug interface to stlink from linux.  Apparently,
+</I>&gt;<i> stlink is only nominally a mass storage device, it's implementation is
+</I>&gt;<i> broken in multiple ways that only Windows forgives.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>It isn't an ST-LINK.  It is an ST-LINK V2.  They use completely different
+protocols.  The V1 uses USB mass storage class, the V2 is something
+proprietary.
+
+But I'm puzzled by the contents arm-utilities/stlink-download.  Guess I
+&gt;<i> should just compile something and try flashing.
+</I>&gt;<i>
+</I>
+It probably won't work since it isn't a V1 ST-LINK.
+
+
+&gt;<i>
+</I>&gt;<i> -- rec --
+</I>&gt;<i>
+</I>&gt;<i>
+</I>Mike
+
+
+&gt;<i>
+</I>&gt;<i> On Thu, Oct 13, 2011 at 12:36 PM, Tim michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> The main issue I'm having is getting tools for Linux and open source needs
+</I>&gt;&gt;<i> to be open source.
+</I>&gt;&gt;<i> For example, the built-in JTAG is SWD and is only supported by vendors, it
+</I>&gt;&gt;<i> uses some
+</I>&gt;&gt;<i> MASS storage protocol. So, need to find SWD or different firmware for the
+</I>&gt;&gt;<i> JTAG.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So, I'm trying to use the built in USB DFU in the boot ROM.  The DFU file
+</I>&gt;&gt;<i> must be formatted, so looking at
+</I>&gt;&gt;<i> that.  I have the ST example code built and linked, but trying to download
+</I>&gt;&gt;<i> it is my current problem. Help ;)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ------------------------------
+</I>&gt;&gt;<i> *From:* Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;<i> *To:* eLua Users and Development List (www.eluaproject.net) &lt;
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;<i> *Sent:* Thursday, October 13, 2011 1:15 PM
+</I>&gt;&gt;<i> *Subject:* Re: [eLua-dev] stm32f4 discovery board?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Thu, Oct 13, 2011 at 7:55 PM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt; I just got my board on tuesday.  I went to one of the free seminars.
+</I>&gt;&gt;<i> Just
+</I>&gt;&gt;<i> &gt; FYI, during bringup of the silicon they used the STM32F2xx libraries to
+</I>&gt;&gt;<i> test
+</I>&gt;&gt;<i> &gt; and work with the device, so yes the peripherals are the same.  The only
+</I>&gt;&gt;<i> &gt; issue you may encounter is there are some differences between the F4 and
+</I>&gt;&gt;<i> the
+</I>&gt;&gt;<i> &gt; F1 series peripherals.  Oh and 64K of the RAM is only accessible by the
+</I>&gt;&gt;<i> core
+</I>&gt;&gt;<i> &gt; as data memory, just FYI.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thank you. Interesting choice. They're probably trying to maximize
+</I>&gt;&gt;<i> parallelism or something like that. Oh well, from what it looks like
+</I>&gt;&gt;<i> this 64k memory won't be able to execute code, host a DMA buffer and
+</I>&gt;&gt;<i> other stuff that I'm probably missing right now, but it's still good
+</I>&gt;&gt;<i> for our precious Lua data :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Over all it is a nice board and the target price is in the $14 range (as
+</I>&gt;&gt;<i> was
+</I>&gt;&gt;<i> &gt; stated at the seminar).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yes, I'm absolutely blown away by the price/performance ratio of this
+</I>&gt;&gt;<i> board. _Really_ giving 8-bit MCUs a run for their money.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Mike
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; On Thu, Oct 13, 2011 at 12:30 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; Hi,
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; Mouser and NU Horizons have them for US$ 14.88 (!!!!!!!!!!!)
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> <A HREF="http://br.mouser.com/ProductDetail/STMicroelectronics/STM32F4DISCOVERY/?qs=sGAEpiMZZMutVogd4PRSvEN8XDBeCtgD">http://br.mouser.com/ProductDetail/STMicroelectronics/STM32F4DISCOVERY/?qs=sGAEpiMZZMutVogd4PRSvEN8XDBeCtgD</A>
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; <A HREF="http://www.nuhorizons.com/development/devtool.asp?board=264">http://www.nuhorizons.com/development/devtool.asp?board=264</A>
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; Tks Mauricio !!!!!!!!!!!
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; Best
+</I>&gt;&gt;<i> &gt;&gt; Dado
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; On Thu, Oct 13, 2011 at 13:17, Bogdan Marinescu
+</I>&gt;&gt;<i> &gt;&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; On Thu, Oct 13, 2011 at 6:00 PM, Roger Critchlow &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rec at elf.org</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; You're most welcome, and I will do my best to collect that debt from
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; Bogdan!
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; The next question is how hard?  I'm getting the impression that the
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; basics
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; won't be hard at all.  Because the M4 is basically an M3 with a few
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; extra
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; instructions, all the essential MCU housekeeping is carried over
+</I>&gt;&gt;<i> from
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; the
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; M3.  And because the board has hardly anything on it but header
+</I>&gt;&gt;<i> pins,
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; the
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; initial pin configuration could set nearly everything to gpio.  And
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; anything
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; that's already working for other STM32 boards (USART, CAN, I2C, SPI,
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; ADC,
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; DAC) probably works on this board once the pins are mapped and
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; configured
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; correctly.
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; I have the same impression. The core is not that different and I don't
+</I>&gt;&gt;<i> &gt;&gt;&gt; see why they would change their peripheral silicon implementation
+</I>&gt;&gt;<i> &gt;&gt;&gt; (although I didn't check this yet).
+</I>&gt;&gt;<i> &gt;&gt;&gt; I didn't order a board yet, I'm still trying to find a suitable
+</I>&gt;&gt;<i> &gt;&gt;&gt; distributor in Europe. It's quite new though and this isn't easy.
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; Best,
+</I>&gt;&gt;<i> &gt;&gt;&gt; Bogdan
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; Thanks,
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; -- rec --
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; On Thu, Oct 13, 2011 at 8:57 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; ... already added to the Other Kit Candidates at
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; <A HREF="http://wiki.eluaproject.net/Boards">http://wiki.eluaproject.net/Boards</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; Thank you Roger !!!
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; Best
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; Dado
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; On Thu, Oct 13, 2011 at 03:50, Bogdan Marinescu
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; Hello,
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; On Thu, Oct 13, 2011 at 3:44 AM, Roger Critchlow &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rec at elf.org</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; Greetings eLua developers.
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; I just received an STM32F4 Discovery
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; board,
+</I>&gt;&gt;<i> <A HREF="http://www.st.com/internet/evalboard/product/252419.jsp,">http://www.st.com/internet/evalboard/product/252419.jsp,</A> and
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; while
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; trolling the internets for open source, linux based development
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; tools I
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; came
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; upon eLua.  It seems that with 1Mbyte of flash and 192kbytes of
+</I>&gt;&gt;<i> RAM
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; and
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; priced at US$19.50 this ARM Cortex-M4 board might be a
+</I>&gt;&gt;<i> reasonable
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; candidate
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; target board for eLua, but I'm working from a very sketchy
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; understanding of
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; eLua.  Is it a reasonable target for eLua?
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; If you ever come to Romania, please let me know. I owe you a great
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; amount of beer (or whatever your favourite drink is) for letting
+</I>&gt;&gt;<i> me
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; know about this board. To answer your question, it is an
+</I>&gt;&gt;<i> _excellent_
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; eLua target. 192k of internal RAM in a MCU is a dream come true
+</I>&gt;&gt;<i> for
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; me. I will end this e-mail now because I have to order one. Thanks
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; again.
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; Best,
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; Bogdan
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; Many thanks,
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; -- rec --
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111013/076262a1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111013/076262a1/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002808.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+	<LI>Next message: <A HREF="002816.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2815">[ date ]</a>
+              <a href="thread.html#2815">[ thread ]</a>
+              <a href="subject.html#2815">[ subject ]</a>
+              <a href="author.html#2815">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

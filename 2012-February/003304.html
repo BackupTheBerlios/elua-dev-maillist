@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 Port of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Port%20of%20eLua&In-Reply-To=%3CCAL4-wQpGvrCFHB6crT0tOiJ4NEyiW%3DA%3DfziKtzsPAoWqz96gnw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003303.html">
+   <LINK REL="Next"  HREF="003305.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 Port of eLua</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Port%20of%20eLua&In-Reply-To=%3CCAL4-wQpGvrCFHB6crT0tOiJ4NEyiW%3DA%3DfziKtzsPAoWqz96gnw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32 Port of eLua">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Feb 16 11:21:47 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003303.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+        <LI>Next message: <A HREF="003305.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3304">[ date ]</a>
+              <a href="thread.html#3304">[ thread ]</a>
+              <a href="subject.html#3304">[ subject ]</a>
+              <a href="author.html#3304">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>As regards enabling clocks at startup, in AVR32, both assigning
+functions to pins and enabling clocks is done either during
+platform_init() or in the device's eLua setup() function when it is
+mandatory to call that before using it. But almost everything does it
+during platform_init()
+
+If you wish to delay clock activation until the device is actually
+used, I would suggest, for devices where calling a setup() function is
+not mandatory, doing the usual (for pwm):
+&quot;static pwm_initialized = 0;&quot; then at the start of every entry point
+to the module &quot;if (!pwm_initialized) { pwm_setup(); }&quot; where
+&quot;pwm_setup() { ... pwm_initialized++; }&quot; or something like that.
+That lets you implement it and test it on just your platform without
+having to implement it (or stubs of it) on all 12. Of course, if you
+want to be able to pwm.disable() as well, then you can't avoid that.
+
+   M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003303.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+	<LI>Next message: <A HREF="003305.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3304">[ date ]</a>
+              <a href="thread.html#3304">[ thread ]</a>
+              <a href="subject.html#3304">[ subject ]</a>
+              <a href="author.html#3304">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

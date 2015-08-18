@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A Few Models For Dealing With ADC Samples
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3Cd3b6d880902180159w2f3f392ao3910837003cbff6b%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000521.html">
+   <LINK REL="Next"  HREF="000524.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A Few Models For Dealing With ADC Samples</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3Cd3b6d880902180159w2f3f392ao3910837003cbff6b%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] A Few Models For Dealing With ADC Samples">dadosutter at gmail.com
+       </A><BR>
+    <I>Wed Feb 18 10:59:40 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000521.html">[eLua-dev] Timing
+</A></li>
+        <LI>Next message: <A HREF="000524.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#522">[ date ]</a>
+              <a href="thread.html#522">[ thread ]</a>
+              <a href="subject.html#522">[ subject ]</a>
+              <a href="author.html#522">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello you all,
+
+On Wed, Feb 18, 2009 at 01:08, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+
+&gt;<i> &gt; I'm still inclined to keep initiation of sampling and picking up of
+</I>&gt;<i> samples separate though, unless there is a way to seriously reduce the
+</I>&gt;<i> number of microseconds each function call takes.  If channels:getsamples(10)
+</I>&gt;<i> does both initiation and collection of samples back to lua, the timing
+</I>&gt;<i> between samples collected might be deterministic, but if you're doing that
+</I>&gt;<i> repeatedly, the time in between each call will not be :-)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Let me rephrase the above a little bit with regards to determinisim.  This
+</I>&gt;<i> isn't really an argument against or for this alternate approach for setting
+</I>&gt;<i> up and getting values from the ADC module (I really like the ability to tie
+</I>&gt;<i> sampling on multiple channels to one another, as well as the different
+</I>&gt;<i> linguistic style. Both would be excellent!), it's more about some of the
+</I>&gt;<i> complexity that's now present.  I think there should be at least the ability
+</I>&gt;<i> to separate initiation of sampling from the command to get those samples
+</I>&gt;<i> because if they're the same you get a few main options (if getting samples
+</I>&gt;<i> must be tied to a function):
+</I>&gt;<i>
+</I>&gt;<i> Single Function to Request and Return:
+</I>&gt;<i> 1. Simple Model
+</I>&gt;<i> call function to start sampling
+</I>&gt;<i> function waits for sampling to finish
+</I>&gt;<i> function returns samples
+</I>&gt;<i>
+</I>&gt;<i> Advantages:
+</I>&gt;<i> - Simple.
+</I>&gt;<i> - No complex buffering issues.
+</I>&gt;<i> - No background resource usage
+</I>&gt;<i>
+</I>&gt;<i> Disadvantages
+</I>&gt;<i> - Can't do any work while you wait, regardless of sampling rate
+</I>&gt;<i> - If you just need one sample per loop, timing may vary 10s to 100s of
+</I>&gt;<i> microseconds between each sample.
+</I>&gt;<i> - If you ask for multiple samples, timing between samples may be
+</I>&gt;<i> consistent, but there will be gaps between each time the function is called.
+</I>&gt;<i>
+</I>
+... - And even here timing be between samples can be inconsistent, if the
+business logic forces gc in some inpredictable ways.
+
+2. Non-blocking Model (this was present in an earlier version of the ADC
+&gt;<i> module)
+</I>&gt;<i> call function to start sampling, function returns
+</I>&gt;<i> do some other stuff
+</I>&gt;<i>
+</I>
+- ask adc if it has data ready for us (ok, we can dismiss it if we're shure
+we've worked longer than the sampling period (but not too much, as we may
+get a buffer overflow))
+
+call function again to get samples from the sampling period, and start next
+&gt;<i> set of sampling
+</I>&gt;<i>
+</I>
+You mean, call the _same_ function to getsamples and to start another
+sampling cycle ?
+This could speed up things a bit on the but it dimms the advantages of your
+two-functions scheme for sampling and reading data.
+
+
+&gt;<i> Advantages:
+</I>&gt;<i> - Samples collected in the background, can do other work while samples are
+</I>&gt;<i> collected.
+</I>&gt;<i> - Samples are collected using fairly deterministic timer-based interrupt
+</I>&gt;<i> system.
+</I>&gt;<i>
+</I>
+Yes, nice ! Preferably real tmr channels here for tight timming and low
+latency.
+
+- Time gap between blocks of samples can be minimized because next set of
+&gt;<i> samples can be requested as last set is returned
+</I>&gt;<i>
+</I>
+Same comment above, for the two/one function scheme.
+
+Disadvantages:
+&gt;<i> - Slightly more complicated buffering
+</I>&gt;<i>
+</I>
+Coding doesn't seem to be an issue for you :) :)
+
+
+&gt;<i> - Initial call returns nothing, but subsequent calls return samples
+</I>&gt;<i>
+</I>
+Can be done consistent for reading loops or, in the future (when we have a
+generic INT module), a good ISR callback system even in Lua (I still have no
+idea on the performance aspects of this).
+
+- There will always be samples &quot;left over&quot; because each call requests more
+&gt;<i> (unless some option is passed to indicate it is the last call)
+</I>&gt;<i>
+</I>
+Not a big deal neither, as the main program knows what it wants. It can
+simply stop sampling and flush the buffer (if really needed) after the last
+required sampling cycle.
+
+
+Separate Request &amp; Return Functions:
+&gt;<i> 3. Separated Request/Return Model
+</I>&gt;<i> call function to start sampling, function returns
+</I>&gt;<i> do other work
+</I>&gt;<i> use another function to get samples in the buffer (this can be done while
+</I>&gt;<i> sampling is still happening)
+</I>&gt;<i>
+</I>&gt;<i> Advantages:
+</I>&gt;<i> - samples collected in the background, other work can be done while samples
+</I>&gt;<i> are collected
+</I>&gt;<i> - samples collected using fairly deterministic timer-based interrupt system
+</I>&gt;<i> - longer deterministic periods can be used where one can request 100
+</I>&gt;<i> samples, but only pull in 5 at a time while sampling is happening, while
+</I>&gt;<i> still getting low timing jitter
+</I>&gt;<i>
+</I>
+Low jitter here can be kind of fuzzy. Determinism should be 100%
+deterministic no ?
+
+
+&gt;<i> - could be extended to support indefinite periods of sampling with buffer
+</I>&gt;<i> wrapping if samples aren't pulled out fast enough, but when you do need
+</I>&gt;<i> samples you can pull out up to the length of the buffer and they're still
+</I>&gt;<i> pretty well-timed
+</I>&gt;<i>
+</I>
+Well _that_ seems harder to code but again, it doesn't seem to be an issue
+for you :)
+I like the (energy waste) ability to leave the sampling &quot;on&quot; and get
+(current/last sampled !!!) data whenever we need. It can be usefull and
+simplify some apps.
+But for this we would need a way to specify/fix the buffer lenght right ?
+(more sintatic issues :(  )
+
+Disadvantages:
+&gt;<i> - more complicated, including dealing with buffer sizes
+</I>&gt;<i> - multiple commands needed to initiate/get samples
+</I>&gt;<i>
+</I>
+yeap, yeap.
+
+
+&gt;<i> One alternative that I've not mentioned here is that there be two
+</I>&gt;<i> functional models for getting samples.  If one wants, one could have a
+</I>&gt;<i> simple getsamples method that follows model 1, and a second pair that
+</I>&gt;<i> follows model 3. i.e.:
+</I>&gt;<i>
+</I>&gt;<i> channels = adc.channel(0, 3, 17, 21)
+</I>&gt;<i>
+</I>&gt;<i> -- Style 1: Simple Blocking Model
+</I>&gt;<i> a = channels:getsamples(count)
+</I>&gt;<i>
+</I>&gt;<i> -- Style 2: Separated Model
+</I>&gt;<i> channels:requestsamples(count, timer, frequency)
+</I>&gt;<i> channels:returnsamples(count)
+</I>&gt;<i>
+</I>&gt;<i> In any case, I think there are a few more discussions to have, and I'll
+</I>&gt;<i> hold off for a little bit with code commits until we settle things a little
+</I>&gt;<i> more :-)
+</I>&gt;<i>
+</I>
+Now that seems to be the real problem. Not only to refine the models but to
+have to chose one (two?) among them :)
+Thank you very much for this clear and concise explanation !! It will
+surelly help a lot for others to share opinions too.
+
+
+&gt;<i> Bogdan, Dado, Jeusus or anyone else:
+</I>&gt;<i>
+</I>
+Unfair competition here :-o
+(Sorry !!! I just could't resist :) :)
+
+
+&gt;<i>   Thoughts/ideas would be appreciated :-)
+</I>&gt;<i>
+</I>
+Definetely.
+
+-jsnyder
+&gt;<i>
+</I>
+Best
+Dado
+
+
+
+
+
+
+
+
+
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/c36edbcd/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/c36edbcd/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000521.html">[eLua-dev] Timing
+</A></li>
+	<LI>Next message: <A HREF="000524.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#522">[ date ]</a>
+              <a href="thread.html#522">[ thread ]</a>
+              <a href="subject.html#522">[ subject ]</a>
+              <a href="author.html#522">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

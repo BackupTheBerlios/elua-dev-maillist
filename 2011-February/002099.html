@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 ADC types
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20ADC%20types&In-Reply-To=%3CAANLkTin%2BvSrGt%2BnOeEpCWEq7%3Dks3eNQgjghT8ghjM6Df%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002098.html">
+   <LINK REL="Next"  HREF="002101.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 ADC types</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20ADC%20types&In-Reply-To=%3CAANLkTin%2BvSrGt%2BnOeEpCWEq7%3Dks3eNQgjghT8ghjM6Df%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32 ADC types">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sat Feb 26 23:14:43 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002098.html">[eLua-dev] STM32 ADC types
+</A></li>
+        <LI>Next message: <A HREF="002101.html">[eLua-dev] Reminder: last day of SVN
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2099">[ date ]</a>
+              <a href="thread.html#2099">[ thread ]</a>
+              <a href="subject.html#2099">[ subject ]</a>
+              <a href="author.html#2099">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>For reference, the current implementation for the eLua ADC module on
+STM32 a particular subset of modes are used.
+
+- Only the first ADC is used to multiplex various available inputs,
+and we run that in independent mode.
+- Only single conversion (triggered by timer or software trigger) scan
+mode is used to sample from multiple channels.
+- DMA is used to buffer results of each scan so that processing of
+data need only be done at the end of a full scan (filtering,
+transferring to the eLua ADC buffer, etc..)
+- no injection is used
+
+Most of this is for consistency with other platforms.  A few things
+like DMA were taken advantage of to reduce the amount of interrupt
+overhead.
+
+
+
+On Sat, Feb 26, 2011 at 3:35 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sat, Feb 26, 2011 at 18:17, rogerb &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rjb at ripnet.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &#160; &#160; &#160; &#160;In the Stm32 user manual they uses the term injected conversion
+</I>&gt;&gt;<i> for the ADC. I'm not sure what this is. It sounds like external
+</I>&gt;&gt;<i> triggered channels. Does anyone know what it is?
+</I>&gt;<i>
+</I>&gt;<i> Maybe this doc from ST can help:
+</I>&gt;<i> STM32&#8482;&#8217;s ADC modes and their applications
+</I>&gt;<i> <A HREF="http://www.st.com/stonline/products/literature/an/16840.pdf">http://www.st.com/stonline/products/literature/an/16840.pdf</A>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> TIA
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002098.html">[eLua-dev] STM32 ADC types
+</A></li>
+	<LI>Next message: <A HREF="002101.html">[eLua-dev] Reminder: last day of SVN
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2099">[ date ]</a>
+              <a href="thread.html#2099">[ thread ]</a>
+              <a href="subject.html#2099">[ subject ]</a>
+              <a href="author.html#2099">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

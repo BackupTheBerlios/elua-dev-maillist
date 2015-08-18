@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] flash without proprietary IDE?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20flash%20without%20proprietary%20IDE%3F&In-Reply-To=%3Ch2y33644d3c1004232233oed2fc96dwdd082574bc3d43bd%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001353.html">
+   <LINK REL="Next"  HREF="001354.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] flash without proprietary IDE?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20flash%20without%20proprietary%20IDE%3F&In-Reply-To=%3Ch2y33644d3c1004232233oed2fc96dwdd082574bc3d43bd%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] flash without proprietary IDE?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sat Apr 24 07:33:44 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001353.html">[eLua-dev] flash without proprietary IDE?
+</A></li>
+        <LI>Next message: <A HREF="001354.html">[eLua-dev] flash without proprietary IDE?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1366">[ date ]</a>
+              <a href="thread.html#1366">[ thread ]</a>
+              <a href="subject.html#1366">[ subject ]</a>
+              <a href="author.html#1366">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>OpenOCD works to flash luminary boards using the on-board JTAG many of
+them come with. Someone else also wrote some Tcl/Tk tool for flashing
+luminary boards which you can find on their message boards.
+
+Unfortunately I don't know too many details of how JTAG works for
+flashing with these platforms but I get the sense that OpenOCD is just
+using some standard ARM JTAG interfacing with knowledge of the memory
+offsets to start writing at and some details about supported commands
+(types of resets, etc) so it might not be terribly painful to write
+some simple flashing tool. That said I'm not sure where to look for
+implementation details aside from ARM's docs and OpenOCD's source.
+
+As for just using OpenOCD I think I posted the flashing config file
+and script a little while ago. They should work with a few path tweaks
+and compiling OpenOCD from source with libftdi support. I've had it on
+my todo list to make some kind of tutorial but haven't gotten to it
+yet :)
+
+On Wednesday, April 21, 2010, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Wed, Apr 21, 2010 at 9:28 AM, Tony &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tony.elua at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Has anyone considered contacting TI?
+</I>&gt;<i> No, because I have a strong feeling that people already managed to do this, and I don't feel like being greated with a polite versoin of JFGI :) I never contact the manufacturer until I run out of options (unless of course I am in a big hurry). I'd search for the solution if I had some time, but I don't right now, unfortunately.
+</I>&gt;<i> &#160;They are at least somewhat open to open source and Linux (e.g. BeagleBoard, HawkBoard, free for non-commercial use Linux command line compilers for the C6000 DSPs, etc).&#160; If they would provide details, it would be much, much easier to create a Linux flash down loader.
+</I>&gt;<i>
+</I>&gt;<i> I'm quite sure it already exists in the combination of OpenOCD + some JTAG dongle (maybe even the USB to JTAG adapter present on Luminary's boards). The solution just doesn't seem to be that popular (yet).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Apr 19, 2010 at 6:55 AM, Patrick &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">spell_gooder_now at spellingbeewinnars.org</A>&gt; wrote:
+</I>&gt;<i> Hi Everyone
+</I>&gt;<i>
+</I>&gt;<i> I am just taking a little break from eLua to learn how to fabriacte PCBs but I was think the other day how nice it would be to be totally free of the proprietary IDE that shipped with my development board(and Windows), I can't flash my board without it.
+</I>&gt;<i>
+</I>&gt;<i> There is a program I have used once to monitor the traffic between a USB device and it's device driver:
+</I>&gt;<i> <A HREF="http://benoit.papillault.free.fr/usbsnoop/index.php.en">http://benoit.papillault.free.fr/usbsnoop/index.php.en</A>
+</I>&gt;<i>
+</I>&gt;<i> If I was able to recreate the &quot;command sets&quot; understood by the development board do you think I could do away with the IDE? Is there anything obvious that would stand in my way?
+</I>&gt;<i>
+</I>&gt;<i> Thanks for reading-Patrick
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001353.html">[eLua-dev] flash without proprietary IDE?
+</A></li>
+	<LI>Next message: <A HREF="001354.html">[eLua-dev] flash without proprietary IDE?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1366">[ date ]</a>
+              <a href="thread.html#1366">[ thread ]</a>
+              <a href="subject.html#1366">[ subject ]</a>
+              <a href="author.html#1366">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New build system - questions, missing bits
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20build%20system%20-%20questions%2C%20missing%20bits&In-Reply-To=%3C20130819012931.130810%40gmx.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004223.html">
+   <LINK REL="Next"  HREF="004225.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New build system - questions, missing bits</H1>
+    <B>scdr at gmx.com</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20build%20system%20-%20questions%2C%20missing%20bits&In-Reply-To=%3C20130819012931.130810%40gmx.com%3E"
+       TITLE="[eLua-dev] New build system - questions, missing bits">scdr at gmx.com
+       </A><BR>
+    <I>Mon Aug 19 03:29:30 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004223.html">[eLua-dev] rpc module not loaded in luarpc
+</A></li>
+        <LI>Next message: <A HREF="004225.html">[eLua-dev] New build system - questions, missing bits
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4224">[ date ]</a>
+              <a href="thread.html#4224">[ thread ]</a>
+              <a href="subject.html#4224">[ subject ]</a>
+              <a href="author.html#4224">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Some questions about few things that seem to be missing or work differently with the new build system.
+
+All of the testing for this is on the LM3S platform (e.g. EK-LM3S8962).
+
+1) How do I include the bitarray module in a build?
+Under scons the bitarray module was included automatically.
+Under the lua build system it is not included, and I have not figured out any way to get it included,
+short of editing the build system files.
+e.g. edit config/modules.lua
+add
+ &#160;bitarray = {},
+under
+ local elua_generic_modules = { 
+
+2) Interrupt constants seem to be missing from cpu module.
+If I build it with elua interrupts on, using scons the cpu module would have constants like cpu.INT_TMR_MATCH, 
+with the lua build system these constants are not generated.
+
+3) Why was linenoise turned off by default for the lm3s processors?
+Not a big deal, since as long as one knows that it exists, one can turn it back on. &#160;
+But I was curious if there was a particular reason to not use linenoise on the lm3s platform. &#160;
+
+4) How do you make the new build system only compile the files you are actually using?
+Even if you tell it to not use a particular module (e.g. i2c, or, as noted above bitarray, which is not used at all)
+the lua build scripts still compile the .c file. &#160;Seems like a waste of time to keep recompiling things that are not
+being used. &#160;I did not check to see if scons did this also, just used to build systems knowing enough to only
+compile the files that are actually used by a particular target.
+
+ &#160;Thanks
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004223.html">[eLua-dev] rpc module not loaded in luarpc
+</A></li>
+	<LI>Next message: <A HREF="004225.html">[eLua-dev] New build system - questions, missing bits
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4224">[ date ]</a>
+              <a href="thread.html#4224">[ thread ]</a>
+              <a href="subject.html#4224">[ subject ]</a>
+              <a href="author.html#4224">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

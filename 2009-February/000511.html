@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Large ADC Commit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1GHhAcfeedecb69c0e296a31313%2C%0A%09jbsnyder%40fanplastic.org%2C%20830EC7D6-6429-425C-B7EA-15A%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000508.html">
+   <LINK REL="Next"  HREF="000509.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Large ADC Commit</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1GHhAcfeedecb69c0e296a31313%2C%0A%09jbsnyder%40fanplastic.org%2C%20830EC7D6-6429-425C-B7EA-15A%3E"
+       TITLE="[eLua-dev] Large ADC Commit">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 00:43:09 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000508.html">[eLua-dev] Large ADC Commit
+</A></li>
+        <LI>Next message: <A HREF="000509.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#511">[ date ]</a>
+              <a href="thread.html#511">[ thread ]</a>
+              <a href="subject.html#511">[ subject ]</a>
+              <a href="author.html#511">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 17, 2009, at 5:25 PM, Dado Sutter wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Feb 17, 2009 at 20:05, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> Hmm.. I didn't realize that that worked.  Nice!  I suppose I knew I  
+</I>&gt;<i> was modifying a table that was being pointed to...
+</I>&gt;<i>
+</I>&gt;<i> Ok, so here's a breakdown, that I'm thinking of
+</I>&gt;<i>
+</I>&gt;<i> a = adc.getsamples(0)
+</I>&gt;<i> returns all pending samples on channel 0 as a table
+</I>&gt;<i>
+</I>&gt;<i> a = adc.getsamples(0,4)
+</I>&gt;<i> returns 4 pending samples
+</I>&gt;<i>
+</I>&gt;<i> adc.getsamples(0,a)
+</I>&gt;<i> appends any pending samples in the buffer to a
+</I>&gt;<i>
+</I>&gt;<i> adc.getsamples(0,3,a)
+</I>&gt;<i> appends 3 samples in the buffer to a starting after the samples  
+</I>&gt;<i> already in the table
+</I>&gt;<i>
+</I>&gt;<i> adc.getsamples(0,3,a,2)
+</I>&gt;<i> inserts 3 samples to a, starting at index 2
+</I>&gt;<i>
+</I>&gt;<i> It's horribly complicated, but there aren't any ambiguous cases in  
+</I>&gt;<i> terms of the parameters being passed, and you can still use it with  
+</I>&gt;<i> a really simple call.
+</I>&gt;<i>
+</I>&gt;<i> Let's hear some more opinions before confirming this James.
+</I>
+Sure. I'll hold off on comitting.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> One really neat thing about using the starting index for the table  
+</I>&gt;<i> is that you can do things like this:
+</I>&gt;<i>
+</I>&gt;<i> channels = {0, 3}
+</I>&gt;<i>
+</I>&gt;<i> adcvals = {}
+</I>&gt;<i>
+</I>&gt;<i> for i, v in ipairs(channels) do
+</I>&gt;<i>   adc.sample(v)
+</I>&gt;<i>   adcvals = getsamples(v,1,adcvals,i)
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> You mean:
+</I>&gt;<i>
+</I>&gt;<i> for i, v in ipairs(channels) do
+</I>&gt;<i>   adc.sample(v)
+</I>&gt;<i>   getsamples(v,1,adcvals,i)
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> Right ?
+</I>&gt;<i> Even if getsamples returned just the values, couldn't the same be  
+</I>&gt;<i> done by:
+</I>&gt;<i>
+</I>&gt;<i> for i, v in ipairs(channels) do
+</I>&gt;<i>   adc.sample(v)
+</I>&gt;<i>   adcvals[i] = getsamples(v,1)
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> I'm afraid I'm not seeing the real gain here.
+</I>
+Right, sorry, I copied and pasted examples from a few different  
+sources (although that version does work).
+
+The correct version would be (without having defined anything as local):
+
+channels = {0,3}
+
+adcvals = {}
+
+for i, v in ipairs(channels) do
+   adc.sample(v)
+   adc.getsamples(v,1,adcvals,i)
+end
+
+As far as vs the other option ( adcvals[i] = getsamples(v,1) ), this  
+will only work if getsamples would return integers in that case.
+
+I switched my local version over to return only tables regardless of  
+the count of returned samples.  You had mentioned this earlier, and I  
+agree, that having a function return different types depending on  
+situation could be problematic.
+
+If adc.getsamples only ever returns tables, you could do this:
+
+for i, v in ipairs(channels) do
+   adc.sample(v)
+   adcvals[i] = adc.getsamples(v,1)[1]
+end
+
+
+But you still get a spray of tables coming out of the function that GC  
+has to clean up (AFAIK, but I could be wrong).  This approach runs at  
+about 430 us per cycle if 4 channels are having samples requested and  
+pulled out of the buffer in this fashion.
+
+Another way to get this behavior, however is to use this approach:
+
+for i, v in ipairs(channels) do
+   adc.sample(v)
+   adc.getsamples(v,1,adcvals,i)
+end
+
+This runs about 355 us per cycle (4 channels), and puts values in the  
+same locations of adcvals, and doesn't result in new table creation.
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> so adcvals[1] gets single samples from channel 0, and adcvals[2]  
+</I>&gt;<i> gets values from channel 3.
+</I>&gt;<i>
+</I>&gt;<i> as far as clearing the samples buffer, the following takes care of  
+</I>&gt;<i> that:
+</I>&gt;<i> adc.flush(chan_id)
+</I>&gt;<i>
+</I>&gt;<i> It will clear out both the smoothing and sample buffers.
+</I>&gt;<i>
+</I>&gt;<i> Ah, great, it is there then !
+</I>&gt;<i> It is just that it did not came with your initial doc so I haven't  
+</I>&gt;<i> been presented to adc.flush :)
+</I>&gt;<i>
+</I>&gt;<i> Thanks !
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/2dd79592/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/2dd79592/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/2dd79592/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/2dd79592/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000508.html">[eLua-dev] Large ADC Commit
+</A></li>
+	<LI>Next message: <A HREF="000509.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#511">[ date ]</a>
+              <a href="thread.html#511">[ thread ]</a>
+              <a href="subject.html#511">[ subject ]</a>
+              <a href="author.html#511">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

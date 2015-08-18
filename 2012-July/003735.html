@@ -1,0 +1,280 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] lualong option and codesourcery
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20lualong%20option%20and%20codesourcery&In-Reply-To=%3CBAY152-W9105B808BF8571D782DBEDEDD0%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003734.html">
+   <LINK REL="Next"  HREF="003748.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] lualong option and codesourcery</H1>
+    <B>Karoly Molnar</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20lualong%20option%20and%20codesourcery&In-Reply-To=%3CBAY152-W9105B808BF8571D782DBEDEDD0%40phx.gbl%3E"
+       TITLE="[eLua-dev] lualong option and codesourcery">molnarkaroly at hotmail.com
+       </A><BR>
+    <I>Mon Jul 23 23:42:18 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003734.html">[eLua-dev] lualong option and codesourcery
+</A></li>
+        <LI>Next message: <A HREF="003748.html">[eLua-dev] inc\newlib/devman.h:7:19: fatal error: reent.h: No such file or directory
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3735">[ date ]</a>
+              <a href="thread.html#3735">[ thread ]</a>
+              <a href="subject.html#3735">[ subject ]</a>
+              <a href="author.html#3735">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi Bogdan,
+
+Thanks for the quick help! I have applied your patch and can confirm that the df3 calls have disappeared from my build, too (gain is about 20Kbytes). 
+
+Regards
+Karoly
+
+
+&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+</I>&gt;<i> Date: Tue, 24 Jul 2012 00:16:15 +0300
+</I>&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> Subject: Re: [eLua-dev] lualong option and codesourcery
+</I>&gt;<i> 
+</I>&gt;<i> On Mon, Jul 23, 2012 at 9:55 PM, Karoly Molnar &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">molnarkaroly at hotmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; Thanks for the hints. I have no idea on how it was working in the past or
+</I>&gt;<i> &gt; how it is supposed to be using because I have just started playing with eLua
+</I>&gt;<i> &gt; two days ago. So if I am asking newbie questions it is just because I am
+</I>&gt;<i> &gt; that :)
+</I>&gt;<i> 
+</I>&gt;<i> Nope, no newbie questions. There's definitely something going on here
+</I>&gt;<i> (see below).
+</I>&gt;<i> 
+</I>&gt;<i> &gt; I have done two things to reveal floating point in the lualong build:
+</I>&gt;<i> &gt; First, simply without knowing what I am looking for exactly, checked the
+</I>&gt;<i> &gt; objdump -x and -d of the elf file and was looking for individual functions
+</I>&gt;<i> &gt; that were bigger than 0x100, especially that were library functionsn
+</I>&gt;<i> &gt; starting with __ .
+</I>&gt;<i> &gt; Then I have realized that there are a number of __&lt;operator&gt;df3 calls and
+</I>&gt;<i> &gt; functions in the binary. These are the double precision software floating
+</I>&gt;<i> &gt; point library calls. As much as I see they are only used by an sprintf call
+</I>&gt;<i> &gt; that is called from a function &quot;worker&quot; that I was unable to trace further,
+</I>&gt;<i> &gt; seems not to be part of eLua so I believe it is the part of the libc
+</I>&gt;<i> &gt; delivered with codesourcery.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 00018118 &lt;worker&gt;:
+</I>&gt;<i> &gt;    18118: e92d 43f0 stmdb sp!, {r4, r5, r6, r7, r8, r9, lr}
+</I>&gt;<i> &gt;    1811c: b085       sub sp, #20
+</I>&gt;<i> &gt; .. skip
+</I>&gt;<i> &gt;    1813a: 4631       mov r1, r6
+</I>&gt;<i> &gt;    1813c: 463b       mov r3, r7
+</I>&gt;<i> &gt;    1813e: f2c0 0202 movt r2, #2
+</I>&gt;<i> &gt;    18142: 4620       mov r0, r4
+</I>&gt;<i> &gt;    18144: e88d 4300 stmia.w sp, {r8, r9, lr}
+</I>&gt;<i> &gt; ----&gt; here   18148: f7fc fb6e bl 14828 &lt;_sprintf_r&gt;
+</I>&gt;<i> &gt;    1814c: 2200       movs r2, #0
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I am using the latest sourcery release that is 2012.3.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Do you see the same in the objdump when building with an older codesourcery?
+</I>&gt;<i> 
+</I>&gt;<i> I can't find any worker function in my disassembled code, but
+</I>&gt;<i> unfortunately I am able to find __adddf3 and similar calls. I looked
+</I>&gt;<i> at the code a bit and understood why this happens.The trouble is that
+</I>&gt;<i> the newlib implementation changed and the &quot;redirects&quot; that I added in
+</I>&gt;<i> stubs.c (the fragment of code that I sent in my previous e-mail) don't
+</I>&gt;<i> do their job properly anymore. I was able to get rid of all the FP
+</I>&gt;<i> calls by adding two more functions to that particular fragment of
+</I>&gt;<i> code, as below:
+</I>&gt;<i> 
+</I>&gt;<i> // If LUA_NUMBER_INTEGRAL is defined, &quot;redirect&quot; printf/scanf calls to their
+</I>&gt;<i> // integer counterparts
+</I>&gt;<i> #ifdef LUA_NUMBER_INTEGRAL
+</I>&gt;<i> int _vfprintf_r( struct _reent *r, FILE *stream, const char *format,
+</I>&gt;<i> va_list ap )
+</I>&gt;<i> {
+</I>&gt;<i>   return _vfiprintf_r( r, stream, format, ap );
+</I>&gt;<i> }
+</I>&gt;<i> 
+</I>&gt;<i> extern int _svfiprintf_r( struct _reent *r, FILE *stream, const char
+</I>&gt;<i> *format, va_list ap );
+</I>&gt;<i> int _svfprintf_r( struct _reent *r, FILE *stream, const char *format,
+</I>&gt;<i> va_list ap )
+</I>&gt;<i> {
+</I>&gt;<i>   return _svfiprintf_r( r, stream, format, ap );
+</I>&gt;<i> }
+</I>&gt;<i> 
+</I>&gt;<i> extern int __svfiscanf_r(struct _reent *,FILE *, _CONST char *,va_list);
+</I>&gt;<i> int __svfscanf_r( struct _reent *r, FILE *stream, const char *format,
+</I>&gt;<i> va_list ap )
+</I>&gt;<i> {
+</I>&gt;<i>   return __svfiscanf_r( r, stream, format, ap );
+</I>&gt;<i> }
+</I>&gt;<i> 
+</I>&gt;<i> extern int __ssvfiscanf_r(struct _reent *,FILE *, _CONST char *,va_list);
+</I>&gt;<i> int __ssvfscanf_r( struct _reent *r, FILE *stream, const char *format,
+</I>&gt;<i> va_list ap )
+</I>&gt;<i> {
+</I>&gt;<i>   return __ssvfiscanf_r( r, stream, format, ap );
+</I>&gt;<i> }
+</I>&gt;<i> 
+</I>&gt;<i> #endif // #ifdef LUA_NUMBER_INTEGRAL
+</I>&gt;<i> 
+</I>&gt;<i> The size of the firmware image is now 164744 and there are no more
+</I>&gt;<i> *df3 calls, which is a good thing. This is a bit of &quot;cat and mouse&quot;
+</I>&gt;<i> game between us and the Newlib source code, which I don't particularly
+</I>&gt;<i> enjoy, but there's not much we can do at the moment.
+</I>&gt;<i> Thanks for the report. Good catch.
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks
+</I>&gt;<i> &gt; Karoly
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt; From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+</I>&gt;<i> &gt;&gt; Date: Mon, 23 Jul 2012 21:10:33 +0300
+</I>&gt;<i> &gt;&gt; To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; Subject: Re: [eLua-dev] lualong option and codesourcery
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Hi,
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Mon, Jul 23, 2012 at 7:26 PM, Karoly Molnar &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">molnarkaroly at hotmail.com</A>&gt;
+</I>&gt;<i> &gt;&gt; wrote:
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Hello,
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; I have tried to rebuild the eLua MBED target with codesourcery with the
+</I>&gt;<i> &gt;&gt; &gt; lualong option. The code is working and the code size has been somewhat
+</I>&gt;<i> &gt;&gt; &gt; reduced but it was still fairly big even after turning of all terminal,
+</I>&gt;<i> &gt;&gt; &gt; shell, rpc related options (practically I have commented out all
+</I>&gt;<i> &gt;&gt; &gt; optional
+</I>&gt;<i> &gt;&gt; &gt; macros in the platform_conf.h).
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Then I have checked the elf file with objdump and realized that it is
+</I>&gt;<i> &gt;&gt; &gt; still
+</I>&gt;<i> &gt;&gt; &gt; using software floating point libraries on some parts of the code, which
+</I>&gt;<i> &gt;&gt; &gt; I
+</I>&gt;<i> &gt;&gt; &gt; did not need in the lualong build. Further investigation has lead to
+</I>&gt;<i> &gt;&gt; &gt; that it
+</I>&gt;<i> &gt;&gt; &gt; is using a floating point version of sprintf().
+</I>&gt;<i> &gt;&gt; &gt; May I assume that I shall use a special stdlib or newlib that is build
+</I>&gt;<i> &gt;&gt; &gt; without floating point support? Can someone help me with some
+</I>&gt;<i> &gt;&gt; &gt; instructions
+</I>&gt;<i> &gt;&gt; &gt; to rebuild it in the CortexM3/Codesourcery environment?
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; We have this little piece of code in src/newlib/stubs.c:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; // If LUA_NUMBER_INTEGRAL is defined, &quot;redirect&quot; printf/scanf calls to
+</I>&gt;<i> &gt;&gt; their
+</I>&gt;<i> &gt;&gt; // integer counterparts
+</I>&gt;<i> &gt;&gt; #ifdef LUA_NUMBER_INTEGRAL
+</I>&gt;<i> &gt;&gt; int _vfprintf_r( struct _reent *r, FILE *stream, const char *format,
+</I>&gt;<i> &gt;&gt; va_list ap )
+</I>&gt;<i> &gt;&gt; {
+</I>&gt;<i> &gt;&gt; return _vfiprintf_r( r, stream, format, ap );
+</I>&gt;<i> &gt;&gt; }
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; extern int __svfiscanf_r(struct _reent *,FILE *, _CONST char *,va_list);
+</I>&gt;<i> &gt;&gt; int __svfscanf_r( struct _reent *r, FILE *stream, const char *format,
+</I>&gt;<i> &gt;&gt; va_list ap )
+</I>&gt;<i> &gt;&gt; {
+</I>&gt;<i> &gt;&gt; return __svfiscanf_r( r, stream, format, ap );
+</I>&gt;<i> &gt;&gt; }
+</I>&gt;<i> &gt;&gt; #endif // #ifdef LUA_NUMBER_INTEGRAL
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; What it does is link against special versions of the printf/scanf
+</I>&gt;<i> &gt;&gt; functions (vfiprintf/vfiscanf) that have no floating point support
+</I>&gt;<i> &gt;&gt; whatsoever. This used to work in the past and showed a clear
+</I>&gt;<i> &gt;&gt; improvement in the image size. If it doesn't work anymore, a couple of
+</I>&gt;<i> &gt;&gt; things come to mind:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; - a broken Newlib build that doesn't ignore floating point operations
+</I>&gt;<i> &gt;&gt; for vfiprintf/vfiscanf as it should
+</I>&gt;<i> &gt;&gt; - FP functions are pulled in by other part(s) of the code
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; However, this seems to work on my fairly new master:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; ~/work/elua/elua [master] $ lua build_elua.lua board=et-stm32 prog
+</I>&gt;<i> &gt;&gt; Generating binary image elua_lua_stm32f103re.bin...
+</I>&gt;<i> &gt;&gt; text data bss dec hex filename
+</I>&gt;<i> &gt;&gt; 227368 1536 1988 230892 385ec elua_lua_stm32f103re.elf
+</I>&gt;<i> &gt;&gt; ~/work/elua/elua [master] $ lua build_elua.lua board=et-stm32 prog
+</I>&gt;<i> &gt;&gt; target=lualong
+</I>&gt;<i> &gt;&gt; [TARGET] elua_lualong_stm32f103re.bin
+</I>&gt;<i> &gt;&gt; Generating binary image elua_lualong_stm32f103re.bin...
+</I>&gt;<i> &gt;&gt; text data bss dec hex filename
+</I>&gt;<i> &gt;&gt; 190744 1532 1988 194264 2f6d8 elua_lualong_stm32f103re.elf
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; The difference most likely indicates that the FP functions are not
+</I>&gt;<i> &gt;&gt; pulled in, so I'm guessing there's a problem with your particular
+</I>&gt;<i> &gt;&gt; toolchain (I'm using arm-none-eabi-gcc (Sourcery G++ Lite 2011.03-42)
+</I>&gt;<i> &gt;&gt; 4.5.2 in Linux).
+</I>&gt;<i> &gt;&gt; One more question: how did you find out that the floating point
+</I>&gt;<i> &gt;&gt; libraries are pulled in the binary? What symbol(s) gave it away?
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Thanks,
+</I>&gt;<i> &gt;&gt; Bogdan
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Thanks
+</I>&gt;<i> &gt;&gt; &gt; Karoly
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I> 		 	   		  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120723/02400707/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120723/02400707/attachment-0001.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003734.html">[eLua-dev] lualong option and codesourcery
+</A></li>
+	<LI>Next message: <A HREF="003748.html">[eLua-dev] inc\newlib/devman.h:7:19: fatal error: reent.h: No such file or directory
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3735">[ date ]</a>
+              <a href="thread.html#3735">[ thread ]</a>
+              <a href="subject.html#3735">[ subject ]</a>
+              <a href="author.html#3735">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] PicoC-remix -- an eLua distro
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PicoC-remix%20--%20an%20eLua%20distro&In-Reply-To=%3C1347991013615-7577679.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003789.html">
+   <LINK REL="Next"  HREF="003790.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] PicoC-remix -- an eLua distro</H1>
+    <B>raman</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PicoC-remix%20--%20an%20eLua%20distro&In-Reply-To=%3C1347991013615-7577679.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] PicoC-remix -- an eLua distro">ramangopalan at gmail.com
+       </A><BR>
+    <I>Tue Sep 18 19:56:53 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003789.html">[eLua-dev] PicoC-remix -- an eLua distro
+</A></li>
+        <LI>Next message: <A HREF="003790.html">[eLua-dev] PicoC-remix -- an eLua distro
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3791">[ date ]</a>
+              <a href="thread.html#3791">[ thread ]</a>
+              <a href="subject.html#3791">[ subject ]</a>
+              <a href="author.html#3791">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+&gt;&gt;<i> with the eLua base system. So now, I can write interactive C code on the 
+</I>&gt;&gt;<i> shell, run C programs from the MMC, read/run C programs from ROMFS -- 
+</I>&gt;&gt;<i> basically, everything I would do with eLua but with PicoC instead. 
+</I>
+&gt;<i> Wow. Congratulations!
+</I>
+Thanks Martin!
+
+&gt;&gt;<i> I am yet to document the API but it mostly assumes eLua's format 
+</I>&gt;&gt;<i> for functions. For example, instead of pio.pin.setdir(pio.OUTPUT...) you 
+</I>&gt;&gt;<i> have pio_pin_setdir(OUTPUT...) (and similar for other platform modules 
+</I>&gt;&gt;<i> as well) in PicoC. Here OUTPUT is like a C macro and is stored in a
+</I>&gt;&gt;<i> rotable. 
+</I>
+&gt;<i> You might prefer to use pio_OUTPUT to avoid name clashes - that way 
+</I>&gt;<i> everything pio-related is called pio_* and so on.  I'm sure there will 
+</I>&gt;<i> be two modules with the same macro names. 
+</I>
+Certainly. I'll keep this in mind. I'll update this before I start on the
+documentation.
+
+&gt;&gt;<i> I'd like your thoughts and suggestions on PicoC-remix. Please give me 
+</I>&gt;&gt;<i> a few tips on how to improvise on this. 
+</I>
+&gt;<i> As most of the code is in common, a more maintainable strategy would 
+</I>&gt;<i> be to fork or branch eLua, create an extra directory src/picoc, hack 
+</I>&gt;<i> SConstruct to know which language it should include, then when you 
+</I>&gt;<i> have it able to build both systems from one source, merge the changes 
+</I>&gt;<i> back in. That would avoid having to maintain two sets of the same code 
+</I>&gt;<i> - assuming that the other modifications were not too invasive.
+</I>
+This is a good point. I did think about this before. It would mean better
+maintainability but this would also mean a profusion of conditional
+compilation macros in the eLua code base. Is it worth it? Is there still any
+other way to hold maintainability while keeping the two seperate? I could
+still work on SConstruct and implement the switch in the languages if
+it can be accomodated in the eLua code base. What are your thoughts on
+this?
+
+Best,
+Raman
+
+
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/PicoC-remix-an-eLua-distro-tp7577676p7577679.html">http://elua-development.2368040.n2.nabble.com/PicoC-remix-an-eLua-distro-tp7577676p7577679.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003789.html">[eLua-dev] PicoC-remix -- an eLua distro
+</A></li>
+	<LI>Next message: <A HREF="003790.html">[eLua-dev] PicoC-remix -- an eLua distro
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3791">[ date ]</a>
+              <a href="thread.html#3791">[ thread ]</a>
+              <a href="subject.html#3791">[ subject ]</a>
+              <a href="author.html#3791">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

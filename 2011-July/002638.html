@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y0QN6Fwv7ayd%3DgRR7nZrtGc_GbCHNQojZRVxMmk0ndwJA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002637.html">
+   <LINK REL="Next"  HREF="002639.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y0QN6Fwv7ayd%3DgRR7nZrtGc_GbCHNQojZRVxMmk0ndwJA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Jul 13 04:17:26 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002637.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002639.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2638">[ date ]</a>
+              <a href="thread.html#2638">[ thread ]</a>
+              <a href="subject.html#2638">[ subject ]</a>
+              <a href="author.html#2638">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Jul 12, 2011 at 7:17 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> Hi
+</I>&gt;<i> &#160;I'm trying to fix the ADC module on AVR32, and am having some
+</I>&gt;<i> difficulty understanding what I need to do to get precisely-timed
+</I>&gt;<i> samples.
+</I>&gt;<i> For example, the seismographs here on Mount Etna sample at the rate of
+</I>&gt;<i> 27.27Hz, for which a small solar-powered data collecting station would
+</I>&gt;<i> be perfect, but I don't see how to do this yet.
+</I>&gt;<i>
+</I>&gt;<i> I see &quot;adc.setclock()&quot; and &quot;adc.getsamples()&quot;, but on AVR32
+</I>&gt;<i> adc.setclock() is not implemented and adc.getsamples() always returns
+</I>&gt;<i> nil, which leaves me with getsample(), which works, and tmr.delay(),
+</I>&gt;<i> but that would only give an approximate rate of 27.something,
+</I>&gt;<i> depending on CPU speed, the garbage collector and so on.
+</I>&gt;<i>
+</I>&gt;<i> Do adc.settimer() and adc.getsamples() work on other platforms? &#160;If
+</I>&gt;<i> so, which platforms, so I can try to make the AVR32 implementation
+</I>&gt;<i> work the same way?
+</I>
+getsamples should be working regardless, I'll take a look at that.
+
+settimer isn't enabled because when I initially added ADC support for
+AVR32, I believe I found that for UC3A0 parts that timer triggers
+couldn't be used for ADC (and instead one would have to set up timer
+interrupts to initiate ADC conversions).  It does work on other
+platforms that have hardware timer trigger support.  Now that I'm
+looking around at the documentation I can't seem to find what parts
+actually support triggered conversions and what don't. The UC3A manual
+says this about timer triggers:
+&quot;Timer Counters may or may not be used as hardware triggers depending
+on user requirements. Thus, some or all of the timer counters may be
+non-connected.&quot;
+
+Then when looking at the register field descriptions for the trigger
+selection (TRGSEL: Trigger Selection), it has a list of internal
+triggers which are all labelled like this:
+&quot;Internal Trigger 0, depending of chip integration
+Internal Trigger 1, depending of chip integration
+Internal Trigger 2, depending of chip integration
+...
+&quot;
+
+This is all in doc 32058 dated april 4/2011.
+
+If there's some documentation somewhere indicating what parts have
+this functionality and how its configured, it should be fairly
+straightforward to add hardware triggered ADC support.  If not, we can
+use timer interrupts which I've been intending to add support for, but
+haven't gotten around to yet.
+
+&gt;<i>
+</I>&gt;<i> Thanks
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160;M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002637.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002639.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2638">[ date ]</a>
+              <a href="thread.html#2638">[ thread ]</a>
+              <a href="subject.html#2638">[ subject ]</a>
+              <a href="author.html#2638">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

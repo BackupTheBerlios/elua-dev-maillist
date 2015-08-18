@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Building GCC for Cortex
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20GCC%20for%20Cortex&In-Reply-To=%3C003601c99346%2483dc3390%248b949ab0%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000572.html">
+   <LINK REL="Next"  HREF="000574.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Building GCC for Cortex</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20GCC%20for%20Cortex&In-Reply-To=%3C003601c99346%2483dc3390%248b949ab0%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] Building GCC for Cortex">john.hind at zen.co.uk
+       </A><BR>
+    <I>Fri Feb 20 11:32:22 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000572.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+        <LI>Next message: <A HREF="000574.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#573">[ date ]</a>
+              <a href="thread.html#573">[ thread ]</a>
+              <a href="subject.html#573">[ subject ]</a>
+              <a href="author.html#573">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks again Bogdan, I actually got there just ahead of you - remembered the
+advice from Ikea &quot;if all else fails, read the instructions - again!&quot;
+
+ 
+
+Any idea *why* this works? (And is only needed *sometimes*?) There seems no
+obvious connection between the symptoms and the solution! If you are
+revising the instructions, might it be better to just do all the operations
+requiring sudo this way, or maybe even do the entire process in a root
+terminal?
+
+ 
+
+I finally made it to the end - now to see if I can build eLua!
+
+ 
+
+Any thoughts on running this toolchain in Eclipse? I'd like to get out of
+&quot;command line hell&quot; ASAP!
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+Sent: 20 February 2009 09:51
+To: eLua Users and Development List
+Subject: Re: [eLua-dev] Building GCC for Cortex
+
+ 
+
+ 
+
+ Update: I'm still seeing the same problem as last night - &quot;sudo make
+install&quot; for newlib terminates Error 2 and further up there are messages
+&quot;arm-elf-ranlib: command not found&quot;, but typing &quot;arm-elf-ranlib&quot; at the
+command prompt prints help information on that command - so it IS there.
+This really has me baffled and it did not happen on the last attempt.
+
+ 
+
+Any thoughts on this?
+
+
+Yes: check the eluaproject.net webpage :) It says this (in
+<A HREF="http://eluaproject.net/en/Building_GCC_for_Cortex">http://eluaproject.net/en/Building_GCC_for_Cortex</A>):
+
+On my system, the last line above (sudo make install-gcc) terminated with
+errors, because it was unable to find our newly compiled binutils. If this
+happens for any kind of &quot;make install&quot; command, this is a quick way to solve
+it:
+
+ 
+
+
+$ sudo -s -H
+
+# export PATH=/usr/local/cross-cortex/bin:$PATH
+
+
+# make install-gcc
+
+
+# exit
+
+
+On the other hand, I agree that trying to compile the binutils/gcc/newlib
+combo is a huge PITA, and this it should've been much better by now (given
+the fact that the combo is old and widely used), but apparently this is the
+best we have for now. On the bright side, once you get the hang of it,
+you'll be able to amaze your friends with your newly acquired skills :D
+
+Best,
+Bogdan
+
+ 
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+Sent: 20 February 2009 08:58
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">lists at joernline.de</A>; eLua Users and Development List
+Subject: Re: [eLua-dev] Building GCC for Cortex
+
+ 
+
+Yes, but after I did that I remembered that gas didn't work properly with
+Thumb2 anymore (no idea why), giving some errors about invalid assembler
+statements. The only things that seems to work is 2.19.50.
+
+Best,
+Bogdan
+
+On Fri, Feb 20, 2009 at 12:10 AM, Joern Kaipf &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">lists at joernline.de</A>&gt; wrote:
+
+John Hind wrote:
+
+&gt;<i> The problem starts with the &quot;make all&quot; step (for binutils). It terminates
+</I>&gt;<i> with &quot;make: *** [all] Error 2&quot;. A few lines above this there are 5
+</I>&gt;<i> occurrences of &quot;tc-arm.c: xxxx: error: format not a string literal and no
+</I>&gt;<i> format arguments&quot;.
+</I>
+I got the same problem some time ago. The bug and the fix is descripted
+here:
+
+<A HREF="http://www.mail-archive.com/bug-binutils@gnu.org/msg06475.html">http://www.mail-archive.com/bug-binutils@gnu.org/msg06475.html</A>
+
+Joern
+
+_______________________________________________
+Elua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+ 
+
+
+_______________________________________________
+Elua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/c6f55b30/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/c6f55b30/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3200 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/c6f55b30/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090220/c6f55b30/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000572.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+	<LI>Next message: <A HREF="000574.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#573">[ date ]</a>
+              <a href="thread.html#573">[ thread ]</a>
+              <a href="subject.html#573">[ subject ]</a>
+              <a href="author.html#573">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RPC over SOCK_STREAM
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3CCANKDJfaNp0FtBf5EOs6mESSoPc03TAmwchVt6%3D-VoLASRUiD6A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002828.html">
+   <LINK REL="Next"  HREF="002750.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RPC over SOCK_STREAM</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3CCANKDJfaNp0FtBf5EOs6mESSoPc03TAmwchVt6%3D-VoLASRUiD6A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RPC over SOCK_STREAM">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Oct 17 14:00:21 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002828.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+        <LI>Next message: <A HREF="002750.html">[eLua-dev] STR9 GPIO INT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2829">[ date ]</a>
+              <a href="thread.html#2829">[ thread ]</a>
+              <a href="subject.html#2829">[ subject ]</a>
+              <a href="author.html#2829">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Mon, Oct 17, 2011 at 2:57 PM, raman &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> Hello Snyder,
+</I>&gt;<i>
+</I>&gt;<i> The code crashes. It looks like it spits out a random '#####' sequence
+</I>&gt;<i> and stays in this state infinitely. I changed the code a bit to get useful
+</I>&gt;<i> info
+</I>&gt;<i> about the events on the micro during RPC before this event.
+</I>&gt;<i>
+</I>&gt;<i> I also realized I just somehow missed a transport_open() call during
+</I>&gt;<i> connect
+</I>&gt;<i> for the code on the micro (although we're only listening() here). I've
+</I>&gt;<i> added
+</I>&gt;<i> this
+</I>&gt;<i> in my branch. Please find the new patch in the attachment.
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/file/n6900209/rpc.sock.patch">http://elua-development.2368040.n2.nabble.com/file/n6900209/rpc.sock.patch</A>
+</I>&gt;<i> rpc.sock.patch
+</I>&gt;<i>
+</I>&gt;<i> I think I also found some useful info.
+</I>&gt;<i>
+</I>&gt;<i> // An extract: luarpc.c
+</I>&gt;<i> static void read_cmd_call( Transport *tpt, lua_State *L )
+</I>&gt;<i> {
+</I>&gt;<i>  int i, stackpos, good_function, nargs;
+</I>&gt;<i>  u32 len;
+</I>&gt;<i>  char *funcname;
+</I>&gt;<i>  char *token = NULL;
+</I>&gt;<i>
+</I>&gt;<i>  // read function name
+</I>&gt;<i>  len = transport_read_u32( tpt ); /* function name string length */
+</I>&gt;<i>  ....
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> 'len' here is an incorrect value. It looks like it reads a value which
+</I>&gt;<i> does not measure the true length of the function name.
+</I>&gt;<i>
+</I>&gt;<i> Finally, have the networking changes been pushed yet ?
+</I>&gt;<i>
+</I>&gt;<i> I can't wait for RPC over Ethernet. :)
+</I>&gt;<i>
+</I>
+Nope, sorry. That will have to wait a bit more. Don't hate me too much,
+please :)
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> Awaiting your response.
+</I>&gt;<i>
+</I>&gt;<i> Raman
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context:
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6900209.html">http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6900209.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111017/42c79e07/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111017/42c79e07/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002828.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+	<LI>Next message: <A HREF="002750.html">[eLua-dev] STR9 GPIO INT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2829">[ date ]</a>
+              <a href="thread.html#2829">[ thread ]</a>
+              <a href="subject.html#2829">[ subject ]</a>
+              <a href="author.html#2829">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Reducing code size of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTi%3D_b30Tvpgb%2BbabwBKTfc-DwUig4w5tJYPo0SFK%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001737.html">
+   <LINK REL="Next"  HREF="001739.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Reducing code size of eLua</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTi%3D_b30Tvpgb%2BbabwBKTfc-DwUig4w5tJYPo0SFK%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Reducing code size of eLua">martinwguy at gmail.com
+       </A><BR>
+    <I>Tue Nov 30 15:34:23 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001737.html">[eLua-dev] New platform Coldfire cpu MCF52259
+</A></li>
+        <LI>Next message: <A HREF="001739.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1738">[ date ]</a>
+              <a href="thread.html#1738">[ thread ]</a>
+              <a href="subject.html#1738">[ subject ]</a>
+              <a href="author.html#1738">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+   I'm investigating how to reduce the size of the flash-rom image of
+eLua for a 128KB platform with 120KB available. I've already made some
+optimizations and found some size-reducing configurations, and would
+appreciate some input as to which parts of Lua are not relevant when
+the interpreter is running stand-alone instead of as a scripting
+language inside a larger program. I'm new to Lua and eLua and wouldn't
+want to remove some feature just because I don't understand it.
+
+My current list of hacks is:
+- configs: build lualong (no FP, saving 46KB!)
+- optram=0
+- allocator=newlib (=simple is smaller but takes 5 seconds to start up)
+- enable CCFLAGS = ['-DLUAC_TRUST_BINARIES']
+- reduce the huge number of strings in the Lua interpreter by
+simplifying some of the more verbose error messages (example: &quot;too
+many results to unpack&quot; and &quot;too many results to resume&quot; both become
+&quot;too many results&quot;, which generates a single copy of the string)
+- replacing strerror with something that just prints the value of
+errno, so that the 3KB table of Unix system call error messages is not
+pulled in from the C library
+- disable lua 5.0 and 4.9 compatability flags
+- disable things which seem only to be used when Lua is included in a
+larger C program as an embedded scripting language:
+  - parts of the debug interface (lua_{getupvalue,setupvalue,setlocal}
+  - the hook interface
+
+Also, is the dump/undump code likely to be used in Lua applications?
+It seems to be used to write/read compiled Lua code to files or for
+transmission over the net, and to load precompiled Lua applications.
+
+Lastly, are the &quot;bit&quot;, &quot;pack&quot; and &quot;term&quot; modules specific to eLua,
+hence unikely to be used in existing Lua applications?
+
+Other?
+
+Thanks
+
+     M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001737.html">[eLua-dev] New platform Coldfire cpu MCF52259
+</A></li>
+	<LI>Next message: <A HREF="001739.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1738">[ date ]</a>
+              <a href="thread.html#1738">[ thread ]</a>
+              <a href="subject.html#1738">[ subject ]</a>
+              <a href="author.html#1738">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Sub-directory support for ROMFS
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Sub-directory%20support%20for%20ROMFS&In-Reply-To=%3CBANLkTik7iUBW%2B8kPS%3DuGShpV7Nn44Dy1hA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002492.html">
+   <LINK REL="Next"  HREF="002494.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Sub-directory support for ROMFS</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Sub-directory%20support%20for%20ROMFS&In-Reply-To=%3CBANLkTik7iUBW%2B8kPS%3DuGShpV7Nn44Dy1hA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Sub-directory support for ROMFS">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Jun  9 19:43:01 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002492.html">[eLua-dev] Sub-directory support for ROMFS
+</A></li>
+        <LI>Next message: <A HREF="002494.html">[eLua-dev] Sub-directory support for ROMFS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2493">[ date ]</a>
+              <a href="thread.html#2493">[ thread ]</a>
+              <a href="subject.html#2493">[ subject ]</a>
+              <a href="author.html#2493">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Jun 9, 2011 at 8:40 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Jun 9, 2011 at 04:11, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi Raman,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Thu, Jun 9, 2011 at 9:59 AM, Raman Gopalan &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hello,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I am a student. I have been working with Elua on LM3S8962.
+</I>&gt;&gt;&gt;<i> I notice that the ROMFS is a flat file system. I would like to
+</I>&gt;&gt;&gt;<i> implement a sub-directory feature for ROMFS. Is it viable ?
+</I>&gt;&gt;&gt;<i> Is there a reason this feature doesn't already exist ?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Please tell me if I am in the right direction.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Currently eLua doesn't have the concept of directories at all. For
+</I>&gt;&gt;<i> simplicity, it just assumes a filesystem with a single directory (the root
+</I>&gt;&gt;<i> directory).  That said:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 1. adding directory support is not that difficult
+</I>&gt;&gt;<i> 2. in the particular case of ROMFS, &quot;/&quot; is an allowed character in a
+</I>&gt;&gt;<i> filename. For example, &quot;dir/a.txt&quot; is a valid filename. Obviously this isn't
+</I>&gt;&gt;<i> the same as having directories, but it might be enough for many practical
+</I>&gt;&gt;<i> cases. But you're going to have to modify mkfs.py (the ROMFS file system
+</I>&gt;&gt;<i> generator) to take advantage of this feature.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> You might need to augment the maximum length allowed for a file name too,
+</I>&gt;<i> which is currently 14, in src/fatfs/ff.h if I'm not wrong.
+</I>&gt;<i>
+</I>
+That's for FATFS only. The global limit is in inc/newliv/devman.h:
+
+// GLOBAL maximum file length (on ALL supported filesystem)
+#define DM_MAX_FNAME_LENGTH   30
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i>  Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110609/f04450bf/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110609/f04450bf/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002492.html">[eLua-dev] Sub-directory support for ROMFS
+</A></li>
+	<LI>Next message: <A HREF="002494.html">[eLua-dev] Sub-directory support for ROMFS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2493">[ date ]</a>
+              <a href="thread.html#2493">[ thread ]</a>
+              <a href="subject.html#2493">[ subject ]</a>
+              <a href="author.html#2493">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

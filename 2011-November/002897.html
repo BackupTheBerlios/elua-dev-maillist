@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4_-_max_free_mem_/_ram_size&In-Reply-To=%3C201111101843149317123%40yahoo.ca%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002895.html">
+   <LINK REL="Next"  HREF="002898.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4_-_max_free_mem_/_ram_size</H1>
+    <B>Zhanjun Dong</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4_-_max_free_mem_/_ram_size&In-Reply-To=%3C201111101843149317123%40yahoo.ca%3E"
+       TITLE="[eLua-dev] stm32f4_-_max_free_mem_/_ram_size">yystype at yahoo.ca
+       </A><BR>
+    <I>Fri Nov 11 00:43:16 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002895.html">[eLua-dev] stm32f4 - max free mem / ram size
+</A></li>
+        <LI>Next message: <A HREF="002898.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2897">[ date ]</a>
+              <a href="thread.html#2897">[ thread ]</a>
+              <a href="subject.html#2897">[ subject ]</a>
+              <a href="author.html#2897">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The F4 has 196K in total, but it split into 2 sections:
+
+  RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K      // Major SRAM
+  CCMRAM (xrw) : ORIGIN = 0x10000000, LENGTH = 64K    // Backup SRAM
+
+As you can see, the memory space is not continually, change the SRAM_SIZE over 128K won't work.
+
+Is there a existing way to let eLua access 2nd RAM segment?
+
+Sincerely  
+Zhanjun Dong
+
+======= 2011-11-10 10:57:20 &#65306;=======
+
+&gt;<i>Hi, by try and error I try to determine the max ram for the bytecode
+</I>&gt;<i>(using life.lua to fill it full). 
+</I>&gt;<i>platform_conf.h:
+</I>&gt;<i>#define SRAM_SIZE             ( 128 * 1024 )  //was 60
+</I>&gt;<i>
+</I>&gt;<i>With 128 I get it working, the 140 does 
+</I>&gt;<i>[Hard fault handler]------------
+</I>&gt;<i>R0 = fffe2274-------------------
+</I>&gt;<i>R1 = 20002138-------------------
+</I>&gt;<i>R2 = 134------------------------
+</I>&gt;<i>R3 = 2001fff8-------------------
+</I>&gt;<i>R12 = fffe226c------------------
+</I>&gt;<i>LR = 801b06b--------------------
+</I>&gt;<i>PC = 801a900--------------------
+</I>&gt;<i>PSR = 81000000------------------
+</I>&gt;<i>BFAR = 20020000-----------------
+</I>&gt;<i>CFSR = 8200--OO-----------------
+</I>&gt;<i>HFSR = 40000000-----------------
+</I>&gt;<i>DFSR = 8------------------------
+</I>&gt;<i>AFSR = 0
+</I>&gt;<i>
+</I>&gt;<i>Is there any good hint how to set the ram to &quot;fully&quot; utilise the f4
+</I>&gt;<i>space?
+</I>&gt;<i>Thnx,pi.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>-- 
+</I>&gt;<i>Jak se vyhnout nachlazen&#237; a dal?&#237;m zdravotn&#237;m pot&#237;?&#237;m v nep?&#237;jemn&#233;m
+</I>&gt;<i>podzimn&#237;m obdob&#237;? ?t&#283;te speci&#225;l Zdrav&#237; na podzim na
+</I>&gt;<i><A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>_______________________________________________
+</I>&gt;<i>eLua-dev mailing list
+</I>&gt;<i><A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i><A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+= = = = = = = = = = = = = = = = = = = =
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111110/bd42e55b/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111110/bd42e55b/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002895.html">[eLua-dev] stm32f4 - max free mem / ram size
+</A></li>
+	<LI>Next message: <A HREF="002898.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2897">[ date ]</a>
+              <a href="thread.html#2897">[ thread ]</a>
+              <a href="subject.html#2897">[ subject ]</a>
+              <a href="author.html#2897">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

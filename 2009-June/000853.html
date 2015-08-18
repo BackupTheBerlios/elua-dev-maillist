@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Re-compiling with cross-compiler?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Re-compiling%20with%20cross-compiler%3F&In-Reply-To=%3C81fbe47d0906151039g207ad910m1cd2178f30a0ba34%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000852.html">
+   <LINK REL="Next"  HREF="000854.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Re-compiling with cross-compiler?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Re-compiling%20with%20cross-compiler%3F&In-Reply-To=%3C81fbe47d0906151039g207ad910m1cd2178f30a0ba34%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Re-compiling with cross-compiler?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jun 15 19:39:40 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000852.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+        <LI>Next message: <A HREF="000854.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#853">[ date ]</a>
+              <a href="thread.html#853">[ thread ]</a>
+              <a href="subject.html#853">[ subject ]</a>
+              <a href="author.html#853">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>eLua already has a patch for &quot;cross-compiling&quot;, for details please check
+this page:
+
+<A HREF="http://elua.berlios.de/beta/en/using.html#cross">http://elua.berlios.de/beta/en/using.html#cross</A>
+
+I think you can work on this. My suggestion would be to serialize everything
+into a predefined format (for example &quot;network order&quot; for all numbers) and
+let the remote target unpack the dump itself (although it would need some
+kind of information about the machine you're sending the request from, but
+this kind of stuff can be easily embedded into the dump itself).
+
+Best,
+Bogdan
+
+On Mon, Jun 15, 2009 at 8:08 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> The one last thing I think I need to do before getting LuaRPC into
+</I>&gt;<i> eLua itself is to deal with compiling for different platforms so that
+</I>&gt;<i> you can serialize functions between nodes.  The only problem is that
+</I>&gt;<i> if you string.dump a local function, that bytecode is already compiled
+</I>&gt;<i> for the local host.
+</I>&gt;<i>
+</I>&gt;<i> I'm thinking it should be possible to somehow modify the dump code in
+</I>&gt;<i> the cross compiler to convert a pre-existing function into a dump that
+</I>&gt;<i> would be correct for a target device to which it is being sent.  I
+</I>&gt;<i> assume this would be easier (and more flexible) than somehow caching
+</I>&gt;<i> the original source representation and replaying it through the
+</I>&gt;<i> compiler later?  It would also be nice to be able to do things full-
+</I>&gt;<i> circle where a function could be dumped on a host, loaded on a target,
+</I>&gt;<i> redumped on the target and reloaded on the host, or another machine
+</I>&gt;<i> that doesn't have the same environment parameters.
+</I>&gt;<i>
+</I>&gt;<i> If anyone has any thoughts on this, I'd certainly appreciate them if
+</I>&gt;<i> they might help avoid rabbit holes that don't have an exit :-)
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090615/af8110b7/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090615/af8110b7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000852.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+	<LI>Next message: <A HREF="000854.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#853">[ date ]</a>
+              <a href="thread.html#853">[ thread ]</a>
+              <a href="subject.html#853">[ subject ]</a>
+              <a href="author.html#853">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

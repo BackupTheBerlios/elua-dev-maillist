@@ -1,0 +1,957 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua vs Lua on RTOS
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs%20Lua%20on%20RTOS&In-Reply-To=%3C002501cbbed4%24814a8580%2483df9080%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001923.html">
+   <LINK REL="Next"  HREF="001933.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua vs Lua on RTOS</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs%20Lua%20on%20RTOS&In-Reply-To=%3C002501cbbed4%24814a8580%2483df9080%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] eLua vs Lua on RTOS">john.hind at zen.co.uk
+       </A><BR>
+    <I>Fri Jan 28 11:17:01 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001923.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+        <LI>Next message: <A HREF="001933.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1930">[ date ]</a>
+              <a href="thread.html#1930">[ thread ]</a>
+              <a href="subject.html#1930">[ subject ]</a>
+              <a href="author.html#1930">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks, Dado! I would like to post a paper for comment with my ideas for
+coroutine based preemptive multitasking. This is not really a suitable forum
+for collaborative work in detail because different peoples comments do not
+get merged in the same place and things tend to disappear over the time
+horizon. WiKi would be a better place - are you OK with using the &quot;user
+Labs&quot; for this purpose, and if so, maybe we need a separate corner of it for
+development discussions rather than usage examples?
+
+ 
+
+And you are right about the current system using the debug hooks in standard
+Lua. Also Robert has pointed out that you can even execute a coroutine yield
+from debug hook so I do not even actually need a patch to achieve what I'm
+trying to do. However the debug hooks are peppered with performance warnings
+in the Lua literature and this is extending them well beyond the original
+intention of the mechanism. I did not give a very good example of my concern
+number 1, making it look like the same concern as number 3. The syntax of
+Lua constrains where you could place a Yield instruction more than a debug
+hook would - i.e. you could not put a yield in the middle of a mathematical
+expression in the way that could happen with a debug hook. But in any case
+if the system requires the programmer to pepper their code with extra
+synchronisation instructions beyond what is explicitly necessary at the
+application level, it becomes an unattractive (and error prone!)
+programming model.
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Dado Sutter
+Sent: 26 January 2011 16:24
+To: eLua Users and Development List (www.eluaproject.net)
+Subject: Re: [eLua-dev] eLua vs Lua on RTOS
+
+ 
+
+Hello list,
+
+On Wed, Jan 26, 2011 at 08:14, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+
+I must say that having taken a close look at this mechanism and even
+developed it further to allow C interrupt handlers to force a coroutine
+yield between any two virtual machine opcodes, I became concerned about the
+safety of this approach. Incidently, if we can force coroutine yields safely
+in this way we already have all the mechanisms for an RTOS built-in to Lua
+in the threads provided for coroutines.
+
+
+Thank you for diving into this John. 
+
+ 
+
+There are really three concerns I have (note that in the following, by
+&quot;interrupt&quot; I mean the eLua mechanism for &quot;splicing&quot; extra Lua VM opcodes at
+runtime, not asynchronous interrupts at the processor level):
+
+ 
+
+1. Are we sure that Lua VM operations are always atomic at the opcode level?
+
+
+
+I &quot;think&quot; they are, as Lua itself has a debug lib that (I think) uses the
+same hook mechanism.
+ 
+
+For example if we interrupt in the middle of processing some complex
+mathematical expression and the code in the interrupt operates on some of
+the same variables? 
+
+
+On the minimalist Lua approach, I think this would be considered as a
+programmer's fault :) But in this case I must admit it would be a serious
+flaw. 
+Our initial INT mechanism allows one to disable (or stop queueing)
+interrupts during critical program sections but this may be not fair to
+transfer the responsability to users in all the cases.
+ 
+
+2. Do we allow the interrupt code itself to be further interrupted? 
+
+If so things could become very complex, if not, we have potentially
+unbounded latencies.
+
+ 
+
+3. I believe we will need a Lua-level &quot;critical section&quot; operator which
+allows the Lua programmer to disable interrupts. For example, you might
+write a Ring Buffer structure using a Lua table and some pointers. You might
+want to read this buffer in interrupt code and write it in the main code.
+You cannot allow the interrupt code to run while the main code is in the
+middle of writing to the buffer (which will involve a table write, some
+bounds checks and a pointer write).
+
+
+The initial INT support has instructions to enable/disable Lua handlers.
+ 
+
+I feel we need someone who really understands the design of the Lua
+interpreter and can code-review what we are doing, because it will be
+virtually impossible to devise an adequate test set to prove this is safe in
+all cases.
+
+
+Yep. It would be great to have more help for this and for the dev in
+general.
+ 
+
+Incidentally, I remember being very impressed that the BASIC-STAMP
+microcontroller had preemptive multitasking integrated with the
+(interpreted) Basic language, this on an 8-bit chip with only a few hundred
+*bytes* of RAM. I was able to write a really good serial comms handler for
+GPS using this, which would have been virtually impossible without. A good
+RTOS can actually save RAM by avoiding the need for large RAM buffers for
+incoming data.
+
+
+Cool. I hope we can learn and add such vodoo to eLua too.
+
+Best
+Dado
+
+
+
+
+ 
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Dado Sutter
+Sent: 25 January 2011 21:53
+To: eLua Users and Development List (www.eluaproject.net)
+Subject: Re: [eLua-dev] eLua vs Lua on RTOS
+
+ 
+
+Hello guys,
+
+On Tue, Jan 25, 2011 at 19:10, Lwazi &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">lwazidub at gmail.com</A>&gt; wrote:
+
+On Tue, Jan 25, 2011 at 2:27 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+wrote:
+&gt;<i> On Tue, Jan 25, 2011 at 1:25 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>wrote:
+&gt;&gt;<i>
+</I>
+&gt;&gt;<i> For the microcontroller platforms we run on, an RTOS would generally
+</I>&gt;&gt;<i> just add overhead.  In our upcoming release we will support basic
+</I>&gt;&gt;<i> concurrency in more of an event-driven manner using interrupts which
+</I>&gt;&gt;<i> are
+</I>&gt;<i>
+</I>&gt;<i> Ooops.. hit the send button when I was going to save this and finish
+</I>&gt;<i> editing later.
+</I>&gt;<i>
+</I>&gt;<i> To finish:
+</I>&gt;<i> The interrupts support both Lua and C handlers, C handlers execute
+</I>&gt;<i> immediately and Lua handlers can interrupt currently running Lua code,
+</I>&gt;<i> but they have to wait a few instructions before execution (so latency
+</I>&gt;<i> isn't going to be constant or really low).
+</I>&gt;<i>
+</I>
+I like this. Is this documented anywhere?
+
+
+Yes, this is new eLua feature and the initial doc will be release with v0.8
+LPC24xx implementatin can be seen on trunk (or branch pre0.8) at
+src/platform/lpc24xx
+
+What happens to the rest of
+the system during this 'wait'?
+
+
+You mean, the aparent-latency wait until we actually handle the INT in Lua ?
+The Lua VM is executing during this. I think the hook checks for any queued
+INT to handle every 2 or 3 VM bytecodes.
+ 
+
+I presume the ISR and other interrupts
+do not get blocked while the Lua handler waits to run. 
+
+And I have to
+ask if there is a guarantee that the Lua handler will run
+
+
+   As a preview of the doc to come, I'll paste here some infos about the
+Interrupt mechanism v0.8 will bring officially to eLua.
+   Comments and reviews are welcomed.
+   (and yes, the doc edition/refinement by the community will be easier in
+the future :)
+
+Best
+Dado
+
+
+eLua interrupt handlers
+
+
+Starting with version 0.8, eLua supports interrupt handlers written in Lua.
+Once an interrupt handler is set in the Lua code, it will be called each
+time a supported interrupt is generated. A supported interrupt is any
+interrupt that is handled by the platform C code (see here for more
+details).
+
+IMPORTANT: before learning how to use interrupt handlers in Lua, please keep
+in mind that Lua interrupt handlers don't work the same way as regular (C)
+interrupt handlers. As Lua doesn't have direct suport for interrupts, they
+have to be emulated. eLua emulates them using a queue that is populated with
+interrupt data by the C support code. As long as the queue is not empty, a
+Lua hook is set to run every 2 Lua bytecode instructions. This hook function
+is the Lua interrupt handler. After all the interrupts are handled and the
+queue is emptied, the hook is automatically disabled. Consequently:
+
+.      When the interrupt queue is full (a situation that might appear when
+interrupts are added to the queue faster than the Lua code can handle them)
+subsequent interrupts are ignored (not added to the queue) and an error
+message is printed on the eLua console device. The interrupt queue size can
+be configured at build time, as explained here. Even if the interrupt queue
+is large, one most remember that Lua code is significantly slower than C
+code, thus not all C interrupts make suitable candidates for Lua interrupt
+handlers. For example, a serial interrupt that is generated each time a char
+is received at 115200 baud might be too fast for Lua (this is largely
+dependent on the platform). On the other hand, a GPIO interrupt-on-change on
+a GPIO line connected with a matrix keyboard is a very good candidate for a
+Lua handler. Experimenting with different interrupt types is the best way to
+find the interrupts that work well with Lua. 
+
+.      A more subtle point is that the Lua virtual machine must run for the
+interrupt handlers to work. A simple analogy is that a CPU must have a
+running clock in order to function properly (and in order to take care of
+the hardware interrupts). If the clock is stopped, the CPU doesn't run and
+the interrupt handlers aren't called anymore, although the occurence of the
+interrupt might be recorded inside the CPU. This is the exact same situation
+with Lua: if the virtual machine doesn't run, the interrupts are still
+recorded in the interrupt queue, but the Lua handler won't be called until
+the virtual machine runs again. In this case though, the &quot;clock&quot; of the Lua
+VM is a C function that is executed for every VM instruction. If this
+function blocks for some reason, the VM instructions are not executed
+anymore. It's not hard to make this function block; for example, it blocks
+everytime the Lua code waits for some user input at the console, or when a
+TODO tmr.delay is executed, or when TODO uart.read is called with an
+infinite or very large timeout; in general, any function from a Lua library
+that doesn't return immediately (or after a short ammount of time) will
+block the VM. Care must be taken to avoid such operations as much as
+possible, otherwise the interrupt support code won't run properly. 
+
+.      There is a single interrupt handler per interrupt type in Lua (the
+same holds true for C interrupt support), as opposed to the many hardware
+interrupts handlers usually found on the eLua targets. It is however easy to
+differentiate between different interrupt sources, as will be explained in
+the next paragraph. 
+
+.      Lua interrupt handlers are never reentrant. 
+
+While this might seem restrictive, Lua interrupt handlers work quite well in
+practical situations. As an added bonus, since they are implemented by C
+support code, there's nothing preventing eLua from implementing &quot;custom
+interrupts&quot; (software generated interrupts that don't correspond to a
+hardware interrupt on the CPU), such as serial interrupt on char match
+(generate an interrupt when a certain char is received on the serial port,
+for example a newline), timer interrupts for virtual timers, TCP/UDP data
+packet received interrupt and many others.
+
+
+Using interrupt handlers in Lua
+
+
+To enable Lua interrupt handler, define BUILD_LUA_INT_HANDLERS and
+PLTATFORM_INT_QUEUE_LOG_SIZE in platform_conf.h (see here for details).
+Setting up interrupt handlers is a straightforward process, most of the
+required functionality is provided by the CPU module:
+
+.      use cpu.set_int_handler( int_id, handler ) to set the interrupt
+handler function for the specified interrupt (call with nil to disable the
+interrupt handler for that interrupt). cpu.set_int_handler returns the
+previous interrupt handler for int_id (or nil is an interrupt handler was
+not previously set for the interrupt). In most cases, your interrupt handler
+should call the previous handler to ensure proper interrupt management. 
+
+.      use cpu.sei( int_id, resnum1, [resnum2], ., [resnumn]) and cpu.cli(
+int_id, resnum1, [resnum2], ., [resnumn]) to enable/disable specific CPU
+interrupts that will trigger the interrupt handler. You can also use
+cpu.sei() and cpu.cli (without parameters) to enable/disable global
+interrupts on the CPU, although this is not recommended. 
+
+The interrupt handler receives the resource ID that specifies the resource
+that fired the interrupt. It can be a timer ID for a timer overflow
+interrupt, a GPIO port/pin combination for a GPIO interrupt on pin change, a
+SPI interface ID for a SPI data available interrupt, and so on.
+
+An example that uses the above concepts and knows how to handle two
+different interrupt types is presented below:
+
+local vtmrid = tmr.VIRT0
+local to = 1500000
+
+
+
+
+
+local prev_tmr, new_prev_tmr, prev_gpio
+
+-- This is the timer interrupt handler
+local function tmr_handler( resnum )
+ 
+  print( string.format( &quot;Timer interrupt for id %d&quot;, resnum ) )
+
+
+ 
+  if prev_tmr then prev_tmr( resnum ) end
+end
+
+-- This is the timer interrupt handler that gets set after tmr_handler
+local function new_tmr_handler( resnum )
+
+
+ 
+ 
+ 
+  print( string.format( &quot;NEW HANDLER: timer interrupt for id %d&quot;, resnum ) )
+  -- This will chain to the previous interrupt handler (tmr_handler above)
+
+
+ 
+  if new_prev_tmr then new_prev_tmr( resnum ) end
+ 
+end
+
+-- This is the GPIO interrupt on change (falling edge) interrupt
+local function gpio_negedge_handler( id, resnum )
+
+
+ 
+    local port, pin = pio.decode( resnum )
+ 
+  print( string.format( &quot;GPIO NEGEDGE interrupt on port %d, pin %d&quot;, port,
+pin ) )
+  if prev_gpio then prev_gpio( resnum ) end
+
+
+ 
+end
+
+-- Set timer interrupt handler
+prev_tmr = cpu.set_int_handler( cpu.INT_TMR_MATCH, tmr_handler )
+ 
+-- Set GPIO interrupt on change (negative edge) interrupt handler
+
+
+ 
+prev_gpio = cpu.set_int_handler( cpu.INT_GPIO_NEGEDGE, gpio_negedge_handler
+)
+-- Setup periodic timer interrupt for virtual timer 0
+ 
+tmr.set_match_int( vtmrid, to, tmr.INT_CYCLIC )
+
+
+ 
+-- Enable GPIO interrupt on change (negative edge) for pin 0 of port 0
+cpu.sei( cpu.INT_GPIO_NEGEDGE, pio.P0_0 )
+ 
+-- Enable timer match interrupt on virtual timer 0
+
+
+ 
+cpu.sei( cpu.INT_TMR_MATCH, vtmrid )
+
+local tmrid, count = 0, 0
+while true do
+  print &quot;Outside interrupt&quot;
+ 
+ 
+ 
+  for i = 1, 1000 do tmr.delay( tmrid, 1000 ) end
+  if uart.getchar( uartid, 0 ) ~= &quot;&quot; then break end
+  count = count + 1
+  if count == 5 then
+    print &quot;Changing timer interrupt handler&quot;
+
+
+ 
+ 
+ 
+    new_prev_tmr = cpu.set_int_handler( cpu.INT_TMR_MATCH, new_tmr_handler )
+  end
+end
+
+-- Cleanup
+-- Stop the timer from generating periodic interrupts
+
+
+ 
+tmr.set_match_int( vtmrid, 0, tmr.INT_CYCLIC );
+ 
+-- Disable the GPIO interrupt on change (negative edge) interrupt
+cpu.cli( cpu.INT_GPIO_NEGEDGE, pio.P0_0 )
+
+
+ 
+-- Disable the timer interrupt on match interrupt
+cpu.cli( cpu.INT_TMR_MATCH, vtmrid )
+ 
+-- Clear the timer interrupt handler
+cpu.set_int_handler( cpu.INT_TMR_MATCH, nil );
+
+
+ 
+-- Clear the GPIO interrupt handler
+cpu.set_int_handler( cpu.INT_GPIO_NEGEDGE, nil );
+
+This is the most common use case for Lua interrupts, but it's not the only
+one. Another way to use interrupts from eLua uses polling instead of
+interrupt handlers: directly check the interrupt flags and execute a certain
+action when one of them becomes set. For this, use the cpu.get_int_flag( id,
+resnum, [clear] ) function from the CPU module, which returns the specified
+interrupt's status for resource resnum. clear is an optional boolean
+parameter, specifying if the interrupt flag should be cleared if it is set.
+It defaults to true, and in most cases it shouldn't be changed. Using this
+feature, it becomes easy to wait for one or more interrupt flag(s) to be
+set. To use interrupt polling:
+
+.      Enable/disable interrupts to be polled with cpu.hw_sei/cpu.hw_cli
+instead of cpu.sei/cpu.cli. These functions enable/disable interrupts only
+in hardware, as opposed to cpu.sei/cpu.cli that also set/clear an internal
+flag which makes the interrupt able to trigger a Lua handler. 
+
+.      Use cpu.get_int_flag to get the interrupt flag. 
+
+The int_select function below is a possible implementation of a function
+that gets an array of interrupts and returns the first one that gets active:
+
+function int_select( int_table )
+
+
+ 
+  while true do
+    for i = 1, #int_table do
+      local t = int_table[ i ]
+      if cpu.get_int_flag[ t[ 1 ], t[ 2 ] ) then
+ 
+        return t[ 1 ], t[ 2 ]
+      end
+    end
+ end
+end
+
+cpu.hw_sei( cpu.INT_GPIO_NEGEDGE, pio.P0_0 )
+cpu.hw_sei( cpu.INT_TMR_MATCH, tmr.VIRT0 )
+
+
+ 
+ 
+ 
+local ints = { { cpu.INT_GPIO_NEGEDGE, pio.P0_0 }, { cpu.INT_TMR_MATCH,
+tmr.VIRT0 } }
+-- int_select will wait for either INT_GPIO_NEGEDGE or INT_TMR_MATCH to
+become active
+
+
+ 
+print( int_select( ints ) )
+
+Note that the two mechanisms (interrupt handlers and polling) can be used in
+parallel as long as an interrupt is not set with both cpu.hw_sei and
+cpu.sei, in which case the bevahiour is unpredictable. This is why it makes
+sense to write the int_select function above in Lua instead of C: it keeps
+the Lua VM running, so Lua interrupt handlers can be executed.
+
+
+Interrupt handlers in C
+
+
+The interrupt subsystem has also a basic C API that can be used to implement
+portable eLua components and modules. It is enabled by defining
+BUILD_C_INT_HANDLERS in platform_conf.h. It is defined in inc/elua_int.h and
+has 2 functions:
+
+elua_int_c_handler elua_int_set_c_handler( elua_int_id inttype,
+elua_int_c_handler phandler ) 
+
+Sets the interrupt handler for interrupt inttype to phandler and returns the
+previous interrupt handler for interrupt inttype. 
+
+elua_int_c_handler elua_int_get_c_handler( elua_int_id inttype ) 
+
+Returns the interrupt handler for interrupt inttype 
+
+elua_int_c_handler is a function that doesn't return anything and receives a
+single parameter of type elua_int_resnum to differentiate between the
+sources (GPIO pin, UART id, timer id and so on) that can trigger the
+interrupt inttype. This is similar in functionality with the Lua handlers.
+
+To work with interrupts from C code use these functions defined by the CPU
+platform interface:
+
+int platform_cpu_set_interrupt( elua_int_id id, elua_int_resnum resnum, int
+status ) 
+
+Enable (status = PLATFORM_CPU_ENABLE) or disable (status =
+PLATFORM_CPU_DISABLE) interrupt id for resource resnum. 
+
+int platform_cpu_get_interrupt( elua_int_id id, elua_int_resnum resnum ) 
+
+Returns 1 if interrupt id is enabled for resource resnum, 0 otherwise. 
+
+int platform_cpu_get_interrupt_flag( elua_int_id id, elua_int_resnum resnum,
+int clear ) 
+
+Get interrupt flag for interrupt id and resource resnum, clear interrupt
+flag if it is set and clear is 1, leave it untouched otherwise. 
+
+Since elua_int_set_c_handler returns the previous handler, it is easy to
+chain the interrupt handlers from different system components. To ensure
+correct operation, every C module that needs access to interrupt handlers
+should use this sequence:
+
+#include &quot;elua_int.h&quot;
+
+static elua_int_c_handler prev_handler;
+static void int_handler( elua_int_resnum resnum );
+
+void module_init()
+{
+
+
+ 
+  int id = SOME_INT_ID;
+
+  platform_cpu_set_interrupt( id, some_resnum, PLATFORM_CPU_ENABLE );
+ 
+  prev_handler = elua_int_set_c_handler( id, int_handler );
+
+
+ 
+}
+
+static void int_handler( elua_int_resnum resnum )
+{
+  // Note: prev_handler can also be called at the end of int_handler
+  if( prev_handler )
+ 
+    prev_handler( resnum );
+
+  // (Optional) Check resnum and return if the interrupt was fired by a
+different resource
+  if( resnum != some_resnum )
+    return;
+
+
+ 
+
+  // Actual interrupt handler code comes here
+ 
+}
+
+--------------------------
+
+
+
+
+Interrupt handlers in C
+
+
+The interrupt subsystem has also a basic C API that can be used to implement
+portable eLua components and modules. It is enabled by defining
+BUILD_C_INT_HANDLERS in platform_conf.h. It is defined in inc/elua_int.h and
+has 2 functions:
+
+elua_int_c_handler elua_int_set_c_handler( elua_int_id inttype,
+elua_int_c_handler phandler ) 
+
+Sets the interrupt handler for interrupt inttype to phandler and returns the
+previous interrupt handler for interrupt inttype. 
+
+elua_int_c_handler elua_int_get_c_handler( elua_int_id inttype ) 
+
+Returns the interrupt handler for interrupt inttype 
+
+elua_int_c_handler is a function that doesn't return anything and receives a
+single parameter of type elua_int_resnum to differentiate between the
+sources (GPIO pin, UART id, timer id and so on) that can trigger the
+interrupt inttype. This is similar in functionality with the Lua handlers.
+
+To work with interrupts from C code use these functions defined by the CPU
+platform interface:
+
+int platform_cpu_set_interrupt( elua_int_id id, elua_int_resnum resnum, int
+status ) 
+
+Enable (status = PLATFORM_CPU_ENABLE) or disable (status =
+PLATFORM_CPU_DISABLE) interrupt id for resource resnum. 
+
+int platform_cpu_get_interrupt( elua_int_id id, elua_int_resnum resnum ) 
+
+Returns 1 if interrupt id is enabled for resource resnum, 0 otherwise. 
+
+int platform_cpu_get_interrupt_flag( elua_int_id id, elua_int_resnum resnum,
+int clear ) 
+
+Get interrupt flag for interrupt id and resource resnum, clear interrupt
+flag if it is set and clear is 1, leave it untouched otherwise. 
+
+Since elua_int_set_c_handler returns the previous handler, it is easy to
+chain the interrupt handlers from different system components. To ensure
+correct operation, every C module that needs access to interrupt handlers
+should use this sequence:
+
+#include &quot;elua_int.h&quot;
+
+static elua_int_c_handler prev_handler;
+static void int_handler( elua_int_resnum resnum );
+
+
+ 
+
+void module_init()
+{
+  int id = SOME_INT_ID;
+
+  platform_cpu_set_interrupt( id, some_resnum, PLATFORM_CPU_ENABLE );
+ 
+  prev_handler = elua_int_set_c_handler( id, int_handler );
+
+
+ 
+}
+
+static void int_handler( elua_int_resnum resnum )
+{
+  // Note: prev_handler can also be called at the end of int_handler
+  if( prev_handler )
+ 
+    prev_handler( resnum );
+
+  // (Optional) Check resnum and return if the interrupt was fired by a
+different resource
+  if( resnum != some_resnum )
+    return;
+
+
+ 
+
+  // Actual interrupt handler code comes here
+ 
+
+-------------------------------
+
+eLua interrupt support implementation
+
+
+To add interrupt support for an eLua platform follow the steps below:
+
+1.   Define your interrupts 
+
+Your interrupt sources should be defined in platform_conf.h with macros
+(don't use C enumerations). The first one should have the value
+ELUA_INT_FIRST_ID (defined in inc/elua_int.h), the next one
+ELUA_INT_FIRST_ID + 1 and so on. Also, there should be a definition for a
+macro called INT_ELUA_LAST that must be equal to the largest interrupt
+source value. An example is given below:
+
+#define INT_GPIO_POSEDGE      ELUA_INT_FIRST_ID
+#define INT_GPIO_NEGEDGE      ( ELUA_INT_FIRST_ID + 1 )
+#define INT_TMR_MATCH         ( ELUA_INT_FIRST_ID + 2 )
+
+
+ 
+#define INT_ELUA_LAST         INT_TMR_MATCH
+
+Note that the interrupt names aren't random, they should follow a well
+defined pattern. Check here for details.
+
+2.   Add them to the list of constants from the CPU module 
+
+Check the documentation of the CPU module for details.
+
+3.   Implement your support functions 
+
+The actual implementation of the interrupt handlers is of course platform
+specific, so it can stay in the platform.c file. However, since interrupt
+handlers might require quite a bit of code, it is recommended to implement
+them in a separate file. The eLua convention is to use the platform_int.c
+file for this purpose. For each interrupt defined in step 1 above, 3
+functions need to be implemented:
+
+o  A function that enables or disables the interrupt and returns its
+previous state (enabled or disabled). 
+
+o  A function that checks if the interrupt is enabled or disabled. 
+
+o  A function that checks the interrupt pending flag and optionally clears
+it. 
+
+These functions are defined in inc/elua_int.h, which also defines an &quot;int
+descriptor&quot; type:
+
+ 
+ 
+// Interrupt functions and descriptor
+typedef int ( *elua_int_p_set_status )( elua_int_resnum resnum, int state );
+typedef int ( *elua_int_p_get_status )( elua_int_resnum resnum );
+typedef int ( *elua_int_p_get_flag )( elua_int_resnum resnum, int clear );
+
+
+ 
+ 
+ 
+typedef struct
+{
+  elua_int_p_set_status int_set_status;
+  elua_int_p_get_status int_get_status;
+
+
+ 
+  elua_int_p_get_flag int_get_flag;
+} elua_int_descriptor;
+
+platform_int.c must have an array of elua_int_descriptor types named
+elua_int_table (remember to make it const to save RAM). The elements of this
+array must be in the same order as the interrupt sources. The interrupt
+table for the example from step 1 above might look like this:
+
+const elua_int_descriptor elua_int_table[ INT_ELUA_LAST ] =
+{
+  { int_gpio_posedge_set_status, int_gpio_posedge_get_status,
+int_gpio_posedge_get_flag },
+
+
+ 
+  { int_gpio_negedge_set_status, int_gpio_negedge_get_status,
+int_gpio_negedge_get_flag },
+ 
+  { int_tmr_match_set_status, int_tmr_match_get_status,
+int_tmr_match_get_flag }
+
+
+ 
+};
+
+4.   Implement the init function 
+
+platform_int.c should implement a function named platform_int_init (defined
+in inc/platform.h) that must initialize all the required hardware and the
+internal data structures of the interrupt subsystem. This function should be
+called from platform_init.
+
+5.   Implement the interrupt handlers 
+
+There are two simple requirements for the interrupt handlers: clear the
+hardware interrupt flag (if needed) and call cmn_int_handler (src/common.c)
+to connect the handler with the eLua interrupt code. An example is given
+below:
+
+// EINT3 (INT_GPIO) interrupt handler
+static void int_handler_eint3()
+{
+  elua_int_id id = ELUA_INT_INVALID_INTERRUPT;
+  pio_code resnum = 0;
+
+
+ 
+  int pidx, pin;
+
+  EXTINT |= 1 &lt;&lt; EINT3_BIT; // clear interrupt
+ 
+  // Look for interrupt source
+
+
+ 
+  // In can only be GPIO0/GPIO2, as the EXT interrupts are not (yet) used
+  pidx = ( IO_INT_STAT &amp; 1 ) ? 0 : 1;
+  if( *posedge_status[ pidx ] )
+  {
+    id = INT_GPIO_POSEDGE;
+
+
+ 
+ 
+ 
+    pin = intlog2( *posedge_status[ pidx ] );
+  }
+  else
+  {
+    id = INT_GPIO_NEGEDGE;
+
+
+ 
+    pin = intlog2( *negedge_status[ pidx ] );
+  }
+  resnum = PLATFORM_IO_ENCODE( pidx * 2, pin, PLATFORM_IO_ENC_PIN );
+ 
+  *intclr_regs[ pidx ] = 1 &lt;&lt; pin;
+
+  // Run the interrupt through eLua
+  cmn_int_handler( id, resnum );
+
+
+ 
+  VICVectAddr = 0; // ACK interrupt
+ 
+}
+
+That's it. If you followed all these steps correctly, your platform should
+be fully able to support interrupt handlers (as described here). Check the
+lpc24xx platform implementation (src/platform/lpc24xx) for a full example.
+
+
+Interrupt list and naming conventions
+
+
+To ensure maximum portability and correct system behaviour, interrupt names
+(as defined in platform_conf.h) must follow a well-defined naming pattern.
+Please note that this isn't merely a convention, many times the names must
+be properly chosen for the system to work properly. For example, the timer
+interrupt match will never happen on virtual timers if the timer interrupt
+match name isn't INT_TMR_MATCH (see here for more details on how to use the
+timer match interrupt).
+
+The naming rule is that the interrupt name must have the format
+INT_&lt;peripheral&gt;_&lt;type&gt;_, where:
+
+.      peripheral is a symbolic name of the peripheral to which the
+interrupt applies. 
+
+.      type is a symbolic name of the interrupt type. 
+
+This restriction applies only to interrupt names. The value associated with
+the interrupt name (as defined in platform_conf.h) can vary from platform to
+platform, as long as it follows the rules outlined in step 1 above.
+
+The table below lists all the valid interrupt names currently known to eLua.
+If you add a new interrupt don't forget to update the table below.
+
+
+Name 
+
+Meaning
+
+
+INT_GPIO_POSEDGE
+
+Interrupt on a positive edge on a GPIO pin
+
+
+INT_GPIO_NEGEDGE
+
+Interrupt on a negative edge on a GPIO pin
+
+
+INT_TMR_MATCH
+
+Interrupt on timer match
+
+
+INT_UART_RX
+
+Interrupt on UART character received
+
+
+}
+
+ 
+
+Thanks,
+Lwazi
+
+
+Best
+Dado
+
+
+
+
+
+
+
+
+
+ 
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+ 
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110128/f478f496/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110128/f478f496/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001923.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+	<LI>Next message: <A HREF="001933.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1930">[ date ]</a>
+              <a href="thread.html#1930">[ thread ]</a>
+              <a href="subject.html#1930">[ subject ]</a>
+              <a href="author.html#1930">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

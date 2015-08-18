@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] arm-none-eabi-cc: command not found
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20arm-none-eabi-cc%3A%20command%20not%20found&In-Reply-To=%3CCAJ%3DY9Y3F-SRx0VV5b7vuFfv60iovNN_BJ47z3%2BF%3Dtbbz456TEA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002941.html">
+   <LINK REL="Next"  HREF="002943.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] arm-none-eabi-cc: command not found</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20arm-none-eabi-cc%3A%20command%20not%20found&In-Reply-To=%3CCAJ%3DY9Y3F-SRx0VV5b7vuFfv60iovNN_BJ47z3%2BF%3Dtbbz456TEA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] arm-none-eabi-cc: command not found">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Nov 14 01:09:05 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002941.html">[eLua-dev] arm-none-eabi-cc: command not found
+</A></li>
+        <LI>Next message: <A HREF="002943.html">[eLua-dev] arm-none-eabi-cc: command not found
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2942">[ date ]</a>
+              <a href="thread.html#2942">[ thread ]</a>
+              <a href="subject.html#2942">[ subject ]</a>
+              <a href="author.html#2942">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Nov 13, 2011 at 5:56 PM, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+&gt;<i> Is it appropriate to ask this mail list about building the cross compiler
+</I>&gt;<i> for the arm-none-eabi toolchain?
+</I>
+I think it's perfectly reasonable as long as the list doesn't end up
+solely answering questions about cross-compiling toolchains.  We do,
+after all, provide some form of instructions on how to build them and
+various community members have provided scripts, makefiles and howtos
+(myself included: <A HREF="https://github.com/jsnyder/arm-eabi-toolchain">https://github.com/jsnyder/arm-eabi-toolchain</A>).
+
+Which instructions or scripts are you using to do the build?
+
+If your subject is a hint, I suspect you got through some number of
+stages of the build and it may have failed in newlib? or something
+like that? Usually one gets errors like that if the cross compiling
+gcc that one has just built and installed into a new path is not in
+the binary search path (PATH) when configure ran for the stage of the
+build you're in if I recall.  Depending on which instructions you're
+using and what actual stage you're at, there might be a different best
+recommendation, but certainly make sure that whatever shell you're
+doing the build from includes the path where arm-none-eabi-gcc will
+end up, precreate that bin directory if it doesn't already exist
+before you set path, i.e.:
+
+mkdir -p $PREFIX/bin
+export PATH=$PREFIX/bin:$PATH
+(where $PREFIX is the install prefix used by the scripts you're using)
+
+and then at least redo the configure, then continue building at the
+stage where things stoppped for you.
+
+&gt;<i> james
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002941.html">[eLua-dev] arm-none-eabi-cc: command not found
+</A></li>
+	<LI>Next message: <A HREF="002943.html">[eLua-dev] arm-none-eabi-cc: command not found
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2942">[ date ]</a>
+              <a href="thread.html#2942">[ thread ]</a>
+              <a href="subject.html#2942">[ subject ]</a>
+              <a href="author.html#2942">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

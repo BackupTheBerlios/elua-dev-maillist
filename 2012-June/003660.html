@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Xmodem transfer - issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Xmodem%20transfer%20-%20issue&In-Reply-To=%3CCANKDJfbOPFKG%2B5c_DCYKHUewVAsmpfpEbZSzZPyyRfx2zzkWDg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003659.html">
+   <LINK REL="Next"  HREF="003661.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Xmodem transfer - issue</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Xmodem%20transfer%20-%20issue&In-Reply-To=%3CCANKDJfbOPFKG%2B5c_DCYKHUewVAsmpfpEbZSzZPyyRfx2zzkWDg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Xmodem transfer - issue">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat Jun 30 16:38:57 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003659.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+        <LI>Next message: <A HREF="003661.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3660">[ date ]</a>
+              <a href="thread.html#3660">[ thread ]</a>
+              <a href="subject.html#3660">[ subject ]</a>
+              <a href="author.html#3660">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Jun 30, 2012 at 5:24 PM, pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+&gt;<i> With the previous picture it stopped at 65536+128 = 513 packets.
+</I>&gt;<i> So I changed the limit check (in xmodem.c) to a 64000 limit
+</I>&gt;<i> (500packets):
+</I>&gt;<i> ...
+</I>&gt;<i> if(( ( p = realloc( *dest, limit ) ) == NULL ) || ( limit &gt; 64000 ))
+</I>&gt;<i> {
+</I>&gt;<i> // Not enough memory, force cancel and return
+</I>&gt;<i> xmodem_flush( XMODEM_FLUSH_AND_XM_CAN );
+</I>&gt;<i> return XMODEM_ERROR_OUTOFMEM;
+</I>&gt;<i> }
+</I>&gt;<i> ...
+</I>&gt;<i> and it stopped there and it hangs as well (see enclosed picture). So
+</I>&gt;<i> my current understanding is:
+</I>&gt;<i> a) in the first case the realloc had only 65536 bytes (probably in
+</I>&gt;<i> the 64k CCM block)
+</I>&gt;<i> b) in this case &quot;outofmem&quot; return does not work properly..
+</I>&gt;<i> p.
+</I>
+Can you please open your platform_conf.h files and list the
+definitions for MEM_START_ADDRESS and MEM_END_ADDRESS from that file?
+
+Thanks,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;<i> Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>,
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] Xmodem transfer - issue
+</I>&gt;<i> Datum: 30.6.2012 - 14:17:12
+</I>&gt;<i>
+</I>&gt;&gt;<i> &gt; course, we can modify
+</I>&gt;&gt;<i> &gt; this so that XMODEM saves every block that it
+</I>&gt;&gt;<i> &gt; receives (or every N
+</I>&gt;&gt;<i> &gt; blocks) in &quot;save to file&quot; mode.
+</I>&gt;&gt;<i> that would be great - ie 4kb chunks, each written
+</I>&gt;&gt;<i> to ie mmc, sdcard
+</I>&gt;&gt;<i> latency is typically max 300ms, so xmodem may wait
+</I>&gt;&gt;<i> a little bit..
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; you should have
+</I>&gt;&gt;<i> &gt; received an &quot;out of memory&quot; error. How exactly
+</I>&gt;&gt;<i> &gt; does the transfer stop?
+</I>&gt;&gt;<i> &gt; Does it give an error or simply hang?
+</I>&gt;&gt;<i> enclosed pls find the picture, yes it simply hangs
+</I>&gt;&gt;<i> as depicted (the
+</I>&gt;&gt;<i> file to be transfered is about 73kB). p.
+</I>&gt;&gt;<i>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003659.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+	<LI>Next message: <A HREF="003661.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3660">[ date ]</a>
+              <a href="thread.html#3660">[ thread ]</a>
+              <a href="subject.html#3660">[ subject ]</a>
+              <a href="author.html#3660">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

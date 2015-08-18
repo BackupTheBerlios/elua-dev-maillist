@@ -1,0 +1,468 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y2OEmiWXo4qYWwK4d2SvNF%3DaAW%2BjODMsXMdT3QMQZhXHA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002704.html">
+   <LINK REL="Next"  HREF="002712.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y2OEmiWXo4qYWwK4d2SvNF%3DaAW%2BjODMsXMdT3QMQZhXHA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Aug  5 22:25:39 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002704.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002712.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2705">[ date ]</a>
+              <a href="thread.html#2705">[ thread ]</a>
+              <a href="subject.html#2705">[ subject ]</a>
+              <a href="author.html#2705">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Aug 5, 2011 at 1:25 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> I'll send this, cos it's been sitting in my outbox for 4 days and my
+</I>&gt;<i> brain is elsewhere at present.
+</I>&gt;<i>
+</I>&gt;<i> On 1 August 2011 22:40, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt;&gt; I'm in favour of adding optional extra parameter after duty cycles to
+</I>&gt;<i> &gt;&gt; get higher precision (indeed, hardware precision if you pick the right
+</I>&gt;<i> &gt;&gt; radix)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; OK.  So something like:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; duty, radix = pwm.setduty(id, duty, [radix=100])
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Radix is free-form, but integer?
+</I>&gt;<i>
+</I>&gt;<i> Integer, sure. A floating point radix is an interesting idea... :)
+</I>&gt;<i>
+</I>&gt;<i> I'm not sure the radix needs to be returned from the functions, since
+</I>&gt;<i> it will always be either 100 or what the user specified, so its value
+</I>&gt;<i> is 100% predictable and so contains no information. It also simplifies
+</I>&gt;<i> the documentation, so a beginner isn't immediately worried about
+</I>&gt;<i> &quot;what's this extra radix thing that it might return&quot; and only power
+</I>&gt;<i> users need to deal with funny radices.
+</I>&gt;<i>
+</I>
+Yeah, I'm trying to think of use cases where returning the radix would be
+essential, and the only things I think think of are situations where you
+wanted to feed the value to something else, but selected the radix in
+another scope (maybe like a coroutine or a closure, but you could divide by
+the radix before returning, or return both in an ad-hoc manner, so I guess
+that's not needed.  I just liked the idea that the result could be
+interpreted unambiguously without access to the scope in which the
+parameters were passed.
+
+So, count that as a &quot;I guess we don't need it&quot;
+
+
+&gt;<i>
+</I>&gt;<i> &gt;&gt; I'm ambivalent about adding radix to frequencies for higher-precision
+</I>&gt;<i> &gt;&gt; low frequencies. It would be nice.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Does one need the christmas lights to flash at 0.43 Hz?  I dunno.  PWM
+</I>&gt;<i> &gt; can be used for triggering other things like, for example an external
+</I>&gt;<i> &gt; ADC where that might be useful?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; freq, radix = pwm.setfreq(id, freq, [radix=1])
+</I>&gt;<i>
+</I>&gt;<i> OK. apart from returning radix again
+</I>&gt;<i>
+</I>&gt;<i> &gt; For setting the clocking frequency, I don't think there's a good
+</I>&gt;<i> &gt; reason (pwm.setclock).
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Question: do we leave setup for now?  Do we provide radix functionality
+</I>&gt;<i> with it?
+</I>&gt;<i>
+</I>&gt;<i> OK, let's think about this. If we split into setfreq() and setduty():
+</I>&gt;<i> - what does it do when they have set a frequency but not set a duty cycle
+</I>&gt;<i> yet?
+</I>&gt;<i> - What does it do if they set a duty cycle but haven't set a frequency yet?
+</I>&gt;<i>
+</I>
+Good question. Going based on other peripherals, like if you just &quot;start&quot; a
+timer and possibly even pwm currently, it will start going, but the
+parameters you haven't set aren't guaranteed.  You get either the default of
+the hardware or some default that we selected to initialize the hardware.
+ This is a little less than ideal, perhaps we could standardize this a
+little more across platforms.. hmm..
+
+
+&gt;<i> The platform code I have seen for the current pwm.setup() always goes:
+</I>&gt;<i> {
+</I>&gt;<i>   set pwm period in the hardware, calculated from the requested
+</I>&gt;<i> frequency and clock rate;
+</I>&gt;<i>   set duty cycle as a period in clock ticks calculated from the pwm period;
+</I>&gt;<i> }
+</I>&gt;<i> Maybe for this reason it is handy always to have the frequency and
+</I>&gt;<i> duty cycle on hand at the same time. However, from the platform code
+</I>&gt;<i> I've seen, when setting the duty cycle separately, you can fish the
+</I>&gt;<i> period (that you need for the calculation) back out of the hardware
+</I>&gt;<i> register.
+</I>&gt;<i>
+</I>
+Yeah, generally those registers are readable, I think we often use this in
+order to return what things were actually set to.
+
+In a worst case scenario there could be global state in the platform
+implementation to keep track of this after it has been set.
+
+
+&gt;<i> That's enough to be able to vary the duty cycle while keeping the
+</I>&gt;<i> frequency the same.
+</I>&gt;<i>
+</I>
+
+Yep.
+
+
+&gt;<i>
+</I>&gt;<i> However, if they decide to vary the frequency without changing the
+</I>&gt;<i> duty cycle, we would need to remember the duty cycle for each channel
+</I>&gt;<i> in a tiny array duty[NUM_PWM] and presumably radix[NUM_PWM] to be able
+</I>&gt;<i> to recalculate the duty cycle as a fraction of the PWM period when the
+</I>&gt;<i> frequency alone is changed. That doesn't seem too hard or costly if it
+</I>&gt;<i> gives a better Lua interface to the PWM module, and only needs to
+</I>&gt;<i> happen in src/modules/pwm.c, not in every platform.
+</I>
+
+Yeah, and you would want to cache the passed numbers rather than fish them
+out to fix the duty cycle on the fly so as to remain closer to what the user
+asked for.  Unfortunately this also has an icky side effect of potentially
+changing the exact duty cycle.
+
+
+&gt;<i>  I hate to say it,
+</I>&gt;<i> but that suggests keeping the C platform interface as it is, with freq
+</I>&gt;<i> and duty always passed as a pair, otherwise we'll have the same code
+</I>&gt;<i> to cache the duty cycle and radix in a dozen different places.  In the
+</I>&gt;<i> case of AVR32, with its inability to set both at once, I already check
+</I>&gt;<i> to see if the frequency (period) is the same as before and only update
+</I>&gt;<i> the duty cycle in that case.
+</I>&gt;<i>
+</I>
+I'd agree. There are a few ways to do it, but it is most convenient in the
+platform code to have both at the same time, and it would help keep.  On the
+one hand that means less modification to the platforms and less code, but as
+you're pointing out it's problematic with AVR32.
+
+Side note: is there some sort of pending or update flag that you could use
+to set the two sequentially then grind away in a loop watching a register
+for when that has been accepted, then you can change the other? Or can you
+just watch the counter?  It certainly means burning extra time in the
+function, especially if the frequency is quite slow, but perhaps worth it?
+
+
+
+&gt;<i>
+</I>&gt;<i> Question: do PWM applications change the frequency without changing
+</I>&gt;<i> the duty cycle? Well, I can think of an organ-like instrument where
+</I>&gt;<i> the duty cycle gives a tone timbre and the frequency the note. For
+</I>&gt;<i> that, the highest possible precision of the frequency setting is
+</I>&gt;<i> critical: a hundredth of a percent of the frequency in use is the
+</I>&gt;<i> target for musical pitches, so the more frequency precision the better
+</I>&gt;<i> in that application.
+</I>&gt;<i>
+</I>&gt;<i> That suggests in the Lua interface:
+</I>&gt;<i> pwm.setduty( id, duty[, radix=100] )
+</I>&gt;<i> pwm.setfreq( id, freq[, radix=1] )
+</I>&gt;<i> and keeping the C platform interface the same as it is now, modulo
+</I>&gt;<i> adding an extra duty/radix parameter.
+</I>&gt;<i>
+</I>
+Right.  There are a lot of applications where you won't touch frequency, but
+will update duty cycle frequently, but audio applications would hold duty
+cycle constant (for the most part), but vary the frequency all over.
+
+With this, we would store duty and radix vales in the module, maybe with
+some sane defaults set initially for whichever value isn't being set, like
+50% for duty, and 1 KHz or something for frequency?
+
+
+&gt;<i>
+</I>&gt;<i> It would be good to add in the documentation recommended usage
+</I>&gt;<i> sequences.  For instance, what happens if I call pwm.start() before
+</I>&gt;<i> setting the frequency and duty cycle for a channel?
+</I>&gt;<i> Is a call to pwm.setup() necessary to enable the pin as an output,
+</I>&gt;<i> even if we move the frequency and duty cycle stuff, that can happen
+</I>&gt;<i> during the program run, elsewhere?
+</I>&gt;<i>
+</I>
+Yeah, this is a good idea, and something we should do for other peripherals
+like timers and the like as far as what state they're in without setting any
+parameters.
+
+I think having some sane, documented defaults for the unset parameter is not
+a bad place to start (I guess we then might have to guarantee those won't
+change in future versions?).  I suppose you could also do some things like
+set the initial values to 0 or -1 and only call the platform function when
+both have been filled in.   Let me know what you think about this...
+
+On the pin configuration front, we could probably do it when the user calls
+start, since this is the first point that the output actually needs to start
+being reflected on the pin.  I suspect there shouldn't be any platform
+situations where the pin needs to be configured in advance of other stuff.
+ Also, ultimately, I think we need more of a common interface for supporting
+various output pin configuration options, but that's a whole separate thread
+that should be picked up sometime.
+
+
+
+
+&gt;<i>
+</I>&gt;<i> &gt;&gt; James, have you been able to test on an ARm platform that patch to
+</I>&gt;<i> &gt;&gt; split platform_adc_op()
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I suppose I can take a look at the assembler generated for the at91
+</I>&gt;<i> &gt; platform and try to see if it has optimized out that section you had
+</I>&gt;<i> &gt; concerns about.
+</I>&gt;<i>
+</I>&gt;<i> Ah! I hadn't thought of that. Thanks. Yes, it is dutifully reading it
+</I>&gt;<i> (and storing it in the dummy variable that is immediately forgotten,
+</I>&gt;<i> der). Thanks.
+</I>&gt;<i>
+</I>&gt;<i> &gt; I add random numbers on the interval -0.5 -&gt;
+</I>&gt;<i> &gt; 0.5 to dither PWM duty cycles to get more precise output, and I'd like
+</I>&gt;<i> &gt; to _not_ have to do that.)
+</I>&gt;<i>
+</I>&gt;<i> Urk! It's a sign that something is wrong with the interface if you
+</I>&gt;<i> have to do such gymnastics.
+</I>&gt;<i>
+</I>
+Yep.  It's ugly, but it did effectively increase resolution.  That was
+around the point that I think I wrote the original suggestion for a variable
+radix.
+
+
+&gt;<i>
+</I>&gt;<i> &gt; We could also do this in stages on a testing branch if we can't get
+</I>&gt;<i> &gt; all platforms tested and implemented quickly and only merge it once
+</I>&gt;<i> &gt; all platforms perform in a satisfactory manner.
+</I>&gt;<i>
+</I>&gt;<i> When it means non-trivial reimplementation of platform code on a dozen
+</I>&gt;<i> platforms, which may or may not work, that sounds wise.
+</I>&gt;<i>
+</I>&gt;<i> When evolving the Lua interfaces, should we keep the current Lua
+</I>&gt;<i> interfaces also, for example under
+</I>&gt;<i> #ifdef ELUA_0_8_COMPAT
+</I>&gt;<i> to allow existing Lua code to continue working, or do we just change
+</I>&gt;<i> things to keep the code simpler and more manageable?
+</I>&gt;<i>
+</I>
+We haven't used deprecation in the past. I'd vote for keeping things simple
+for now.  I'd say that would be something that maybe might be necessary for
+post-1.0 revisions to the API?
+
+We should go through and update examples we've published to the newer API
+and certainly make it clear in any release notes that updates are required
+for code using the older style.
+
+
+&gt;<i>
+</I>&gt;<i> &gt;  I would suggest that we start
+</I>&gt;<i> &gt; maybe with PWM _or_ ADC for this and not try to do both in the same
+</I>&gt;<i> &gt; set of patches at the same time
+</I>&gt;<i>
+</I>&gt;<i> Agreed. Let's hit PWM first
+</I>&gt;<i>
+</I>&gt;<i> &gt; Let me know what portions of this you would like to implement, if any.
+</I>&gt;<i>
+</I>&gt;<i> Implementing the optional radix in the current pwm.setup() interface
+</I>&gt;<i> seems like the smallest self-contained step we can take in this
+</I>&gt;<i> direction, and the least disruptive.
+</I>&gt;<i>
+</I>
+Sounds good.
+
+
+&gt;<i>
+</I>&gt;<i> &gt; Timers, for example,
+</I>&gt;<i> &gt; could do well to support the radix notation, and all of these should
+</I>&gt;<i> &gt; have common code within given platforms so that once we've done one
+</I>&gt;<i> &gt; the others should be easier on both platform implementation and common
+</I>&gt;<i> &gt; code sides.
+</I>&gt;<i>
+</I>&gt;<i> They could. But if you mean for time delays, that has as a
+</I>&gt;<i> prerequisite getting rid of the C platform_timer_op primitives, and
+</I>&gt;<i> this is the second most difficult example of this to refactor, after
+</I>&gt;<i> pio. Furthermore, they are already radix 1,000,000 (microseconds)
+</I>&gt;<i> which may already be precise enough for delays. I'm not in favour of
+</I>&gt;<i> implementing things just for a sense of symmetry, but only if the
+</I>&gt;<i> upheaval brings a practical advantage.
+</I>&gt;<i>  If you mean the frequency of free-running interrupts, tmr already
+</I>&gt;<i> expresses that in microseconds, not Hz, so you already have high
+</I>&gt;<i> precision at low frequencies.
+</I>&gt;<i> But that also bring low precision at high frequencies :( so maybe this
+</I>&gt;<i> is useful, to be able to express free-running interrupt periods (or
+</I>&gt;<i> ADC conversion frequencies) at the precision of the underlying timer
+</I>&gt;<i> clock (tmr.getclock()) to be able to get the best out of the hardware,
+</I>&gt;<i> which may be clocking the timer at 200MHz.
+</I>&gt;<i>
+</I>
+Yeah, I wouldn't just do it for symmetry, we can probably leave this alone
+for now.  Given that we're using unsigned 32-bit integers the largest time
+chunk we can express is ~71 minutes if I did that correctly... that's
+probably fine for now.
+
+
+&gt;<i>
+</I>&gt;<i> I'm not sure that having ADC sampling rates explicitly use a timers at
+</I>&gt;<i> the interface level is ideal.
+</I>&gt;<i> On the one hand, hardware that is able to sample at a given rate will
+</I>&gt;<i> needlessly occupy a timer just because you have to say so in the Lua
+</I>&gt;<i> interface.  On the other, if there is no other way to implement it on
+</I>&gt;<i> a given platform it is better for it be explicit than hidden.
+</I>&gt;<i> With the ADCs that I've seen on these platforms, you just kick them,
+</I>&gt;<i> they convert as fast as they can and you the read the result back -
+</I>&gt;<i> very different from the audio ADCs I'm used to.  That suggests,
+</I>&gt;<i> instead of hijackng a timer, making the *user* do the stuff with
+</I>&gt;<i> timers for periodic conversions, probably by an explicit periodic
+</I>&gt;<i> timer interrupt that calls a kick-the-ADC routine, and limit the ADC
+</I>&gt;<i> eLua interface to start-a-conversion, is-it-finished and
+</I>&gt;<i> read-the-value, eliminating the buffering and the smoothing parts.
+</I>&gt;<i>
+</I>
+I agree that there should be a mechanism to use interrupts to drive
+conversions, but that gets back into the whole issue of jitter and latency.
+ I think it would be a mistake to not allow use of the built-in timers to
+trigger conversions since this is always going to be the most consistent,
+low-jitter way to start a conversion.  It could be that setting up the timer
+could be moved to a separate module, maybe a platform-specific extension.
+ Certainly what you're suggesting would simplify the code and support of it,
+but timing of conversions will be less ideal, and ditching the buffering +
+smoothing and replicating that in pure Lua is going to be orders of
+magnitude slower, especially if you're talking about maintaining that data
+in Lua tables which pre-allocate more elements than you request and have a
+high memory penalty.
+
+Also, I'm not _that_ worried about tying up a timer for ADC conversions.
+ Depending on the platform there are other things like PWM and encoder
+interfaces that by definition of hardware implementation must suck up a
+timer.  At least for ADC, it's still operating as a running timer, ideally
+you can still request the frequency using the tmr module and use output from
+it.. it will just be running at a frequency that's selected to enable ADC
+conversions at the rate the user specified.  Providing the option to not use
+one and drive it off of some other sort of interrupt is something that I do
+plan to implement shortly.
+
+Speaking of which: I did get a reply from Atmel regarding the timer
+channels, and while I didn't get anything definitive, those that were asked
+thought that it should work, so I might experiment with it.
+
+
+
+&gt;<i> Already the DHCP server in UIP, and the serial console quietly hijack
+</I>&gt;<i> a timer each to do timeouts, and between them they occupy both of the
+</I>&gt;<i> usable timers on AVR32, leaving the user with only the virtual ones
+</I>&gt;<i> with 1/10th second granularity. DHCP can easily be changed to use the
+</I>&gt;<i> system tick while for the serial console it's only used to try and
+</I>&gt;<i> detect LFCR sequences that can never occur.
+</I>&gt;<i>
+</I>
+Yeah, this is stuff that clearly shouldn't be sucking up a timer, especially
+in the ways that they're implemented (doesn't need interrupts, just polling
+to get a measure of time).  We should be using system tick or an RTC where
+available, and only if such a facility isn't available maybe document and
+suck up a timer and use that in place of the RTC to provide a common system
+clock that these things can run off of.
+
+Regarding the serial console &amp; uart, it's used for timeouts, which for the
+console might end up only coming down to that particular code (I can't
+remember), but configurable timeouts are definitely useful for other
+consumers of the UART services (LuaRPC, RFS &amp; MUX all use them).  That said
+and all that behavior should come off of something like a system tick.
+ Regarding the linefeed and carriage return sequence detection, it does
+actually happen depending on the terminal being used.  This allows us to
+automatically support various ways of ending a line without having some sort
+of compile time option.  If I recall, before this was changed it was
+something like default behavior from TeraTerm or some other terminal vs
+using something like screen on Posix used different line endings (probably
+CRLF on Windows, LF on posix OSes) and supporting one but not the other
+would make it either irritating or impossible to use with one of the types
+of line endings, depending on which you supported. So, what it's looking for
+are CRLF sequences, but it also happens to handle LFCR if that happens to
+occur (which apparently, according to Wikipedia, was used on Acorn BBC
+spooled text output ;-) (<A HREF="http://en.wikipedia.org/wiki/Newline">http://en.wikipedia.org/wiki/Newline</A>)
+
+I think a lot of problems would be solved by having a system tick timer
+available as a resource for things like uarts, ethernet, mmcfs (which also
+wants timeouts), and anything that needs consistent but relatively
+coarse-grained timing intervals (running at a frequency between 10Hz and 1
+Khz, maybe?).  Users could also get most of the timing functionality they
+would normally derive from timers from this common facility as well.  Then
+the remainder of timers are available for the user to select what they might
+be consumed by: dedicated timing with the tmr module, periodic interrupts,
+initiating scans/conversions on ADC, etc...
+
+We could maybe look into this as one of the issues following on to the
+others we've discussed since I've wanted this for some time as well :-)
+
+
+&gt;<i>
+</I>&gt;<i> Actually, it's a bit odd that free-running timer interrupts are the
+</I>&gt;<i> only frequency in eLua that is expressed as a period. In fact, on the
+</I>&gt;<i> subect of free-running timer interrupts, I think the
+</I>&gt;<i> tmr.set_match_int( id, period, type )
+</I>&gt;<i> (where type = tmr.INT_ONESHOT or tmr.INT_CYCLIC for a single
+</I>&gt;<i> interrupts after a delay or to set free-running interrupts or
+</I>&gt;<i> free-running ADC conversions) could be rethought.
+</I>&gt;<i> The &quot;type&quot; parameter is surely always a constant in the user code, so
+</I>&gt;<i> we could turn this into two functions. That would let us express an
+</I>&gt;<i> interrupt after a delay as the usual time in microseconds, and the
+</I>&gt;<i> frequency of free-running interrupts as a frequency with optional
+</I>&gt;<i> radix, the same as all the other output-frequency operations.
+</I>&gt;<i>  But let's see if that is a practical problem for anyone first.
+</I>&gt;<i>
+</I>
+It does feel a little odd given that we have all other cyclic stuff in Hz,
+supporting the different notations with separate functions would be a fairly
+clean way to make things more consistent, but it also would also complicate
+the interfaces a bit to support both notations. Lets table that for now.
+
+Best.
+
+-jsnyder
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110805/8f3a74b5/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110805/8f3a74b5/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002704.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002712.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2705">[ date ]</a>
+              <a href="thread.html#2705">[ thread ]</a>
+              <a href="subject.html#2705">[ subject ]</a>
+              <a href="author.html#2705">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

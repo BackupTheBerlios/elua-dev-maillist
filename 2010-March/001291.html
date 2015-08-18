@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] conf.py questions
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20conf.py%20questions&In-Reply-To=%3C81fbe47d1003290421r780c3956l468c33c52a4195b1%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001290.html">
+   <LINK REL="Next"  HREF="001292.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] conf.py questions</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20conf.py%20questions&In-Reply-To=%3C81fbe47d1003290421r780c3956l468c33c52a4195b1%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] conf.py questions">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Mar 29 13:21:09 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001290.html">[eLua-dev] conf.py questions
+</A></li>
+        <LI>Next message: <A HREF="001292.html">[eLua-dev] eLua on my MSc thesis
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1291">[ date ]</a>
+              <a href="thread.html#1291">[ thread ]</a>
+              <a href="subject.html#1291">[ subject ]</a>
+              <a href="author.html#1291">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Mar 29, 2010 at 6:27 AM, Tim Michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> I'm trying to understand how to add several include paths to the conf.py
+</I>&gt;<i> For example I have the following directories
+</I>&gt;<i> ./Include
+</I>&gt;<i> ./Microchip/include
+</I>&gt;<i> For the the other ports I see
+</I>&gt;<i> local_include +=  ['src/platform/%s/drivers/inc' % platform]
+</I>&gt;<i>
+</I>&gt;<i> but I need a couple more.... or should I re-base line my include paths?
+</I>&gt;<i>  I'm
+</I>&gt;<i> trying to use the same paths Microchip uses.
+</I>&gt;<i>
+</I>
+You can use the same format, just list all your includes inside a string,
+separated by spaces. Just like eLua does in the main SConstruct file:
+
+local_include = ['inc', 'inc/newlib',  'inc/remotefs', 'src/lua']
+
+
+&gt;<i> This also includes the sources, there are a couple of paths for the
+</I>&gt;<i> sources...
+</I>&gt;<i> for example I see
+</I>&gt;<i> fwlib_files = &quot; &quot;.join(glob.glob(&quot;src/platform/%s/drivers/src/*.c&quot; %
+</I>&gt;<i> platform))
+</I>&gt;<i>
+</I>&gt;<i> but I have multiple source directories.   Sorry for the basic question,
+</I>&gt;<i> trying to get up to speed on scons...
+</I>&gt;<i>
+</I>
+Same idea for the sources: list all of them inside a single string,
+separated by spaces. An example from the STM32 conf.py:
+
+specific_files = fwlib_files + &quot; &quot; + &quot; &quot;.join( [ &quot;src/platform/%s/%s&quot; % (
+platform, f ) for f in specific_files.split() ] )
+
+(the 'specific_files' variable is automatically accounted for in the main
+SConstruct file, just like 'local_include' above).
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100329/ba8fb03c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100329/ba8fb03c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001290.html">[eLua-dev] conf.py questions
+</A></li>
+	<LI>Next message: <A HREF="001292.html">[eLua-dev] eLua on my MSc thesis
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1291">[ date ]</a>
+              <a href="thread.html#1291">[ thread ]</a>
+              <a href="subject.html#1291">[ subject ]</a>
+              <a href="author.html#1291">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

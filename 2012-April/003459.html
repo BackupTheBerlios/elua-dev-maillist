@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New STM32 eLua platform / getting eLua binary working
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20STM32%20eLua%20platform%20/%20getting%20eLua%20binary%20working&In-Reply-To=%3CCAJ%3DY9Y3E4Sv_%3Dd7DNbK0Hd7p5K%2Bz7RTGrFjwuSPW9idd9ZEX_w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003458.html">
+   <LINK REL="Next"  HREF="003460.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New STM32 eLua platform / getting eLua binary working</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20STM32%20eLua%20platform%20/%20getting%20eLua%20binary%20working&In-Reply-To=%3CCAJ%3DY9Y3E4Sv_%3Dd7DNbK0Hd7p5K%2Bz7RTGrFjwuSPW9idd9ZEX_w%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] New STM32 eLua platform / getting eLua binary working">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Apr  6 01:51:30 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003458.html">[eLua-dev] New STM32 eLua platform / getting eLua binary working
+</A></li>
+        <LI>Next message: <A HREF="003460.html">[eLua-dev] New STM32 eLua platform / getting eLua binary working
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3459">[ date ]</a>
+              <a href="thread.html#3459">[ thread ]</a>
+              <a href="subject.html#3459">[ subject ]</a>
+              <a href="author.html#3459">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Apr 5, 2012 at 4:24 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 5 April 2012 02:21, Brent Picasso &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">brent at autosportlabs.com</A>&gt; wrote:
+</I>&gt;&gt;<i> We're working on a new development board/platform using tere hhe STM32F103RE
+</I>&gt;&gt;<i> which will feature eLua as it's operating environment.
+</I>&gt;&gt;<i> when processor
+</I>&gt;&gt;<i> comes out of reset, we see the eLua prompt on USART1, but we cannot interact
+</I>&gt;&gt;<i> with it - it does not respond to keyboard input from the terminal.
+</I>&gt;<i>
+</I>&gt;<i> I haven't had this exact problem, but there are two ways that the
+</I>&gt;<i> USART is driven. When BUF_ENABLE UART is undefined, it is polled, and
+</I>&gt;<i> when BUF_ENABLE_UART is on and CON_BUF_SIZE &gt; 0, it is
+</I>&gt;<i> interrupt-driven.
+</I>&gt;<i> &#160;Maybe trying the other of these options compared to what you're
+</I>&gt;<i> using might help home in on the problem.
+</I>
+I would suggest looking in this direction as well.
+
+Is a completely unmodified port? Does it ever work over that USART or
+is it only under certain conditions. One other thing could be related
+to pin configurations if you've perhaps modified which pins the USART
+is available on and/or perform some reconfiguration of pins during
+startup (perhaps one thing is overriding another?)
+
+As I recall, the console may use some timer related facilities, but at
+least the last time I had a platform where the timer wasn't configured
+or available the main problem was that our code to try and handle
+different platforms' newline handling (\r, \n or \r\n) wouldn't work
+correctly, but it was still usable.
+
+
+&gt;<i>
+</I>&gt;<i> Good luck!
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160;M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003458.html">[eLua-dev] New STM32 eLua platform / getting eLua binary working
+</A></li>
+	<LI>Next message: <A HREF="003460.html">[eLua-dev] New STM32 eLua platform / getting eLua binary working
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3459">[ date ]</a>
+              <a href="thread.html#3459">[ thread ]</a>
+              <a href="subject.html#3459">[ subject ]</a>
+              <a href="author.html#3459">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C000e01cabf68%2405f162d0%2411d42870%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001240.html">
+   <LINK REL="Next"  HREF="001242.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C000e01cabf68%2405f162d0%2411d42870%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">john.hind at zen.co.uk
+       </A><BR>
+    <I>Tue Mar  9 10:08:02 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001240.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="001242.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1241">[ date ]</a>
+              <a href="thread.html#1241">[ thread ]</a>
+              <a href="subject.html#1241">[ subject ]</a>
+              <a href="author.html#1241">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've never used Microchip CDC. If you have control of both ends why add the
+complexity of emulating a serial link? I have used USB - Serial converters
+to use Microchip serial ports with PCs without &quot;real&quot; serial ports. I
+certainly recommend FTDI-based converters these days because their drivers
+seem more stable on Vista and 7. They do seem better from a port shuffle
+basis also. However you still have to find the serial port number in the
+first place. The only way the user can find it is to interpret the highly
+technical Device Manager and it is hard to write reliable automatic probes
+because you do not know what other serial devices may be connected. In my
+experience, using CDC virtually guarantees high support costs.
+
+Besides this, writing good serial port code on a PC is difficult even
+without emulation in the picture - I've virtually built a career fixing
+badly written com port code!
+
+&gt;<i> -----Original Message-----
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of Ross Berteig
+</I>&gt;<i> Sent: 08 March 2010 22:26
+</I>&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> Subject: Re: [eLua-dev] Single Chip Lua Prospects
+</I>&gt;<i> 
+</I>&gt;<i> Sometime on 3/8/2010, John Hind wrote:
+</I>&gt;<i>  &gt;I prefer HID over CDC  for two reasons: On Windows virtual Com
+</I>&gt;<i>  &gt;ports tend to shuffle about at random and it is difficult to
+</I>&gt;<i>  &gt;write host-side software that can find the port number reliably
+</I>&gt;<i>  &gt;in all circumstances without bothering the user with technical
+</I>&gt;<i>  &gt;details.
+</I>&gt;<i> 
+</I>&gt;<i> The secret to preventing Windows from doing the COM port
+</I>&gt;<i> assignment shuffle is to give every CDC device a unique serial
+</I>&gt;<i> number descriptor. Without the serial number, Windows has to rely
+</I>&gt;<i> on its internal name of the upstream USB port to which the device
+</I>&gt;<i> is connected. If you move the device to a different port, then it
+</I>&gt;<i> sees it as a new device, reloads the drivers, and reassigns the
+</I>&gt;<i> COM port.
+</I>&gt;<i> 
+</I>&gt;<i> I don't know how easy Microchip makes it to do this. Ideally, it
+</I>&gt;<i> would be easy to generate a serial number at runtime from some
+</I>&gt;<i> factory guaranteed unique value (the FTDI chips do this, for
+</I>&gt;<i> instance). Otherwise, you would have to provide for serializing
+</I>&gt;<i> the devices as or after firmware is loaded.
+</I>&gt;<i> 
+</I>&gt;<i> Ross Berteig                               <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Ross at CheshireEng.com</A>
+</I>&gt;<i> Cheshire Engineering Corp.           <A HREF="http://www.CheshireEng.com/">http://www.CheshireEng.com/</A>
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001240.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="001242.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1241">[ date ]</a>
+              <a href="thread.html#1241">[ thread ]</a>
+              <a href="subject.html#1241">[ subject ]</a>
+              <a href="author.html#1241">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

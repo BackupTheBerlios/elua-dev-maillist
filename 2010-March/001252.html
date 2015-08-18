@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C001801cac2a1%2467fe4240%2437fac6c0%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001250.html">
+   <LINK REL="Next"  HREF="001256.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C001801cac2a1%2467fe4240%2437fac6c0%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">john.hind at zen.co.uk
+       </A><BR>
+    <I>Sat Mar 13 12:36:22 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001250.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="001256.html">[eLua-dev] PIC32XX Port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1252">[ date ]</a>
+              <a href="thread.html#1252">[ thread ]</a>
+              <a href="subject.html#1252">[ subject ]</a>
+              <a href="author.html#1252">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>If you look at the HID profile, it *is* pretty much a generic packetized
+protocol, albeit for relatively modest sized packets. As I mentioned before,
+Microchip even have a bootloader that works over HID. I admit I've not
+looked at the API for accessing HID other than on Windows, so that interface
+may present cross-platform challenges. All the PC-connected microcontroller
+applications I can envisage (except Ethernet of course) would be
+accommodated either by HID or MSD (or maybe both together).
+
+I'm not against using CDC were it is appropriate (simple HMI for example),
+but if you are layering proprietary (or even open) packet or file transfer
+protocols on top of it, you'd be better considering USB profiles designed
+for those purposes.
+
+However I do understand that if you are committed to supporting a wide range
+of microcontroller chips some of which do not have USB, defaulting to the
+&quot;lowest common denominator&quot; of RS232 has its attractions - it's just a
+little &quot;last century&quot;!
+
+Does anyone know of a generic CDC driver for Windows? This discussion has
+made me realise that I do not understand why these drivers seem to be
+vendor-specific. OK Microsoft have chosen not to support CDC natively, but
+it is still a standard USB profile and so should work with a standard driver
+at the PC end.
+
+&gt;<i> -----Original Message-----
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of James Snyder
+</I>&gt;<i> Sent: 12 March 2010 02:14
+</I>&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> Subject: Re: [eLua-dev] Single Chip Lua Prospects
+</I>&gt;<i> 
+</I>&gt;<i> On Thu, Mar 11, 2010 at 3:52 AM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+</I>&gt;<i> &gt; You are right of course, if you actually *want* a tty interaction
+</I>&gt;<i> model, CDC
+</I>&gt;<i> &gt; has the edge. But are you sure this really is the base requirement?
+</I>&gt;<i> Mostly I
+</I>&gt;<i> &gt; see one of the following: File transfer, which would be a packetized
+</I>&gt;<i> layer
+</I>&gt;<i> &gt; on top of tty (such as X-Modem) and in the USB world would be better
+</I>&gt;<i> done
+</I>&gt;<i> &gt; with MSD; and proprietary packetized command/response protocols for
+</I>&gt;<i> &gt; debuggers or computer peripherals like GPS or PLC like devices (which
+</I>&gt;<i> would
+</I>&gt;<i> &gt; be better done with HID or a custom USB profile).
+</I>&gt;<i> 
+</I>&gt;<i> I would certainly agree that for file transfer and various packetized
+</I>&gt;<i> protocols, various USB profiles are certainly going to provide a more
+</I>&gt;<i> reliable and higher throughput option compared with something like
+</I>&gt;<i> RS232 or CDC. But I suppose the question needs to be answered: &quot;What
+</I>&gt;<i> interaction models do we want?&quot;
+</I>&gt;<i> 
+</I>&gt;<i> I think being able to do MSD dramatically simplifies the concept of
+</I>&gt;<i> transferring data back and forth (though it has downsides like 2
+</I>&gt;<i> devices can't mount it at the same time).  I'm not sure what of any
+</I>&gt;<i> proprietary packetized formats might make sense for us in a general
+</I>&gt;<i> sense, since a lot of those are geared towards one particular use.
+</I>&gt;<i> Perhaps there are open ones as well, beyond the basic device classes
+</I>&gt;<i> that might make for a generalized programmatic interface we could
+</I>&gt;<i> provide, but none are coming to mind at the moment.
+</I>&gt;<i> 
+</I>&gt;<i> Right now our development paradigm involves either working with eLua
+</I>&gt;<i> over a serial console as a command-line shell/interpreter or using
+</I>&gt;<i> something like LuaRPC for a programmatic interaction model with a VM
+</I>&gt;<i> running on the microcontroller.  Certainly for the former, I think a
+</I>&gt;<i> CDC (or similar) makes the most sense, and I would argue that having a
+</I>&gt;<i> device class like this is always going to be useful on some level if
+</I>&gt;<i> for nothing else that it provides a really easy way to make ad-hoc
+</I>&gt;<i> communications between the embedded device and a desktop.  Getting
+</I>&gt;<i> some data from a device is as simple as opening a terminal and having
+</I>&gt;<i> some print statements in the program.  It might not be very
+</I>&gt;<i> sophisticated, but it's a nice fallback when one is getting started or
+</I>&gt;<i> wants to get quick details about program operation
+</I>&gt;<i> 
+</I>&gt;<i> Now, I could definitely see the benefit of using some sort of
+</I>&gt;<i> packetized usb-based communication channel for supporting LuaRPC, it
+</I>&gt;<i> would be less complicated (presumably) than using TCP/IP and it would
+</I>&gt;<i> give you better throughput, latency, etc and would provide an
+</I>&gt;<i> extensible model for user and developer interaction without having to
+</I>&gt;<i> delve into the details of how the USB link works.  I would still want
+</I>&gt;<i> some sort of tty-like interface as a fallback, though.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Conceptually the problem with RS232/ASCII/tty is that it is not a
+</I>&gt;<i> complete
+</I>&gt;<i> &gt; communications stack except for the intended teletype application.
+</I>&gt;<i> All the
+</I>&gt;<i> &gt; actual modern applications require additional layers on top. In
+</I>&gt;<i> contrast,
+</I>&gt;<i> &gt; the USB profiles are complete specifications right up to the
+</I>&gt;<i> application
+</I>&gt;<i> &gt; layer.
+</I>&gt;<i> 
+</I>&gt;<i> Right, I would agree. Especially without the control lines it has
+</I>&gt;<i> pitfalls, especially with large quantities of data transmission and
+</I>&gt;<i> small buffers, but so far it's actually worked reasonably well for us.
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The clincher for me is that you can do HID and MSD on any modern
+</I>&gt;<i> platform
+</I>&gt;<i> &gt; without an additional device driver.
+</I>&gt;<i> 
+</I>&gt;<i> I'm not sure if I'm missing something, but if one wants to use HID and
+</I>&gt;<i> present as something other than a mouse or keyboard, doesn't one need
+</I>&gt;<i> a driver?  Using libusb might make it a user-space driver rather than
+</I>&gt;<i> a kernel-space one, but I think you still need a driver if you want to
+</I>&gt;<i> do something other than a human interface device.
+</I>&gt;<i> 
+</I>&gt;<i> &gt; I'm not sure why, or if this is just a
+</I>&gt;<i> &gt; Windows problem, but you do need to source and install a manufacturer
+</I>&gt;<i> &gt; specific device driver to do CDC. If you stick with FTDI-based
+</I>&gt;<i> devices, the
+</I>&gt;<i> &gt; driver seems to be OK, but I have had endless problems with the (more
+</I>&gt;<i> common
+</I>&gt;<i> &gt; in over-the-counter USB-Serial converters) Prolific chip drivers on
+</I>&gt;<i> Vista
+</I>&gt;<i> &gt; and Windows 7.
+</I>&gt;<i> 
+</I>&gt;<i> They've all just popped up for me on OS X &amp; Linux without any drivers,
+</I>&gt;<i> but I think you're right about windows wanting something. I can't
+</I>&gt;<i> imagine it being much more than a stub that has device and vendor data
+</I>&gt;<i> and indicates that it should show up as a COM port, though.
+</I>&gt;<i> 
+</I>&gt;<i> FTDI devices are pretty nice, and they also have a programmatic
+</I>&gt;<i> interface which you can access through a library they provide or with
+</I>&gt;<i> libftdi (<A HREF="http://www.intra2net.com/en/developer/libftdi/">http://www.intra2net.com/en/developer/libftdi/</A>).
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt; -----Original Message-----
+</I>&gt;<i> &gt;&gt; From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of James Snyder
+</I>&gt;<i> &gt;&gt; Sent: 09 March 2010 19:43
+</I>&gt;<i> &gt;&gt; To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> &gt;&gt; Subject: Re: [eLua-dev] Single Chip Lua Prospects
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; I suppose it depends on the interaction model desired, but if what
+</I>&gt;<i> one
+</I>&gt;<i> &gt;&gt; wants is a tty, I suspect that presenting as an HID is going to make
+</I>&gt;<i> &gt;&gt; it more complicated to support different platforms
+</I>&gt;<i> &gt;&gt; --
+</I>&gt;<i> &gt;&gt; James Snyder
+</I>&gt;<i> &gt;&gt; Biomedical Engineering
+</I>&gt;<i> &gt;&gt; Northwestern University
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> &gt;&gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> &gt;&gt; Phone: (847) 448-0386
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> Phone: (847) 448-0386
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001250.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="001256.html">[eLua-dev] PIC32XX Port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1252">[ date ]</a>
+              <a href="thread.html#1252">[ thread ]</a>
+              <a href="subject.html#1252">[ subject ]</a>
+              <a href="author.html#1252">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua net module/UIP &amp; multiple connections
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module/UIP%20%26%20multiple%20connections&In-Reply-To=%3CCANKDJfZNB%3DfJq81cRdu1kDbrFMLUzeeoFKKxUH8k910jzx0Xqg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002744.html">
+   <LINK REL="Next"  HREF="002746.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua net module/UIP &amp; multiple connections</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module/UIP%20%26%20multiple%20connections&In-Reply-To=%3CCANKDJfZNB%3DfJq81cRdu1kDbrFMLUzeeoFKKxUH8k910jzx0Xqg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua net module/UIP &amp; multiple connections">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Sep 27 09:57:08 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002744.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+        <LI>Next message: <A HREF="002746.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2745">[ date ]</a>
+              <a href="thread.html#2745">[ thread ]</a>
+              <a href="subject.html#2745">[ subject ]</a>
+              <a href="author.html#2745">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Sep 27, 2011 at 10:42 AM, Michael Sallaway &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">michael at sallaway.com</A>&gt;wrote:
+
+&gt;<i>
+</I>&gt;<i> On 27/09/11 17:15, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The short answer to your question is &quot;the TCP/IP implementation in eLua is
+</I>&gt;&gt;<i> buggy&quot;. So buggy, in fact, that it sometimes can simply loose packages. I've
+</I>&gt;&gt;<i> just discovered this recently. I suspect this is the case with your
+</I>&gt;&gt;<i> application.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Aah. Well, that'll explain it, I guess. :-)  Damn.
+</I>&gt;<i>
+</I>&gt;<i> Do you have any more information about it? I'm more than happy to crack it
+</I>&gt;<i> open and start playing around to find a fix (I spent a good few days getting
+</I>&gt;<i> familiar with the underlying bits and pieces to write my stuff, so I'm no
+</I>&gt;<i> expert, but I'm a bit familiar with it), but would have no idea where to
+</I>&gt;<i> start.
+</I>
+
+There are more issues:
+
+- some coding problems in the eLua uIP &quot;adapter&quot; (src/elua_uip.c)  prevent
+data from being properly received because the uIP interaction isn't properly
+handled. These errors (or at least most of them) were fixed.
+- uIP itself is a &quot;fire and forget&quot; stack by design: it gives you data and
+it expects you do something with it immediately. If more data arrives (on
+the same socket or on a different socket) the old data is overwritten. The
+solution to this was to add per-socket buffers. This means increased memory
+consumption, of course, but it also means that it's much harder to loose
+data.
+
+That said, the &quot;accept&quot; part still doesn't work very well. It's OK most of
+the time, but sometimes it doesn't respond to a request or responds very
+slowly, and I've yet to understand why. I'm starting to think that trying so
+hard to turn uIP into something it's not is just not the right thing to do
+here. Ideally I'd be looking into lwIP, but I really don't have enough time
+for that.
+With all this in mind, I'll try to integrate my TCP/IP changes to eLua (into
+a separate branch for now), maybe this helps in your particular case. But
+again, I simply can't estimate when I'll be able to do this.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> ______________________________**_________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev</A>&gt;
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110927/6fde85e7/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110927/6fde85e7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002744.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+	<LI>Next message: <A HREF="002746.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2745">[ date ]</a>
+              <a href="thread.html#2745">[ thread ]</a>
+              <a href="subject.html#2745">[ subject ]</a>
+              <a href="author.html#2745">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

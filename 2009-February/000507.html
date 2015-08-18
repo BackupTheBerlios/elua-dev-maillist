@@ -1,0 +1,569 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Large ADC Commit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1GHLx5917db20b7666a93cccd6c%2C%0A%09jbsnyder%40fanplastic.org%2C%20A5C35AF3-790A-4A71-802B-1FA%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000506.html">
+   <LINK REL="Next"  HREF="000508.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Large ADC Commit</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1GHLx5917db20b7666a93cccd6c%2C%0A%09jbsnyder%40fanplastic.org%2C%20A5C35AF3-790A-4A71-802B-1FA%3E"
+       TITLE="[eLua-dev] Large ADC Commit">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 00:21:57 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000506.html">[eLua-dev] Large ADC Commit
+</A></li>
+        <LI>Next message: <A HREF="000508.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#507">[ date ]</a>
+              <a href="thread.html#507">[ thread ]</a>
+              <a href="subject.html#507">[ subject ]</a>
+              <a href="author.html#507">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>As a side note, the example:
+
+&gt;<i> channels = {0, 3}
+</I>&gt;<i>
+</I>&gt;<i> adcvals = {}
+</I>&gt;<i>
+</I>&gt;<i> for i, v in ipairs(channels) do
+</I>&gt;<i>   adc.sample(v)
+</I>&gt;<i>   adcvals = getsamples(v,1,adcvals,i)
+</I>&gt;<i> end
+</I>
+Runs about as fast for adcscope.lua as the original integer version  
+did. ~355 us per 4 channels collecting one sample each.  When new  
+tables were being created each cycle, about 430 us per cycle were  
+used, which would jump up much higher every once in a while, probably  
+due to garbage collection of the old tables that were being generated  
+like crazy :-)
+
+I'm pretty sure that most of that 350 us is due to the lua vm and not  
+the underlying C code of the ADC module.
+
+On Feb 17, 2009, at 5:05 PM, James Snyder wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Feb 17, 2009, at 4:44 PM, Dado Sutter wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Feb 17, 2009 at 19:09, James Snyder  
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> OK, that is working now, and may be ready to go into revision  
+</I>&gt;&gt;<i> control soon.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> One other question about this behavior:  If I get a table, do I nil  
+</I>&gt;&gt;<i> out values that don't get new samples?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> i.e.:  If user does the following:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> adc.sample(0)
+</I>&gt;&gt;<i> adc.sample(0)
+</I>&gt;&gt;<i> adc.sample(0)
+</I>&gt;&gt;<i> a = adc.getsamples(0)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> yeilding a table like the following:
+</I>&gt;&gt;<i> a = {56, 23, 34}
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> and does:
+</I>&gt;&gt;<i> adc.sample(0)
+</I>&gt;&gt;<i> a = adc.getsamples(0,a)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Wasn't your second (and optional) param the number of samples to be  
+</I>&gt;&gt;<i> read (if possible) from the buffer ? How exactly is &quot;a&quot; beeing used  
+</I>&gt;&gt;<i> here ? If you adopted the &quot;table to store&quot; passed as a param   
+</I>&gt;&gt;<i> option discussed, then why &quot;a&quot;  is also on the left side here ?
+</I>&gt;<i>
+</I>&gt;<i> Hmm.. I didn't realize that that worked.  Nice!  I suppose I knew I  
+</I>&gt;<i> was modifying a table that was being pointed to...
+</I>&gt;<i>
+</I>&gt;<i> Ok, so here's a breakdown, that I'm thinking of
+</I>&gt;<i>
+</I>&gt;<i> a = adc.getsamples(0)
+</I>&gt;<i> returns all pending samples on channel 0 as a table
+</I>&gt;<i>
+</I>&gt;<i> a = adc.getsamples(0,4)
+</I>&gt;<i> returns 4 pending samples
+</I>&gt;<i>
+</I>&gt;<i> adc.getsamples(0,a)
+</I>&gt;<i> appends any pending samples in the buffer to a
+</I>&gt;<i>
+</I>&gt;<i> adc.getsamples(0,3,a)
+</I>&gt;<i> appends 3 samples in the buffer to a starting after the samples  
+</I>&gt;<i> already in the table
+</I>&gt;<i>
+</I>&gt;<i> adc.getsamples(0,3,a,2)
+</I>&gt;<i> inserts 3 samples to a, starting at index 2
+</I>&gt;<i>
+</I>&gt;<i> It's horribly complicated, but there aren't any ambiguous cases in  
+</I>&gt;<i> terms of the parameters being passed, and you can still use it with  
+</I>&gt;<i> a really simple call.
+</I>&gt;<i>
+</I>&gt;<i> One really neat thing about using the starting index for the table  
+</I>&gt;<i> is that you can do things like this:
+</I>&gt;<i>
+</I>&gt;<i> channels = {0, 3}
+</I>&gt;<i>
+</I>&gt;<i> adcvals = {}
+</I>&gt;<i>
+</I>&gt;<i> for i, v in ipairs(channels) do
+</I>&gt;<i>   adc.sample(v)
+</I>&gt;<i>   adcvals = getsamples(v,1,adcvals,i)
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> so adcvals[1] gets single samples from channel 0, and adcvals[2]  
+</I>&gt;<i> gets values from channel 3.
+</I>&gt;<i>
+</I>&gt;<i> as far as clearing the samples buffer, the following takes care of  
+</I>&gt;<i> that:
+</I>&gt;<i> adc.flush(chan_id)
+</I>&gt;<i>
+</I>&gt;<i> It will clear out both the smoothing and sample buffers.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> if the one new sample is 89, do I do I return this:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> a = {89, nil, nil} (i.e. a length 1 table)
+</I>&gt;&gt;<i> or this?
+</I>&gt;&gt;<i> a = {89, 23, 34}
+</I>&gt;&gt;<i> or this?:
+</I>&gt;&gt;<i> a = {56, 23, 34, 89}
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I suppose the last one is the least destructive, but it will grow  
+</I>&gt;&gt;<i> it every time...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> They're all a little bit weird, I suppose.  The other option is to  
+</I>&gt;&gt;<i> have a parameter that defines whether when one uses this it uses  
+</I>&gt;&gt;<i> one method or another. I don't want to bloat this function call too  
+</I>&gt;&gt;<i> much though...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You're right, 1st and 2nd are weird and would force frequent table  
+</I>&gt;&gt;<i> concats on usage. 3rd seem to be lighter and I think it is already  
+</I>&gt;&gt;<i> too complex for an ADC, to deserve another flag/param added to it.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> One compromise might be to allow the parameter that follows the  
+</I>&gt;&gt;<i> table to define what index in the table to start at:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> a = adc.getsamples(0,2,a,5)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So, this would mean, get 2 samples from adc channel 0, put the  
+</I>&gt;&gt;<i> results in table a, starting at index 5, and give me the table back  
+</I>&gt;&gt;<i> as a result.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Nice, although still complex but seems ok if the default for the  
+</I>&gt;&gt;<i> last param is #a (#table-at-param-3).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If this were done, I'm somewhat inclined to handle cases like the  
+</I>&gt;&gt;<i> following (where sample count is left off), by nil-ing any values  
+</I>&gt;&gt;<i> in the array after wherever the source samples end.
+</I>&gt;&gt;<i> a = adc.getsamples(0,a,5)
+</I>&gt;&gt;<i> or
+</I>&gt;&gt;<i> a = adc.getsamples(0,a)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Any thoughts?  I know I've rambled a bit :-)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> What function will clear the samples buffer ?
+</I>&gt;&gt;<i> Pls keep rambling  :) ADC is comming out quite nice :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -jsnyder
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Feb 17, 2009, at 9:44 AM, Bogdan Marinescu wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Tue, Feb 17, 2009 at 5:15 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> 
+</I>&gt;&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;&gt;<i> I'm not sure, actually. I could try always returning a table  
+</I>&gt;&gt;&gt;<i> whether you're getting one value or 100.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Ah, I didn't notive this before. Dado's right, let's keep the  
+</I>&gt;&gt;&gt;<i> result type consistent. Which means that, for now, let's just make  
+</I>&gt;&gt;&gt;<i> our sample function accept a table as a parameter and return all  
+</I>&gt;&gt;&gt;<i> its data (be it 1 or 100 samples) in that table.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ----- &quot;Dado Sutter&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt; Hello,
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; On Tue, Feb 17, 2009 at 10:53, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> 
+</I>&gt;&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; ----- &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt; &gt;.............
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; I suppose one could also pass an existing table to getsamples,  
+</I>&gt;&gt;&gt;<i> and get it returned with the results in it?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; I would also prefer that the functions return the same type on  
+</I>&gt;&gt;&gt;<i> all cases (so a table passed as a parameter would do just fine for  
+</I>&gt;&gt;&gt;<i> both issues).
+</I>&gt;&gt;&gt;<i> &gt; Do you think that the small overhead caused by the table  
+</I>&gt;&gt;&gt;<i> manipulation (instead of an number) justify the returning of a  
+</I>&gt;&gt;&gt;<i> diferent type (a number) for critical speed sampling apps ?
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Best,
+</I>&gt;&gt;&gt;<i> &gt; &gt; Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; Best
+</I>&gt;&gt;&gt;<i> &gt; Dado
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> On Feb 16, 2009, at 11:15 AM, James Snyder wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; Hi -
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; Thanks for the comments :-)
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; ----- &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; Hi,
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; I still have to look at the code carefully and figure out  
+</I>&gt;&gt;&gt;<i> what exactly you did there :), but for now a few simple  
+</I>&gt;&gt;&gt;<i> observations:
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; 1. it occured to me that since buf_init already expects a  
+</I>&gt;&gt;&gt;<i> logarithmic parameter, it probably makes sense to make it expect  
+</I>&gt;&gt;&gt;<i> two logarithmic parameters, so instead of this:
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; int buf_set( unsigned resid, unsigned resnum, u8 logsize,  
+</I>&gt;&gt;&gt;<i> size_t dsize )
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; we'll have this:
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; int buf_set( unsigned resid, unsigned resnum, u8 logsize,  
+</I>&gt;&gt;&gt;<i> size_t logdsize )
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; I was thinking about doing this, I'll make the change.
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; 2. Since you did this:
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;   pbuf-&gt;logsize = logsize + ( pbuf-&gt;logdsize );
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; in buf_set, you probably need to modify this:
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; #define BUF_MOD_INCR( p, m ) p-&gt;m = ( p-&gt;m + ( ( u16 )1 &lt;&lt; p- 
+</I>&gt;&gt;&gt;<i> &gt;logdsize ) ) &amp; ( ( ( u16 )1 &lt;&lt; ( p-&gt;logsize + p-&gt;logdsize) ) - 1 )
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; (because you add logdsize to logsize once again, and I don't  
+</I>&gt;&gt;&gt;<i> think this is right).
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; Ooops.  That would likely be the cause of some of the random  
+</I>&gt;&gt;&gt;<i> crashes I was seeing :-)  (currently worked around somewhat)
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; 3. The data size of an ADC is not always 16 bits, so we  
+</I>&gt;&gt;&gt;<i> should add another (probably also logarithmic) parameter to  
+</I>&gt;&gt;&gt;<i> elua_adc/adc_init_state.
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; True..  Are you anticipating use of higher or lower bit  
+</I>&gt;&gt;&gt;<i> depth?  There are certainly lower and higher ones out there,  
+</I>&gt;&gt;&gt;<i> though I've not seen &gt;16-bit ones built-in to uCs.  If we want to  
+</I>&gt;&gt;&gt;<i> accomodate larger sizes, the return types for some things will  
+</I>&gt;&gt;&gt;<i> need adjustment, perhaps by defining a type that reflects the  
+</I>&gt;&gt;&gt;<i> maximum size that will be returned?  This type would be selected  
+</I>&gt;&gt;&gt;<i> at compile time depending on the maximum bits-per-sample one might  
+</I>&gt;&gt;&gt;<i> want to work with?
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; Something like:
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; #if MAX_ADC_BIT_RESOLUTION &lt;= 8
+</I>&gt;&gt;&gt;<i> &gt; &gt; typedef u8 t_adc_data
+</I>&gt;&gt;&gt;<i> &gt; &gt; #elif MAX_ADC_BIT_RESOLUTION &lt;= 16
+</I>&gt;&gt;&gt;<i> &gt; &gt; typedef u16 t_adc_data
+</I>&gt;&gt;&gt;<i> &gt; &gt; #elif MAX_ADC_BIT_RESOLUTION &lt;= 32
+</I>&gt;&gt;&gt;<i> &gt; &gt; typedef u32 t_adc_data
+</I>&gt;&gt;&gt;<i> &gt; &gt; #else
+</I>&gt;&gt;&gt;<i> &gt; &gt; #error &quot;No matching type for MAX_ADC_BIT_RESOLUTION, check  
+</I>&gt;&gt;&gt;<i> your selected bit depth or add larger type&quot;
+</I>&gt;&gt;&gt;<i> &gt; &gt; #endif
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; 4. As for the change you proposed, as I said I still have to  
+</I>&gt;&gt;&gt;<i> figure out what exactly your code does :), but for now it makes  
+</I>&gt;&gt;&gt;<i> sense. I'll get back to you with more information. Fortunately we  
+</I>&gt;&gt;&gt;<i> don't really have a pre-existing paradigm, we just have some  
+</I>&gt;&gt;&gt;<i> proposals, so we can change everything we don't like.
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; OK, sounds good.  The one midly complicated thing to make this  
+</I>&gt;&gt;&gt;<i> approach work with dynamic buffer sizing is to have buf_set handle  
+</I>&gt;&gt;&gt;<i> increasing buffer size gracefully.  I think the main case to  
+</I>&gt;&gt;&gt;<i> handle is when wptr &lt; rptr.  i.e. the write pointer has wrapped  
+</I>&gt;&gt;&gt;<i> around to the beginning of the buffer, but the read ptr has not.   
+</I>&gt;&gt;&gt;<i> If one just adds space in this case, the read pointer will start  
+</I>&gt;&gt;&gt;<i> going into as yet unwritten space thinking it is picking up valid  
+</I>&gt;&gt;&gt;<i> data.
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; One way to handle this would be copying data so that the  
+</I>&gt;&gt;&gt;<i> freshly resized buffer is coherent again.  Another would be to  
+</I>&gt;&gt;&gt;<i> somehow grow the buffer in the space between the rptr and the  
+</I>&gt;&gt;&gt;<i> wptr.  This, however, without moving data around, even if it were  
+</I>&gt;&gt;&gt;<i> possible, would result in fragmentation.
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; If I were to just do an implementation without further  
+</I>&gt;&gt;&gt;<i> research it might look like this:
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; 1. If wptr &gt; rptr, just realloc.
+</I>&gt;&gt;&gt;<i> &gt; &gt; 2. If rptr &gt; wptr, move all of the elements between buf (array  
+</I>&gt;&gt;&gt;<i> start pointer) and wptr to space after the wrapping point of the  
+</I>&gt;&gt;&gt;<i> original, smaller, buffer.
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; If we could also grow the buffer at the starting end, maybe we  
+</I>&gt;&gt;&gt;<i> could decide whether adding at the start or the end would result  
+</I>&gt;&gt;&gt;<i> in more copying.
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; I'm not as concerned about algorithms for downsizing the  
+</I>&gt;&gt;&gt;<i> buffer to conserve space.  I think instead of dealing with copying  
+</I>&gt;&gt;&gt;<i> in this case, the downsizing might just be done whenever the  
+</I>&gt;&gt;&gt;<i> buffer runs dry, and if no new interesting requests are pending,  
+</I>&gt;&gt;&gt;<i> drop down to some reasonable default size.
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; Any thoughts or ideas would certainly be appreciated.
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; Best,
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; Bogdan
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; On Mon, Feb 16, 2009 at 3:12 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> 
+</I>&gt;&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; Hi -
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; I've dropped in another large ADC commit.  I've mentioned  
+</I>&gt;&gt;&gt;<i> most of what was done in the commit message, but here's a rundown:
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; - When samples are available from ADC, they're initially  
+</I>&gt;&gt;&gt;<i> copied into an elua buf.
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; - buf length is adjusted according to number of expected  
+</I>&gt;&gt;&gt;<i> samples coming in (when burst is requested, buf is resized to  
+</I>&gt;&gt;&gt;<i> accomodate the number of burst samples, size is dropped back down  
+</I>&gt;&gt;&gt;<i> when single samples are requested)
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; - if smoothing is enabled, and has no samples, smoothing  
+</I>&gt;&gt;&gt;<i> buffer (not an elua buf) is filled first to warm up the filter,  
+</I>&gt;&gt;&gt;<i> then samples begin to accumulate in the main buffer.
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; - a flush function has been added to manually clear out  
+</I>&gt;&gt;&gt;<i> both smoothing and primary buffers in case one doesn't want old  
+</I>&gt;&gt;&gt;<i> samples or old smoothing data being used for future measurements
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; Also, I forgot to mention one thing in the commit  
+</I>&gt;&gt;&gt;<i> message:  As per a discussion with Bogdan, the type checking on  
+</I>&gt;&gt;&gt;<i> buf_write and buf_read have been pulled out.
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; One adjustment that I'd like to consider before the 0.6  
+</I>&gt;&gt;&gt;<i> freeze is to remove the option for blocking and non-blocking as it  
+</I>&gt;&gt;&gt;<i> applies to sample and burst functions (used to initiate sampling)  
+</I>&gt;&gt;&gt;<i> and to instead make these always non-blocking, and never have them  
+</I>&gt;&gt;&gt;<i> return any samples (only errors, if needed).  A separate function,  
+</I>&gt;&gt;&gt;<i> say getsamples would pull in data collected using either mode.   
+</I>&gt;&gt;&gt;<i> Right now, if one uses non-blocking mode, samples will always be  
+</I>&gt;&gt;&gt;<i> returned for the last time you ran sample or burst.  This means  
+</I>&gt;&gt;&gt;<i> that if you want to get the data already requested, you also have  
+</I>&gt;&gt;&gt;<i> to always request new samples, even if you don't want them.
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; I should be able to make this change with minimal code  
+</I>&gt;&gt;&gt;<i> changes, but I haven't done it yet because it changes the pre- 
+</I>&gt;&gt;&gt;<i> existing paradigm, and I wanted to get these changes in sooner  
+</I>&gt;&gt;&gt;<i> rather than later :-)
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; I think it might just take me another hour or so to get  
+</I>&gt;&gt;&gt;<i> adjustments along those lines working.  There wouldn't be as long  
+</I>&gt;&gt;&gt;<i> of a delay as this ADC commit.
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; Suggestions/comments are welcome :-)
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; -jsnyder
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; &gt; _______________________________________________ Elua-dev  
+</I>&gt;&gt;&gt;<i> mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt; &gt; Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> James Snyder
+</I>&gt;&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;&gt;<i> ph: (847) 644-2322
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; _______________________________________________ Elua-dev  
+</I>&gt;&gt;&gt;<i> mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt; Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; _______________________________________________ Elua-dev mailing  
+</I>&gt;&gt;&gt;<i> list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> ph: (847) 644-2322
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 644-2322
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/8182f45f/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/8182f45f/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/8182f45f/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/8182f45f/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000506.html">[eLua-dev] Large ADC Commit
+</A></li>
+	<LI>Next message: <A HREF="000508.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#507">[ date ]</a>
+              <a href="thread.html#507">[ thread ]</a>
+              <a href="subject.html#507">[ subject ]</a>
+              <a href="author.html#507">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

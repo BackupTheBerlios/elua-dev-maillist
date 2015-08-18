@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Separating the PWM C platform ops
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Separating%20the%20PWM%20C%20platform%20ops&In-Reply-To=%3CCAJ%3DY9Y2MR%3DKcZNKC5jG1q720oEQjCvAhZfsQt7RDM6UjMi61EQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002681.html">
+   <LINK REL="Next"  HREF="002686.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Separating the PWM C platform ops</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Separating%20the%20PWM%20C%20platform%20ops&In-Reply-To=%3CCAJ%3DY9Y2MR%3DKcZNKC5jG1q720oEQjCvAhZfsQt7RDM6UjMi61EQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Separating the PWM C platform ops">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Jul 26 00:35:41 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002681.html">[eLua-dev] Separating the PWM C platform ops
+</A></li>
+        <LI>Next message: <A HREF="002686.html">[eLua-dev] NXP LPC2468 Network Protocol
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2684">[ date ]</a>
+              <a href="thread.html#2684">[ thread ]</a>
+              <a href="subject.html#2684">[ subject ]</a>
+              <a href="author.html#2684">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Jul 24, 2011 at 2:52 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> Hi, sorry about all this mail, I tend to work on stuff in bursts
+</I>&gt;<i>
+</I>&gt;<i> Following the splitting of platform_adc_op( id, OPERATION, data) into
+</I>&gt;<i> 6 separate functions, here's the same thing for the 4 similar PWM ops.
+</I>&gt;<i>
+</I>&gt;<i> It replaces platform_pwm_op( id, op, data ) where
+</I>&gt;<i> op==PLATFORM_PWM_OP_SET_CLOCK took a frequency and returned a frequency
+</I>&gt;<i> op==PLATFORM_PWM_OP_GET_CLOCK took nothing returned a frequency
+</I>&gt;<i> op==PLATFORM_PWM_OP_START and _STOP both took nothing and returned nothing
+</I>&gt;<i>
+</I>&gt;<i> with
+</I>&gt;<i> clock = platform_pwm_set_clock( id, clock)
+</I>&gt;<i> clock = platform_pwm_get_clock( id )
+</I>&gt;<i> platform_pwm_start( id ) and
+</I>&gt;<i> platform_pwm_stop( id )
+</I>&gt;<i>
+</I>&gt;<i> with resulting clarity in the documentation and smaller, faster code.
+</I>&gt;<i>
+</I>&gt;<i> This does not affect the Lau interface.
+</I>&gt;<i>
+</I>&gt;<i> I'd appreciate it if the attached patch could be tested on some
+</I>&gt;<i> platforms other than the avr32s I have.
+</I>&gt;<i> I've tested compilation of all supported boards except PC and SIM
+</I>&gt;<i> (which do not have PWM).
+</I>&gt;<i>
+</I>&gt;<i> My main doubt is on at91sam7x, where I had to replace some lines that
+</I>&gt;<i> read a machine register whose value was never used.
+</I>&gt;<i> Before, the compiler was fooled into not optimizing it out by
+</I>&gt;<i> returning it as the value of a function that was always ignored:
+</I>&gt;<i> res = AT91C_BASE_PWMC-&gt;PWMC_ISR;
+</I>&gt;<i> return(res) &#160;// ignored
+</I>&gt;<i> now I have tried to achieve the same effect with a volatile variable:
+</I>&gt;<i> volatile u32 dummy;
+</I>&gt;<i> dummy = AT91C_BASE_PWMC-&gt;PWMC_ISR;
+</I>&gt;<i> but can't test this for lack of hardware.
+</I>&gt;<i> It's in platform_pwm_stop, so if someone with an at91sam7x could test
+</I>&gt;<i> that pwm output can be stopped and started again successfully with
+</I>&gt;<i> this patch applied I'd be grateful.
+</I>
+I don't have an at91sam7x, but I can give it a try on stm32, lm3s &amp; lpc.
+
+&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160;M
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002681.html">[eLua-dev] Separating the PWM C platform ops
+</A></li>
+	<LI>Next message: <A HREF="002686.html">[eLua-dev] NXP LPC2468 Network Protocol
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2684">[ date ]</a>
+              <a href="thread.html#2684">[ thread ]</a>
+              <a href="subject.html#2684">[ subject ]</a>
+              <a href="author.html#2684">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

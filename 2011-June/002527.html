@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTimBvXFea7buCFgie4bwiiHBpc_0MA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002526.html">
+   <LINK REL="Next"  HREF="002525.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTimBvXFea7buCFgie4bwiiHBpc_0MA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Jun 16 14:47:45 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002526.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002525.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2527">[ date ]</a>
+              <a href="thread.html#2527">[ thread ]</a>
+              <a href="subject.html#2527">[ subject ]</a>
+              <a href="author.html#2527">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 16 June 2011 08:22, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> I simply can't find enough time to get a better view of the I2C
+</I>&gt;<i> implementations on our supported targets and come up with a generic
+</I>&gt;<i> interface on top of them.
+</I>
+If the generic interface can express I2C well, it will be appropriate
+for all I2C hardware.
+Specific pieces of hardware are cases that test whether the API is
+appropriate, but are not what define it.
+For example, if you look at the broken AVR32 hardware, you might
+conclude (like I did) that the only valid case of repeated start is
+when you send 1, 2 or 3 bytes and receive N.  Fortunately, Laurent
+stopped me from doing that! (Thanks, L!)
+
+&gt;&gt;<i> platform_i2c_master_send( id, address, &amp;data, 20, false );
+</I>&gt;&gt;<i> platform_i2c_master_recv( id, address, &amp;data_rcv, 50, true ); //true means stop.
+</I>&gt;<i>
+</I>&gt;<i> I love the simplicity of this and if it proves to be enough I'll not
+</I>&gt;<i> hesitate in implementing it. It hides some lower level I2C operations but as
+</I>&gt;<i> we learnt they aren't always possible to implement on our platforms.
+</I>&gt;<i> Still thinking what to do with the lower level ops (send start, send stop and so on)
+</I>
+They can be used to implement the valid I2C operations. For example:
+
+  platform_i2c_master_send( id, address, data, nbytes, true );
+is
+  platform_i2c_send_start( id );
+  platform_i2c_send_address( id, address, PLATFORM_I2C_DIRECTION_TRANSMITTER  );
+  for (i=0; i&lt;nbytes; i++) platform_i2c_send_byte( id, data[i] );
+  platform_i2c_send_stop( id );
+
+In fact, if we add checking for success and &quot;if (stop)
+platform_i2c_send_stop( id )&quot;, that is the implementation of the new
+interface on the existing platforms.  We don't even need to remove the
+existing platform functions, just make them static when the old
+interface is removed.
+
+&gt;<i> As I see it at the moment, since they're probably rarely needed in
+</I>&gt;<i> practice a good place for them would be in a platform specific module
+</I>&gt;<i> (stm32.i2c or str9.i2c for example)
+</I>
+If we get the platform interface right, that can express all valid I2C
+operations and no invalid ones, they won't be necessary.
+A good API would not allow people to say START START STOP ADDRESS STOP
+
+The questions are:
+1)  is it sufficient to express everything that is valid I2C?
+2) does it allow people to express things that are not valid I2C?
+
+As far as i can see, it allows any valid I2C sequence to be sent,
+including arbitrary sequences of writes and reads with repeated
+starts, maybe to different slave devices, which is valid I2C and is
+used to initialize a series of data acquisition devices and have them
+all start capturing data in sync when the final STOP is sent.
+
+The only invalid I2C that I can see it allowing is if they forget to
+set STOP on the very last message before the program exits.
+
+   M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002526.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002525.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2527">[ date ]</a>
+              <a href="thread.html#2527">[ thread ]</a>
+              <a href="subject.html#2527">[ subject ]</a>
+              <a href="author.html#2527">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

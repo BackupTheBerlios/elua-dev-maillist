@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RFS missing in default module loading path on	non-Windows builds
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RFS%20missing%20in%20default%20module%20loading%20path%20on%0A%09non-Windows%20builds&In-Reply-To=%3C87obtc8bzm.fsf%40ws-sw06.ottronic.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003288.html">
+   <LINK REL="Next"  HREF="003278.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RFS missing in default module loading path on	non-Windows builds</H1>
+    <B>Markus Korber</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RFS%20missing%20in%20default%20module%20loading%20path%20on%0A%09non-Windows%20builds&In-Reply-To=%3C87obtc8bzm.fsf%40ws-sw06.ottronic.com%3E"
+       TITLE="[eLua-dev] RFS missing in default module loading path on	non-Windows builds">korbse at ymail.com
+       </A><BR>
+    <I>Mon Feb  6 11:58:21 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003288.html">[eLua-dev] eLuaBrain presentation @ FOSDEM 2012
+</A></li>
+        <LI>Next message: <A HREF="003278.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3277">[ date ]</a>
+              <a href="thread.html#3277">[ thread ]</a>
+              <a href="subject.html#3277">[ subject ]</a>
+              <a href="author.html#3277">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+LUA_PATH_DEFAULT contains /rfs/ only in '#if defined(_WIN32)'.
+
+diff -r 6f4ddb97b84c src/lua/luaconf.h
+--- a/src/lua/luaconf.h	Thu Feb 02 08:40:26 2012 +0100
++++ b/src/lua/luaconf.h	Mon Feb 06 11:49:49 2012 +0100
+@@ -144,7 +144,7 @@
+ #define LUA_CDIR	LUA_ROOT &quot;lib/lua/5.1/&quot;
+ 
+ #ifndef LUA_RPC
+-#define LUA_PATH_DEFAULT  &quot;/mmc/?.lua;/mmc/?.lc;/rom/?.lua;/rom/?.lc&quot;
++#define LUA_PATH_DEFAULT  &quot;/rfs/?.lua;/rfs/?.lc;/mmc/?.lua;/mmc/?.lc;/rom/?.lua;/rom/?.lc&quot;
+ #define LUA_CPATH_DEFAULT &quot;&quot;
+ #else // #ifndef LUA_RPC
+ #define LUA_PATH_DEFAULT  \
+
+Regards,
+Markus Korber
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003288.html">[eLua-dev] eLuaBrain presentation @ FOSDEM 2012
+</A></li>
+	<LI>Next message: <A HREF="003278.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3277">[ date ]</a>
+              <a href="thread.html#3277">[ thread ]</a>
+              <a href="subject.html#3277">[ subject ]</a>
+              <a href="author.html#3277">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

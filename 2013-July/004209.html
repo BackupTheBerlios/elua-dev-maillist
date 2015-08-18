@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to read available memory in eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20read%20available%20memory%20in%20eLua&In-Reply-To=%3C20130725050906.173900%40gmx.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004208.html">
+   <LINK REL="Next"  HREF="004210.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to read available memory in eLua</H1>
+    <B>scdr at gmx.com</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20read%20available%20memory%20in%20eLua&In-Reply-To=%3C20130725050906.173900%40gmx.com%3E"
+       TITLE="[eLua-dev] How to read available memory in eLua">scdr at gmx.com
+       </A><BR>
+    <I>Thu Jul 25 07:09:06 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004208.html">[eLua-dev] eLuino (was: Port to Atmel SAM3/4 MCU (arduino due))
+</A></li>
+        <LI>Next message: <A HREF="004210.html">[eLua-dev] How to read available memory in eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4209">[ date ]</a>
+              <a href="thread.html#4209">[ thread ]</a>
+              <a href="subject.html#4209">[ subject ]</a>
+              <a href="author.html#4209">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Thanks. &#160;I added the appropriate code to the LM3 platform, only tried it on my Stellaris Launchpad port so far.
+Since it is a bit constrained on RAM, figured it would be handy to have some idea how much memory various features cost.
+27,911 bytes in dynamic allocation area
+
+<A HREF="http://forum.stellarisiti.com/topic/552-elua-for-stellaris-launchpad/">http://forum.stellarisiti.com/topic/552-elua-for-stellaris-launchpad/</A>
+
+&gt;<i> ----- Original Message -----
+</I>&gt;<i> From: Martin Guy
+</I>&gt;<i> Sent: 07/22/13 10:06 AM
+</I>&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> Subject: Re: [eLua-dev] How to read available memory in eLua
+</I>&gt;<i> 
+</I>&gt;<i> On 22 July 2013 18:21, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; On Sat, Jul 20, 2013 at 3:55 AM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt; How do I find out how much memory is avialable in eLua?
+</I>&gt;<i> 
+</I>&gt;<i> The memory areas are statically declared in each board's &quot;*_conf.h&quot;
+</I>&gt;<i> file. For example in
+</I>&gt;<i> src/platform/avr32/MIZAR32/mizar32_conf.h the lines:
+</I>&gt;<i> #define MEM_START_ADDRESS { ( void* )end, ( void* )( SDRAM + ELUA_FIRMWARE_S
+</I>&gt;<i> IZE ) }
+</I>&gt;<i> #define MEM_END_ADDRESS { ( void* )( RAM_SIZE - STACK_SIZE_TOTAL - 1 ), (
+</I>&gt;<i> void* )( SDRAM + SDRAM_SIZE - 1 ) }
+</I>&gt;<i> 
+</I>&gt;<i> defines two regions, one from &quot;end&quot; (of static data) to the bottom of
+</I>&gt;<i> the stack area, and one un the SDRAM chip. Most boards only have one
+</I>&gt;<i> area. Memory is allocated from this/these area/s when requested by
+</I>&gt;<i> Lua through malloc(). gcinfo() and collectgarbage(&quot;count&quot;) only tell
+</I>&gt;<i> you how much is being used by the Lua heap but there is no way to know
+</I>&gt;<i> the total from eLua.
+</I>&gt;<i> 
+</I>&gt;<i> It would be quite simple to add a function to eLua, say to the cpu.*()
+</I>&gt;<i> module to tell you how many bytes there are in the areas described
+</I>&gt;<i> above.
+</I>&gt;<i> 
+</I>&gt;<i> &#160;M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004208.html">[eLua-dev] eLuino (was: Port to Atmel SAM3/4 MCU (arduino due))
+</A></li>
+	<LI>Next message: <A HREF="004210.html">[eLua-dev] How to read available memory in eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4209">[ date ]</a>
+              <a href="thread.html#4209">[ thread ]</a>
+              <a href="subject.html#4209">[ subject ]</a>
+              <a href="author.html#4209">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

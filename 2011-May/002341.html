@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] NetDuino: Serial TX to board fails
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20NetDuino%3A%20Serial%20TX%20to%20board%20fails&In-Reply-To=%3CBANLkTi%3DALKQQCsm1Dev1om597fhJ6ULzpA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002339.html">
+   <LINK REL="Next"  HREF="002343.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] NetDuino: Serial TX to board fails</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20NetDuino%3A%20Serial%20TX%20to%20board%20fails&In-Reply-To=%3CBANLkTi%3DALKQQCsm1Dev1om597fhJ6ULzpA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] NetDuino: Serial TX to board fails">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon May  2 21:43:01 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002339.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+        <LI>Next message: <A HREF="002343.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2341">[ date ]</a>
+              <a href="thread.html#2341">[ thread ]</a>
+              <a href="subject.html#2341">[ subject ]</a>
+              <a href="author.html#2341">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, May 2, 2011 at 9:52 PM, sweetlilmre &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">sweetlilmre at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> Some more info:
+</I>&gt;<i>
+</I>&gt;<i> I've tried running mux in both modes with the same result, here is the
+</I>&gt;<i> verbose output from a test run in rfsmux mode:
+</I>&gt;<i>
+</I>&gt;<i> D:\source\elua&gt;mux rfsmux:d:\source\elua com2,115200,none com20 -v
+</I>&gt;<i> Running serial transport on port com2 at 115200 baud (8N1)
+</I>&gt;<i> RFS: using memory transport.
+</I>&gt;<i> Sharing directory d:\source\elua
+</I>&gt;<i> Starting service multiplexer on 1 port(s)
+</I>&gt;<i> Changed service_id_out from -1(FFFFFFFF) to 209(D1).
+</I>&gt;<i> Error on select, aborting program
+</I>&gt;<i>
+</I>&gt;<i> The error occurs as soon as I type any character in my terminal program.
+</I>&gt;<i> The terminal is connected to COM21 which is linked to COM20 via com0com.
+</I>&gt;<i> It would seems that the service_id change is correct (virtual port 2 i.e.
+</I>&gt;<i> terminal?)
+</I>&gt;<i>
+</I>
+Yes, the service_id change seems to be correct. Please try the sequence of
+steps below:
+
+1. start your eLua board
+2. start your terminal emulator on COM21
+3. start the RFS multiplexer as above
+4. reset your eLua board
+
+If you're getting any input on the terminal emulator after step 4 above, try
+to input something and see if that works. If not, please let me know. The
+mux server was never tested on XP, only on Win7. Although I kinda doubt
+that's the problem. Are you by any chance on 64bit XP?
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110502/7ba0c573/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110502/7ba0c573/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002339.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+	<LI>Next message: <A HREF="002343.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2341">[ date ]</a>
+              <a href="thread.html#2341">[ thread ]</a>
+              <a href="subject.html#2341">[ subject ]</a>
+              <a href="author.html#2341">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

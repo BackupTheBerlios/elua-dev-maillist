@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTi%3DX%2BkfZqM6h7CwTdHsEpC%3DMFifN4g%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002533.html">
+   <LINK REL="Next"  HREF="002536.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTi%3DX%2BkfZqM6h7CwTdHsEpC%3DMFifN4g%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Jun 16 19:20:06 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002533.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002536.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2534">[ date ]</a>
+              <a href="thread.html#2534">[ thread ]</a>
+              <a href="subject.html#2534">[ subject ]</a>
+              <a href="author.html#2534">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Jun 16, 2011 at 6:54 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 16 June 2011 17:00, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; at the lowest I2C level
+</I>&gt;<i> &gt; (that we can afford :) ) we need to be able to do write without an
+</I>&gt;<i> address
+</I>&gt;<i> &gt; too.
+</I>&gt;<i>
+</I>&gt;<i> The current implementation of i2c.write( id, data1, [data2], [data3],
+</I>&gt;<i> ... ) relies on this, yes, but that's going to have to be rewritten
+</I>&gt;<i> too.  If you want to take a variable number of parameters in the new
+</I>&gt;<i> i2c.send(), you'll have to concatenate their values into a Lua buffer
+</I>&gt;<i> before calling the C platform interface with the whole data packet.
+</I>&gt;<i> In fact, that might be a good feature to keep, making it easier for
+</I>&gt;<i> users to construct structured I2C data packets.
+</I>&gt;<i>
+</I>
+I know you're probably sick and tired of my EEPROM examples :) but I'm going
+to get back to that again. In one of my applications I actually read the
+whole content of a serial EEPROM (32KB (not Kb)) into a file in the
+filesystem. Reading the whole data and writing it in one step is simply not
+good enough because I'd need too much memory for the operation, so instead
+I'm reading it in chunks of 256 bytes. For this kind of application, an &quot;I2C
+data packet&quot; is an undefined concept, as the packet can be as large as the
+memory itself, as small as 1 byte of data or an arbitrary size (256 bytes of
+data). I specify the memory address (0) only at the beginning, then I keep
+on reading data until I have enough, at which point I send a &quot;stop&quot;. Yes, I
+can also do this by issuing repeated &quot;read&quot; commands with increasing
+addresses, but that adds an overhead. And I'm not worried about the actual
+impact of the overhead (which is very small), I just feel that the I2C
+interface introduces limitations that shouldn't be there ...
+
+
+&gt;<i> Keep that thought in mind a moment...
+</I>&gt;<i>
+</I>&gt;<i> Anyway, AVR32 cannot write data without an address; the hardware can
+</I>&gt;<i> only handles complete I2C packets, so that's that.
+</I>&gt;<i> If you go back to function calls that write half an I2C packet, the
+</I>&gt;<i> AVR32 is going to have to collect them up until it gets a stop and
+</I>&gt;<i> then send them all.  That means being able to allocate arbitrary
+</I>&gt;<i> amounts of RAM in the C device driver, which I don't think is
+</I>&gt;<i> desirable.
+</I>&gt;<i>
+</I>&gt;<i> Furthermore, if you make the C platform interface deal only in whole
+</I>&gt;<i> I2C packets, you can be sure to be able to implement I2C on other
+</I>&gt;<i> future hardware platforms that also only deal in complete I2C packets.
+</I>&gt;<i> AVR32 is just the first example we have found that needs this.
+</I>&gt;<i>
+</I>&gt;<i> &gt; If we do chunked reads (read_from_address followed by read) we
+</I>&gt;<i> &gt; can't know in advance when the last one will be sent. I'm guessing that
+</I>&gt;<i> the
+</I>&gt;<i> &gt; read functions need another parameter (ack_last_byte).
+</I>&gt;<i>
+</I>&gt;<i> Yuck!  Why would you want to read half a response?
+</I>&gt;<i>
+</I>
+Hopefully my example above answers your questions.
+
+
+&gt;<i>
+</I>&gt;<i> &gt; After an EEPROM receives the data to
+</I>&gt;<i> &gt; write it needs some time to write it, during this time it will not be
+</I>&gt;<i> &gt; accesible and it will not ACK its device address.
+</I>&gt;<i>
+</I>&gt;<i> Hmm.  Well, once you define the eeprom-reading and eeprom-writing
+</I>&gt;<i> functions in Lua on top of the I2C module, you can move the check
+</I>&gt;<i> there.  Assuming you have already probed for the presence of the
+</I>&gt;<i> EEPROM, one idea is something like:
+</I>&gt;<i> I'm also assuming the new i2c.send takes the same mutiple data
+</I>&gt;<i> parameters as i2c.write
+</I>&gt;<i>
+</I>&gt;<i> -- read data from eeprom with 16-bit address sent high byte first.
+</I>&gt;<i> function i2c.eeprom.read( id, slave, mem_addr, nbytes )
+</I>&gt;<i>  -- i2c.send: assuming nil means failure and some integer means the
+</I>&gt;<i> number of bytes written
+</I>&gt;<i>  repeat until i2c.send( id, slave, false, msb( mem_addr ), lsb( mem_addr )
+</I>&gt;<i> )
+</I>&gt;<i>  -- i2c.recv: assuming nil means failure, otherwise a string of the
+</I>&gt;<i> data received
+</I>&gt;<i>  return i2c.recv( id, slave, true, nbytes )
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> function i2c.eeprom.write( id, slave, mem_addr, data )
+</I>&gt;<i>  repeat
+</I>&gt;<i>    result = i2c.send( id, slave, true, msb( mem_addr ), lsb( mem_addr ),
+</I>&gt;<i> data )
+</I>&gt;<i>  until result
+</I>&gt;<i>  -- How many of the data bytes were written?
+</I>&gt;<i>  if result &lt; 2
+</I>&gt;<i>    return nil
+</I>&gt;<i>  else
+</I>&gt;<i>    return result - 2
+</I>&gt;<i>  fi
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> Again, the fact that these are in Lua reflects the fact that the
+</I>&gt;<i> EEPROM data format is not part of I2C.  It's just one device that
+</I>&gt;<i> happens to fill the I2C data with a 16-bit address in high-byte then
+</I>&gt;<i> low-byte order, followed by the data to write to EEPROM.
+</I>&gt;<i>
+</I>
+Absolutely. I'm not using EEPROM as an example because I want to model our
+I2C platform interface after it, it's just an use case I'm quite familiar
+with in practice and I can use it to detect limitations in our interface. So
+far it's doing a pretty good job :)
+
+My own problem with i2c.probe(id, address) is that AVR32 cannot send
+&gt;<i> empty data packets.
+</I>&gt;<i>
+</I>
+This is getting ridiculous. At this point I wish they kept the I2C engine
+from their 8 bit AVR MCU line. Besides not being able to to DMA transfers
+(although I'm not sure if this is still true for XMEGAs) it was much better
+than what they offer in the AVR32 IMO.
+
+
+&gt;<i> Do you happen to know what an I2C EEPROM does if you send it a single
+</I>&gt;<i> 0 byte (just the MSB of the memory address).
+</I>&gt;<i> Ignores it, I hope; the spec doesn't say.
+</I>&gt;<i>
+</I>
+Hmmm, hard to say. It wouldn't be a problem for EEPROMs I think, but I don't
+know what's the case for other I2C devices.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110616/cbc1a405/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110616/cbc1a405/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002533.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002536.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2534">[ date ]</a>
+              <a href="thread.html#2534">[ thread ]</a>
+              <a href="subject.html#2534">[ subject ]</a>
+              <a href="author.html#2534">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

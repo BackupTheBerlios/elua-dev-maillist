@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RIT image generator
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RIT%20image%20generator&In-Reply-To=%3C81fbe47d0902151142i55270893g7dc51d4dd6401fd0%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000445.html">
+   <LINK REL="Next"  HREF="000447.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RIT image generator</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RIT%20image%20generator&In-Reply-To=%3C81fbe47d0902151142i55270893g7dc51d4dd6401fd0%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RIT image generator">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sun Feb 15 20:42:09 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000445.html">[eLua-dev] RIT image generator
+</A></li>
+        <LI>Next message: <A HREF="000447.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#446">[ date ]</a>
+              <a href="thread.html#446">[ thread ]</a>
+              <a href="subject.html#446">[ subject ]</a>
+              <a href="author.html#446">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> First, I thought it's &quot;only&quot; about fitting to SoC's but if also
+</I>&gt;<i> networking and LCD displays are included, we could do projects s.a. a
+</I>&gt;<i> feather-light webserver, with graphical status display, right?  Think
+</I>&gt;<i> NAS but running without an OS (in other words, Lua would _be_ the OS).
+</I>
+That's exactly the point of eLua it: Lua is the _controller_, not just
+a helper (scripting) language. This view doesn't exclude the existence
+of an OS, but that's not currently planned. Plans can change though :)
+
+&gt;<i> Is this feasible, and does eLua currently allow such without an
+</I>&gt;<i> underlying operating system?
+</I>
+To some extent, it is. A MPU with an interrupt system (which is
+basically any MPU on which eLua will ever run) already provides the
+means to implement a very simple threading system, and sometimes this
+is all you need.
+
+&gt;<i> In more detail, what exactly is the relationship of operating system
+</I>&gt;<i> and eLua?  Which OSes are available, and for which features would one
+</I>
+We don't have an operating system yet, so I don't know the relationship :)
+As for OSes, the main candidate seems to be FreeRTOS, but there are
+others that can be used. For which features ... this is difficult to
+answer. I'd say for networking, to implement something like &quot;select&quot;
+(for example) and multiple clients, but even this can be done without
+an OS. In the end it all depends on your needs.
+
+Best,
+Bogdan
+
+&gt;<i> Dado Sutter kirjoitti 15.2.2009 kello 16:58:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hello,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sun, Feb 15, 2009 at 11:39, Pedro Bittencourt &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>
+</I>&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;<i> Dado,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I believe 128x96p isn't a requirement, the converter just need an
+</I>&gt;&gt;<i> even number o pixels. That the user must set on disp.imageDraw
+</I>&gt;&gt;<i> ( image, offsetX,offsetY,width,height), right?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Right, indeed !
+</I>&gt;&gt;<i> The program can also be used to convert/generate &quot;sprites&quot;, that
+</I>&gt;&gt;<i> will later be positioned or moved across the display, using the
+</I>&gt;&gt;<i> positioning parameters of disp.imagedraw (pls note that syntax may
+</I>&gt;&gt;<i> change in v0.6). So the images can be smaller than 128x96 pixels and
+</I>&gt;&gt;<i> the program will still convert them correctly.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> When I mentioned &quot;Size&quot; on the instructions, I should have said
+</I>&gt;&gt;<i> &quot;Maximum Size&quot;.
+</I>&gt;&gt;<i> Thanks !
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --Pedro Bittencourt
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sun, Feb 15, 2009 at 11:17 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> Hello eLuers :)
+</I>&gt;&gt;<i>    To relax a bit on this busy weekend, I've written a simple lua
+</I>&gt;&gt;<i> utility to convert raw image files into the format used by the
+</I>&gt;&gt;<i> imagedraw function, of the platform-dependent disp module. The disp
+</I>&gt;&gt;<i> module currently implements functions only for the OLED display
+</I>&gt;&gt;<i> found in some Luminary Micro ARM Cortex-M2 evaluation kits.
+</I>&gt;&gt;<i>    I will write a small tutorial about this but the main receipe is
+</I>&gt;&gt;<i> to convert any image to:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - Size: 128x96
+</I>&gt;&gt;<i> - Color: Grayscale, 16 shades of gray
+</I>&gt;&gt;<i> - Mode: 8 bits per pixel (although each pixels uses only 4)
+</I>&gt;&gt;<i> - Record as: .raw  (no image info added on file)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>   Some more explanations on the raw and rit formats can be found in
+</I>&gt;&gt;<i> the utility's source code.
+</I>&gt;&gt;<i>   Program usage is: raw2disp.lua &lt;raw_filename_without_extension&gt;
+</I>&gt;&gt;<i>   If you don't have a lua interpreted on the default lua install dir
+</I>&gt;&gt;<i> but has one in your path, pls run as: lua raw2rit.lua
+</I>&gt;&gt;<i> &lt;raw_filename_without_extension&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>   Program can be viewed/downloaded from <A HREF="http://www.giga.puc-rio.br/raw2rit.lua">http://www.giga.puc-rio.br/raw2rit.lua</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>   Thanks to Pedro Bittencourt for the help with image formats. Pedro
+</I>&gt;&gt;<i> also has a C version of the utility, in case someone needs it. The
+</I>&gt;&gt;<i> Lua version uses an external module (bitlib) and the C version
+</I>&gt;&gt;<i> doesn't.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>    Please share your nice images for the RIT display !!! :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000445.html">[eLua-dev] RIT image generator
+</A></li>
+	<LI>Next message: <A HREF="000447.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#446">[ date ]</a>
+              <a href="thread.html#446">[ thread ]</a>
+              <a href="subject.html#446">[ subject ]</a>
+              <a href="author.html#446">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

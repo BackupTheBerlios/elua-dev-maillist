@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] str9.rtc code missing?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20str9.rtc%20code%20missing%3F&In-Reply-To=%3CCAJ%3DY9Y1nZ22K99r9%2BU4rV7OVyDt43%2BZW5PwdLnc59tTy8yZ7yA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002711.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] str9.rtc code missing?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20str9.rtc%20code%20missing%3F&In-Reply-To=%3CCAJ%3DY9Y1nZ22K99r9%2BU4rV7OVyDt43%2BZW5PwdLnc59tTy8yZ7yA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] str9.rtc code missing?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Aug 29 20:12:31 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002711.html">[eLua-dev] str9.rtc code missing?
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2713">[ date ]</a>
+              <a href="thread.html#2713">[ thread ]</a>
+              <a href="subject.html#2713">[ subject ]</a>
+              <a href="author.html#2713">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Aug 29, 2011 at 11:30 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 25 July 2011 21:06, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> On Sat, Jul 23, 2011 at 1:58 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> &#160;I just noticed that the str9.rtc platform-specific module only
+</I>&gt;&gt;&gt;<i> exists in the documentation, but has no associated code.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I don't see it either. &#160;Perhaps it's in a branch that never got merged?
+</I>&gt;<i>
+</I>&gt;&gt;<i> I would agree with this. &#160;How about just using ISO 8601 (
+</I>&gt;&gt;<i> <A HREF="http://en.wikipedia.org/wiki/ISO_8601">http://en.wikipedia.org/wiki/ISO_8601</A> )
+</I>&gt;<i>
+</I>&gt;<i> +1, but...
+</I>
+Do you mean the below stuff is the issue?
+
+&gt;<i>
+</I>&gt;&gt;&gt;<i> It would be more Lua-like to use the os.date() routines
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Are you suggesting using os.date to handle getting of date/time
+</I>&gt;<i>
+</I>&gt;<i> yes. If we can just implement existing Lua conventions (such as LFS
+</I>&gt;<i> for filesystem operations, os.* for date operations and so on), that
+</I>&gt;<i> is not only more elegant, but improves the chances of standard Lua
+</I>&gt;<i> code working in eLua. &#160;OK, we have to invent os.setdate() simply
+</I>&gt;<i> because Lua os.*() doesn't provide that, but the path of least
+</I>&gt;<i> resistence is to adopt the existing conventions for handling dates and
+</I>&gt;<i> times.
+</I>
+So, are you suggesting that os.setdate would just take the table form
+(the &quot;*t&quot;) format? (<A HREF="http://www.lua.org/pil/22.1.html">http://www.lua.org/pil/22.1.html</A>)
+
+I guess what I was getting at was just that if we have to pick a
+locale for handling both printing (&quot;%x&quot; or &quot;%X&quot;) and maybe parsing
+that instead of supporting all the possible locales out there, we just
+pick a sane one that's a standard. Presumably we would support all the
+other formatting options to get individual components into a string.
+It looks like Lua uses strftime for handling those (which is in
+Newlib, not sure how much code size it takes up).
+
+So, I guess there are a couple things here:
+1) For os.date do we support all that strftime usually provides,
+including locales, ditto but with a fixed locale, or just the table
+format?
+2) For os.setdate do we support all the formatting options for date
+strings including locales, ditto but with a fixed locale, or just the
+table format?
+
+I'm not sure exactly where the best tradeoff is in terms of supporting
+common usage and the associated resources that brings in.  I suppose
+we could provide options as we do for other things though for targets
+with smaller flash availability?  It would be worthwhile finding out
+what the code size cost would be for these various options.
+
+
+&gt;<i>
+</I>&gt;<i> &#160; M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002711.html">[eLua-dev] str9.rtc code missing?
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2713">[ date ]</a>
+              <a href="thread.html#2713">[ thread ]</a>
+              <a href="subject.html#2713">[ subject ]</a>
+              <a href="author.html#2713">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

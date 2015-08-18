@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Multitasking Proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Multitasking%20Proposal&In-Reply-To=%3CAANLkTi%3D2d2K%2BmtkxEHD6aqPQftF%2BOnwKqjfKzeavNcDA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001967.html">
+   <LINK REL="Next"  HREF="001970.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Multitasking Proposal</H1>
+    <B>Fabien</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Multitasking%20Proposal&In-Reply-To=%3CAANLkTi%3D2d2K%2BmtkxEHD6aqPQftF%2BOnwKqjfKzeavNcDA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Multitasking Proposal">fleutot+lua at gmail.com
+       </A><BR>
+    <I>Tue Feb  1 16:39:12 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001967.html">[eLua-dev] Multitasking Proposal
+</A></li>
+        <LI>Next message: <A HREF="001970.html">[eLua-dev] Multitasking Proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1969">[ date ]</a>
+              <a href="thread.html#1969">[ thread ]</a>
+              <a href="subject.html#1969">[ subject ]</a>
+              <a href="author.html#1969">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Feb 1, 2011 at 12:59 PM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+
+&gt;<i> Roberto's hellgate of non-determinism has already been opened by the debug
+</I>&gt;<i> hooks
+</I>&gt;<i>
+</I>
+Indeed, but the debug module is quite openly advertised as the official Lua
+hellgate, the only module which can break Lua's safety principles. It is of
+notoriously bad taste to have production code relying on debug APIs, so if
+it breaks your code, you had it coming.
+
+Personally I have never had a problem with shared memory multitasking, but
+&gt;<i> it is true you can easily get in a subtle mess if you do not follow the
+</I>&gt;<i> rules.
+</I>&gt;<i>
+</I>
+I am not very confident in my ability to always follow the rules, and
+totally unconfident in other people's ability to do so. Since I sometimes
+have to maintain code written by others, I'd rather have the rules strictly
+enforced by default!
+
+
+&gt;<i> Your ability to hook a Lua function to an interrupt generated event so it
+</I>&gt;<i> gets queued for execution synchronously during the next non-blocking wait is
+</I>&gt;<i> also a good additional feature since it avoids the RAM overhead of a
+</I>&gt;<i> coroutine in some simpler cases.
+</I>&gt;<i>
+</I>
+It's worse than that actually, it prevents from loosing events together.
+Imagine that you have a signal('ping', 'ping', &lt;packetnumber&gt;) arriving
+every second, and you try to catch it in a loop:
+
+function catch_pings()
+   while true
+      local emitter, event, arg = sched.wait('ping', 'ping')
+      printf(&quot;received packet #%d&quot;, arg)
+      do_something_complicated_with(arg)
+   end
+end
+
+sched.run (catch_pings)
+
+if do_something_complicated_with(arg) takes more than one second, the
+sched.wait() in the next iteration of the loop will miss one packet. You
+need some form of synchronous hook to handle this. It is very common to use
+a hook simply to buffer some data into a pipe, and maybe we should integrate
+a simplified support for such signal piping in the API.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110201/bedff534/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110201/bedff534/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001967.html">[eLua-dev] Multitasking Proposal
+</A></li>
+	<LI>Next message: <A HREF="001970.html">[eLua-dev] Multitasking Proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1969">[ date ]</a>
+              <a href="thread.html#1969">[ thread ]</a>
+              <a href="subject.html#1969">[ subject ]</a>
+              <a href="author.html#1969">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

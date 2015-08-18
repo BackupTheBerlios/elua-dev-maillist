@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Inversion of timer.*() parameters
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Inversion%20of%20timer.%2A%28%29%20parameters&In-Reply-To=%3CCAJ%3DY9Y2L6iUkRUiYeVEPQKwLMXcsMhbw4o2%2BbD0GhKLK29Fvbw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003208.html">
+   <LINK REL="Next"  HREF="003210.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Inversion of timer.*() parameters</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Inversion%20of%20timer.%2A%28%29%20parameters&In-Reply-To=%3CCAJ%3DY9Y2L6iUkRUiYeVEPQKwLMXcsMhbw4o2%2BbD0GhKLK29Fvbw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Inversion of timer.*() parameters">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Dec 29 21:52:03 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003208.html">[eLua-dev] Inversion of timer.*() parameters
+</A></li>
+        <LI>Next message: <A HREF="003210.html">[eLua-dev] Inversion of timer.*() parameters
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3209">[ date ]</a>
+              <a href="thread.html#3209">[ thread ]</a>
+              <a href="subject.html#3209">[ subject ]</a>
+              <a href="author.html#3209">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Up front comment: It would be really great if we could get opinions
+from not just people with commit access on this one, feel free to
+weigh in here even if it's just a simple yay or nay type of response.
+
+On Thu, Dec 29, 2011 at 2:09 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> In the recent &quot;system timer&quot; mods, an additional change was made that
+</I>&gt;<i> inverst the order of the timer parameters from
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160;tmr.delay(timer_id, delay)
+</I>&gt;<i> to
+</I>&gt;<i> &#160; &#160;tmr.delay(delay, timer_id)
+</I>&gt;<i>
+</I>&gt;<i> and similarly for the other tmr.*() functions
+</I>&gt;<i>
+</I>&gt;<i> Please let us think again about this change, about which there was no
+</I>&gt;<i> discussion that I saw.
+</I>
+This is true, and changes like this in trunk have often lead by
+&quot;here's working code&quot; that gets merged in rather than having drawn out
+discussions.  That said, I think whatever opinions people may hold
+we're not feeling bound to one approach or the other and switching to
+a new one should be done on merits as well as the fact that there's
+already an working implementation.
+
+&gt;<i>
+</I>&gt;<i> The very small advantage of it is to be able to write
+</I>&gt;<i> &#160; &#160; tmr.delay(100)
+</I>&gt;<i> instead of
+</I>&gt;<i> &#160; &#160; tmr.delay(tmr.SYS_TIMER, 100)
+</I>&gt;<i> which is just syntactic sugar with no operational advantage.
+</I>
+I think the suggested operational advantage was to discourage the use
+of individual timers for every last hardware or software component
+that needed some type of timing service, with the idea being that in
+90-some-ercent of cases people would be typing tmr.delay( delay_time )
+with no timer being specified.
+
+Yes, it's also just syntactic sugar.
+
+&gt;<i>
+</I>&gt;<i> The disavantages are
+</I>&gt;<i> - it breaks almost all code ever written for eLua
+</I>&gt;<i> - it makes it impossible to write code that works in different
+</I>&gt;<i> versions of eLua, unless you do all delays with for loops tuned to the
+</I>&gt;<i> CPU speed and use timers for nothing else, since there is no sane way
+</I>&gt;<i> to find out which syntax is being used.
+</I>&gt;<i> - all existing firmware that we have produced and shipped would need
+</I>&gt;<i> changing if we decide to follow this change, and all the alternate
+</I>&gt;<i> firmware versions we have published become junk
+</I>&gt;<i> - people writing eLua video tutorials cannot speak about timers unless
+</I>&gt;<i> they include a section on changing the syntax according to which
+</I>&gt;<i> version of eLua you are using, or resign themselves to it not working
+</I>&gt;<i> in all existing (or all future) boards
+</I>&gt;<i>
+</I>&gt;<i> Code that users send me asking me to help resolve bugs now contains stuff like:
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;if new_elua then
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;tmr.delay( delay_time, timer_id )
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;else
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;tmr.delay( timer_id, delay_time )
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;end
+</I>&gt;<i>
+</I>&gt;<i> (this is an example from today!). Before this sort of thing becomes
+</I>&gt;<i> commonplace, or before people resort to inventing tricks to discover
+</I>&gt;<i> which is the syntax is today's firmware, PLEASE can we go back to the
+</I>&gt;<i> original parameter order?
+</I>
+My biggest issue with the ordering change is not even so much that
+it's a reordering of parameters, but that it differs from the behavior
+of every other module that consumes a hardware resource, which puts
+the resource first followed by the parameter(s) to be applied to it.
+Also, I rather don't like the ordering for tmr.gettimediff: end,
+start, [id]
+
+&gt;<i>
+</I>&gt;<i> As a compromise we could let tmr.delay(nil, 100) to mean &quot;use the
+</I>&gt;<i> system timer&quot;, which is less ugly without breaking everything.
+</I>
+That's perhaps not a bad option.  I also wouldn't mind the approach I
+mentioned in an earlier message which was essentially to provide
+wrappers to use the system timer:
+tmr.sys.delay( delay_time) == tmr.delay(tmr.SYS_TIMER, delay_time )
+etc..
+
+It might be a tad slower on each call, but it would probably be pretty
+space efficient to handle the difference with a metamethod or two.
+
+I'd be fine with this or the 'nil' id approach.
+
+&gt;<i>
+</I>&gt;<i> I also notice that three new system variables tmr.SYS_TIMER,
+</I>&gt;<i> uart.SYS_TIMER and net.SYS_TIMER have appeared. &#160;What are the second
+</I>&gt;<i> two for?
+</I>
+Not sure.
+
+-jsnyder
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003208.html">[eLua-dev] Inversion of timer.*() parameters
+</A></li>
+	<LI>Next message: <A HREF="003210.html">[eLua-dev] Inversion of timer.*() parameters
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3209">[ date ]</a>
+              <a href="thread.html#3209">[ thread ]</a>
+              <a href="subject.html#3209">[ subject ]</a>
+              <a href="author.html#3209">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

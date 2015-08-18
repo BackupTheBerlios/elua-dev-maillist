@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3C81fbe47d0902042235y4b21c4duabfc47ad6d7925ce%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000351.html">
+   <LINK REL="Next"  HREF="000355.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3C81fbe47d0902042235y4b21c4duabfc47ad6d7925ce%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Feb  5 07:35:52 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000351.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+        <LI>Next message: <A HREF="000355.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#353">[ date ]</a>
+              <a href="thread.html#353">[ thread ]</a>
+              <a href="subject.html#353">[ subject ]</a>
+              <a href="author.html#353">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> What happens if an ISR fires during this time that makes a block of data
+</I>&gt;<i> ready to be processed in Lua? Actually turning it off may make latencies
+</I>&gt;<i> worse, since it will take longer to run when you do get around to running
+</I>&gt;<i> it.
+</I>&gt;<i>
+</I>
+For sure. The idea was to turn the GC off, and keep it off. This is why I
+mentioned &quot;if you have enough RAM&quot;. You probably couldn't do much with only
+64k.
+
+
+&gt;<i> Ahh, I would never do an ISR in Lua.  Way too slow.
+</I>&gt;<i>
+</I>
+It depends actually. If all you need is to have an interrupt firing when you
+push an external button, a Lua ISR would be probably more than enough for
+your needs. If you need to filter a signal from the ADC ... well ... :)
+
+
+&gt;<i> Lets not forget that just by adding Lua we in fact *are* increasing the
+</I>&gt;<i> complexity of the system, by quite a bit.  The whole purpose (in my mind) of
+</I>&gt;<i> adding something like Lua to an embedded system is to make tasks like UI
+</I>&gt;<i> creation and such easier, not to replace any of the RT parts.  The easiest
+</I>&gt;<i> way to connect the non RT domain of Lua to the RT domain is through an OS.
+</I>&gt;<i> Just having C code running that blocks the Lua code while it waits for a new
+</I>&gt;<i> piece of data to display is not going to be enough I think.  You still need
+</I>&gt;<i> some method of synchronization between the ISR and the C code that presents
+</I>&gt;<i> the data to Lua, else what do you do if the ISR gets called twice (or more)
+</I>&gt;<i> while the Lua code is waking up?
+</I>&gt;<i>
+</I>
+You queue your data, of course. It's a very reliable way of connecting two
+pieces of code running at different speeds. If your queue overruns, then
+you're pretty much out of luck, because your consumer can't consume the data
+that the producer is queuing fast enough. And in this case, I don't think an
+OS could help.
+Also, I think I created some confusion when I said &quot;The Lua VM can't be
+interrupted&quot;, so I'd like to clarify that. What I meant was that you can't
+interrupt the Lua VM and force it to execute some other code, like you'd do
+in a very simple implementation of a Lua ISR: the hardware interrupt handler
+calls a Lua function directly. This is a big problem if the Lua VM instance
+you're using was already executing some code, and it won't work. But if you
+interrupt the Lua VM because of an external event (like an interrupt handler
+that doesn't touch the Lua state at all, think &quot;timer interrupt&quot; or &quot;UART
+receive interrupt&quot; or anything like this) everything is 100% safe.
+
+
+&gt;<i> What I would invision for eLua is more along the lines of simple Lua
+</I>&gt;<i> interfaces to the system provided synchronization primitives, and maybe some
+</I>&gt;<i> sort of event system where you register callbacks in Lua that get run when
+</I>&gt;<i> data is available on the C side of things.  This way you would only need one
+</I>&gt;<i> Lua thread.  An event driven system like glib and Gtk provide is kinda nice.
+</I>&gt;<i>
+</I>
+Once Lua ISRs are implemented, we'll see if we really need this or not. I
+really don't know what to think at this point.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090205/e4c60596/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090205/e4c60596/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000351.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+	<LI>Next message: <A HREF="000355.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#353">[ date ]</a>
+              <a href="thread.html#353">[ thread ]</a>
+              <a href="subject.html#353">[ subject ]</a>
+              <a href="author.html#353">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

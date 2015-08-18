@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] net.accept()
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20net.accept%28%29&In-Reply-To=%3CCADhEetXeLe2EGSSh%3DvAawvb947E06X%2B4HFpuZ%3DFStAJRFW%3DzXg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004060.html">
+   <LINK REL="Next"  HREF="004062.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] net.accept()</H1>
+    <B>Peter Edwards</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20net.accept%28%29&In-Reply-To=%3CCADhEetXeLe2EGSSh%3DvAawvb947E06X%2B4HFpuZ%3DFStAJRFW%3DzXg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] net.accept()">sweetlilmre at gmail.com
+       </A><BR>
+    <I>Mon May  6 21:12:44 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004060.html">[eLua-dev] net.accept()
+</A></li>
+        <LI>Next message: <A HREF="004062.html">[eLua-dev] net.accept()
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4061">[ date ]</a>
+              <a href="thread.html#4061">[ thread ]</a>
+              <a href="subject.html#4061">[ subject ]</a>
+              <a href="author.html#4061">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>No such thing as a dumb question :)
+On 6 May 2013 21:11, &quot;Gabriel Duarte&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A>&gt; wrote:
+
+&gt;<i> It's true... sorry for the dumb question.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2013/4/26 Peter Edwards &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">sweetlilmre at gmail.com</A>&gt;
+</I>&gt;<i>
+</I>&gt;&gt;<i> AFAIK sockets are not reuse-able in this way.
+</I>&gt;&gt;<i> A call to accept in a BSD socket architecture will always create a new
+</I>&gt;&gt;<i> socket, see: <A HREF="http://linux.die.net/man/2/accept">http://linux.die.net/man/2/accept</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Keep-alive is a completely different concept: the same connection is kept
+</I>&gt;&gt;<i> alive for additional requests to the server.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> HTH
+</I>&gt;&gt;<i> -(e)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  On Fri, Apr 26, 2013 at 1:59 AM, Gabriel Duarte &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>  No comments?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> 2013/4/21 Gabriel Duarte &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hello guys!
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I have been observing that we can't reuse a socket at net.accept,
+</I>&gt;&gt;&gt;&gt;<i> because it creates a new socket every single call, but, we know that eLua's
+</I>&gt;&gt;&gt;&gt;<i> networkl layer has some faults about opening more than 3 or 4 sockets at
+</I>&gt;&gt;&gt;&gt;<i> the same time.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> So, why not use the net.socket call to create a socket and use it at
+</I>&gt;&gt;&gt;&gt;<i> net.accept as a parameter???
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> This way we could reuse a socket and use a keep-alive architecture
+</I>&gt;&gt;&gt;&gt;<i> instead of grab a socket, close it, reopen, etc...
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> What you say about it?
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Cheers!
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;<i> Gabriel Duarte
+</I>&gt;&gt;&gt;&gt;<i> Linux User #471185
+</I>&gt;&gt;&gt;&gt;<i> Rio de Janeiro / RJ
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> Gabriel Duarte
+</I>&gt;&gt;&gt;<i> Linux User #471185
+</I>&gt;&gt;&gt;<i> Rio de Janeiro / RJ
+</I>&gt;&gt;&gt;<i> <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Gabriel Duarte
+</I>&gt;<i> Linux User #471185
+</I>&gt;<i> Rio de Janeiro / RJ
+</I>&gt;<i> <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130506/0176bbcf/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130506/0176bbcf/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004060.html">[eLua-dev] net.accept()
+</A></li>
+	<LI>Next message: <A HREF="004062.html">[eLua-dev] net.accept()
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4061">[ date ]</a>
+              <a href="thread.html#4061">[ thread ]</a>
+              <a href="subject.html#4061">[ subject ]</a>
+              <a href="author.html#4061">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

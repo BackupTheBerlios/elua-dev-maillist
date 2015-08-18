@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] thoughts on Lua 5.2 for eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20thoughts%20on%20Lua%205.2%20for%20eLua&In-Reply-To=%3C85861A744C29EA46BFD9BB61889AE59D4714B9FF50%40KLMExch.klmicrowave.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001998.html">
+   <LINK REL="Next"  HREF="002002.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] thoughts on Lua 5.2 for eLua</H1>
+    <B>King, Mike</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20thoughts%20on%20Lua%205.2%20for%20eLua&In-Reply-To=%3C85861A744C29EA46BFD9BB61889AE59D4714B9FF50%40KLMExch.klmicrowave.com%3E"
+       TITLE="[eLua-dev] thoughts on Lua 5.2 for eLua">MKing at klmicrowave.com
+       </A><BR>
+    <I>Tue Feb  8 20:04:54 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001998.html">[eLua-dev] thoughts on Lua 5.2 for eLua
+</A></li>
+        <LI>Next message: <A HREF="002002.html">[eLua-dev] thoughts on Lua 5.2 for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1999">[ date ]</a>
+              <a href="thread.html#1999">[ thread ]</a>
+              <a href="subject.html#1999">[ subject ]</a>
+              <a href="author.html#1999">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;&gt;<i>The following changes look interesting for eLua.
+</I>
+&gt;&gt;<i>- yieldable pcall and metamethods
+</I>&gt;&gt;<i>- new library for bitwise operations
+</I>
+&gt;<i>Yes. We've added a bit lib but last weekend I missed some features too. Lua 5.2 will have it 
+</I>&gt;<i>natively but I'm afraid we'll have to extend it again for embedded-specific uses. But this is where 
+</I>&gt;<i>the Lua fun is ! :)
+</I>
+Will the yieldable pcall and metamethods be useful for threading?
+
+&gt;&gt;<i>- light C functions
+</I>
+&gt;<i>You mean without meta-tables or romable functions (that we already have) ?
+</I>
+I know the LTR patch reduces the RAM footprint, but would there be an advantage to move closer to the Lua codebase?  In other words to have a small patch.
+&#160;
+&gt;&gt;<i>- emergency garbage collector
+</I>
+&gt;<i>eLua has this since v0.7 
+</I>
+Is it the same code?
+&#160;
+&gt;&gt;<i>- no more verification of opcode consistency
+</I>
+&gt;<i>To gain speed or space (or both) ?
+</I>&gt;<i>Lua is very robust and opcode consistency check is one of the reasons. It's a self-contained
+</I>&gt;<i>language, in that all the errors are explained by Lua itself. I'm not sure if the footprint gain or even
+</I>&gt;<i>the performance would justify loosing it. But yes, it is worth checking, for sure.
+</I>
+Okay
+
+&gt;&gt;<i>- simpler implementation for string buffers
+</I>
+&gt;<i>I thought that Lua's implementation was one of the simplests possibles. What would we gain here ?
+</I>
+It appears the C API now has a new function (luaL_buffinitsize) which allows one to set the final size of the buffer. 
+&#160;
+&gt;&gt;<i>- parser uses much less C-stack space (no more auto arrays)&#160;
+</I>&gt;&gt;<i>- generational mode for garbage collection (experimental)
+</I>
+&gt;<i>Nice (==it sounds hard to me but brains here know how to do it :)
+</I>
+&gt;<i> We will have a public roadmap one of these days and it will be nice to refine it with this kind of collaboration. Thanks !!!
+</I>
+&gt;<i>Best
+</I>&gt;<i>Dado
+</I>
+
+
+
+
+
+
+CONFIDENTIALITY NOTICE: This e-mail message, including any attachments, is for the sole use of the intended recipient(s) and may contain information that is confidential or proprietary to K&amp;L Microwave, Inc. Any unauthorized review, use, disclosure or distribution is prohibited. 
+If this communication has been transmitted from a U.S. location it may also contain data subject to the International Traffic in Arms Regulations or U.S. Export Administration Regulations and, if so, cannot be disseminated, distributed or copied to foreign nationals, residing in the U.S. or abroad, without the prior approval of the U.S. Department of State or appropriate export licensing authority. If you have received this communication in error, please notify the sender by reply e-mail and delete or destroy all copies of this e-mail message and/or any file attachment(s).
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001998.html">[eLua-dev] thoughts on Lua 5.2 for eLua
+</A></li>
+	<LI>Next message: <A HREF="002002.html">[eLua-dev] thoughts on Lua 5.2 for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1999">[ date ]</a>
+              <a href="thread.html#1999">[ thread ]</a>
+              <a href="subject.html#1999">[ subject ]</a>
+              <a href="author.html#1999">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

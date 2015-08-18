@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Fwd:  Require(path/modulename)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Fwd%3A%20%20Require%28path/modulename%29&In-Reply-To=%3C81fbe47d0811241312y745c24d5pb58bcbf49df28dad%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000110.html">
+   <LINK REL="Next"  HREF="000116.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Fwd:  Require(path/modulename)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Fwd%3A%20%20Require%28path/modulename%29&In-Reply-To=%3C81fbe47d0811241312y745c24d5pb58bcbf49df28dad%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Fwd:  Require(path/modulename)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Nov 24 22:12:03 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000110.html">[eLua-dev] [POLL] Style question
+</A></li>
+        <LI>Next message: <A HREF="000116.html">[eLua-dev] STM32 Support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#112">[ date ]</a>
+              <a href="thread.html#112">[ thread ]</a>
+              <a href="subject.html#112">[ subject ]</a>
+              <a href="author.html#112">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Resending to list ... what's that? Oh yes. AGAIN. *sigh*
+
+---------- Forwarded message ----------
+From: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+Date: Mon, Nov 24, 2008 at 11:03 PM
+Subject: Re: [eLua-dev] Require(path/modulename)
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dado at pobox.com</A>
+
+
+
+
+On Mon, Nov 24, 2008 at 11:01 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+
+&gt;<i> Thanks for the comments guys,
+</I>&gt;<i>    Sorry, I'm afraid I was not too clear.
+</I>&gt;<i>    When we do a require(/rom/modulename) Lua appends the .lua to the module
+</I>&gt;<i> name before searching for the file and try to find a ./rom/modulename.lua in
+</I>&gt;<i> the FS (that is with a dot before the first dash)
+</I>
+
+That's the problem then. Currently the best way to handle this would be to
+manipulate LUA_(C)PATH to look in &quot;/rom&quot;. Something like &quot;/rom/?.lua&quot; unless
+I'm mistaken (I never used this feature before).
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Nov 24, 2008 at 18:50, Bogdan Marinescu &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Mike is right, we don't have CWD right now, as our only filesystem doesn't
+</I>&gt;&gt;<i> even support directories :) Have you tried &quot;require /rom/filename.lua&quot;
+</I>&gt;&gt;<i> directly? If it doesn't work, we probably need to take care of LUA_PATH and
+</I>&gt;&gt;<i> LUA_CPATH somehow, I don't even know what are their &quot;default&quot; values
+</I>&gt;&gt;<i> currently.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, Nov 24, 2008 at 10:37 PM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Why do you need to support ./ at all?  I don't quite see how that makes
+</I>&gt;&gt;&gt;<i> sense here.  The only reason that would make sense is if you want to execute
+</I>&gt;&gt;&gt;<i> a file from the current directory.  If you just want to read a file (as
+</I>&gt;&gt;&gt;<i> require does) you don't need the ./.  Another reason it does not make sense
+</I>&gt;&gt;&gt;<i> is, lua does not have a CWD set.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Mike
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Mon, Nov 24, 2008 at 1:07 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dado at pobox.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hello,
+</I>&gt;&gt;&gt;&gt;<i>    Lua modules are fundamental and all we need eLua to do now is very
+</I>&gt;&gt;&gt;&gt;<i> simple.
+</I>&gt;&gt;&gt;&gt;<i>    require() has to be able to &quot;find&quot; a file in it's search path
+</I>&gt;&gt;&gt;&gt;<i> strategy, which is long (we won't care about all the options) but begins by
+</I>&gt;&gt;&gt;&gt;<i> a simple ./filename.
+</I>&gt;&gt;&gt;&gt;<i>    Our FS has to be able to recognize the ./filename (we include /rom/
+</I>&gt;&gt;&gt;&gt;<i> in the filename) notation.
+</I>&gt;&gt;&gt;&gt;<i>    Other option would be to mod Lua to search for /filename first
+</I>&gt;&gt;&gt;&gt;<i> (before ./filename) but that sounds harder and changes Lua.
+</I>&gt;&gt;&gt;&gt;<i>    This is very important for us now, to create some interesting support
+</I>&gt;&gt;&gt;&gt;<i> modules (I can talk about them all here if wanted :). I can take a look and
+</I>&gt;&gt;&gt;&gt;<i> implement it myself, after hearing some hint from you :)
+</I>&gt;&gt;&gt;&gt;<i>    Thanksssssss :)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Best
+</I>&gt;&gt;&gt;&gt;<i> Dado
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Mon, Nov 24, 2008 at 12:29, Bogdan Marinescu &lt;
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Never tried that, and I'm not at all familiar with the modules part,
+</I>&gt;&gt;&gt;&gt;&gt;<i> but we'll get the hang of it eventually. eLua doesn't have an &quot;environment&quot;,
+</I>&gt;&gt;&gt;&gt;&gt;<i> so I'm curious about the default values of the environment variables
+</I>&gt;&gt;&gt;&gt;&gt;<i> relevant to the module subsystem. Will take a look.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> On Mon, Nov 24, 2008 at 3:08 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Hello eLuers :)
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>   In our present rom File System, how can we require() a Lua module ?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>   The problem seems to be with Lua's way of searching the possible
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> paths to the module.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>   The very first one should do but Lua gives me an File not Found
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> error looking for ./rom/filename.lua (yes, the file is there :), probably
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> because our fs doesn't recognize the ./ notation.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>    Is there a way to solve it today ?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Best
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Dado
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081124/6335b3bc/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081124/6335b3bc/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000110.html">[eLua-dev] [POLL] Style question
+</A></li>
+	<LI>Next message: <A HREF="000116.html">[eLua-dev] STM32 Support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#112">[ date ]</a>
+              <a href="thread.html#112">[ thread ]</a>
+              <a href="subject.html#112">[ subject ]</a>
+              <a href="author.html#112">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

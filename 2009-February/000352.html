@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3C81fbe47d0902042223h6d8cd65eye0e8405d479d96d5%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000350.html">
+   <LINK REL="Next"  HREF="000351.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3C81fbe47d0902042223h6d8cd65eye0e8405d479d96d5%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Feb  5 07:23:01 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000350.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+        <LI>Next message: <A HREF="000351.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#352">[ date ]</a>
+              <a href="thread.html#352">[ thread ]</a>
+              <a href="subject.html#352">[ subject ]</a>
+              <a href="author.html#352">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Hmm.. how are you suggesting this be implemented?  Should the module just
+</I>&gt;<i> have a setup routine that registers a handler on load, or with some sort of
+</I>&gt;<i> init function?  It might be nice to have a C API that abstracts this a
+</I>&gt;<i> little to where code changes between platforms are minimized.
+</I>&gt;<i>
+</I>
+Exactly, it's all in the API. I only have the big picture in my head at this
+point, no details. In other words, I just know it can be done, but I can't
+tell you how right now :)
+
+
+&gt;<i> Ah, I see two parts to this.  Having dynamically loadable libraries is
+</I>&gt;<i> useful, but there are also a number of facilities that would make doing
+</I>&gt;<i> RT/IS routines easier.  I think suggesting this sort of behavior as a
+</I>&gt;<i> solution makes me lean even more towards having semaphores / mutexes to make
+</I>&gt;<i> sure that these ISRs aren't being stepped on, or are stepping on stuff going
+</I>&gt;<i> on in Lua.  The other thing that would be highly useful would be queues, or
+</I>&gt;<i> something like them since you cannot count on the VM picking up data
+</I>&gt;<i> products necessarily at a fixed rate.
+</I>&gt;<i>
+</I>
+Of course you're right, you'd need some sort of event queues in this
+situation. Semaphores and mutexes would be an welcomed addition.
+In the particular case of the ADC, I think you could use the buffering
+mechanism from src/buf.c, have you looked at that? Very basic, but it might
+be enough for you.
+
+
+&gt;<i> All of these things certainly should be balanced against flash and RAM
+</I>&gt;<i> requirements in terms of whether they are worth it.  I think FreeRTOS and
+</I>&gt;<i> ChibiOS are pretty small though in both areas, and even if we didn't go full
+</I>&gt;<i> RTOS they might have useful examples for how to implement some of the
+</I>&gt;<i> features they provide.
+</I>&gt;<i>
+</I>
+FreeRTOS is minimal enough as it is, and I _think_ you can even choose not
+to compile all its features.
+
+
+&gt;<i> I think these discussions are interesting.  I've done most of my previous
+</I>&gt;<i> microcontroller coding on bare metal with no RTOS.  These discussions, as
+</I>&gt;<i> well as working on some implementations are helping me to understand the ins
+</I>&gt;<i> and outs of different implementations.
+</I>&gt;<i>
+</I>
+I only did RTOSes once or twice (once with the very good uC/OS-II package)
+but it was mainly for instructional purposes. I build a few medium
+complexity embedded systems, and never felt a real need for an OS. YMMV, of
+course :)
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090205/e5d5dd56/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090205/e5d5dd56/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000350.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+	<LI>Next message: <A HREF="000351.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#352">[ date ]</a>
+              <a href="thread.html#352">[ thread ]</a>
+              <a href="subject.html#352">[ subject ]</a>
+              <a href="author.html#352">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

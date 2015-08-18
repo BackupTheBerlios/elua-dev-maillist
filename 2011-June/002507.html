@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3C4df4f681.04d1e30a.4022.01a2%40mx.google.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002506.html">
+   <LINK REL="Next"  HREF="002508.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>Laurent Dufrechou</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3C4df4f681.04d1e30a.4022.01a2%40mx.google.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">laurent.dufrechou at gmail.com
+       </A><BR>
+    <I>Sun Jun 12 19:25:19 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002506.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002508.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2507">[ date ]</a>
+              <a href="thread.html#2507">[ thread ]</a>
+              <a href="subject.html#2507">[ subject ]</a>
+              <a href="author.html#2507">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>AVR32 must have the whole transfer available as a single unit at the lowest
+</I>level; the above interface is too low level.
+&gt;<i>and cannot be implemented on AVR32 without send_byte having to make a copy
+</I>of an unknown number of bytes and then sending them all when &gt;it is told
+&quot;that's all&quot;.  Anything more naive would create a race condition.
+
+How do you do on AVR32 to send address then 20 data and receive 50 data?
+On LM3S it should be:
+platform_i2c_start_and_send_address(0, address)
+platform_i2c_send_byte( 0, false, &amp;data,     20);
+platform_i2c_recv_byte( 0, true,  &amp;data_rcv, 50); //true means stop.
+
+You mean that i2c send can't be called 2 consecutive times on avr32?
+Or do you mean you need something like...
+I2C_transfer transfer_struct[3] = {
+  {I2C_ADDR,     false, &amp;null,    0x12},
+  {I2C_TRANSMIT, false, &amp;data,      20},
+  {I2C_RECEIVE,  true,  &amp;data_rcev, 50}
+};
+
+Platform_i2c_transfer(&amp;transfer_struct, 3);
+
+:<i>/
+</I>
+Do I misunderstand anything, or my example is too simple :)?
+
+Laurent
+
+-----Message d'origine-----
+De&#160;: Martin Guy [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>] 
+Envoy&#233;&#160;: dimanche 12 juin 2011 18:15
+&#192;&#160;: eLua Users and Development List (www.eluaproject.net)
+Cc&#160;: Laurent Dufrechou
+Objet&#160;: Re: [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S
+devices)
+
+On 12 June 2011 14:17, Laurent Dufrechou &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">laurent.dufrechou at gmail.com</A>&gt;
+wrote:
+&gt;<i> And the counter example of my last mail :)
+</I>&gt;<i> <A HREF="http://mbed.org/forum/mbed/topic/586/?page=1#comment-7935">http://mbed.org/forum/mbed/topic/586/?page=1#comment-7935</A>
+</I>
+Good find. So yes, there are devices that require repeated starts.  Thanks.
+They mention two devices that need a write-read sequence with repeated
+start: the MLX90614 temperature sensor and the Lego Mindstorms
+Ultrasonic sensor.  Someone suggests a third primitive to do
+send-and-receive-with-repeated-start to cover the cases that we have
+seen where repeated start is useful.
+
+But read also the last paragraph of this comment in that thread
+<A HREF="http://mbed.org/forum/mbed/topic/586/?page=1#comment-3735">http://mbed.org/forum/mbed/topic/586/?page=1#comment-3735</A>
+which mentions a need to synchronize several data acquisition devices
+by configuring them all with repeated starts to different slave
+addresses, then the single stop is what triggers them all to start
+their data acquisition in sync.
+
+This is why implementing the I2C specification is how to get it right.
+That way we can be sure to have covered the devices that we do not
+know about, and there are more of those than the few we have on hand.
+
+&gt;<i> How about the C api I proposed in previous mail?
+</I>&gt;<i>
+</I>&gt;<i> int platform_i2c_start_and_send_address( unsigned id, u16 address, int
+</I>&gt;<i> direction )
+</I>&gt;<i> int platform_i2c_send_byte( unsigned id, u8 do_stop, u8* data, u8 len)
+</I>&gt;<i> int platform_i2c_recv_byte( unsigned id, u8 do_stop, u8* data, u8 len)
+</I>&gt;<i>
+</I>&gt;<i> Just adds a &quot;do_stop&quot; vars on top of what you proposed to manage the
+</I>&gt;<i> repeated start case.
+</I>&gt;<i> Should cover the restart cases.
+</I>
+AVR32 must have the whole transfer available as a single unit at the
+lowest level; the above interface is too low level.
+and cannot be implemented on AVR32 without send_byte having to make a
+copy of an unknown number of bytes and then sending them all when it
+is told &quot;that's all&quot;.  Anything more naive would create a race
+condition.
+
+
+Some further points:
+
+- I suggested that the speed setup take a numeric parameter instead of
+the current two symbols HIGH and LOW, since the bus speed does not
+have two discrete values, but takes a speed up to those maximum
+speeds.   I2C has variants that can run at 0-100kHz, 0-400kHz, 0-1MHz
+and 0-3.4MHz, while SMBus runs at 10kHz-100kHz. These are all
+expressible as the usual double precision float or as a long integer,
+and returning the &quot;actual speed set&quot; is coherent with the
+speed-setting primitives in the other modules.
+
+- in the new Lua interface, if we also change the names &quot;read&quot; and
+&quot;write&quot;, that removes all overlap between the old and new interfaces.
+That way the two interfaces can coexist in the transition period,
+while we write the new code, test it and then, when it seems OK,
+remove the old one.
+  The I2C language for what we are calling &quot;read&quot; and &quot;write&quot; are
+&quot;master send&quot; and &quot;master receive&quot; (completed by &quot;slave send&quot; and
+&quot;slave receive&quot;), so your &quot;send&quot; and &quot;recv&quot; names would both achieve
+this and reflect standard I2C terminology.
+
+However, Bogdan has the last word on API names. Meanwhile, let's try
+to understand what functionality is required.
+
+     M
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002506.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002508.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2507">[ date ]</a>
+              <a href="thread.html#2507">[ thread ]</a>
+              <a href="subject.html#2507">[ subject ]</a>
+              <a href="author.html#2507">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

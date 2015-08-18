@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Reducing code size of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTikfUmVYxGX352OXnUC%3DpKZhZ%2BeF0BAAzkfEKWT9%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001746.html">
+   <LINK REL="Next"  HREF="001749.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Reducing code size of eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTikfUmVYxGX352OXnUC%3DpKZhZ%2BeF0BAAzkfEKWT9%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Reducing code size of eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Dec  1 11:38:20 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001746.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+        <LI>Next message: <A HREF="001749.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1748">[ date ]</a>
+              <a href="thread.html#1748">[ thread ]</a>
+              <a href="subject.html#1748">[ subject ]</a>
+              <a href="author.html#1748">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Dec 1, 2010 at 4:19 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Nov 30, 2010 at 13:17, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; I can make you a list if you want, or (even better) fix the ones that
+</I>&gt;&gt;<i> &gt; don't work.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Better indeed :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; Which reminds me: another thing you might want to remote is the Lua
+</I>&gt;&gt;<i> &gt; parser. You'll end up with something that can only execute bytecode,
+</I>&gt;&gt;<i> &gt; but that might be acceptable for some.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> That would mean that people would have to cross-compile Lua code on
+</I>&gt;&gt;<i> their PC, with all the system-dependent installation of the
+</I>&gt;&gt;<i> cross-compiler and framework.
+</I>&gt;<i>
+</I>&gt;<i> Or we could offer this as a simple web service too, targetet to all eLua
+</I>&gt;<i> supported platforms.
+</I>&gt;<i> The eLua Web Builder already offers the option to compile programs on ROMFS
+</I>&gt;<i> when generating the final binaries. It wouldn't be hard at all to offer only
+</I>&gt;<i> the compilation (byte code generation) step for the files.
+</I>&gt;<i> But yes, it is not as simple as to type a program directly into an SD/MMC.
+</I>&gt;<i>
+</I>&gt;&gt;<i> At present, they can just connect via
+</I>&gt;&gt;<i> serial port and type Lua code in;
+</I>&gt;<i>
+</I>&gt;<i> ... or transfer a file via XMODEM.
+</I>&gt;<i> But unless you add some custom code to store them on an SD/MMC, the code
+</I>&gt;<i> currently goes only to RAM and is lost upon reset or power down.
+</I>&gt;<i> Remote File System, to be released on the next version of eLua, will add a
+</I>&gt;<i> lot to this scenario.
+</I>
+I have a few ideas of how to make the ROM file system &quot;less
+read-only&quot;, but I don't really like them. Then again, in the next
+release (not 0.8 that is due this month) we'll most likely have a new
+flash R/W file system.
+
+&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> our objective is to let them write
+</I>&gt;&gt;<i> programs in Lua on an SD card in autorun.lua, put it in the board and
+</I>&gt;&gt;<i> have it work,
+</I>&gt;<i>
+</I>&gt;<i> Yep. It works already for autorun.lc (Lua compiled bytecodes) too.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> thereby reducing the technical overhead,
+</I>&gt;<i>
+</I>&gt;<i> Right.
+</I>&gt;<i> But still mentioning the web-based dev, the future eLua Web Builder versions
+</I>&gt;<i> will likely offer a simple text editor to allow users to type directly their
+</I>&gt;<i> programs into the web service.
+</I>
+That's nice, but I don't think it would work well in practice. I mean
+OK, you type them, but what about testing? The idea (well, MY idea :)
+) behind eLua is to have a develop-run-test development cycle: write a
+small part of your program, test it on the spot, fix errors, continue.
+I don't personally see a real advantage in writing your programs
+inside the Web Builder as opposed to using a simple text editor. Sure,
+you skip the manual cross-compiling step, but you still can't test it
+properly.
+Which reminds me. I'm currently working on a standalone computer based
+on eLua, with video output, PS/2 keyboard support and (hopefully) a
+lot of other nice features. It's in early stages of development, but
+the main features are already planned. One of them is an integrated
+text editor, so the user will actually be able to use the
+forementioned develop-run-test cycle properly directory from his eLua
+board. This will not run properly on small boards, as it will require
+a lot of RAM, but it's very well suited towards system with external
+RAM such as the STM3210E-EVAL (which is what I'm currently using),
+ATEVK1100 and of course Mizar32 :) So I'm going to try to make this
+editor as generic as possible. Don't hold your breath though, it will
+be a long while until it's ready.
+
+&gt;<i> But like you, I see this as an extra and not as a replacement of
+</I>&gt;<i> directly-on-the-MCUs based dev.
+</I>&gt;<i>
+</I>&gt;&gt;<i> while loading
+</I>&gt;&gt;<i> precompiled code seems to me to be one of the things that can be
+</I>&gt;&gt;<i> removed at present for the 128K version.
+</I>&gt;<i>
+</I>&gt;<i> I don't see exactly how we could do that, unless we loose dofile(),
+</I>&gt;<i> dostring() ......
+</I>
+He was talking strictly about _loading_. Lua will still work with
+bytecodes internally, you just won't be able to load them from a file
+system.
+
+&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It's like a return to the late 1970s. You remember?
+</I>&gt;<i>
+</I>&gt;<i> I certainly do :) but Bogdan had not been link edited yet :) :)
+</I>
+:<i>) That's a nice way to put it. You're right; my earliest memories are
+</I>from the late 80s, when my father managed to build me a HC-85 (a local
+clone of the ZX Spectrum) after quite a bit of struggle. I was in the
+second grade back then, and man, I had loads of fun with that machine,
+and I learnt a lot. I guess I'm somehow trying to replicate that
+process with my eLua computer project. I really believe it would make
+a wonderful educational platform and an equally nice automation
+platform.
+
+&gt;<i> Sync.
+</I>&gt;<i> The new File Systems and other ways to remotely update code in them will add
+</I>&gt;<i> a lot to this too.
+</I>
+Not really applicable for Martin though, unless not in his stripped
+down version of eLua.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001746.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+	<LI>Next message: <A HREF="001749.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1748">[ date ]</a>
+              <a href="thread.html#1748">[ thread ]</a>
+              <a href="subject.html#1748">[ subject ]</a>
+              <a href="author.html#1748">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

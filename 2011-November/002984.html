@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] uart module and 9 bit characters
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20uart%20module%20and%209%20bit%20characters&In-Reply-To=%3CCAJ%3DY9Y0PJtojs9YWwyEeSoF9rEjuYU-%3DRaJndz7%2BnWzS%2B0OQBA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002981.html">
+   <LINK REL="Next"  HREF="002980.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] uart module and 9 bit characters</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20uart%20module%20and%209%20bit%20characters&In-Reply-To=%3CCAJ%3DY9Y0PJtojs9YWwyEeSoF9rEjuYU-%3DRaJndz7%2BnWzS%2B0OQBA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] uart module and 9 bit characters">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sun Nov 20 02:53:28 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002981.html">[eLua-dev] uart module and 9 bit characters
+</A></li>
+        <LI>Next message: <A HREF="002980.html">[eLua-dev] help with networking issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2984">[ date ]</a>
+              <a href="thread.html#2984">[ thread ]</a>
+              <a href="subject.html#2984">[ subject ]</a>
+              <a href="author.html#2984">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Nov 19, 2011 at 6:31 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On Sat, Nov 19, 2011 at 12:38 AM, Louis Mamakos &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">louie at transsys.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm working on a little project where I want to drop an STM32F103RB based
+</I>&gt;&gt;<i> eLua &quot;stamp&quot; module (from Futurlec) on an RS-485 multi-dropped serial bus.
+</I>&gt;&gt;<i> &#160;The protocol in question uses 9-bit characters, with the 9th bit being set
+</I>&gt;&gt;<i> to indicate an &quot;address&quot; for the frame. &#160;This seems a common trick with some
+</I>&gt;&gt;<i> embedded controllers that can turn off interrupts from the UART until a
+</I>&gt;&gt;<i> frame with the right 9-bit address starts by to wake up the serial port and
+</I>&gt;&gt;<i> collect the rest of the frame. &#160;I have, of course, an RS-485 transceiver to
+</I>&gt;&gt;<i> interface to the UART 1 peripheral on the STM32 CPU.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm not yet trying to do anything clever in the filtering operation, but
+</I>&gt;&gt;<i> it looks like despite being able to set the UART in 9 bit mode with
+</I>&gt;&gt;<i> uart.setup(), only 8 bits seem to get passed around inside eLua. &#160;And there
+</I>&gt;&gt;<i> doesn't seem to be an user API that returns other than individual characters
+</I>&gt;&gt;<i> or strings. &#160;Has anyone done any work in this area? &#160;I thought I'd ask
+</I>&gt;&gt;<i> around a bit prior to
+</I>&gt;<i>
+</I>&gt;<i> I don't think anybody tried to support 9-bit UARTs until now. Sorry for the
+</I>&gt;<i> bad news.
+</I>
+We're actually setting up the hardware properly for it, but the data
+types we use to return the values aren't large enough (since they're
+u8).  So, you could probably get around this by using a larger data
+type for passing those values around or perhaps we could have a
+&quot;uart_data&quot; type of some sort that could be defined to a wider type to
+allow passing 9-bit values?
+
+There are some complexities to making this work though since the UARTS
+can be buffered using the buf component, but if you simply make it
+16-bits per char and make sure that changes get replicated out
+appropriately where UART data might get processed it might not be too
+complicated to implement.
+
+&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> contemplating doing violence to the existing code.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks in advance for your help or suggestions.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Louis Mamakos
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002981.html">[eLua-dev] uart module and 9 bit characters
+</A></li>
+	<LI>Next message: <A HREF="002980.html">[eLua-dev] help with networking issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2984">[ date ]</a>
+              <a href="thread.html#2984">[ thread ]</a>
+              <a href="subject.html#2984">[ subject ]</a>
+              <a href="author.html#2984">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

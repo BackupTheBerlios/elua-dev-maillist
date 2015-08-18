@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Large ADC Commit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3C81fbe47d0902170739u5c6580fet728f8a8d14c220dd%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000493.html">
+   <LINK REL="Next"  HREF="000491.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Large ADC Commit</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3C81fbe47d0902170739u5c6580fet728f8a8d14c220dd%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Large ADC Commit">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Feb 17 16:39:55 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000493.html">[eLua-dev] Port Aliases
+</A></li>
+        <LI>Next message: <A HREF="000491.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#490">[ date ]</a>
+              <a href="thread.html#490">[ thread ]</a>
+              <a href="subject.html#490">[ subject ]</a>
+              <a href="author.html#490">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> That said, this isn't essential, and it may just be a bit of a luxury.  It
+</I>&gt;<i> depends on how people might use it.  Maybe I'm trying to make this too much
+</I>&gt;<i> like ADC one might expect on a desktop :-)
+</I>&gt;<i>
+</I>
+I still didn't understand your use case completely, but I think what we have
+right now is more than enough for an ADC subsystem.
+
+I've thought about this issue, a bit.  I'm planning on making a version that
+&gt;<i> will do a single sample at a time that doesn't require the buffer.  This
+</I>&gt;<i> will mean that burst wouldn't be available.
+</I>&gt;<i>
+</I>
+Sure, as sometimes it isn't needed.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; Best,
+</I>&gt;&gt;<i> &gt; &gt; Bogdan
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; On Mon, Feb 16, 2009 at 3:12 AM, James Snyder &lt;
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; &gt; &gt; Hi -
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; I've dropped in another large ADC commit.  I've mentioned most of
+</I>&gt;&gt;<i> what was done in the commit message, but here's a rundown:
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; - When samples are available from ADC, they're initially copied into
+</I>&gt;&gt;<i> an elua buf.
+</I>&gt;&gt;<i> &gt; &gt; &gt; - buf length is adjusted according to number of expected samples
+</I>&gt;&gt;<i> coming in (when burst is requested, buf is resized to accomodate the number
+</I>&gt;&gt;<i> of burst samples, size is dropped back down when single samples are
+</I>&gt;&gt;<i> requested)
+</I>&gt;&gt;<i> &gt; &gt; &gt; - if smoothing is enabled, and has no samples, smoothing buffer (not
+</I>&gt;&gt;<i> an elua buf) is filled first to warm up the filter, then samples begin to
+</I>&gt;&gt;<i> accumulate in the main buffer.
+</I>&gt;&gt;<i> &gt; &gt; &gt; - a flush function has been added to manually clear out both
+</I>&gt;&gt;<i> smoothing and primary buffers in case one doesn't want old samples or old
+</I>&gt;&gt;<i> smoothing data being used for future measurements
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; Also, I forgot to mention one thing in the commit message:  As per a
+</I>&gt;&gt;<i> discussion with Bogdan, the type checking on buf_write and buf_read have
+</I>&gt;&gt;<i> been pulled out.
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; One adjustment that I'd like to consider before the 0.6 freeze is to
+</I>&gt;&gt;<i> remove the option for blocking and non-blocking as it applies to sample and
+</I>&gt;&gt;<i> burst functions (used to initiate sampling) and to instead make these always
+</I>&gt;&gt;<i> non-blocking, and never have them return any samples (only errors, if
+</I>&gt;&gt;<i> needed).  A separate function, say getsamples would pull in data collected
+</I>&gt;&gt;<i> using either mode.  Right now, if one uses non-blocking mode, samples will
+</I>&gt;&gt;<i> always be returned for the last time you ran sample or burst.  This means
+</I>&gt;&gt;<i> that if you want to get the data already requested, you also have to always
+</I>&gt;&gt;<i> request new samples, even if you don't want them.
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; I should be able to make this change with minimal code changes, but
+</I>&gt;&gt;<i> I haven't done it yet because it changes the pre-existing paradigm, and I
+</I>&gt;&gt;<i> wanted to get these changes in sooner rather than later :-)
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; I think it might just take me another hour or so to get adjustments
+</I>&gt;&gt;<i> along those lines working.  There wouldn't be as long of a delay as this ADC
+</I>&gt;&gt;<i> commit.
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; Suggestions/comments are welcome :-)
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; -jsnyder
+</I>&gt;&gt;<i> &gt; &gt; &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; &gt; &gt; Elua-dev mailing list
+</I>&gt;&gt;<i> &gt; &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________ Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; Elua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________ Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/28c86b52/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/28c86b52/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000493.html">[eLua-dev] Port Aliases
+</A></li>
+	<LI>Next message: <A HREF="000491.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#490">[ date ]</a>
+              <a href="thread.html#490">[ thread ]</a>
+              <a href="subject.html#490">[ subject ]</a>
+              <a href="author.html#490">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua and yielding with lua_yield() function
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl390eV0a9f8bf3d3bfa6483e92e8%2C%0A%09jbsnyder%40fanplastic.org%2C%201591482900.446651239342031303.Jav%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000765.html">
+   <LINK REL="Next"  HREF="000767.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua and yielding with lua_yield() function</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl390eV0a9f8bf3d3bfa6483e92e8%2C%0A%09jbsnyder%40fanplastic.org%2C%201591482900.446651239342031303.Jav%3E"
+       TITLE="[eLua-dev] eLua and yielding with lua_yield() function">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Apr 10 07:40:31 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000765.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+        <LI>Next message: <A HREF="000767.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#766">[ date ]</a>
+              <a href="thread.html#766">[ thread ]</a>
+              <a href="subject.html#766">[ subject ]</a>
+              <a href="author.html#766">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Applying the patch was mostly clean, it took me about a minute to fix the hunks that didn't apply.
+
+1. I didn't bother with the Makefile patch, that didn't apply cleanly at all, but I don't think it's needed for normal builds using scons.
+2. the layout of files is different from standard lua, so you'll likely have to point patch to the right files.
+3. You'll need  to add lcoco.c to lua_files in SConstruct.
+
+The main modifications will presumably be needed in lcoco.c.
+
+Here's a bit of info on the associated _setjmp/_longjmp functions/macros:
+<A HREF="http://opengroup.org/onlinepubs/007908799/xsh/_longjmp.html">http://opengroup.org/onlinepubs/007908799/xsh/_longjmp.html</A>
+<A HREF="http://developer.apple.com/documentation/Darwin/Reference/ManPages/man3/_setjmp.3.html">http://developer.apple.com/documentation/Darwin/Reference/ManPages/man3/_setjmp.3.html</A>
+
+The differences there in definition suggest to me why platform specific implementations are needed :-)  I assume, however that those, in conjunction with the auto-configuration done in lcoco.c should help in teasing out what's needed for the implementation.
+
+I suppose we could also ping Mike Pall for suggestions.
+
+Best.
+
+-jsnyder
+
+----- &quot;Mike Thompson&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpthompson at gmail.com</A>&gt; wrote:
+
+&gt;<i> On Thu, Apr 9, 2009 at 5:34 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; Being curious, I've already taken the coco patch and applied it to a
+</I>&gt;<i> branch
+</I>&gt;<i> &gt; of eLua :-)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; It basically looks like _setjmp and _longjmp which save signals
+</I>&gt;<i> needs to be
+</I>&gt;<i> &gt; set up or appropriately implemented. &#160;I'm not sure if this would be
+</I>&gt;<i> &gt; something that could be implemented with a small amount of code, or
+</I>&gt;<i> if some
+</I>&gt;<i> &gt; sort of threading/ c-side coroutine library would be needed to make
+</I>&gt;<i> this
+</I>&gt;<i> &gt; work.
+</I>&gt;<i> 
+</I>&gt;<i> Out of curiosity, how close is the source code in '/src/lua' to the
+</I>&gt;<i> standard 5.1.4 distribution.  I've think I've seen it said that very
+</I>&gt;<i> few changes were made to the standard Lua source code for eLua.
+</I>&gt;<i> 
+</I>&gt;<i> I'll try to take a look at this over the weekend.  It certainly seems
+</I>&gt;<i> that Coco is worthy of some examination to see what is involved.
+</I>&gt;<i> 
+</I>&gt;<i> Mike
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000765.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+	<LI>Next message: <A HREF="000767.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#766">[ date ]</a>
+              <a href="thread.html#766">[ thread ]</a>
+              <a href="subject.html#766">[ subject ]</a>
+              <a href="author.html#766">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

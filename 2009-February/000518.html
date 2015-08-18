@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Large ADC Commit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1GJ9Kebbcdcb78815ebf725a87e%2C%0A%09jbsnyder%40fanplastic.org%2C%20C3C7BF29-4FB2-4CA7-837C-B79%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000517.html">
+   <LINK REL="Next"  HREF="000510.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Large ADC Commit</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1GJ9Kebbcdcb78815ebf725a87e%2C%0A%09jbsnyder%40fanplastic.org%2C%20C3C7BF29-4FB2-4CA7-837C-B79%3E"
+       TITLE="[eLua-dev] Large ADC Commit">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 02:09:19 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000517.html">[eLua-dev] Large ADC Commit
+</A></li>
+        <LI>Next message: <A HREF="000510.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#518">[ date ]</a>
+              <a href="thread.html#518">[ thread ]</a>
+              <a href="subject.html#518">[ subject ]</a>
+              <a href="author.html#518">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 17, 2009, at 5:48 PM, Dado Sutter wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Feb 17, 2009 at 20:36, Andre Carregal &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">carregal at pobox.com</A>&gt;  
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;<i> I hope I'm not being too nosy and I apologize if this has been already
+</I>&gt;<i> discussed here... but have you considered splitting the functionality
+</I>&gt;<i> into two functions?
+</I>
+You are definitely not being nosy :-)  More input is better.  I'd much  
+rather put together something resulting from a lot of discussion  
+rather than get something that needs to be rewritten in a few months.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Maybe you could use
+</I>&gt;<i>
+</I>&gt;<i> a = adc.getsamples(chan, num)
+</I>&gt;<i>
+</I>&gt;<i> and
+</I>&gt;<i>
+</I>&gt;<i> adc.addsamples(chan, num, tab)
+</I>&gt;<i>
+</I>&gt;<i> The first would always return a table with num samples, while the
+</I>&gt;<i> second would always append num samples to the &quot;tab&quot; table.
+</I>&gt;<i>
+</I>&gt;<i> Sounds better indeed.
+</I>
+This would be cleaner, I agree.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> BTW, is the offset parameter really important? Wouldn't reloading
+</I>&gt;<i> samples over a previous buffer be too error prone? That's why I'm
+</I>&gt;<i> suggesting just an append semantics...
+</I>&gt;<i>
+</I>&gt;<i> My point too, as it can be easially done by normal table indexing  
+</I>&gt;<i> code if/when needed.
+</I>
+Hmm.. I won't say it isn't ugly in some ways.  One way to make it less  
+error prone would be if both the starting index and the number of  
+samples to be copied were required if one were modifying a table.   
+This way the portion of the table being modified is explicitly  
+specified.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Another point to consider would be the need to pass the channel
+</I>&gt;<i> number. An alternative would be to make something like:
+</I>&gt;<i>
+</I>&gt;<i> c = adc.channel(0)
+</I>&gt;<i> a = c:getsamples(10)
+</I>&gt;<i>
+</I>&gt;<i> where the channel itself would be considered a first class object.
+</I>&gt;<i>
+</I>&gt;<i> Nice too, clearer and semantically stronger. But it should support a  
+</I>&gt;<i> list/table of channels, to &quot;atomize&quot; the best it can the sampling   
+</I>&gt;<i> and I don't see how this notation could be used here.
+</I>
+&gt;<i> Why not simply
+</I>&gt;<i>
+</I>&gt;<i> channels = adc.channel(0, 3, 17, 21) -- four channels
+</I>&gt;<i>
+</I>&gt;<i> and then use
+</I>&gt;<i>
+</I>&gt;<i> a = channels:getsamples(10)
+</I>&gt;<i>
+</I>&gt;<i> which would get 10 samples for each channel?
+</I>&gt;<i>
+</I>&gt;<i> Andr&#233;
+</I>
+Ooh, that _would_ be nice... :-)
+
+I'll have to think about that...
+
+I'm still inclined to keep initiation of sampling and picking up of  
+samples separate though, unless there is a way to seriously reduce the  
+number of microseconds each function call takes.  If  
+channels:getsamples(10) does both initiation and collection of samples  
+back to lua, the timing between samples collected might be  
+deterministic, but if you're doing that repeatedly, the time in  
+between each call will not be :-)
+
+Maybe something like:
+
+channels = adc.channel(0, 3, 17, 20)
+
+then:
+channels:sample()
+or
+channels:burst(count, frequency)
+
+and then use:
+a = channels:getsamples(10)
+
+to pick up samples.
+
+Hmm...
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Finally, have you considered using an API closer to LTN12? This may
+</I>&gt;<i> facilitate the future use of filters over a sample stream, if there is
+</I>&gt;<i> such a thing... :o)
+</I>&gt;<i> <A HREF="http://lua-users.org/wiki/FiltersSourcesAndSinks">http://lua-users.org/wiki/FiltersSourcesAndSinks</A>
+</I>&gt;<i>
+</I>&gt;<i> That I will have to take a look because it is new to me :) Thanks !
+</I>
+Hmm... I hadn't seen that.  I'll check this out :-)
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/d5bdef15/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/d5bdef15/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/d5bdef15/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/d5bdef15/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000517.html">[eLua-dev] Large ADC Commit
+</A></li>
+	<LI>Next message: <A HREF="000510.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#518">[ date ]</a>
+              <a href="thread.html#518">[ thread ]</a>
+              <a href="subject.html#518">[ subject ]</a>
+              <a href="author.html#518">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

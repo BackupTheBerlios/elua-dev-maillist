@@ -1,0 +1,220 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Building et-STM32
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20et-STM32&In-Reply-To=%3CCAO4OGbnpz5BJgrWrtxiZNYW_NeYq7PNL0q7uGxjwaf8J1qVW7Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004279.html">
+   <LINK REL="Next"  HREF="004281.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Building et-STM32</H1>
+    <B>Bill</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20et-STM32&In-Reply-To=%3CCAO4OGbnpz5BJgrWrtxiZNYW_NeYq7PNL0q7uGxjwaf8J1qVW7Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Building et-STM32">softlanding at gmail.com
+       </A><BR>
+    <I>Wed Nov 13 15:36:00 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004279.html">[eLua-dev] Execute compiled lua scripts directly from flash?
+</A></li>
+        <LI>Next message: <A HREF="004281.html">[eLua-dev] Building et-STM32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4280">[ date ]</a>
+              <a href="thread.html#4280">[ thread ]</a>
+              <a href="subject.html#4280">[ subject ]</a>
+              <a href="author.html#4280">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Having problems building the ET-STM32 image. Everything started out with
+most recent downloads.
+
+Building on debian
+I have built arm-none-eabi-gcc toolchain according to the instructions at
+site
+<A HREF="http://www.wolinlabs.com/blog/linux.stm32.discovery.gcc.html">http://www.wolinlabs.com/blog/linux.stm32.discovery.gcc.html</A>
+
+I did a new git from the github repository and did a build with the command
+./build_elua.lua board=et-stm32
+
+The build fails for luaopen_dummy in linit.c
+I moved it up in the file so it can compile.
+This is the only file I edited.
+I get some warnings, but a .elf is created.
+I used arm-none-eabi-objcopy -O binary elua_lua_et-stm32.elf
+elua_elua_et-stm32.bin
+
+Copied the bin to XP to run STM flash loader (works with precompiled binary
+on elua site)
+After loading I get the following instead of a prompt:
+
+[Hard fault handler]
+R0 = 80335f8
+R1 = 80000000
+R2 = 80335f8
+R3 = 8035800
+R12 = 38
+LR = 80004b1
+PC = 80003b6
+PSR = a1000000
+BFAR = 10068df8
+CFSR = 8200
+HFSR = 40000000
+DFSR = 0
+AFSR = 0
+
+Output from build:
+
+/elua# ./build_elua.lua board=et-stm32
+[CONFIG] Found board description file at boards/known/et-stm32.lua
+[CONFIG] Board header file is unchanged.
+
+*********************************
+Compiling eLua ...
+CPU:             STM32F103RE
+Board:           et-stm32
+Platform:       stm32
+Allocator:       newlib
+Boot Mode:       standard
+Target:         lua
+Toolchain:       codesourcery
+ROMFS mode:     verbatim
+Version:         v0.9-133-gc6b97d4
+*********************************
+
+[PHONY] #phony:romfs
+Building ROM file system ...
+Done, total size is 1 bytes
+[COMPILE] .build/et-stm32/src__lua__linit.o
+[COMPILE] .build/et-stm32/src__lua__ltm.o
+[COMPILE] .build/et-stm32/src__lua__lapi.o
+[COMPILE] .build/et-stm32/src__lua__lauxlib.o
+[COMPILE] .build/et-stm32/src__lua__lgc.o
+[COMPILE] .build/et-stm32/src__lua__ltable.o
+[COMPILE] .build/et-stm32/src__lua__lmathlib.o
+[COMPILE] .build/et-stm32/src__lua__lstrlib.o
+[COMPILE] .build/et-stm32/src__lua__lstate.o
+[COMPILE] .build/et-stm32/src__lua__lrotable.o
+[COMPILE] .build/et-stm32/src__elua_mmc.o
+[COMPILE] .build/et-stm32/src__elua_uip.o
+[COMPILE] .build/et-stm32/src__elua_adc.o
+[COMPILE] .build/et-stm32/src__common_uart.o
+[COMPILE] .build/et-stm32/src__common.o
+[COMPILE] .build/et-stm32/src__dlmalloc.o
+[COMPILE] .build/et-stm32/src__main.o
+[COMPILE] .build/et-stm32/src__buf.o
+[COMPILE] .build/et-stm32/src__uip__uip_arp.o
+[COMPILE] .build/et-stm32/src__uip__uip.o
+[COMPILE] .build/et-stm32/src__uip__uiplib.o
+[COMPILE] .build/et-stm32/src__uip__dhcpc.o
+[COMPILE] .build/et-stm32/src__uip__psock.o
+[COMPILE] .build/et-stm32/src__uip__resolv.o
+[COMPILE] .build/et-stm32/src__uip__uip-neighbor.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_pwr.o
+[COMPILE] .build/et-stm32/src__platform__stm32__FWLib__library__src__misc.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_sdio.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_can.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_gpio.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_usart.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_fsmc.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_spi.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_rtc.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_tim.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_bkp.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_dma.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_iwdg.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_adc.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_exti.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_dac.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_i2c.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_rcc.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_crc.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_wwdg.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_flash.o
+[COMPILE]
+.build/et-stm32/src__platform__stm32__FWLib__library__src__stm32f10x_dbgmcu.o
+[COMPILE] .build/et-stm32/src__platform__stm32__core_cm3.o
+[COMPILE] .build/et-stm32/src__platform__stm32__system_stm32f10x.o
+[ASM] .build/et-stm32/src__platform__stm32__startup_stm32f10x_hd.o
+[COMPILE] .build/et-stm32/src__platform__stm32__platform.o
+[COMPILE] .build/et-stm32/src__platform__stm32__stm32f10x_it.o
+[COMPILE] .build/et-stm32/src__platform__stm32__lcd.o
+src/platform/stm32/lcd.c: In function 'LCD_ClearLine':
+src/platform/stm32/lcd.c:172:3: warning: pointer targets in passing
+argument 2 of 'LCD_DisplayStringLine' differ in signedness [-Wpointer-sign]
+In file included from src/platform/stm32/lcd.c:19:0:
+src/platform/stm32/lcd.h:180:6: note: expected 'u8 *' but argument is of
+type 'char *'
+[COMPILE] .build/et-stm32/src__platform__stm32__lua_lcd.o
+[COMPILE] .build/et-stm32/src__platform__stm32__platform_int.o
+[COMPILE] .build/et-stm32/src__platform__stm32__enc.o
+src/platform/stm32/enc.c: In function 'index_handler':
+src/platform/stm32/enc.c:65:5: warning: statement with no effect
+[-Wunused-value]
+src/platform/stm32/enc.c: In function 'enc_set_index_handler':
+src/platform/stm32/enc.c:60:1: warning: control reaches end of non-void
+function [-Wreturn-type]
+[ASM] .build/et-stm32/src__platform__cortex_utils.o
+[COMPILE] .build/et-stm32/src__platform__arm_cortex_interrupts.o
+[LINK] ./elua_lua_et-stm32.elf
+[builder] Done building target.
+
+
+thanks for any help
+Bill
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20131113/a5743a5c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20131113/a5743a5c/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004279.html">[eLua-dev] Execute compiled lua scripts directly from flash?
+</A></li>
+	<LI>Next message: <A HREF="004281.html">[eLua-dev] Building et-STM32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4280">[ date ]</a>
+              <a href="thread.html#4280">[ thread ]</a>
+              <a href="subject.html#4280">[ subject ]</a>
+              <a href="author.html#4280">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

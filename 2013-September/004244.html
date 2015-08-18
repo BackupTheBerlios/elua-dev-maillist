@@ -1,0 +1,373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Issue with the mbed_pio platform module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Issue%20with%20the%20mbed_pio%20platform%20module&In-Reply-To=%3CCAJOqzRzp4yycH5VMu3VoO-U-F73KgcziJfASvwVUZ_%2BXN1X92A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004243.html">
+   <LINK REL="Next"  HREF="004245.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Issue with the mbed_pio platform module</H1>
+    <B>patrick pollet</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Issue%20with%20the%20mbed_pio%20platform%20module&In-Reply-To=%3CCAJOqzRzp4yycH5VMu3VoO-U-F73KgcziJfASvwVUZ_%2BXN1X92A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Issue with the mbed_pio platform module">patrick.pollet at gmail.com
+       </A><BR>
+    <I>Mon Sep  2 14:54:20 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004243.html">[eLua-dev] Issue with the mbed_pio platform module
+</A></li>
+        <LI>Next message: <A HREF="004245.html">[eLua-dev] Issue with the mbed_pio platform module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4244">[ date ]</a>
+              <a href="thread.html#4244">[ thread ]</a>
+              <a href="subject.html#4244">[ subject ]</a>
+              <a href="author.html#4244">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I think it even goes beyond the doc.
+As i understand and as i did some tests with it, the module uses the pin
+numbers of the Mbed board to select the function of the pins and even to
+select the pins.
+(correct me if i miss something)
+So this pin number doesn't have any sense for the lcp1768 itself (unless
+you keep with you the schematic of the Mbed to have the correspondance
+lpc1768 - Mbed pinning number ).
+
+At this state i think that Mbed is probably a more accurate name than
+lpc17xx for this module.
+(even if we could imagine another module doing the same thing for the
+lcp1768 or a generic module including that for lpc1768 and mbed )
+
+Regards.
+
+Patrick
+
+
+2013/9/2 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+
+&gt;<i> Oh, that :) You do have a point there, I forgot about the doc :)
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Sep 2, 2013 at 3:22 PM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; Agreed, but the doc says mbed ;)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thiago
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Sep 2, 2013 4:17 AM, &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Hi,
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; That is not bad, it's logical :) It's called a platform specific
+</I>&gt;<i> &gt;&gt; module before it is specific to the PLATFORM (lpc17xx in this case),
+</I>&gt;<i> &gt;&gt; not the BOARD (mbed). If you take your program and try to run in on
+</I>&gt;<i> &gt;&gt; another board with a LPC17XX, it will work as expected if you use (for
+</I>&gt;<i> &gt;&gt; example) lpc17xx.pio as opposed to mbed.pio, which wouldn't work
+</I>&gt;<i> &gt;&gt; anymore on your new board. A very simple &quot;fix&quot; would be to add this
+</I>&gt;<i> &gt;&gt; line at the beginning of your program:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; local mbed = lpc17xx
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Then you can use mbed.&lt;module&gt; as usual.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; HTH,
+</I>&gt;<i> &gt;&gt; Bogdan
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Sat, Aug 31, 2013 at 8:42 PM, Gabriel Duarte &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A>&gt;
+</I>&gt;<i> &gt;&gt; wrote:
+</I>&gt;<i> &gt;&gt; &gt; Owwwwww that is bad... Do you know where is the definition to change
+</I>&gt;<i> the
+</I>&gt;<i> &gt;&gt; &gt; nama back to mbed??
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; 2013/8/31 Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt; I'm trying to fix that...
+</I>&gt;<i> &gt;&gt; &gt;&gt; What I've found out so far is that the module IS there, but it's
+</I>&gt;<i> called
+</I>&gt;<i> &gt;&gt; &gt;&gt; lpc17xx instead of mbed:
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt; &gt; return lpc17xx.pio.configpin
+</I>&gt;<i> &gt;&gt; &gt;&gt; lightfunction: 0x19a81
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt; Best,
+</I>&gt;<i> &gt;&gt; &gt;&gt; Thiago
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt; On Thu, Aug 29, 2013 at 7:33 PM, patrick pollet
+</I>&gt;<i> &gt;&gt; &gt;&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">patrick.pollet at gmail.com</A>&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt; wrote:
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; Thanks,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; despite my research i miss this page.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; Concerning the problem i found an almost fix :
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; - file build_elua.lua line 130 change &quot;false&quot; by &quot;true&quot; ( skip conf
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; attribute, to avoid file board_mbed.h to be overwritten)
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; - file auxmods.h, add line 63
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; #define AUXLIB_MBEDPIO &quot;mbed&quot; LUALIB_API int (luaopen_mbed_pio)(
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; lua_State *L );
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; -file board_mbed.h, add line 217
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; #define MODULE_MBEDPIO_LINE               _ROM( AUXLIB_MBEDPIO,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; luaopen_mbed_pio, mbed_pio_map )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; and few lines below, add
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; MODULE_MBEDPIO_LINE
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; after
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; MODULE_PD_LINE\
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; (from memories, that's all)
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; after recompiling mbed module sdeems to works, but only
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; mbed.configpin(....) or ledpin = mbed.LED1 (for example) works,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; instead of
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; mbed.pio.configpin(...) or ledpin = mbed.pio.LED1
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; So i think that i missed something somewhere but like that i could
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; wait
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; for an official fix.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; Patrick Pollet
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; 2013/8/29 Gabriel Duarte &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A>&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; We have reported this issue here:
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; <A HREF="https://github.com/elua/elua/issues/23">https://github.com/elua/elua/issues/23</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; I guess it's a problem with the build system, but no one has
+</I>&gt;<i> assigned
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; to
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; fix it.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; 2013/8/29 patrick pollet &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">patrick.pollet at gmail.com</A>&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; Dear all,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; i am curently working on the eLua release for mbed, i succeed in
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; adding
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; mmcfs and spi support (currently working on i2c), but i have a
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; problem with
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; mbed_pio platform module.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; The source for this module is in my source tree and it seems that
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; it's
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; well compiled, but if i use something like
+</I>&gt;<i> mbed.pio.configpin(....)
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; in a lua
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; script, i have the error : attempt to index global 'mbed' (a nil
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; value)
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; The mbed &quot;object&quot; does not exist.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; If i use the .bin available on the eLua web page about mbed, it
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; works
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; well.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; So, i think that something is missing in my build environement and
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; the
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; mbed_pio module is not really integrated. But i can not find what
+</I>&gt;<i> is
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; missing.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; My release of eLua is : v0.9-89-g803bea8
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; Every help will be appreciated.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; Regards.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; --
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; Patrick Pollet
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; Ce message et toutes les pi&#232;ces jointes sont confidentiels et
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; exclusifs
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; pour le destinataire du message. N'importe quelle autre
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; distribution,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; utilisation ou reproduction est non autoris&#233;e et interdite. Si
+</I>&gt;<i> vous
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; receviez
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; ce message par erreur, informez svp l'exp&#233;diteur imm&#233;diatement et
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; supprimez
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; le message de votre syst&#232;me.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; This message and any attachments are confidential, for the
+</I>&gt;<i> exclusive
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; use of the addressee and may be legally privileged. Any other
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; distribution,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; use or reproduction is unauthorised and prohibited. If you
+</I>&gt;<i> received
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; this
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; message in error, please notify the sender immediately and delete
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; the
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; message from your system.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; --
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; Gabriel Duarte
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; Linux User #471185
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; Rio de Janeiro / RJ
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; --
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; Patrick Pollet
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; Ce message et toutes les pi&#232;ces jointes sont confidentiels et
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; exclusifs
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; pour le destinataire du message. N'importe quelle autre
+</I>&gt;<i> distribution,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; utilisation ou reproduction est non autoris&#233;e et interdite. Si vous
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; receviez
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; ce message par erreur, informez svp l'exp&#233;diteur imm&#233;diatement et
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; supprimez
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; le message de votre syst&#232;me.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; This message and any attachments are confidential, for the exclusive
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; use
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; of the addressee and may be legally privileged. Any other
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; distribution, use
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; or reproduction is unauthorised and prohibited. If you received this
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; message
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; in error, please notify the sender immediately and delete the
+</I>&gt;<i> message
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; from
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; your system.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; --
+</I>&gt;<i> &gt;&gt; &gt; Gabriel Duarte
+</I>&gt;<i> &gt;&gt; &gt; Linux User #471185
+</I>&gt;<i> &gt;&gt; &gt; Rio de Janeiro / RJ
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Patrick Pollet
+
+
+
+
+
+*Ce message et toutes les pi&#232;ces jointes sont confidentiels et exclusifs
+pour le destinataire du message. N'importe quelle autre distribution,
+utilisation ou reproduction est non autoris&#233;e et interdite. Si vous
+receviez ce message par erreur, informez svp l'exp&#233;diteur imm&#233;diatement et
+supprimez le message de votre syst&#232;me. *
+
+* *
+
+*This message and any attachments are confidential, for the exclusive use
+of the addressee and may be legally privileged. Any other distribution, use
+or reproduction is unauthorised and prohibited. If you received this
+message in error, please notify the sender immediately and delete the
+message from your system. ***
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130902/b74e53c3/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130902/b74e53c3/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004243.html">[eLua-dev] Issue with the mbed_pio platform module
+</A></li>
+	<LI>Next message: <A HREF="004245.html">[eLua-dev] Issue with the mbed_pio platform module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4244">[ date ]</a>
+              <a href="thread.html#4244">[ thread ]</a>
+              <a href="subject.html#4244">[ subject ]</a>
+              <a href="author.html#4244">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

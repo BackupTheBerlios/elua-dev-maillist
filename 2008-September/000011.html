@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Elua-dev] Fwd: [Elua-svn] r71 - in trunk: . src	src/platform/lpc288x
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BElua-dev%5D%20Fwd%3A%20%5BElua-svn%5D%20r71%20-%20in%20trunk%3A%20.%20src%0A%09src/platform/lpc288x&In-Reply-To=%3C81fbe47d0809020033j24a54f91xe1ff5f3f8d76e54d%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000015.html">
+   <LINK REL="Next"  HREF="000016.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Elua-dev] Fwd: [Elua-svn] r71 - in trunk: . src	src/platform/lpc288x</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BElua-dev%5D%20Fwd%3A%20%5BElua-svn%5D%20r71%20-%20in%20trunk%3A%20.%20src%0A%09src/platform/lpc288x&In-Reply-To=%3C81fbe47d0809020033j24a54f91xe1ff5f3f8d76e54d%40mail.gmail.com%3E"
+       TITLE="[Elua-dev] Fwd: [Elua-svn] r71 - in trunk: . src	src/platform/lpc288x">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Sep  2 09:33:49 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000015.html">[Elua-dev] Where to buy
+</A></li>
+        <LI>Next message: <A HREF="000016.html">[Elua-dev] Where to buy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#11">[ date ]</a>
+              <a href="thread.html#11">[ thread ]</a>
+              <a href="subject.html#11">[ subject ]</a>
+              <a href="author.html#11">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+First, let's try to keep the conversation on the elua-dev list :) and
+elua-svn dedicated to SVN traffic.
+And now to answer your question: this has to do with the way
+dlmalloc() requests memory. It doesn't know in advance how much RAM
+you have free, it just requests small ammounts of memory (via sbrk)
+until sbrk returns -1, or in other words &quot;no more memory&quot;. It also has
+an implementation of the mallinfo() function that is supposed to give
+you memory statistics (which is what the &quot;mem&quot; command used). But,
+because of the forementioned sbrk() behaviour, mallinfo() doesn't
+actually know how much memory you have until the allocator requested
+ALL the memory from the system (via successive calls to sbrk). Thus,
+if you run this command when you first boot your board, you'll see
+something like &quot;total memory: 768     free memory:384&quot;, since the
+allocator only requested a little ammount of memory from the system.
+If you run the command later, you'll probably get a different report,
+and so on. When you have requested all the memory from the system, the
+report won't change anymore (well, the total memory part won't change
+anymore), and this is when the report is actally right.
+This is the story, and I find it very confusing and of little help.
+Unfortunately this is how dlmalloc() works. If I do manage to
+integrate aTLSF implementation at some point, we'll have some real
+statistics. OR we can implement our own statistics by keeping counters
+that we update when doing malloc/realloc/calloc/free, but
+unfortunately this isn't accurate, as seggregated allocators (like
+dlmalloc and TLSF) have some overhead that you can't compute (TLSF,
+for example, keeps a two-level &quot;page directory&quot; and quite a bit of
+overhead associated with it, about 3k of memory). The only way to know
+about this overhead is via the mallinfo() function, but as you already
+know, this doesn't help much.
+
+Best,
+Bogdan
+
+---------- Forwarded message ----------
+From: Fr&#233;d&#233;ric Thomas &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at thomascorner.com</A>&gt;
+Date: Tue, Sep 2, 2008 at 2:51 AM
+Subject: Re: [Elua-svn] r71 - in trunk: . src src/platform/lpc288x
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-svn at lists.berlios.de</A>
+
+
+On Sep 1, 2008, at 15:21 , bogdanm at BerliOS wrote:
+
+&gt;<i> Author: bogdanm
+</I>&gt;<i> Date: 2008-09-01 15:21:06 +0200 (Mon, 01 Sep 2008)
+</I>&gt;<i> New Revision: 71
+</I>&gt;<i>
+</I>&gt;<i> Log:
+</I>&gt;<i> modified the build system. Also removed the 'mem' command from the
+</I>&gt;<i> shell, as it was very confusing
+</I>
+We desperately need some easy way to monitor RAM on those memory
+constrained board, so I think it should remain - or improved. What was
+confusing about it ?
+
+Fred
+
+_______________________________________________
+Elua-svn mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-svn at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-svn">https://lists.berlios.de/mailman/listinfo/elua-svn</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000015.html">[Elua-dev] Where to buy
+</A></li>
+	<LI>Next message: <A HREF="000016.html">[Elua-dev] Where to buy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#11">[ date ]</a>
+              <a href="thread.html#11">[ thread ]</a>
+              <a href="subject.html#11">[ subject ]</a>
+              <a href="author.html#11">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

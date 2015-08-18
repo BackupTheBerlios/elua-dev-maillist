@@ -1,0 +1,313 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] On Timers &amp; ADC
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20On%20Timers%20%26%20ADC&In-Reply-To=%3CF605282D-DF07-490B-8244-FE09C52BA37A%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000300.html">
+   <LINK REL="Next"  HREF="000299.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] On Timers &amp; ADC</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20On%20Timers%20%26%20ADC&In-Reply-To=%3CF605282D-DF07-490B-8244-FE09C52BA37A%40fanplastic.org%3E"
+       TITLE="[eLua-dev] On Timers &amp; ADC">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jan 23 19:01:39 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000300.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+        <LI>Next message: <A HREF="000299.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#302">[ date ]</a>
+              <a href="thread.html#302">[ thread ]</a>
+              <a href="subject.html#302">[ subject ]</a>
+              <a href="author.html#302">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Jan 23, 2009, at 1:28 AM, Bogdan Marinescu wrote:
+
+&gt;<i> &gt; So I've been thinking about how to accomplish burst sampling at a  
+</I>&gt;<i> given rate
+</I>&gt;<i> &gt; (or background sampling).  The Stellaris ADCs are programmable in  
+</I>&gt;<i> terms of
+</I>&gt;<i> &gt; selecting a sampling rate, but the range is pretty limited, and  
+</I>&gt;<i> fairly fast
+</I>&gt;<i> &gt; (125 ksamples/s - 1 msample/s).  In order to do more arbitrary  
+</I>&gt;<i> rates, I'll
+</I>&gt;<i> &gt; need to use a timer.  The issue I see is: what if I'm already  
+</I>&gt;<i> using a timer,
+</I>&gt;<i> &gt; or multiple timers for some purpose?  In cases where something  
+</I>&gt;<i> like this is
+</I>&gt;<i> &gt; needed should timers be reserved/locked?
+</I>&gt;<i>
+</I>&gt;<i> In the future, we'll most likely go with Mike's lock/unlock  
+</I>&gt;<i> suggestion, so this will be automatic. For now the user should  
+</I>&gt;<i> manage the resources himself.
+</I>&gt;<i>
+</I>&gt;<i> &gt; I've not worked with all the other supported platforms, but from  
+</I>&gt;<i> working
+</I>&gt;<i> &gt; with some other microcontrollers I think a timer will be needed.   
+</I>&gt;<i> In going
+</I>&gt;<i> &gt; with how things are already implemented (platform_uart_recv), I'm  
+</I>&gt;<i> going to
+</I>&gt;<i> &gt; assume this is how I'll have to adjust things.
+</I>&gt;<i>
+</I>&gt;<i> Precisely :)
+</I>&gt;<i>
+</I>&gt;<i> &gt; As such, I suppose the ADC API should be amended a bit, as follows:
+</I>&gt;<i> &gt; void platform_adc_burst( unsigned id, u16* buf, unsigned count,  
+</I>&gt;<i> unsigned timer_id, u32 frequency );
+</I>&gt;<i>
+</I>&gt;<i> Right.
+</I>&gt;<i>
+</I>&gt;<i> &gt; The current API then looks like this:
+</I>&gt;<i> &gt; int platform_adc_exists( unsigned id );
+</I>&gt;<i> &gt; u16 platform_adc_sample( unsigned id );
+</I>&gt;<i> &gt; u16 platform_adc_maxval( unsigned id );
+</I>&gt;<i> &gt; void platform_adc_start( unsigned id );
+</I>&gt;<i> &gt; int platform_adc_is_done( unsigned id );
+</I>&gt;<i> &gt; void platform_adc_set_mode( unsigned id, int mode );
+</I>&gt;<i> &gt; void platform_adc_burst( unsigned id, u16* buf, unsigned count,  
+</I>&gt;<i> unsigned timer_id, u32 frequency );
+</I>&gt;<i>
+</I>&gt;<i> The current approach is to have the &quot;common&quot; functions as separate  
+</I>&gt;<i> function, and the other grouped in a common function (see  
+</I>&gt;<i> platform_timer_op, platform_pwm_op ...) just to reduce the number of  
+</I>&gt;<i> actual functions one needs to implement for a given backend (this  
+</I>&gt;<i> looks less scary for someone that wants to port to a new  
+</I>&gt;<i> backend :) ). In this case I'd make the exists, sample, start and  
+</I>&gt;<i> is_done function independent, and put everything else in a  
+</I>&gt;<i> platform_adc_op. It's not a requirement though, if this looks better  
+</I>&gt;<i> to you then go for it, I'll leave it up to you.
+</I>
+Yeah, I was starting to feel that I might want to do that once the  
+number of functions was growing...   I'll switch over to that for the  
+next set of feature update.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &gt; If continuous mode sampling is to run at a rate that isn't in the  
+</I>&gt;<i> range of
+</I>&gt;<i> &gt; 125 ksamples to 1 msamples, we might either need to have the  
+</I>&gt;<i> set_mode
+</I>&gt;<i> &gt; function accept a timer (which is less useful in the case of doing
+</I>&gt;<i> &gt; single-shot, but timers can be used that way :-)), or have another  
+</I>&gt;<i> function
+</I>&gt;<i> &gt; like burst, but that isn't blocking, and has a corresponding stop  
+</I>&gt;<i> function.
+</I>&gt;<i>
+</I>&gt;<i> What about this: make &quot;set_mode&quot; specify one more thing: blocking or  
+</I>&gt;<i> non-blocking. After that, both sample and burst would work in that  
+</I>&gt;<i> mode. This would eliminate the need for &quot;start&quot;, and would also make  
+</I>&gt;<i> &quot;burst&quot; blocking when needed. And the timer would always be  
+</I>&gt;<i> specified in &quot;burst&quot;, so we don't need as a parameter to &quot;mode&quot;.
+</I>&gt;<i> By the way, do we really need the &quot;continuous&quot; mode? Maybe we can  
+</I>&gt;<i> specify &quot;0&quot; as a parameter to platform_adc_burst (which would mean  
+</I>&gt;<i> &quot;do this at the maximum speed&quot;) and forget about the continous mode  
+</I>&gt;<i> altogether. And then &quot;set mode&quot; would just set the blocking or non- 
+</I>&gt;<i> blocking mode. Seems more &quot;natural&quot; this way.
+</I>
+That sounds good.
+
+Regarding continuous mode, I have two thoughts.  As far as the &quot;do  
+this as fast as possible&quot; burst mode is considered, I think that  
+sounds good.  The other thought here is that &quot;continuous&quot; mode can  
+also be thought of as &quot;background sampling mode&quot; where ADC conversions  
+run at whatever rate you chose and dump a new sample into a buffer  
+whenever ready.  This could be nice in situations where a sampling  
+rate might not be terribly high, or if I want to drive an application  
+to update something whenever new data is available.  Say, I have a  
+scope, and I want to display the last 50 samples, or something  
+similar.  I can update my display whenever I notice that there is a  
+new sample to be added.  I suppose something similar could be done on  
+the Lua side with a timer and sample being used in single-shot,  
+though. I'm not sure how the overhead compares, but what you suggest I  
+think might be more straightforward for an end user.  I'll think about  
+this, and maybe make some benchmarks.
+
+&gt;<i> &gt; I'm also going to add a smoothing option, which in the context of  
+</I>&gt;<i> single
+</I>&gt;<i> &gt; shot or continuous simply means that  enough samples must be  
+</I>&gt;<i> averaged before
+</I>&gt;<i> &gt; the result is_done.  For burst, we could do this too, either as  
+</I>&gt;<i> oversampling
+</I>&gt;<i> &gt; (i.e. each burst sample is actually 5 averaged values, that are  
+</I>&gt;<i> available
+</I>&gt;<i> &gt; because we're actually sampling at 5 times the rate passed to  
+</I>&gt;<i> adc_burst) or
+</I>&gt;<i> &gt; with a moving average filter.  For single shot, these would be the  
+</I>&gt;<i> same, but
+</I>&gt;<i> &gt; they differ when we're talking about continuous or burst  
+</I>&gt;<i> sampling.  One
+</I>&gt;<i> &gt; requires that filter_length samples be collected prior to each  
+</I>&gt;<i> averaged
+</I>&gt;<i> &gt; sample being released, and the other runs at the sampling rate, as  
+</I>&gt;<i> soon as
+</I>&gt;<i> &gt; filter_length samples are collected so that the moving average has  
+</I>&gt;<i> enough
+</I>&gt;<i> &gt; data. Hmm...
+</I>&gt;<i>
+</I>&gt;<i> It shouldn't be diferent. Everything is oversampled by x, and every  
+</I>&gt;<i> x sample you return an actual result to the system. This makes more  
+</I>&gt;<i> sense if we adopt the frequency=0 convention I mentioned above.
+</I>
+Hmm.. so are you suggesting that smoothing do just oversampling or a  
+moving average, or that we have options for both?
+
+I think for lower sampling rates (not near the maximum rate) with  
+short windows (x8, x16), oversampling makes a lot of sense, especially  
+where there's a hardware averager ;-)  When it comes to other  
+platforms, whether you do a moving average or oversampling, you still  
+have to do the same amount of averaging whether you use one or the  
+other. Assuming that the device has a single sample buffer for data,  
+and no mechanism to write samples directly to RAM interrupt traffic  
+might be about the same too.
+
+Depending on sample rate, with a moving average you might be able to  
+have longer filters.  That said, these devices don't have much RAM, so  
+this may not matter that much.
+
+&gt;<i> &gt; The stellaris platform has hardware averaging, though it is  
+</I>&gt;<i> designed for
+</I>&gt;<i> &gt; being used for oversampling, not just rolling averages.
+</I>&gt;<i>
+</I>&gt;<i> But isn't the functionality similar? Or they just do a simple  
+</I>&gt;<i> averaging in LM3S, instead of a moving average? (sorry, way too  
+</I>&gt;<i> sleepy to check now).
+</I>
+I could be wrong, but they appear to do simple averaging, where one  
+takes (output sample rate)*(oversampling order) samples, averages a  
+unique set of samples for each one outputted.  I'll look if there's a  
+way around this.  When they give an example of code for moving average  
+in the app-note linked below, they do the averaging in software.
+
+&gt;<i> &gt; This article does a decent job of outlining the issues:
+</I>&gt;<i> &gt; <A HREF="http://www.zlgmcu.com/luminary/download/LM3SAPP_ADC_OverSample_Tech_en.pdf">http://www.zlgmcu.com/luminary/download/LM3SAPP_ADC_OverSample_Tech_en.pdf</A>
+</I>&gt;<i>
+</I>&gt;<i> I'll try to take a look at that. What I know for sure is that a 16x  
+</I>&gt;<i> or even 8x moving average filter can work wonders, so we'd better  
+</I>&gt;<i> have that, even if it involves interrupts.
+</I>&gt;<i> A little homework for you :): try to figure out a way to have  
+</I>&gt;<i> adc_burst mode work (optionally) in double buffering mode. It's  
+</I>&gt;<i> really useful for lots of applications.
+</I>
+Yeah, I can see why double buffering would be useful.  I'll keep that  
+in mind when I'm putting together this implementation.
+
+Oversampling on Stellaris doesn't necessarily need extra interrupt  
+handlers for low numbers of samples (on the 16x or 8x order) for  
+single-shot.
+
+For non-single shot sampling I'll need to have an ISR to copy stuff  
+from the ADC register to some separate buffer in order to prevent the  
+ADC registers/fifos from overflowing.  To some extent this is  
+avoidable for small numbers of samples, but I think I'll do a general  
+implementation, since I don't think all the other ARM ADCs use FIFOs  
+for buffering samples, and even on Stellaris the FIFOs vary in length  
+depending on which sequencer you use.  So, I would consider their use  
+an optimization that will add a bit of backend complexity.
+
+The other thing I've noted is that when I tried
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &gt; void platform_adc_set_smoothing( unsigned id, u8 length );
+</I>&gt;<i> Agreed. And length should probably be a power of 2 to make things  
+</I>&gt;<i> (like modulo and division operations) faster.
+</I>
+I agree.  I was originally going to do this so that it would be  
+recognized that the length was a power of two, but to still support  
+doing the slower division.  I suppose we could have users pass the  
+exponent (2^&lt;value passed&gt;), but I feel like that would be strange
+
+
+&gt;<i> On Fri, Jan 23, 2009 at 3:52 AM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> I suppose one other option here is to use virtual timers instead of  
+</I>&gt;<i> dedicated ones?  I've looked at the virtual timer stuff that has  
+</I>&gt;<i> been checked in, but I have to admit that I've not yet quite figured  
+</I>&gt;<i> out how to make use of them.  It looks like they're using SysTick?
+</I>&gt;<i>
+</I>&gt;<i> They can use any timer interrupt, they just happen to use SysTick on  
+</I>&gt;<i> LM3S because that doesn't 'eat' one of the regular timers (the ones  
+</I>&gt;<i> we use in the tmr module). And it just increments some 32-bit  
+</I>&gt;<i> counters. Very simple stuff really, see src/common.c for details, I  
+</I>&gt;<i> think they're quite straightforward. You use them just like you use  
+</I>&gt;<i> the other timer functions, but you specify a virtual timer ID  
+</I>&gt;<i> instead of an actual timer ID (the magic that makes this work also  
+</I>&gt;<i> happens in src/common.c).
+</I>
+I'll take a look again, it was late when I was thinking about them.   
+This could be one way to remove the need to pass a timer to things  
+like the burst function?  Are there any major downsides to the virtual  
+timers besides memory usage?  I assume there might be more CPU usage.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I've seen another &quot;virtual&quot; timer implementation out there that was  
+</I>&gt;<i> posted on the LM boards (not sure how generalizable the code might  
+</I>&gt;<i> be for other platforms, nor what license the code is under), which  
+</I>&gt;<i> supposedly allows for setting up an &quot;unlimited&quot; number of timers,  
+</I>&gt;<i> events and delays.
+</I>&gt;<i>
+</I>&gt;<i> You can have unlimited timers here too. Provided, of course, you  
+</I>&gt;<i> also have unlimited memory :)
+</I>
+Ah, I had seen the number of virtual timers predefined, and I wasn't  
+sure if that was a hard resource limitation or not :-)
+
+I'll check things in when I have a few more stable features.
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090123/f3826409/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090123/f3826409/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090123/f3826409/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090123/f3826409/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000300.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+	<LI>Next message: <A HREF="000299.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#302">[ date ]</a>
+              <a href="thread.html#302">[ thread ]</a>
+              <a href="subject.html#302">[ subject ]</a>
+              <a href="author.html#302">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Multiplexing Physical Serial Ports
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Multiplexing%20Physical%20Serial%20Ports&In-Reply-To=%3CBAY146-ds9FA351E61C998D8C89AD6ACDC0%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002886.html">
+   <LINK REL="Next"  HREF="002887.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Multiplexing Physical Serial Ports</H1>
+    <B>pfs35 at hotmail.com</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Multiplexing%20Physical%20Serial%20Ports&In-Reply-To=%3CBAY146-ds9FA351E61C998D8C89AD6ACDC0%40phx.gbl%3E"
+       TITLE="[eLua-dev] Multiplexing Physical Serial Ports">pfs35 at hotmail.com
+       </A><BR>
+    <I>Thu Nov 10 04:33:34 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002886.html">[eLua-dev] Multiplexing Physical Serial Ports
+</A></li>
+        <LI>Next message: <A HREF="002887.html">[eLua-dev] how do you include a lua file as part of the binary image that you flash to a board.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2888">[ date ]</a>
+              <a href="thread.html#2888">[ thread ]</a>
+              <a href="subject.html#2888">[ subject ]</a>
+              <a href="author.html#2888">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for your reply. Sorry if I hadn't made myself clear; English is not
+my mother tongue. What you describe still seems to fit the bill though.
+
+ 
+
+What first made me interested (only hours ago in fact) in eLua was its
+serial multiplexing capabilities
+(<A HREF="http://www.eluaproject.net/doc/v0.8/en_sermux.html">http://www.eluaproject.net/doc/v0.8/en_sermux.html</A>), which I hoped I might
+be able to use writing little to no code and implement very quickly, almost
+out of the box. However, I'm not sure if it would allow me to multiplex
+inputs from physical ports on the board, or only the RFS and the CON ports.
+In fact, what makes me the most confused is knowing whether a &quot;virtual&quot; uart
+connection can actually be pointing to a physical port. From what you've
+written (&quot;The virtual serial ports allow one to have multiple ids that one
+can refer to serial ports by within eLua&quot;), I'm getting that is the case,
+but I just want to make sure.
+
+ 
+
+The solution you describe seems to me like a completely new script, which I
+have a feeling I could just as well write for basic
+microcontrollers/development boards (such as the Arduino or the MSP430) with
+just as much effort.
+
+ 
+
+Am I missing something?
+
+ 
+
+From: jbsnyder [via eLua Development]
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ml-node+s2368040n6980392h2 at n2.nabble.com</A>] 
+Sent: November-09-11 10:01 PM
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pfs35 at hotmail.com</A>
+Subject: Re: Multiplexing Physical Serial Ports
+
+ 
+
+On Wed, Nov 9, 2011 at 9:29 AM, [hidden email] &lt;[hidden email]&gt; wrote: 
+&gt;<i> Hello, 
+</I>&gt;<i> I'm trying to multiplex multiple physical serial ports into one serial
+</I>link 
+&gt;<i> (which I'm planning on forwarding using an XBee). I've read about eLua's 
+</I>&gt;<i> ability to multiplex &quot;virtual&quot; serial ports, but I'm wondering if it could
+</I>
+&gt;<i> do something similar using physical ports. 
+</I>
+I'm not sure if I understand what you mean here.  Are you intending to 
+pipe multiple physical serial streams into physical serial ports and 
+then have these come out another single multiplexed single serial 
+port?  The virtual serial ports allow one to have multiple ids that 
+one can refer to serial ports by within eLua and instead of having 
+those come out at multiple physical ports they come out on a single 
+port, with a lightweight encoding to multiplex the signals. 
+
+Depending on what you're interested in it may be fairly easy to 
+accomplish what you're requesting.  I suspect that if what you're 
+wanting to do is have multiple physical serial signals come in and get 
+sent out on a single multiplexed output likely using the uart 
+interrupts would work well or at least a loop that would monitor for 
+buffered data on various uarts and then write out streams for each to 
+corresponding &quot;virtual&quot; serial ports that would multiplex down to a 
+single stream. 
+
+
+&gt;<i> 
+</I>&gt;<i> I'm thinking of using the Futurlec ET-STM32 card. 
+</I>&gt;<i> 
+</I>&gt;<i> Is what I'm trying to do technically possible using eLua? 
+</I>&gt;<i> 
+</I>&gt;<i> Thanks, 
+</I>&gt;<i> Philippe 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> View this message in context:
+</I><A HREF="http://elua-development.2368040.n2.nabble.com/Multiplexing-Physical-Serial-P">http://elua-development.2368040.n2.nabble.com/Multiplexing-Physical-Serial-P</A>
+orts-tp6978309p6978309.html
+&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com. 
+</I>&gt;<i> _______________________________________________ 
+</I>&gt;<i> eLua-dev mailing list 
+</I>&gt;<i> [hidden email] 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>
+_______________________________________________ 
+eLua-dev mailing list 
+[hidden email] 
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+  _____  
+
+If you reply to this email, your message will be added to the discussion
+below:
+
+<A HREF="http://elua-development.2368040.n2.nabble.com/Multiplexing-Physical-Serial-P">http://elua-development.2368040.n2.nabble.com/Multiplexing-Physical-Serial-P</A>
+orts-tp6978309p6980392.html 
+
+To unsubscribe from Multiplexing Physical Serial Ports, click here
+&lt;<A HREF="http://elua-development.2368040.n2.nabble.com/template/NamlServlet.jtp?macr">http://elua-development.2368040.n2.nabble.com/template/NamlServlet.jtp?macr</A>
+o=unsubscribe_by_code&amp;node=6978309&amp;code=cGZzMzVAaG90bWFpbC5jb218Njk3ODMwOXwt
+ODI5MDAxMTQ2&gt; .
+See how NAML generates this email
+&lt;<A HREF="http://elua-development.2368040.n2.nabble.com/template/NamlServlet.jtp?macr">http://elua-development.2368040.n2.nabble.com/template/NamlServlet.jtp?macr</A>
+o=macro_viewer&amp;id=instant_html%21nabble%3Aemail.naml&amp;base=nabble.naml.namesp
+aces.BasicNamespace-nabble.view.web.template.NabbleNamespace-nabble.view.web
+.template.InstantMailNamespace&amp;breadcrumbs=instant+emails%21nabble%3Aemail.n
+aml-instant_emails%21nabble%3Aemail.naml-send_instant_email%21nabble%3Aemail
+.naml&gt;  
+
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/Multiplexing-Physical-Serial-Ports-tp6978309p6980422.html">http://elua-development.2368040.n2.nabble.com/Multiplexing-Physical-Serial-Ports-tp6978309p6980422.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111109/9fcf3cd7/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111109/9fcf3cd7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002886.html">[eLua-dev] Multiplexing Physical Serial Ports
+</A></li>
+	<LI>Next message: <A HREF="002887.html">[eLua-dev] how do you include a lua file as part of the binary image that you flash to a board.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2888">[ date ]</a>
+              <a href="thread.html#2888">[ thread ]</a>
+              <a href="subject.html#2888">[ subject ]</a>
+              <a href="author.html#2888">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

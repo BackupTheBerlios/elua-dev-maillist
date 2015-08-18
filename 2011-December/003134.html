@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua Execution Speed on Target
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Execution%20Speed%20on%20Target&In-Reply-To=%3C87sjkmpadd.fsf%40ws-sw06.ottronic.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003131.html">
+   <LINK REL="Next"  HREF="003135.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua Execution Speed on Target</H1>
+    <B>Markus Korber</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Execution%20Speed%20on%20Target&In-Reply-To=%3C87sjkmpadd.fsf%40ws-sw06.ottronic.com%3E"
+       TITLE="[eLua-dev] eLua Execution Speed on Target">korbse at ymail.com
+       </A><BR>
+    <I>Thu Dec 15 08:22:38 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003131.html">[eLua-dev] Fwd: [arm-gnu] When is the next (2011-q3) release?
+</A></li>
+        <LI>Next message: <A HREF="003135.html">[eLua-dev] eLua Execution Speed on Target
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3134">[ date ]</a>
+              <a href="thread.html#3134">[ thread ]</a>
+              <a href="subject.html#3134">[ subject ]</a>
+              <a href="author.html#3134">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+regarding execution speed on the target (LPC2478, 72MHz) I've got a
+question: Toggling a pin[1] on the target takes
+
+   - ~12ms using two RPC calls from the PC
+   - ~280&#181;s using one RPC call of a 'transferred' toggling function
+   - ~280&#181;s using cross-compiled Lua code on the target (This
+     corresponds to ~20000 target instructions.)
+
+Are these values reasonable or can they be somehow improved?  
+
+It seems that each 'peripheral call' (pio, tmr, etc.) has an inherent
+delay of 50-100&#181;s on the target, e.g. adding a tmr.delay(0,0) call[2]
+before setting the pin low adds another ~70&#181;s before the pin is reset.
+
+,----[ 1 ]
+|<i> function toggle_flag()
+</I>|<i>    pio.pin.sethigh(pio.P3_31)
+</I>|<i>    pio.pin.setlow(pio.P3_31)
+</I>|<i> end
+</I>`----
+
+,----[ 2 ]
+|<i> function toggle_flag()
+</I>|<i>    pio.pin.sethigh(pio.P3_31)
+</I>|<i>    tmr.delay(0, 0)
+</I>|<i>    pio.pin.setlow(pio.P3_31)
+</I>|<i> end
+</I>`----
+
+Regards,
+Markus Korber
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003131.html">[eLua-dev] Fwd: [arm-gnu] When is the next (2011-q3) release?
+</A></li>
+	<LI>Next message: <A HREF="003135.html">[eLua-dev] eLua Execution Speed on Target
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3134">[ date ]</a>
+              <a href="thread.html#3134">[ thread ]</a>
+              <a href="subject.html#3134">[ subject ]</a>
+              <a href="author.html#3134">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

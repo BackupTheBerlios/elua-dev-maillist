@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LuaRPC and Lua Shell in parallel
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20and%20Lua%20Shell%20in%20parallel&In-Reply-To=%3CCAJ%3DY9Y0VrKMY6AV06NB2-z7YnZNTmpedbuKvyzpP29kX2J5JDw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003132.html">
+   <LINK REL="Next"  HREF="003131.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LuaRPC and Lua Shell in parallel</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20and%20Lua%20Shell%20in%20parallel&In-Reply-To=%3CCAJ%3DY9Y0VrKMY6AV06NB2-z7YnZNTmpedbuKvyzpP29kX2J5JDw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] LuaRPC and Lua Shell in parallel">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Dec 14 21:18:27 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003132.html">[eLua-dev] LuaRPC and Lua Shell in parallel
+</A></li>
+        <LI>Next message: <A HREF="003131.html">[eLua-dev] Fwd: [arm-gnu] When is the next (2011-q3) release?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3133">[ date ]</a>
+              <a href="thread.html#3133">[ thread ]</a>
+              <a href="subject.html#3133">[ subject ]</a>
+              <a href="author.html#3133">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Dec 14, 2011 at 12:19 PM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+&gt;<i> You may wanna have a look at the rpc.peek / rpc.listen / rpc.dispatch
+</I>&gt;<i> functions:
+</I>&gt;<i> <A HREF="http://www.eluaproject.net/doc/v0.8/en_refman_gen_rpc.html">http://www.eluaproject.net/doc/v0.8/en_refman_gen_rpc.html</A>
+</I>&gt;<i>
+</I>&gt;<i> You'll not be able to use that with the shell but you can have an
+</I>&gt;<i> application running and send rpc commands at the same time...
+</I>
+One could modify the shell to be non-blocking and have a common
+dispatcher handle input when its ready for either RPC or a shell
+command, but as bogdan mentions there could be some complexities to
+handle.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Thiago
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Dec 14, 2011 at 1:14 PM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Dec 14, 2011 at 5:07 PM, Markus Korber &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">korbse at ymail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> is it somehow possible to use luarpc and a standard Lua shell at the
+</I>&gt;&gt;&gt;<i> same time on two different physical UART ports? &#160;If I start the RPC
+</I>&gt;&gt;&gt;<i> server in the Lua shell (rpc.server()) it blocks the shell forever.
+</I>&gt;&gt;&gt;<i> However, I'd like to use the shell normally in addition to doing RPC
+</I>&gt;&gt;&gt;<i> calls from the PC.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> That is not possible at the moment. It could be implemented, but it may
+</I>&gt;&gt;<i> lead to some interesting concurrency problems :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks for your help!
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Regards,
+</I>&gt;&gt;&gt;<i> Markus Korber
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003132.html">[eLua-dev] LuaRPC and Lua Shell in parallel
+</A></li>
+	<LI>Next message: <A HREF="003131.html">[eLua-dev] Fwd: [arm-gnu] When is the next (2011-q3) release?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3133">[ date ]</a>
+              <a href="thread.html#3133">[ thread ]</a>
+              <a href="subject.html#3133">[ subject ]</a>
+              <a href="author.html#3133">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

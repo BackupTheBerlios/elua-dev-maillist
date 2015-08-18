@@ -1,0 +1,334 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] An alternative program architecture for embedded Lua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20An%20alternative%20program%20architecture%20for%20embedded%20Lua&In-Reply-To=%3CAANLkTimpTf5aLj4Jq8WTL2Rq18NsyGx9Uh9W11KW-ZKq%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001460.html">
+   <LINK REL="Next"  HREF="001461.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] An alternative program architecture for embedded Lua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20An%20alternative%20program%20architecture%20for%20embedded%20Lua&In-Reply-To=%3CAANLkTimpTf5aLj4Jq8WTL2Rq18NsyGx9Uh9W11KW-ZKq%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] An alternative program architecture for embedded Lua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Jun 22 10:43:38 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001460.html">[eLua-dev] An alternative program architecture for embedded Lua
+</A></li>
+        <LI>Next message: <A HREF="001461.html">[eLua-dev] An alternative program architecture for embedded Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1464">[ date ]</a>
+              <a href="thread.html#1464">[ thread ]</a>
+              <a href="subject.html#1464">[ subject ]</a>
+              <a href="author.html#1464">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> What I was intending to do, at least as a first attempt, was to keep the
+</I>&gt;<i> interrupt processing in C, and keep it as generic and simple as
+</I>&gt;<i> possible. There is very little that *must* be done in an interrupt
+</I>&gt;<i> handler, typically.
+</I>&gt;<i>
+</I>
+True, and what I had in mind is to put the interrupt ID in a queue (maybe
+even a heap, which would be a nice and fast way to implement interrupt
+priorities, although I'm not sure about this yet), set a Lua hook and then
+let the Lua handler take over :) Of course, a mechanism can (and will) be
+imagined that allows both C and Lua code to use interrupt handlers in the
+way described above.
+
+
+&gt;<i> So the job of the interrupt handler is to package up into an event
+</I>&gt;<i> object:
+</I>&gt;<i>
+</I>&gt;<i> * the identity of the interrupt itself (including perhaps the identity
+</I>&gt;<i> of the interrupt source if there are multiple possibilities for a single
+</I>&gt;<i> interrupt)
+</I>&gt;<i>
+</I>&gt;<i> * whatever other data (if any) that is *always* relevant to handling
+</I>&gt;<i> that interrupt (perhaps a received character for a UART
+</I>&gt;<i> receive-buffer-not-empty interrupt, or a timer value for a timer input
+</I>&gt;<i> capture interrupt)
+</I>&gt;<i>
+</I>
+Precisely.
+
+
+&gt;<i> and then publish or post that event object for consumption by the state
+</I>&gt;<i> machines.
+</I>&gt;<i>
+</I>
+... or simply let the C/Lua interrupt handler take over.
+
+This way, the interrupts are kept fast and short, and won't need to be
+&gt;<i> changed for alternative uses of the various peripherals.
+</I>&gt;<i>
+</I>
+Sure, this is exactly what I had in mind too, save the part with the state
+machine (which is optional in my design).
+
+
+&gt;<i> &gt; The eLua HTTP server is something hand-crafted in half a week-end, so
+</I>&gt;<i> &gt; not really a good reference :) It can be rewritten quite nicely using
+</I>&gt;<i> &gt; coroutines (once the network support in eLua gets better itself,
+</I>&gt;<i> &gt; because now it's not really usable for handling multiple connections).
+</I>&gt;<i>
+</I>&gt;<i> How are coroutines handled in eLua? Is there explicit support for them,
+</I>&gt;<i> or are they just done using continuations?
+</I>&gt;<i>
+</I>
+There isn't any difference between eLua coroutines regular Lua coroutines.
+They are implemented and behave exactly the same.
+
+
+&gt;<i> Is there direct support for (say) peripheral register access?
+</I>&gt;<i>
+</I>
+It is, via the CPU module:
+
+<A HREF="http://www.eluaproject.net/en_refman_gen_cpu.html">http://www.eluaproject.net/en_refman_gen_cpu.html</A>
+
+It's actually a quite dangerous module that you can use to access the whole
+memory space freely :) But this does let you access all of the CPU's memory
+mapped registers as a side effect. And it has a nice and simple way to
+define register names (as described in the link above), which makes one's
+life a bit easier.
+
+
+&gt;<i> If not,
+</I>&gt;<i> could a kind of boxed pointer be made that allows for access to the
+</I>&gt;<i> various register spaces? I could see doing this in a bit of a condensed
+</I>&gt;<i> form: say 20-24 bits for an address offset, and a few bits to describe
+</I>&gt;<i> the space (flash, RAM, a few different peripheral register spaces).
+</I>&gt;<i>
+</I>
+Right now, we don't even need boxed pointers. A 32 bit value is enough to
+represent any address for all the targets currently supported by eLua. What
+you said makes sense for Harvard architectures, but we're not using these
+yet. Well, technically speaking the ARM966E-S (STR9) is a Harvard
+architecture at its core, but it uses some clever tricks to mask this from
+the rest of the system, effectively exposing an unified memory space. I'll
+worry about Harvard architectures when I meet one that is a good candidate
+for eLua :)
+Also, all of the targets used by eLua have memory mapped registers, so
+pointers represented as 32 bit values work here too.
+
+This allows for peripheral handling code to be written in Lua itself,
+&gt;<i> and not have to use code and RAM space for platform-specific modules
+</I>&gt;<i> that may not be needed.
+</I>&gt;<i>
+</I>
+Sure, you can already do this.
+
+&gt;<i> You'd need at least two things to implement the above:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 1. interrupt support directly in eLua (and we'll have this soon, as
+</I>&gt;<i> &gt; previously stated)
+</I>&gt;<i> &gt; 2. a Lua module that implements the CPU specific functions needed for
+</I>&gt;<i> &gt; DMA, I2C and whatever else. We don't have that, but they can certainly
+</I>&gt;<i> &gt; be written, and they are perfectly inline with eLua's current
+</I>&gt;<i> &gt; architecture (they are called &quot;platform specific modules&quot; in the
+</I>&gt;<i> &gt; official documentation). We try to focus on the core eLua code +
+</I>&gt;<i> &gt; generic modules most of the time, and let people write their own
+</I>&gt;<i> &gt; platform specific modules for their platform of choice when there's a
+</I>&gt;<i> &gt; need for that.
+</I>&gt;<i>
+</I>&gt;<i> Understood. I just don't see why they need to be in C.
+</I>&gt;<i>
+</I>
+They don't _need_ to be in C, this is purely a matter of aesthetics (and a
+problem of maintenance as a side effect). This call:
+
+stm32.dma.enable_channel( 1 )
+
+is much easier to understand than this (not actual code, but it illustrates
+my point):
+
+cpu.w32( cpu.DMA_CHANNEL1_BASE, xxx )
+cpu.w32( cpu.DMA_CHANNEL1_STATE, yyy )
+.........................
+
+This is probably the only reason we're writing platform specific modules :)
+Otherwise one could in theory do absolutely everything from eLua with the
+cpu module.
+
+
+&gt;<i> Yes, I don't see that VM alterations would be needed, other than perhaps
+</I>&gt;<i> allowing for a type to represent peripheral registers so that user Lua
+</I>&gt;<i> code can be written to do the bulk of the work.
+</I>&gt;<i>
+</I>
+Even for architectures without memory mapped registers, I think a 32-bit
+integer would be enough to represent this. Surely this becomes a question of
+type safety, but whoever handles low level stuff like this generally knows
+to be careful :)
+
+
+&gt;<i> Though it may also be helpful to separately manage event objects (so as
+</I>&gt;<i> not to burden the GC with these transient objects that can be allocated
+</I>&gt;<i> from their own pools).
+</I>&gt;<i>
+</I>
+You mean bypassing Lua's GC mechanism? Sure, this is OK as long as you
+remember to deallocate all your data structures manually.
+
+
+&gt;<i> I'm proposing something even simpler than coroutines: just subroutines.
+</I>&gt;<i>
+</I>&gt;<i> Each state machine has one or more state handler routines.
+</I>&gt;<i> There is an implicit &quot;top&quot; handler that is the parent of the topmost
+</I>&gt;<i> user state handlers; it merely ignores all events.
+</I>&gt;<i>
+</I>&gt;<i> When an event is delivered to a state machine, that machine's current
+</I>&gt;<i> state handler routine is called and passed the event.
+</I>&gt;<i> That routine does whatever it wants to (possibly nothing) with the
+</I>&gt;<i> event, returning an indication that:
+</I>&gt;<i> * it handled the event
+</I>&gt;<i>
+</I>&gt;<i> * it ignored the event
+</I>&gt;<i>
+</I>&gt;<i> * it wants its parent state's handler to handle the event (also
+</I>&gt;<i> returning a pointer to that handler)
+</I>&gt;<i>
+</I>&gt;<i> * it has handled the event and has changed the current state (also
+</I>&gt;<i> returning a pointer to the new handler)
+</I>&gt;<i> Typically, the structure of the handler routines is a big switch on the
+</I>&gt;<i> event type.
+</I>&gt;<i>
+</I>&gt;<i> Additionally, there are a few special event types that are used for
+</I>&gt;<i> state machine actions:
+</I>&gt;<i> * state machine initialization * state entry * state exit * probe (which
+</I>&gt;<i> all handlers pass to their superstate handlers, thereby providing
+</I>&gt;<i> dynamic state hierarchy discovery)
+</I>&gt;<i>
+</I>&gt;<i> Roughly, this is the QP implementation from the user point of view:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> typedef uint8_t QState;
+</I>&gt;<i> typedef QState (*QStateHandler)(void *me, QEvent const *e);
+</I>&gt;<i>
+</I>&gt;<i> #define Q_HANDLED() ((QState)0)
+</I>&gt;<i> #define Q_IGNORED() ((QState)1)
+</I>&gt;<i> #define Q_TRAN(s)   ((me-&gt;state = (QStateHandler)(s)), ((QState)2))
+</I>&gt;<i> #define Q_SUPER(s)  ((me-&gt;state = (QStateHandler)(s)), ((QState)3))
+</I>&gt;<i>
+</I>&gt;<i> QState MyMachine_SomeTopLevelState(MyMachine *me, QEvent const *e) {
+</I>&gt;<i>    switch (e-&gt;sig) {
+</I>&gt;<i>        case Q_ENTRY_SIG: { /* entry actions */ return Q_HANDLED(); }
+</I>&gt;<i>        case Q_EXIT_SIG: { /* exit actions */ return Q_HANDLED(); }
+</I>&gt;<i>        case SOME_SIG_I_HANDLE: { /* actions */ return Q_HANDLED(); }
+</I>&gt;<i>        case SOME_OTHER_SIG_I_HANDLE: { /* actions */ return
+</I>&gt;<i> Q_TRAN(&amp;MyMachine_SomeOtherState); }
+</I>&gt;<i>        case SOME_SIG_I_DONT_HANDLE: { /* let my parent state handle
+</I>&gt;<i> this */ return Q_SUPER(&amp;QHsm_top); }
+</I>&gt;<i> /* ... */
+</I>&gt;<i>    }
+</I>&gt;<i>    return Q_SUPER(&amp;QHsm_top); /* default: let parent handle this */
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> QState MyMachine_SomeSubState(MyMachine *me, QEvent const *e) {
+</I>&gt;<i>    switch (e-&gt;sig) {
+</I>&gt;<i>        case Q_ENTRY_SIG: { /* entry actions */ return Q_HANDLED(); }
+</I>&gt;<i>        case Q_EXIT_SIG: { /* exit actions */ return Q_HANDLED(); }
+</I>&gt;<i>        case SOME_SIG_I_DONT_HANDLE: { /* let my parent state handle
+</I>&gt;<i> this */ return Q_SUPER(&amp;MyMachine_SomeTopLevelState); }
+</I>&gt;<i> /* ... */
+</I>&gt;<i>    }
+</I>&gt;<i>    return Q_SUPER(&amp;MyMachine_SomeTopLevelState); /* default: let parent
+</I>&gt;<i> handle this */
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>
+Thanks, I'm quite familiar with state machines myself and I fully understand
+your point. I believe this can be implemented directly in Lua, or perharps
+in a specialized C state machine module, maybe using a simple object model
+to expose a nice interface, without any need to modify the core itself.
+
+Big Loop is merely my name for that idiom, of course. And I don't think
+&gt;<i> it's original, though I don't recall where I heard it first.
+</I>&gt;<i> Can you give an example of an embedded application whose runtime needs
+</I>&gt;<i> are better served by the Big Loop structure?
+</I>&gt;<i>
+</I>
+I wrote several simple applications like this (all on 8 and 16 bit MCUs),
+such as data loggers, current converters, smart terminals, and even some
+basic DSP blocks. Basically, they would all block in a while(1) in main(),
+waiting to process some data. Sure, the CPU spends all the time in this
+loop, but the point is that sometimes this is exactly what you need it to do
+:<i>) Adding a state machine in this case would've meant writing unnecessary
+</I>complex code. Obviously this isn't applicable for more complex applications.
+
+
+
+&gt;<i> I am not concerned here with considerations of programmer convenience or
+</I>&gt;<i> aesthetics.
+</I>&gt;<i>
+</I>&gt;<i> I would like to use a more domain-specific language to specify the state
+</I>&gt;<i> machine structure, so the details of the switch statements, etc. would
+</I>&gt;<i> be wrapped in some syntactic sugar (for a text-based language) or would
+</I>&gt;<i> be invisible (being generated as eLua bytecode from a graphical
+</I>&gt;<i> description) in a graphical language.
+</I>&gt;<i>
+</I>
+I understand your point now, I think. You want to use eLua for an
+environment based completely on state machines. This is actually very cool,
+and you won't hear me complaining about it :)
+
+I imagine that the code for actions and condition testing could be
+&gt;<i> specified comfortably in Lua itself.
+</I>&gt;<i>
+</I>
+Definitely. You don't need any other domain-specific language, Lua is more
+than capable to do the job.
+
+
+&gt;<i> I would not be making a &quot;derived work&quot; (i.e. not doing a &quot;port&quot;), merely
+</I>&gt;<i> using the ideas and structure of QP.
+</I>&gt;<i> For instance, my Ruby implementation uses a more Ruby-friendly method
+</I>&gt;<i> for finding the least-common ancestor of two states (needed for calling
+</I>&gt;<i> exit and entry handlers during a transition).
+</I>&gt;<i>
+</I>
+Then by all means, please go for it. I'm 100% positive that having a fully
+defined state-machine oriented development model in eLua would make a lot of
+people happy.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100622/af93416b/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100622/af93416b/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001460.html">[eLua-dev] An alternative program architecture for embedded Lua
+</A></li>
+	<LI>Next message: <A HREF="001461.html">[eLua-dev] An alternative program architecture for embedded Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1464">[ date ]</a>
+              <a href="thread.html#1464">[ thread ]</a>
+              <a href="subject.html#1464">[ subject ]</a>
+              <a href="author.html#1464">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

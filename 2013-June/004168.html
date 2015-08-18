@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Can eLua use normal Lua libraries
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Can%20eLua%20use%20normal%20Lua%20libraries&In-Reply-To=%3CCAJ%3DY9Y3_ZJUYx8e8M8CtHxThUkS0dXRZ4hZRS-2V-k0dXxOJNA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004167.html">
+   <LINK REL="Next"  HREF="004169.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Can eLua use normal Lua libraries</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Can%20eLua%20use%20normal%20Lua%20libraries&In-Reply-To=%3CCAJ%3DY9Y3_ZJUYx8e8M8CtHxThUkS0dXRZ4hZRS-2V-k0dXxOJNA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Can eLua use normal Lua libraries">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jun  7 23:36:03 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004167.html">[eLua-dev] Can eLua use normal Lua libraries
+</A></li>
+        <LI>Next message: <A HREF="004169.html">[eLua-dev] Can eLua use normal Lua libraries
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4168">[ date ]</a>
+              <a href="thread.html#4168">[ thread ]</a>
+              <a href="subject.html#4168">[ subject ]</a>
+              <a href="author.html#4168">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Jun 7, 2013 at 6:25 AM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+&gt;<i> wrote:
+</I>
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Jun 6, 2013 at 1:33 AM, Blackdragon1400 &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">patrickleedom at yahoo.com</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I want to develop with eLua in a Desktop environment in preparation for
+</I>&gt;&gt;<i> porting some libraries to an embedded device, specifically libpcap and
+</I>&gt;&gt;<i> libnet. Ideally I would like to run the eLua version of Lua with these
+</I>&gt;&gt;<i> networking libraries (and maby a few other generic Lua libraries) added.
+</I>&gt;&gt;<i> Is
+</I>&gt;&gt;<i> this possible? How would I go about making it work?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If this is a stupid question I am quite new to embedded systems so please
+</I>&gt;&gt;<i> go
+</I>&gt;&gt;<i> easy on me =)
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Not a stupid question at all. If your embedded system happened to be based
+</I>&gt;<i> on Linux, the answer would be &quot;must likely yes&quot;. But on a bare-metal system
+</I>&gt;<i> like eLua we don't have the required OS support for running libpcap/libnet,
+</I>&gt;<i> so unfortunately the answer is &quot;no&quot;.
+</I>&gt;<i>
+</I>
+I'll add to this a little bit, since it sounds like you want to use the
+existing libraries on a desktop version of the eLua sources first before
+making embedded versions of libraries.
+
+You can compile the eLua sources as a desktop version of Lua.  The desktop
+side for LuaRPC (which is just Lua w/ some specific libraries included,
+compiled from eLua sources) is an example of this:
+<A HREF="http://www.eluaproject.net/doc/master/en_using.html#rpc">http://www.eluaproject.net/doc/master/en_using.html#rpc</A>
+
+As for how one would add these modules you can see the list of module
+source files in rpc-lua.lua, and I think inc/desktop/platform_conf.h
+(through LUA_PLATFORM_LIBS_ROM or LUA_PLATFORM_LIBS_REG) may give you what
+you'd need to compile an extra module into the binary.  I've not tried
+using dynamic loadable modules against the eLua sources.
+
+You'll also want to keep this in mind when working on modules for eLua:
+<A HREF="http://www.eluaproject.net/doc/v0.9/en_arch_ltr.html">http://www.eluaproject.net/doc/v0.9/en_arch_ltr.html</A>
+
+I can't recall if you can get away with not doing this for compiling the
+luarpc binary on the desktop or not.
+
+Now, as for getting versions of the mentioned libraries or others going on
+a small MCU target, you may be in for a fair bit of rewriting or
+re-implementing depending on how memory-hungry they are and what their
+dependencies are.
+
+
+&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> View this message in context:
+</I>&gt;&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/Can-eLua-use-normal-Lua-libraries-tp7578060.html">http://elua-development.2368040.n2.nabble.com/Can-eLua-use-normal-Lua-libraries-tp7578060.html</A>
+</I>&gt;&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130607/f634dce8/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130607/f634dce8/attachment.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004167.html">[eLua-dev] Can eLua use normal Lua libraries
+</A></li>
+	<LI>Next message: <A HREF="004169.html">[eLua-dev] Can eLua use normal Lua libraries
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4168">[ date ]</a>
+              <a href="thread.html#4168">[ thread ]</a>
+              <a href="subject.html#4168">[ subject ]</a>
+              <a href="author.html#4168">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

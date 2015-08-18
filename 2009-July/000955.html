@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] SD/MMC testing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20SD/MMC%20testing&In-Reply-To=%3Cd3b6d880907281224i2875aa2cr4e146a383bac9416%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000954.html">
+   <LINK REL="Next"  HREF="000957.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] SD/MMC testing</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20SD/MMC%20testing&In-Reply-To=%3Cd3b6d880907281224i2875aa2cr4e146a383bac9416%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] SD/MMC testing">dadosutter at gmail.com
+       </A><BR>
+    <I>Tue Jul 28 21:24:22 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000954.html">[eLua-dev] SD/MMC testing
+</A></li>
+        <LI>Next message: <A HREF="000957.html">[eLua-dev] SD/MMC testing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#955">[ date ]</a>
+              <a href="thread.html#955">[ thread ]</a>
+              <a href="subject.html#955">[ subject ]</a>
+              <a href="author.html#955">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Just as a follow-up for this thread, here goes some more info:
+
+- The revision Pedro has used is not the last on the eagle_mmc branch but
+rev 201
+- He did not test running a program or accessing data on the mmc card
+- In his tests, he used a cellphone pre-formatted card and WAS able to list
+it's files with the (lua shell) ls command.
+
+- We're testing here with the same rev 201 and the /mmc device IS beeing
+recognized now by the ls command (!!!). This does NOT work if I build the
+last revision from the eagle-mmc branch (I did not understand exactly
+Snyder's rev 202 commit on this branch, merging with trunk but I don't know
+if it is related to the problem)
+- We CANNOT see any files on our card with the ls command though :(
+- We've tested with FAT and FAT32 formatting. And yes, the files have short
+(DOS) names
+- We've also tested with some cellphone cards and no file is ever listed
+- It could be some hardware (SPI) problem accessing the cards but it is
+unlikely, as we've tested in two differente EK-LM3S8962 boards (yes ! other
+researchers and students here are buying them to run eLua too :)
+
+Next steps will be testing in on Pedro's image and maybe in his board too.
+Can't wait to have SD/MMC working here ! :)
+
+Best
+Dado
+
+
+
+
+
+On Tue, Jul 28, 2009 at 00:58, Pedro Bittencourt &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+
+&gt;<i> It seems to be working on my LM3S8962 too...
+</I>&gt;<i> from the last revision on the MMC branch.
+</I>&gt;<i>
+</I>&gt;<i> --Pedro Bittencourt
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Jul 27, 2009 at 11:46 PM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I'm still out of town so I can't check that everything still works but
+</I>&gt;&gt;<i> I did have it working on an lm3s8965 eval kit with what is probably
+</I>&gt;&gt;<i> the most recent version of that branch.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Perhaps the issue might be related to pin assignment?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> We should develop a plan for genericising the code to other spi or
+</I>&gt;&gt;<i> sdio peripherals so we can land the support for this in the trunk.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The post 0.6 release might be pretty major :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> ph: (847) 448-0386
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Jul 27, 2009, at 2:14 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; Hi,
+</I>&gt;&gt;<i> &gt;    We're trying again to make Jesus Alvarez' SD/MMC module (it's not
+</I>&gt;&gt;<i> &gt; actually a module :) work on our EK-LM3S8962.
+</I>&gt;&gt;<i> &gt;    Alvarez has helped us a lot with some tips but it is stil not
+</I>&gt;&gt;<i> &gt; working here.
+</I>&gt;&gt;<i> &gt;    Before going deeper on this, I just wanted to make sure that at
+</I>&gt;&gt;<i> &gt; least one of you have indeed made it work on an LM-3S8962 platform.
+</I>&gt;&gt;<i> &gt; (Alvarez original work was done to a Micromint eagle-100 board)
+</I>&gt;&gt;<i> &gt;    The answer may be in the (LM3S) platform-specific code but I
+</I>&gt;&gt;<i> &gt; think I remember reading that someone has tested it ok on an LM3S
+</I>&gt;&gt;<i> &gt; platform.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Thanks !
+</I>&gt;&gt;<i> &gt; Dado
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; Elua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090728/1d296fd3/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090728/1d296fd3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000954.html">[eLua-dev] SD/MMC testing
+</A></li>
+	<LI>Next message: <A HREF="000957.html">[eLua-dev] SD/MMC testing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#955">[ date ]</a>
+              <a href="thread.html#955">[ thread ]</a>
+              <a href="subject.html#955">[ subject ]</a>
+              <a href="author.html#955">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

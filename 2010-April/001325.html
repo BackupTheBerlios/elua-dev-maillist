@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Remote Communication Question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Remote%20Communication%20Question&In-Reply-To=%3Ci2w33644d3c1004060942v1e3ef741v138da2c5000ba05f%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001321.html">
+   <LINK REL="Next"  HREF="001329.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Remote Communication Question</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Remote%20Communication%20Question&In-Reply-To=%3Ci2w33644d3c1004060942v1e3ef741v138da2c5000ba05f%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Remote Communication Question">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Apr  6 18:42:32 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001321.html">[eLua-dev] Remote Communication Question
+</A></li>
+        <LI>Next message: <A HREF="001329.html">[eLua-dev] Remote Communication Question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1325">[ date ]</a>
+              <a href="thread.html#1325">[ thread ]</a>
+              <a href="subject.html#1325">[ subject ]</a>
+              <a href="author.html#1325">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Apr 6, 2010 at 5:35 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;&gt;<i> Hi all
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I am new to eLua, but have quite some, possibly somewhat rusty, Lua
+</I>&gt;&gt;<i> knowledge. I intend to dive into eLua with a LM3S6965 Kit, which I didn't
+</I>&gt;&gt;<i> order as of now, so I cannot test things. However, I am doing some upfront
+</I>&gt;&gt;<i> thinking :-), and have the following question, which I hope is not too
+</I>&gt;&gt;<i> obvious.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I think I understand how to flash eLua to the board using Windows, and
+</I>&gt;&gt;<i> that I'll then have a serial line emulated via the USB connection to the
+</I>&gt;&gt;<i> host computer, both to download the eLua programs to the board and to
+</I>&gt;&gt;<i> control the latter via a terminal. As host computer I'd like to use a Mac OS
+</I>&gt;&gt;<i> X box in order to program the Lua application on the target board, once I
+</I>&gt;&gt;<i> have flashed over eLua.
+</I>&gt;<i>
+</I>&gt;<i> You're doing great so far :)
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If I understand the on-line docs, I can use the UART eLua generic module
+</I>&gt;&gt;<i> to read and write to that serial-over-USB connection from Lua. I hope that's
+</I>&gt;&gt;<i> correct.
+</I>&gt;<i>
+</I>&gt;<i> It is. With one addition: you can use the UART module to communicate with
+</I>&gt;<i> any serial port. One port might not be enough, but you can add another RS232
+</I>&gt;<i> interface to your LM3S6965 board with a bit of soldering :), plug another
+</I>&gt;<i> USB to serial adapter in your Mac, and use this as a separate line,
+</I>&gt;<i> completely independent of the console UART. We also have a software UART
+</I>&gt;<i> multiplexer in the works, but it's not checked in yet, and I'm not sure how
+</I>&gt;<i> well it works on OS X (it should work just fine though).
+</I>
+One additional note here:  if the generic console is compiled in
+(default), the first UART will be dedicated to the console connection
+for interactive use.  As Bogdan notes, you can use the other UARTS for
+additional serial connections.
+
+One thing about LM3S boards and using the USB-&gt;serial that's onboard:
+You will need to download the FTDI VCP drivers from the FTDI site:
+<A HREF="http://www.ftdichip.com/Drivers/VCP.htm">http://www.ftdichip.com/Drivers/VCP.htm</A>  but they won't by default
+find the LM3S board because Luminary have given it a different device
+id than the ones that come with the standard VCP (virtual COM port)
+driver.  As such, if you want to use that as a serial port, you will
+need to add something to the Info.plist in the kext after installing.
+
+You might do this something like: sudo &lt;insert-favorite-editor&gt;
+/System/Library/Extensions/FTDIUSBSerialDriver.kext/Contents/Info.plist
+
+Then add what's below to the IOKitPersonalities section:
+        &lt;key&gt;Stellaris Evaluation Board 6965&lt;/key&gt;
+        &lt;dict&gt;
+            &lt;key&gt;CFBundleIdentifier&lt;/key&gt;
+            &lt;string&gt;com.FTDI.driver.FTDIUSBSerialDriver&lt;/string&gt;
+            &lt;key&gt;IOClass&lt;/key&gt;
+            &lt;string&gt;FTDIUSBSerialDriver&lt;/string&gt;
+            &lt;key&gt;IOProviderClass&lt;/key&gt;
+            &lt;string&gt;IOUSBInterface&lt;/string&gt;
+            &lt;key&gt;bConfigurationValue&lt;/key&gt;
+            &lt;integer&gt;1&lt;/integer&gt;
+            &lt;key&gt;bInterfaceNumber&lt;/key&gt;
+            &lt;integer&gt;1&lt;/integer&gt;
+            &lt;key&gt;idProduct&lt;/key&gt;
+            &lt;integer&gt;48345&lt;/integer&gt;
+            &lt;key&gt;idVendor&lt;/key&gt;
+            &lt;integer&gt;1027&lt;/integer&gt;
+        &lt;/dict&gt;
+
+I don't recall if a reboot is needed after this, if your editor has
+modified the permissions on Info.plist you might also need to repair
+permissions.
+
+If successful, when you look for an entry in /dev beginning with
+tty.usbserial you should see a new entry when you plug in the device
+to your Mac.
+
+(I should probably add something about this to the Wiki)
+
+&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> What I don't see yet is how to talk to that connection from Lua on my Mac
+</I>&gt;&gt;<i> OS X system in order to implement a system with the remote part running on
+</I>&gt;&gt;<i> the target board and the host part on my Mac, to realize some simple
+</I>&gt;&gt;<i> communication between these parts. Think of something like a remote
+</I>&gt;&gt;<i> debugger, with a remote probe and a console on the host. Is there some Lua
+</I>&gt;&gt;<i> module for the host side of the serial? Or should I use the network
+</I>&gt;&gt;<i> connection and use the Lua socket module?
+</I>&gt;<i>
+</I>&gt;<i> It pretty much depends on what you're trying to do. There are more options
+</I>&gt;<i> here:
+</I>&gt;<i>
+</I>&gt;<i> - if you want to have Lua running on OS X and &quot;talk&quot; directly to the Lua
+</I>&gt;<i> instance on the eLua board, the way to go is RPC :
+</I>&gt;<i> <A HREF="http://www.eluaproject.net/en_using.html#rpc">http://www.eluaproject.net/en_using.html#rpc</A>
+</I>&gt;<i> - if you just want to use the serial connection of your OS X directly from
+</I>&gt;<i> the Lua interpreter running on OS X, I'm afraid I can't be of much help
+</I>&gt;<i> here. From what I could gather (mostly from some discussions on the Lua
+</I>&gt;<i> list), there isn't any official serial module for desktop Lua, although some
+</I>&gt;<i> implementations exist. We might write a serial module at some point if
+</I>&gt;<i> enough people show interest in this.
+</I>&gt;<i> - you can of course use sockets to exchange data with the eLua board, but
+</I>&gt;<i> I'd recommend you stick with serial, at least at the beginning. The
+</I>&gt;<i> networking core still needs some work in eLua.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001321.html">[eLua-dev] Remote Communication Question
+</A></li>
+	<LI>Next message: <A HREF="001329.html">[eLua-dev] Remote Communication Question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1325">[ date ]</a>
+              <a href="thread.html#1325">[ thread ]</a>
+              <a href="subject.html#1325">[ subject ]</a>
+              <a href="author.html#1325">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

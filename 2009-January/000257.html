@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Latest eLua developments
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Latest%20eLua%20developments&In-Reply-To=%3C81fbe47d0901080949w543c3cawccf99124075bd769%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000252.html">
+   <LINK REL="Next"  HREF="000253.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Latest eLua developments</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Latest%20eLua%20developments&In-Reply-To=%3C81fbe47d0901080949w543c3cawccf99124075bd769%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Latest eLua developments">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Jan  8 18:49:48 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000252.html">[eLua-dev] Latest eLua developments
+</A></li>
+        <LI>Next message: <A HREF="000253.html">[eLua-dev] Patch for EK-LM3S6965 PWM1/Speaker
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#257">[ date ]</a>
+              <a href="thread.html#257">[ thread ]</a>
+              <a href="subject.html#257">[ subject ]</a>
+              <a href="author.html#257">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This one should be a good starting point:
+
+<A HREF="http://q12.org/lua/index.html">http://q12.org/lua/index.html</A>
+
+It's small, yet very functional. It doesn't handle recursive tables well,
+but lots of people (me included) can live with that.
+Other thoughts:
+
+- the whole thing should be completely independent of the physical
+transport. Because of this, the packaging of the actual RPC data would vary
+greatly from a transport to the other (it doesn't make much sense to add
+error checking or sequence numbers for TCP/IP, but it would make sense for a
+serial connection). But this concerns just the transport layer, not the RPC
+subsystem itself.
+- &quot;easily read by the programmer&quot; generally means some sort of markup
+language, which is everything but efficient. I generally go &quot;binary all the
+way&quot; and just write some simple protocol analyzers if really needed. XML and
+friends are good for desktops, but extremely messy on embedded because of
+the relatively high memory requirements. XML tends to be highly overused,
+which is something I really want to avoid in eLua, given its embeddedness
+(yes, I know that's not actually a word :) ).
+- auth mechanism: good idea, didn't think about that. Some embedded-targeted
+encryption algoritms (like XXTEA) could probably be used here.
+- bytecode execution should be easy with Lua as long as both systems have
+the same data types/endianess, and moderately difficult if not so. The main
+problem here is serializing/deserializing Lua types, and the Lua RPC package
+in the link above does just that, and it doesn't look too difficult.
+
+Best,
+Bogdan
+
+On Thu, Jan 8, 2009 at 1:42 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> Sounds good.  I was going to base whatever code I was going to write on the
+</I>&gt;<i> style used for other modules.  I'm considering an opportunity to both learn
+</I>&gt;<i> the hardware and software, as well as to build something functional.
+</I>&gt;<i> While the RPC stuff is a bit more out there, and I might not bother soon.
+</I>&gt;<i>  I'd be interested in some discussion there.  There are projects for doing
+</I>&gt;<i> this sort of thing on a microcontroller like Firmata, which uses a MIDI-like
+</I>&gt;<i> messaging scheme:
+</I>&gt;<i> <A HREF="http://firmata.org/wiki/Protocol">http://firmata.org/wiki/Protocol</A>
+</I>&gt;<i>
+</I>&gt;<i> Higher level RPC mechanisms might be nice for readability, but they
+</I>&gt;<i> probably are expensive in terms of encoding and decoding. There are a
+</I>&gt;<i> billion RPC systems out there, I would definitely avoid XML, but perhaps
+</I>&gt;<i> something like JSON-RPC might not be terrible if this route were
+</I>&gt;<i> approached: <A HREF="http://en.wikipedia.org/wiki/JSON-RPC">http://en.wikipedia.org/wiki/JSON-RPC</A>
+</I>&gt;<i> That said, you'd have to encode everything in text, which means large
+</I>&gt;<i> numbers could require a huge number of bytes to transfer.
+</I>&gt;<i>
+</I>&gt;<i> As far as ideals one might want out of such a protocol (just brainstorming
+</I>&gt;<i> here):
+</I>&gt;<i> - simple, hopefully easily read by both machine and user/programmer
+</I>&gt;<i> - low ram and cpu requirements
+</I>&gt;<i> - efficient?
+</I>&gt;<i> - should everything be binary?
+</I>&gt;<i> - minimal code needed for encoding and decoding
+</I>&gt;<i> - easily accommodates standard microcontroller functionality (accessing
+</I>&gt;<i> peripherals), but is extensible
+</I>&gt;<i> - works over various communication methods (serial, tcp/ip, etc..)
+</I>&gt;<i> - in band or out of band bulk data transfer (file uploads, logged data
+</I>&gt;<i> downloads, etc..)
+</I>&gt;<i> - something here maybe for sending byte code to be executed?
+</I>&gt;<i> - maybe an auth mechanism to prevent loading arbitrary code over tcp/ip?
+</I>&gt;<i>
+</I>&gt;<i> *shrug*
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Jan 7, 2009, at 4:15 PM, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Jan 8, 2009 at 12:02 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I'm interested in getting ADC working on LM3S to try a few things out.
+</I>&gt;&gt;<i>  Since I see that you're intending to work on buffering, perhaps I'll wait
+</I>&gt;&gt;<i> for your changes?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> No, you shouldn't wait for my changes, as I have no idea when I'll be able
+</I>&gt;<i> to implement them. What we should do, however, is come up with a suitable
+</I>&gt;<i> platform interface for the ADC subsystem (just like we have for PIO, UART,
+</I>&gt;<i> timers and so on). This is something I've been delaying for a bit too long,
+</I>&gt;<i> so I solemnly promise to come up with a proposition by tomorrow EOD, then
+</I>&gt;<i> we'll refine it and then you'll be able to implement your drivers. The
+</I>&gt;<i> buffering part shouldn't interfere with your work at all; on the contrary,
+</I>&gt;<i> it should help it (especially if you do ADC via interrupts, although at this
+</I>&gt;<i> point you probably don't have that many reasons to use interrupts).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Are there any areas where work might be beneficial, but might not conflict
+</I>&gt;&gt;<i> with the changes you're planning to make?  I'd like to trial using eLua for
+</I>&gt;&gt;<i> controlling some devices.  For this, I'll need to be able to use the
+</I>&gt;&gt;<i> following:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - (wish list) having an RPC mechanism, or an easy way to ship data/make
+</I>&gt;&gt;<i> procedure calls between microcontroller and a desktop.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Heh, that would be cool indeed :) But I don't have anything really ready in
+</I>&gt;<i> that area, just some fuzzy ideas.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> The rest is pretty much project specific code for doing some PID etc..
+</I>&gt;&gt;<i>  One could argue the encoder reading is userland as well, but I believe the
+</I>&gt;&gt;<i> LM3S6965 has some sort of hardware facility.  I'd be willing to work on
+</I>&gt;&gt;<i> things related to these in order to try out this functionality.  Any
+</I>&gt;&gt;<i> thoughts?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> We need to put platform-specific functionality in platform-specific
+</I>&gt;<i> modules. More on that tomorrow (once again).
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> ----- Original Message -----
+</I>&gt;&gt;<i> From: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;<i> To: &quot;eLua development list&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;<i> Sent: Wednesday, January 7, 2009 2:31:30 PM GMT -06:00 US/Canada Central
+</I>&gt;&gt;<i> Subject: [eLua-dev] Latest eLua developments
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> First of all, I apologise for the huge svn commit message. Hope I'll keep
+</I>&gt;&gt;<i> them shorter in the future.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Common code from all backends was factored out in src/common.c, and each
+</I>&gt;&gt;<i> backend's platform_conf.h/platform.c fils were updated for this. Take a look
+</I>&gt;&gt;<i> at any of them, it's quite easy to understand what happened there.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> There's a new feature available for all platforms: virtual timers.
+</I>&gt;&gt;<i> Currently implemented for LM3S, AVR32 and AT91SAM, they're a very good way
+</I>&gt;&gt;<i> to get long delays (especially on platforms with 16-bit timers) if accuracy
+</I>&gt;&gt;<i> is not an issue. It's easy to use them: declare VTMR_NUM_TIMERS and
+</I>&gt;&gt;<i> VTMR_FREQ_HZ in platform_conf.h, then call cmn_virtual_timer_cb() from a
+</I>&gt;&gt;<i> timer interrupts that happens at a frequency of VTMR_FREQ_HZ. You use these
+</I>&gt;&gt;<i> timers just as the regular timers, but their IDs are not 0, 1, ..., but
+</I>&gt;&gt;<i> rather tmr.VIRT0, tmr.VIRT1...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Tested on: everything but LPC2888 (can't burn it right now, but there's no
+</I>&gt;&gt;<i> reason for it to fail) and STM32 (*Mike*, please test the new image on
+</I>&gt;&gt;<i> your board, I can't do that).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> To come (in order of priority, in an ideal world):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - more AVR32 (PWM, external memory)
+</I>&gt;&gt;<i> - Lua Tiny Ram patch (hopefully you're gonna love this one :) )
+</I>&gt;&gt;<i> - fix eLua stack overflow(s) (yes, we have those)
+</I>&gt;&gt;<i> - new XMODEM implementation (the current one is GPL, thus it prevents us
+</I>&gt;&gt;<i> from changing the license to BSD).
+</I>&gt;&gt;<i> - generic buffering system for &quot;char&quot; devices (UART, SPI, I2C, ADC...)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ... and many others. If only I had the time ...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________ Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 644-2322
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090108/ffaa913e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090108/ffaa913e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000252.html">[eLua-dev] Latest eLua developments
+</A></li>
+	<LI>Next message: <A HREF="000253.html">[eLua-dev] Patch for EK-LM3S6965 PWM1/Speaker
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#257">[ date ]</a>
+              <a href="thread.html#257">[ thread ]</a>
+              <a href="subject.html#257">[ subject ]</a>
+              <a href="author.html#257">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] net module issues
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20net%20module%20issues&In-Reply-To=%3C2093139D-A974-4285-99F0-5B8376A7843A%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003178.html">
+   <LINK REL="Next"  HREF="003180.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] net module issues</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20net%20module%20issues&In-Reply-To=%3C2093139D-A974-4285-99F0-5B8376A7843A%40fanplastic.org%3E"
+       TITLE="[eLua-dev] net module issues">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Dec 21 19:41:44 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003178.html">[eLua-dev] net module issues
+</A></li>
+        <LI>Next message: <A HREF="003180.html">[eLua-dev] First commands? help with 3rd tutorial
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3179">[ date ]</a>
+              <a href="thread.html#3179">[ thread ]</a>
+              <a href="subject.html#3179">[ subject ]</a>
+              <a href="author.html#3179">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+On Tue, Dec 20, 2011 at 7:45 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 20 December 2011 23:51, Campbell Letts &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">celetts at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> I understand that the net module has recently been undergoing changes. Are
+</I>&gt;&gt;<i> those likely to have affected my work? I've pulled from the master in the
+</I>&gt;&gt;<i> last couple of days.
+</I>&gt;<i> 
+</I>&gt;<i> I gather (and am hoping!) that Bogdan is working on an alternate IP
+</I>&gt;<i> stack for eLua. What I would do is not care whether we have the
+</I>&gt;<i> current net.* or something else, bu implement Lua sockets, in Lua, on
+</I>&gt;<i> whatever IP mechanism we happen to have available at the time.
+</I>
+The current IP stack hasn't had a great deal of change recently, but does have some outstanding issues that should be improved upon in an upcoming, yet to be merged, branch that Bogdan has been working on, the fruits of which I think are mostly here:
+<A HREF="https://github.com/elua/elua/tree/newstack">https://github.com/elua/elua/tree/newstack</A>
+(I can't speak to the state of that on LM3S at the moment, perhaps Bogdan can chime in)
+
+As for LuaSockets, it would be nice to have either a compatibility layer or just an interface that behaved like the LuaSockets API.  I'm not sure we could easily include the support modules, but perhaps at least the basic API might be straightforward?
+
+&gt;<i> 
+</I>&gt;<i> On a similar vein, a user recently asked me how he could get a
+</I>&gt;<i> direcory listing of /mmc and I had to say - er um no you can't
+</I>&gt;<i> AsFarAsIKnow for which the answer would we to implement Lua File
+</I>&gt;<i> System, again in Lua, on the primtives that we already have
+</I>
+Yeah, there's no way to get directory listings aside from using the raw C api.  I haven't looked at the innards of LFS or luaposix, but I'm sure we could implement as much of the API as makes sense for eLua, and then support a pretty wide cross section of Lua scripts or at least an API people are familiar with.  It's certainly fairly fundamental and useful functionality.
+
+I wonder how much code or ram overhead we might be talking about to implement these. 
+
+&gt;<i> 
+</I>&gt;<i> Bla bla luaposix the same kind of argument
+</I>&gt;<i> 
+</I>&gt;<i> I think that would make eLua more Lua-like as well as enabing us to
+</I>&gt;<i> import a sack of Lua libraries  out there that use LFS and lusposix
+</I>
+Sounds good.  One thing is though that one will still need a reasonably beefy mcu ram-wise to run a wide cross section of desktop code out of the box. However, it does provide a convenient way to test code on desktop lua before running on embedded targets.
+
+&gt;<i> 
+</I>&gt;<i> whaddya think?
+</I>&gt;<i> 
+</I>&gt;<i>  M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003178.html">[eLua-dev] net module issues
+</A></li>
+	<LI>Next message: <A HREF="003180.html">[eLua-dev] First commands? help with 3rd tutorial
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3179">[ date ]</a>
+              <a href="thread.html#3179">[ thread ]</a>
+              <a href="subject.html#3179">[ subject ]</a>
+              <a href="author.html#3179">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

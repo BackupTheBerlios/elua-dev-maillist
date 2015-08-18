@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] About net module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20About%20net%20module&In-Reply-To=%3Ccb74783f0906122357j32b32349w19737f7d8de98e14%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000847.html">
+   <LINK REL="Next"  HREF="000849.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] About net module</H1>
+    <B>Pedro Bittencourt</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20About%20net%20module&In-Reply-To=%3Ccb74783f0906122357j32b32349w19737f7d8de98e14%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] About net module">pedrobittencourt87 at gmail.com
+       </A><BR>
+    <I>Sat Jun 13 08:57:44 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000847.html">[eLua-dev] About net module
+</A></li>
+        <LI>Next message: <A HREF="000849.html">[eLua-dev] About net module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#848">[ date ]</a>
+              <a href="thread.html#848">[ thread ]</a>
+              <a href="subject.html#848">[ subject ]</a>
+              <a href="author.html#848">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Updating:
+
+Figure out how to use net.socket and net.connect. Now a simple request is
+working on external sites (like www.google.com) doing something like:
+
+sock = net.socket(0)
+host = net.packip(&quot;x.x.x.x&quot;) --this changes, so...
+port = 80 --for default
+err_con = net.connect(sock,host,port)
+s, err_send = net.send(sock, &lt;a giant request header string&gt;)
+r, err_res = net.recv(sock,&quot;*l&quot;)
+net.close(sock)
+print(r)
+
+But I still can't geta response from my server. I get err_res=2 , where can
+I find the error-codes definitions?
+
+--Pedro Bittencourt
+
+
+On Thu, Jun 11, 2009 at 7:36 PM, Pedro Bittencourt &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+
+&gt;<i> Greetings,
+</I>&gt;<i>
+</I>&gt;<i> A little question about net module usage:
+</I>&gt;<i>
+</I>&gt;<i> How can I make a request from eLua? (or more generally: How can I send
+</I>&gt;<i> things to known hosts from eLua?)
+</I>&gt;<i>
+</I>&gt;<i> I've, naively, tried net.send(net.connect(0,net.packip(&quot;192.168.0.100&quot;),8080),&quot;headerless
+</I>&gt;<i> string =)&quot;) (I'm using a LM3S8962 , and there is a server running on
+</I>&gt;<i> 192.168.0.100:8080)
+</I>&gt;<i>
+</I>&gt;<i> I really don't get the net.connect first param, it's supposed to be a
+</I>&gt;<i> socket. But how can I possibly get a valid socket value?
+</I>&gt;<i> Sorry to bother with basic doubts...
+</I>&gt;<i>
+</I>&gt;<i> --Pedro Bittencourt
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090613/c0fbaaa7/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090613/c0fbaaa7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000847.html">[eLua-dev] About net module
+</A></li>
+	<LI>Next message: <A HREF="000849.html">[eLua-dev] About net module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#848">[ date ]</a>
+              <a href="thread.html#848">[ thread ]</a>
+              <a href="subject.html#848">[ subject ]</a>
+              <a href="author.html#848">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

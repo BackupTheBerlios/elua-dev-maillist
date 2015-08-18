@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] memory usage
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20memory%20usage&In-Reply-To=%3CCANKDJfbHv%3D_v7FTiq3Ooe0AvEphkUd67jjcTag1Wy9onitTVGQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003753.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] memory usage</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20memory%20usage&In-Reply-To=%3CCANKDJfbHv%3D_v7FTiq3Ooe0AvEphkUd67jjcTag1Wy9onitTVGQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] memory usage">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Jul 31 08:58:55 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003753.html">[eLua-dev] memory usage
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3754">[ date ]</a>
+              <a href="thread.html#3754">[ thread ]</a>
+              <a href="subject.html#3754">[ subject ]</a>
+              <a href="author.html#3754">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Tue, Jul 31, 2012 at 12:59 AM, Tim Van Der Hulst
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tim at agfirstbop.co.nz</A>&gt; wrote:
+&gt;<i> Bogdan,
+</I>&gt;<i>
+</I>&gt;<i> Just following on from memory usage.
+</I>&gt;<i>
+</I>&gt;&gt;<i>with the latest eLua patches to Lua, you can execute _bytecode_ (only bytecode!) directly from the Flash, without having to
+</I>&gt;<i> load it to RAM. To do that, you need to cross-compile your Lua code on the host side (<A HREF="http://www.eluaproject.net/doc/master/en_using.html#cross">http://www.eluaproject.net/doc/master/en_using.html#cross</A>)
+</I>&gt;<i> and upload the resulting bytecode file to your board using either ROMFS or WOFS.
+</I>&gt;<i>
+</I>&gt;<i> I have been doing this for some time, to the point that I had all my modules compiled on the ROM and still getting memory errors. It seems that it still requires a large amount of RAM (more than size of module!) :(
+</I>&gt;<i>
+</I>&gt;<i> Here is an example using a single module.
+</I>&gt;<i>
+</I>&gt;<i> logFrameBuffer.lua - 280~ lines, implements a crude ring buffer with both writer/reader
+</I>&gt;<i>
+</I>&gt;<i> 5,293 bytes - 19 functions, pretty minimal amount of string/number. Some math, local variable usage etc. Nothing extraordinary.
+</I>&gt;<i>
+</I>&gt;<i> Cross compiled (with -s flag) this is 4,672 bytes).
+</I>&gt;<i>
+</I>&gt;<i> Encoded file logFrameBufferROM.lc (4676 bytes real size, 4704 bytes encoded size
+</I>&gt;<i>
+</I>&gt;<i> Confirming via Elf file &quot;.text&quot; section increased 4,704 bytes. All good. Now..
+</I>&gt;<i>
+</I>&gt;<i> ---------
+</I>&gt;<i>
+</I>&gt;<i> function mem()
+</I>&gt;<i>         print(collectgarbage('count') * 1024)
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> mem()
+</I>&gt;<i>
+</I>&gt;<i> require 'logFrameBufferROM'
+</I>&gt;<i>
+</I>&gt;<i> mem()
+</I>&gt;<i>
+</I>&gt;<i> ----------
+</I>&gt;<i>
+</I>&gt;<i> 5179
+</I>&gt;<i> 10709
+</I>&gt;<i>
+</I>&gt;<i> Eg - Memory has increased by 5,530 bytes!!!
+</I>&gt;<i>
+</I>&gt;<i> That is more than the original bytecode file :(
+</I>
+There is little connection between the size of the original bytecode
+file and the amount of memory it uses. As an example, it's perfectly
+possible to allocate megs of memory with a single Lua line. For
+example:
+
+s = string.rep( 'a', 32 * 1048576 ) -- this will allocate 32M of memory
+
+Keeping in mind that 'require' actually executes the file it receives
+as argument, it becomes clear that the actual content of
+logFrameBufferROM is significant. If you can upload it here, we can
+try to find a reason for that relatively high memory consumption.
+
+&gt;<i>
+</I>&gt;<i> --------------
+</I>&gt;<i>
+</I>&gt;&gt;<i> Each type in Lua is allocated on the heap (malloc and
+</I>&gt;<i> friends) (yes, even numbers). Unfortunately, this is something we
+</I>&gt;<i> can't really control much (although we have some patches here too,
+</I>&gt;<i> their effect isn't nearly as dramatic as the above &quot;bytecode from
+</I>&gt;<i> Flash&quot; optimization).
+</I>&gt;<i>
+</I>&gt;<i> If I follow this guide for memory:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www.wowwiki.com/Lua_object_memory_sizes">http://www.wowwiki.com/Lua_object_memory_sizes</A>
+</I>&gt;<i>
+</I>&gt;<i> Functions: 19 * 20 bytes = 380 bytes
+</I>&gt;<i>
+</I>&gt;<i> Numbers: Approx 20
+</I>&gt;<i> Strings: Approx 50 bytes worth
+</I>&gt;<i>
+</I>&gt;<i> So I could probably realistically say it shouldn't be more than 1k of data that should go on the heap I suppose!?!
+</I>
+Probably, but again, the actual code in 'logFrameBufferROM' is very important.
+
+&gt;<i>
+</I>&gt;&gt;<i> You can also try to change the EGC patch with aggresive triggering
+</I>&gt;<i>
+</I>&gt;<i> Tried all options and made little difference, might affect working memory but by the time my modules are loaded its around 40K which is pretty close to the threshold for the 64k SRAM on the Chip.
+</I>
+I agree that this is quite weird. Unless your modules create a lot of
+strings and/or tables at initialization time, I can't find a good
+reason for this behaviour.
+
+&gt;<i>
+</I>&gt;<i> -----------
+</I>&gt;<i>
+</I>&gt;<i> I hope there is something that I am doing wrong as it's unfortunate that even with bytecode in Flash it still needs lots of(SRAM) program memory for your average Lua code. I am starting to wonder if eLua is all that suitable for chips with limited RAM (64K and under), seems its fine for trivial applications with small amounts of code perhaps.
+</I>
+That is true, unfortunately. There are some tricks to work around
+this, but ultimately 64k is in the &quot;almost usable&quot; realm for anything
+but trivial applications. Changing this is extremely difficult. That
+said, I'm extremely willing to help you investigate this issue, as it
+might lead to finding new ways to make eLua more memory friendly.
+Please try to find a simple example that can be used to reproduce the
+problem you described and send it to me (or to the list, whichever you
+prefer). Your 'logFrameBufferROM' seems to be a good example.
+
+&gt;<i>
+</I>&gt;<i> I really think I am in need of a chip with 128K SRAM but its kind of rare prospect as indicated in these old posts:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/Single-Chip-Lua-Prospects-td3132204.html">http://elua-development.2368040.n2.nabble.com/Single-Chip-Lua-Prospects-td3132204.html</A>
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/Re-Single-Chip-Lua-Prospects-td4677969.html">http://elua-development.2368040.n2.nabble.com/Re-Single-Chip-Lua-Prospects-td4677969.html</A>
+</I>
+Things are not so bad in this area anymore. Some of the latest M4
+cores, for example, come with a lot of internal RAM, although not
+without some quirks (for example multiple internal RAM regions). Look
+for example an the STM32F4 from ST or the LPC4300 from NXP (or the
+Cortex-M3 LPC1800 family for even more internal RAM). Things are
+getting better and better in this area.
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i>
+</I>&gt;<i> TiM
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003753.html">[eLua-dev] memory usage
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3754">[ date ]</a>
+              <a href="thread.html#3754">[ thread ]</a>
+              <a href="subject.html#3754">[ subject ]</a>
+              <a href="author.html#3754">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

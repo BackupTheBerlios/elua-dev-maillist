@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] The right place where add virtual serial (USB-CDC	class) on eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20The%20right%20place%20where%20add%20virtual%20serial%20%28USB-CDC%0A%09class%29%20on%20eLua&In-Reply-To=%3C736198.53931.qm%40web161214.mail.bf1.yahoo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002419.html">
+   <LINK REL="Next"  HREF="002421.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] The right place where add virtual serial (USB-CDC	class) on eLua</H1>
+    <B>Tim michals</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20The%20right%20place%20where%20add%20virtual%20serial%20%28USB-CDC%0A%09class%29%20on%20eLua&In-Reply-To=%3C736198.53931.qm%40web161214.mail.bf1.yahoo.com%3E"
+       TITLE="[eLua-dev] The right place where add virtual serial (USB-CDC	class) on eLua">tcmichals at yahoo.com
+       </A><BR>
+    <I>Fri Jun  3 18:39:14 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002419.html">[eLua-dev] The right place where add virtual serial (USB-CDC class) on eLua
+</A></li>
+        <LI>Next message: <A HREF="002421.html">[eLua-dev] The right place where add virtual serial (USB-CDC class) on eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2420">[ date ]</a>
+              <a href="thread.html#2420">[ thread ]</a>
+              <a href="subject.html#2420">[ subject ]</a>
+              <a href="author.html#2420">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm in process of making the USB client stack more generic.&#160; I was thinking of a directory structure:
+
+Top level
+elua/src/modules/USB
+&#160;/common
+
+&#160;/device
+&#160;&#160; &#160;&#160;&#160;&#160; /cdc-serial
+/core
+
+/host
+&#160; &#160;&#160;&#160;&#160; /core
+
+Each platform would then have handlers for USB HW.&#160; It would be good to make sure this works on a couple of platforms.
+
+
+The main issue, is handling full speed and high speed.&#160; Does the AVR32 have high speed usb?
+
+
+
+________________________________
+From: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">raciti.nuccio at gmail.com</A>; eLua Users and Development List (www.eluaproject.net) &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+Sent: Friday, June 3, 2011 11:12 AM
+Subject: Re: [eLua-dev] The right place where add virtual serial (USB-CDC class) on eLua
+
+
+Hi,
+
+
+On Fri, Jun 3, 2011 at 12:31 PM, Nuccio Raciti &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">raciti.nuccio at gmail.com</A>&gt; wrote:
+
+Hi,
+&gt;<i>
+</I>&gt;<i>I need to add two USB virtual serial to the AVR32 platform,
+</I>&gt;<i>the goal is to have both the console and the remote file system managed by
+</I>&gt;<i>the USB port (with the benefits of simplicity and economy).
+</I>&gt;<i>Of course I want to keep (optional) the capability to have a traditional UART.
+</I>&gt;<i>
+</I>&gt;<i>The question is: Where is the right place to add this support?
+</I>&gt;<i>
+</I>
+Ideally we'd try to make this platform-independent. However, I'm not at all that good with USB, so I can't design a suitable platform interface for this (if someone else can please let me know). So we can keep the code local to the platform(s) for now and maybe refactor it one day.
+
+Best,
+Bogdan
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110603/43c5ce4d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110603/43c5ce4d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002419.html">[eLua-dev] The right place where add virtual serial (USB-CDC class) on eLua
+</A></li>
+	<LI>Next message: <A HREF="002421.html">[eLua-dev] The right place where add virtual serial (USB-CDC class) on eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2420">[ date ]</a>
+              <a href="thread.html#2420">[ thread ]</a>
+              <a href="subject.html#2420">[ subject ]</a>
+              <a href="author.html#2420">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

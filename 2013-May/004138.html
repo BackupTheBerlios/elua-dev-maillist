@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] IMPORTANT: new build system in master
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20new%20build%20system%20in%20master&In-Reply-To=%3CCANKDJfYxCn31XSPzRG2PoNrA8TAEXdAp-%3DxWHd-g1ofPwEqtgw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004137.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] IMPORTANT: new build system in master</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20new%20build%20system%20in%20master&In-Reply-To=%3CCANKDJfYxCn31XSPzRG2PoNrA8TAEXdAp-%3DxWHd-g1ofPwEqtgw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] IMPORTANT: new build system in master">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri May 31 22:39:56 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004137.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4138">[ date ]</a>
+              <a href="thread.html#4138">[ thread ]</a>
+              <a href="subject.html#4138">[ subject ]</a>
+              <a href="author.html#4138">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello again,
+
+I've pushed a branch called 'scons_avr32' to github. It can be used to
+build _only_ AVR32 targets using the old build system. It uses the old
+platform_conf.h mechanism, not the configurator. It's the best I can do
+without significant effort, so I hope that's useful to you.
+
+Best,
+Bogdan
+
+
+
+On Fri, May 31, 2013 at 7:41 PM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> On Fri, May 31, 2013 at 6:41 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On 31 May 2013 16:27, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt; On Fri, May 31, 2013 at 4:25 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt;&gt; &gt; PS: I feel a bit sad about SConstruct - we won't have it any more :(
+</I>&gt;&gt;<i> &gt;&gt; Bogdan, can you summarise what advantages the &quot;new build system&quot;
+</I>&gt;&gt;<i> &gt;&gt; brings please, and how this affects developers.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> As you know, I'm no fan of changes to a working build system to a new
+</I>&gt;&gt;<i> and different build system unless it is the only solution to overcome
+</I>&gt;&gt;<i> specific technical obstacles.
+</I>&gt;&gt;<i>   For me, as an eLua developer, the new build system meant having to
+</I>&gt;&gt;<i> make the same changes twice in two files in two different languages,
+</I>&gt;&gt;<i> Python and Lua, hoping they remained in sync and having to test every
+</I>&gt;&gt;<i> change twice in every build configuration instead of once, doubling
+</I>&gt;&gt;<i> the work.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> This is exactly why I decided to give up scons entirely. Having two build
+</I>&gt;<i> systems in parallel was a pain.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>   The new has no parallel build option, taking twice as long to
+</I>&gt;&gt;<i> compile here during development, tripling it for testing.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I know, but this will be fixed soon (hopefully).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>   In these tests with two biuld systems, I found that it generates not
+</I>&gt;&gt;<i> only different code, but larger code, using the same compiler with the
+</I>&gt;&gt;<i> same options. For my very tight 120K target that makes the difference
+</I>&gt;&gt;<i> between fitting in flash and overflowing it.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> We talked about that and I suggested that you check for different compiler
+</I>&gt;<i> flags and different link order. If it's a compiler flags issue, that's an
+</I>&gt;<i> easy fix. If it's just a question of the build order, I guess we could
+</I>&gt;<i> change that too, but this feels like pushing it a bit too far. I understand
+</I>&gt;<i> that you're working on a very space-constrained target, but depending on a
+</I>&gt;<i> specific link order to make your image fit doesn't feel quite right.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>   Apart from the specific technical shortcomings outlined above, the
+</I>&gt;&gt;<i> very fact of changing buld system has disadvantages to the eLua
+</I>&gt;&gt;<i> program because it distracts developer time and attention away from
+</I>&gt;&gt;<i> eLua itself, makes us maintain and debug two pieces of software
+</I>&gt;&gt;<i> instead of one (since bugs in the build system are as much fun as bugs
+</I>&gt;&gt;<i> in the compiler),
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> This will go away soon enough, once we switch to lake (because having an
+</I>&gt;<i> eLua specific build system doesn't make much sense indeed).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> and it leaves incompatibility with the other 40
+</I>&gt;&gt;<i> branches and 50 forks of eLua, which would have to (but will not)
+</I>&gt;&gt;<i> rewrite all their changes to the build system.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I might be wrong about this, but I expect that most of the branches/forks
+</I>&gt;<i> that you're talking about didn't modify the build system too much; even if
+</I>&gt;<i> they did, there's a high chance that only a bunch of macros/flags were
+</I>&gt;<i> changed. If the change was more profound, I can help with the transition.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Half of builder.simplemachines.it stopped working when SConstruct
+</I>&gt;&gt;<i> disappeared from the master branch, the half that compiles the master
+</I>&gt;&gt;<i> branch instead of 0.8, which is the only 0.9 option it has at the
+</I>&gt;&gt;<i> moment, for users to have system timer, mizar32.rtc and all the rest
+</I>&gt;&gt;<i> of the good new things in elua0.9.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The builder is indeed an unfortunate collateral victim and I'm sorry this
+</I>&gt;<i> caused you so much trouble (our own builder suffered because of this too).
+</I>&gt;<i> I'll do what I can to help you transition to the new build system. Our
+</I>&gt;<i> builder was prepared to handle this change, but I simply didn't realise
+</I>&gt;<i> that you have a builder of your own (I never used it myself); if I did, you
+</I>&gt;<i> would've been notified about this change quite a while ago.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> If SConstruct still works, is it too much to ask to put it back at
+</I>&gt;&gt;<i> least until I get round to fixing the SM web builder, which I didn't
+</I>&gt;&gt;<i> write and don't know how to fix yet?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I will try to put the old build system back on a branch (for AVR32 only).
+</I>&gt;<i> I'll get back to you as soon I'm done.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     M
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130531/1ad26ffb/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130531/1ad26ffb/attachment-0001.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004137.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4138">[ date ]</a>
+              <a href="thread.html#4138">[ thread ]</a>
+              <a href="subject.html#4138">[ subject ]</a>
+              <a href="author.html#4138">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

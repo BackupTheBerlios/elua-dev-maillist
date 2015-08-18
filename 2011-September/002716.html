@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Evalbot, Elua, and Ctarded
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Evalbot%2C%20Elua%2C%20and%20Ctarded&In-Reply-To=%3Cdaa867f779c06c15271f3035c1076d87%40cheesefactory.us%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002715.html">
+   <LINK REL="Next"  HREF="002717.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Evalbot, Elua, and Ctarded</H1>
+    <B>osgeld at cheesefactory.us</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Evalbot%2C%20Elua%2C%20and%20Ctarded&In-Reply-To=%3Cdaa867f779c06c15271f3035c1076d87%40cheesefactory.us%3E"
+       TITLE="[eLua-dev] Evalbot, Elua, and Ctarded">osgeld at cheesefactory.us
+       </A><BR>
+    <I>Fri Sep  2 23:01:42 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002715.html">[eLua-dev] Evalbot, Elua, and Ctarded
+</A></li>
+        <LI>Next message: <A HREF="002717.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2716">[ date ]</a>
+              <a href="thread.html#2716">[ thread ]</a>
+              <a href="subject.html#2716">[ subject ]</a>
+              <a href="author.html#2716">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for your reply. I will get back on this shortly but I also have 
+something on my plate that has popped up tween now and when I sent the 
+original Email.
+
+DAC, Audio and Wave functionality all have libraries
+
+So Does the RIT screen, and yes its different 96x16x1
+
+Yes the SD is on one of the SPI ports, I am not that worried about it 
+right now as there does not appear to be much FS support ATM
+
+Yes the motor controllers are PWM, but there is also a phase input for 
+the motor drivers. though again there are libs for that already in the 
+software package.
+
+So really everything is there and functioning, its just not bound up to 
+Elua. I am just not following the process cuase its hard to see what all 
+is being done when there are multiple boards, and I have no idea what I 
+am doing. Especially In C!
+
+
+On Fri, 2 Sep 2011 12:30:22 -0500, James Snyder wrote:
+&gt;<i> On Mon, Aug 15, 2011 at 11:22 AM, Osgeld &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">osgeld at cheesefactory.us</A>&gt; 
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i> I have asked a little bit about how to bind elua to a platform, I 
+</I>&gt;&gt;<i> have sat
+</I>&gt;&gt;<i> down and studied it and every block I seem to get more and more lost
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> What I want to do is get elua working with all the junk TI included 
+</I>&gt;&gt;<i> with the
+</I>&gt;&gt;<i> evalbot, much like other TI boards there are libraries written for 
+</I>&gt;&gt;<i> the
+</I>&gt;&gt;<i> peripherals, and elua already runs fine with the LM3S9B92 core.
+</I>&gt;<i>
+</I>&gt;<i> Yep. It runs quite well on 9B92, supporting all the periphs that we
+</I>&gt;<i> already already support on LM3S.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So is anyone willing to hold my hand, remember I am c-tarded, and 
+</I>&gt;&gt;<i> help me
+</I>&gt;&gt;<i> get the libraries working with elua for the dac, the rit screen, sd 
+</I>&gt;&gt;<i> card,
+</I>&gt;&gt;<i> motor controllers etc?
+</I>&gt;<i>
+</I>&gt;<i> I can try and answer questions.
+</I>&gt;&gt;<i> dac
+</I>&gt;<i> We don't yet have a DAC module for eLua, though it wouldn't be too
+</I>&gt;<i> hard to implement at least something that would set values on the DAC
+</I>&gt;<i> with a command from eLua.
+</I>&gt;<i>
+</I>&gt;&gt;<i> rit screen
+</I>&gt;<i> We support an OLED display found on some of the other eval boards,
+</I>&gt;<i> it's connected to an SPI peripheral on those.  It looks like its a
+</I>&gt;<i> different display than the one on some of the other kits where we've
+</I>&gt;<i> supported the display since it's 96x16 as opposed to 128x64.  I
+</I>&gt;<i> suspect it won't be hard to get going though.
+</I>&gt;<i>
+</I>&gt;&gt;<i> sd card
+</I>&gt;<i> If this is connected to an SPI line as with some of the other LM3S
+</I>&gt;<i> eval boards, it should be pretty straightforward to get running.  As
+</I>&gt;<i> with the simplest case for the display, this may require a little
+</I>&gt;<i> modification to get things working.  Going from just looking at the
+</I>&gt;<i> schematic, it looks like it uses SSI0, so I think we'd just need to
+</I>&gt;<i> enable the options for this particular board for this to work.
+</I>&gt;<i>
+</I>&gt;&gt;<i> motor controllers
+</I>&gt;<i> This depends on how these are set up and whether they're using a
+</I>&gt;<i> peripheral we already support or not. If they're on PWM, that might 
+</I>&gt;<i> be
+</I>&gt;<i> fairly easy.  If they're using encoder interfaces, we haven't added
+</I>&gt;<i> support for that peripheral yet. Again, a quick look at the schematic
+</I>&gt;<i> suggests that they're using PWM0 and PWM1 to drive the motors. I'd
+</I>&gt;<i> have to look a little deeper at the motor driver to know whether that
+</I>&gt;<i> will be usable out of the box or not.
+</I>&gt;<i>
+</I>&gt;<i> I'm a little busy trying to wrap up some stuff at the moment, but I
+</I>&gt;<i> can try helping to make some of the adjustments for things we already
+</I>&gt;<i> support, and make some recommendations for how one might get the 
+</I>&gt;<i> other
+</I>&gt;<i> functionality going.  Certainly with the DAC, some C code will need
+</I>&gt;<i> writing :-)
+</I>&gt;<i>
+</I>&gt;<i> I would suggest maybe either starting with a stock image for the
+</I>&gt;<i> EK-LM3S9B92 board to experiment with (SD card is off for this one, as
+</I>&gt;<i> is display). If they provide some sort of virtual UART functionality
+</I>&gt;<i> through another chip you should be able to get the eLua console up.
+</I>&gt;<i> We could work our way from there.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> thanks
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> View this message in context: 
+</I>&gt;&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/Evalbot-Elua-and-Ctarded-tp6688155p6688155.html">http://elua-development.2368040.n2.nabble.com/Evalbot-Elua-and-Ctarded-tp6688155p6688155.html</A>
+</I>&gt;&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002715.html">[eLua-dev] Evalbot, Elua, and Ctarded
+</A></li>
+	<LI>Next message: <A HREF="002717.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2716">[ date ]</a>
+              <a href="thread.html#2716">[ thread ]</a>
+              <a href="subject.html#2716">[ subject ]</a>
+              <a href="author.html#2716">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

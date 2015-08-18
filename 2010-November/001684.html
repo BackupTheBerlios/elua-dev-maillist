@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] porting elua to new platform
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20porting%20elua%20to%20new%20platform&In-Reply-To=%3CAANLkTimVqSx%3D9_OV1KeSo7ZAf-bCqQ9gV3cgOsY0TCBj%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001683.html">
+   <LINK REL="Next"  HREF="001685.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] porting elua to new platform</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20porting%20elua%20to%20new%20platform&In-Reply-To=%3CAANLkTimVqSx%3D9_OV1KeSo7ZAf-bCqQ9gV3cgOsY0TCBj%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] porting elua to new platform">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Nov  9 13:27:55 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001683.html">[eLua-dev] porting elua to new platform
+</A></li>
+        <LI>Next message: <A HREF="001685.html">[eLua-dev] porting elua to new platform
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1684">[ date ]</a>
+              <a href="thread.html#1684">[ thread ]</a>
+              <a href="subject.html#1684">[ subject ]</a>
+              <a href="author.html#1684">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Tue, Nov 9, 2010 at 2:18 PM, Oliver Mueller &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">oliver.mueller at gmail.com</A>&gt; wrote:
+&gt;<i> hi,
+</I>&gt;<i> i'm trying to figure out the approach to port lua to a new platform.(a
+</I>&gt;<i> freescale powerpc)
+</I>&gt;<i> in the page about porting eLua i didn't find a good strategy of how to
+</I>&gt;<i> use a restricted set of features.
+</I>
+Restriced set of features on a PPC? I remember those were quite beefy.
+What CPU are you using?
+
+&gt;<i> has anybody any experience with the following topics:
+</I>&gt;<i> - configure eLua to not use floating point
+</I>
+Sure, there's already support for compiling eLua in &quot;integer mode&quot;,
+using 'target=lualong' at compile time. If your can also link against
+a C library that has different versions for floating point and integer
+mode (something not currently supported in eLua) you might gain quite
+a bit of Flash space in the process.
+
+&gt;<i> - using lua with a *very* limited os (non-posix)
+</I>
+Lua itself doesn't really need an OS. It compiles on bare-metal
+platforms without problems, as long as you don't link in the OS
+library.
+
+&gt;<i> - using lua without a file system
+</I>
+Again, Lua doesn't really need a file system.You'll be severly
+restricted without one (no file I/O, no ability to load modules), but
+you can run standard Lua without an OS.
+
+My advice is to start from here:
+
+<A HREF="http://www.eluaproject.net/en_building.html#configuring">http://www.eluaproject.net/en_building.html#configuring</A>
+
+and disable as many components/modules as you can. I'll have a clear
+idea if you tell me what are the actual constraints of your hardware
+platform.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001683.html">[eLua-dev] porting elua to new platform
+</A></li>
+	<LI>Next message: <A HREF="001685.html">[eLua-dev] porting elua to new platform
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1684">[ date ]</a>
+              <a href="thread.html#1684">[ thread ]</a>
+              <a href="subject.html#1684">[ subject ]</a>
+              <a href="author.html#1684">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

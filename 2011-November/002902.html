@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%0A%09%3D%3Fiso-8859-2%3Fq%3Fstm32f4%3D5F-%3D5Fmax%3D5Ffree%3D5Fmem%3D5F/%3D5Fra%3F%3D%0A%09%3D%3Fiso-8859-2%3Fq%3Fm%3D5Fsize%3F%3D&In-Reply-To=%3C37cc62303a57b0fb9dcd5d620ce521e6%40mail2.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002901.html">
+   <LINK REL="Next"  HREF="002903.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4_-_max_free_mem_/_ram_size</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%0A%09%3D%3Fiso-8859-2%3Fq%3Fstm32f4%3D5F-%3D5Fmax%3D5Ffree%3D5Fmem%3D5F/%3D5Fra%3F%3D%0A%09%3D%3Fiso-8859-2%3Fq%3Fm%3D5Fsize%3F%3D&In-Reply-To=%3C37cc62303a57b0fb9dcd5d620ce521e6%40mail2.volny.cz%3E"
+       TITLE="[eLua-dev] stm32f4_-_max_free_mem_/_ram_size">pito at volna.cz
+       </A><BR>
+    <I>Fri Nov 11 09:49:12 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002901.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+        <LI>Next message: <A HREF="002903.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2902">[ date ]</a>
+              <a href="thread.html#2902">[ thread ]</a>
+              <a href="subject.html#2902">[ subject ]</a>
+              <a href="author.html#2902">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> The compiler/linker can't do anything if the
+</I>&gt;<i> memory regions are not
+</I>&gt;<i> _physically_ contiguous in the MCU address space
+</I>&gt;<i> (which is the case here).
+</I>&gt;<i> The allocator, though, can work with two or more
+</I>&gt;<i> isolated memory blocks. It
+</I>&gt;<i> will never be able to allocate 196k in a single
+</I>&gt;<i> piece, but it will be able
+</I>&gt;<i> to allocate smaller pieces from both regions.
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>
+Unless you want to execute from ram (not the elua case) any
+compiler/linker must be able to handle none contigous ram spaces..
+For example all the pic16/18 c-compilers handle that (ie pic16s have
+4 ram banks with a happy mixture of various registers and ram)..
+
+
+-- 
+Jak se vyhnout nachlazen&#237; a dal&#353;&#237;m zdravotn&#237;m pot&#237;&#382;&#237;m v nep&#345;&#237;jemn&#233;m
+podzimn&#237;m obdob&#237;? &#268;t&#283;te speci&#225;l Zdrav&#237; na podzim na
+<A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002901.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+	<LI>Next message: <A HREF="002903.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2902">[ date ]</a>
+              <a href="thread.html#2902">[ thread ]</a>
+              <a href="subject.html#2902">[ subject ]</a>
+              <a href="author.html#2902">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

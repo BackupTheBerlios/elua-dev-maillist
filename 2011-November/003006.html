@@ -1,0 +1,323 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] FP32 with fpu enabled
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20FP32%20with%20fpu%20enabled&In-Reply-To=%3CCAJ%3DY9Y32_ZS2-VMMG6RVwn00W5snKmbuPafLBB9z8NuY7odnzw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003002.html">
+   <LINK REL="Next"  HREF="003007.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] FP32 with fpu enabled</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20FP32%20with%20fpu%20enabled&In-Reply-To=%3CCAJ%3DY9Y32_ZS2-VMMG6RVwn00W5snKmbuPafLBB9z8NuY7odnzw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] FP32 with fpu enabled">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Nov 22 05:35:38 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003002.html">[eLua-dev] FP32 with fpu enabled
+</A></li>
+        <LI>Next message: <A HREF="003007.html">[eLua-dev] FP32 with fpu enabled
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3006">[ date ]</a>
+              <a href="thread.html#3006">[ thread ]</a>
+              <a href="subject.html#3006">[ subject ]</a>
+              <a href="author.html#3006">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Nov 21, 2011 at 12:53 PM, Dan Debeer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dandebeer at yahoo.com</A>&gt; wrote:
+&gt;<i> I believe the bulk of the time in any program is spent in the interpreter
+</I>&gt;<i> and hardware floating point makes no material difference to the overall
+</I>&gt;<i> execution speed of the program.&#160; Now if you are implementing an FFT,&#160; FIR or
+</I>&gt;<i> IIR filter or some other special DSP code that depends on dense numerical
+</I>&gt;<i> code the appropriate way to implement the DSP code is as C-subroutines and
+</I>&gt;<i> linked in as such.
+</I>
+Indeed, I would not suggest trying to implement DSP code in pure Lua,
+especially on an embedded target.  I think there are some valuable
+things we could hook in with here for modules like ADC and possibly
+others that might deal with arrays of incoming data that need to be
+processed in a CPU-efficient manner before delivering lower bandwidth
+results to Lua.
+
+&gt;<i>
+</I>&gt;<i> I did some testing on a 72MHz STM32 board and found that for floating point
+</I>&gt;<i> add, subtract, multiply and divide operations the interpreter overhead is
+</I>&gt;<i> about 60x the time spent in the floating point routines for a tight loop.
+</I>
+This sounds close to what one might expect (give or take single digit
+scalar quantities):
+<A HREF="http://shootout.alioth.debian.org/u32/which-programming-languages-are-fastest.php">http://shootout.alioth.debian.org/u32/which-programming-languages-are-fastest.php</A>
+
+&gt;<i> In fact, the overhead is so large that it is difficult to tell when the loop
+</I>&gt;<i> is using floating point or integers for the numerical calculations.
+</I>&gt;<i> YMMV but I suggest we get feel happy about the large RAM and fast clock and
+</I>&gt;<i> make sure we document how to call optimized code from within eLUA instead of
+</I>&gt;<i> trying to invoke the floating point engine for operations where we won't see
+</I>&gt;<i> the difference in performance but will see interesting new bugs.
+</I>
+There are a couple of good related points here:
+1) Relative to optimizing Lua, check out Lua Performance Tips
+(<A HREF="http://www.lua.org/gems/sample.pdf">http://www.lua.org/gems/sample.pdf</A>)
+
+The biggest, and probably the most valuable I've found is setting
+variables and even references to C functions as local.  This makes an
+_immense_ amount of difference, especially when there are large
+differences in wait state performance between flash and SRAM.  The
+less indirection the interpreter has to use to look up things every
+single cycle it does something in a tight loop, the better.
+
+(that said, &quot;premature optimization is the root of all evil&quot; etc.. :-) )
+
+2) I would encourage the use of functions that do &quot;vectorized&quot; (as it
+is called in MATLAB, basically meaning do operations on more than one
+data outside the interpeter for each call) operations when you do have
+heavy lifting to do in C.  If you're going to do something in a loop
+that requires a lot of computation and there's a fairly low memory way
+to do that in C with one function call rather than calling that
+function repeatedly in a loop (10x, 100x, 1000x), it might be worth it
+if you're having performance problems.
+
+The latter of these is fairly key in CPU-bound scripting-language code
+where the interpreter is going to cost you quite a bit per cycle or
+per VM instruction.  Lua might be quite fast for its class of language
+and implementation, but there are worthwhile performance gains to be
+made by understanding what is costing you time and how you can work
+with that in an efficient manner.
+
+All that said, I'd love it if we could appropriately use the FPU when
+needed, since it seems like a waste to not take advantage of the
+hardware when it's sitting there waiting for instructions :-)  I agree
+with Bogdan on the front that something like LNUM's model (which, as I
+recall, segregates value storage and operations into integer and
+floating point ones based on fairly simple rules) might be a good
+direction to look to to integrate functionality like this.   All that
+said, I expect we might only see major performance differences in
+specific use cases and you're likely to get more mileage out of using
+&quot;local&quot; variables and references to C functions to avoid lookups in
+flash.
+
+&gt;<i>
+</I>&gt;<i> Regards
+</I>&gt;<i> Dan
+</I>&gt;<i>
+</I>&gt;<i> ________________________________
+</I>&gt;<i> From: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> To: pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;<i> Cc: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> Sent: Sunday, November 20, 2011 9:26 AM
+</I>&gt;<i> Subject: Re: [eLua-dev] FP32 with fpu enabled
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2011/11/20 pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i> There are few new DSP instructions (stm32f4) which might speed-up
+</I>&gt;<i> the soft math as well - marketing materials I saw say e.g.:
+</I>&gt;<i> Single cycle MUL/MAC: signed/unsigned multiply, signed/unsigned MAC,
+</I>&gt;<i> signed/unsigned MAC 64bit.
+</I>&gt;<i> They claim speeds improvements vs. CM3: 4x for 16bit MAC, 2x for
+</I>&gt;<i> 32bit MAC, up to 7x for 64bit MAC..
+</I>&gt;<i>
+</I>&gt;<i> MAC is mostly a DSP operation, general purpose code doesn't use it that
+</I>&gt;<i> much, so I wouldn't hold my breath for too long.
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> p.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> Komu: &quot;Tim michals&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt;, &quot;eLua Users and
+</I>&gt;<i> Development List (www.eluaproject.net)&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] FP32 with fpu enabled
+</I>&gt;<i> Datum: 20.11.2011 - 17:14:44
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sun, Nov 20, 2011 at 5:06 PM, Tim michals
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; &#160;GCC provides three basic options for compiling
+</I>&gt;&gt;<i> &gt; &#160;floating-point code:
+</I>&gt;&gt;<i> &gt; &#160;&gt;
+</I>&gt;&gt;<i> &gt; &#160; &#160;- Software floating point emulation, which is
+</I>&gt;&gt;<i> &gt; &#160; &#160;the default. In this
+</I>&gt;&gt;<i> &gt; &#160; &#160;&gt; &#160; &#160;case, the compiler implements floating-point
+</I>&gt;&gt;<i> &gt; &#160; &#160;arithmetic by means of library
+</I>&gt;&gt;<i> &gt; &#160; &#160;&gt; &#160; &#160;calls.
+</I>&gt;&gt;<i> &gt; &#160; &#160;- VFP hardware floating-point support using
+</I>&gt;&gt;<i> &gt; &#160; &#160;the soft-float ABI. This
+</I>&gt;&gt;<i> &gt; &#160; &#160;&gt; &#160; &#160;is selected by the -mfloat-abi=softfp option.
+</I>&gt;&gt;<i> &gt; &#160; &#160;When you select this
+</I>&gt;&gt;<i> &gt; &#160; &#160;&gt; &#160; &#160;variant, the compiler generates VFP
+</I>&gt;&gt;<i> &gt; &#160; &#160;floating-point instructions, but the
+</I>&gt;&gt;<i> &gt; &#160; &#160;&gt; &#160; &#160;resulting code uses the same call and return
+</I>&gt;&gt;<i> &gt; &#160; &#160;conventions as code compiled
+</I>&gt;&gt;<i> &gt; &#160; &#160;&gt; &#160; &#160;with software floating point.
+</I>&gt;&gt;<i> &gt; &#160; &#160;- VFP hardware floating-point support using
+</I>&gt;&gt;<i> &gt; &#160; &#160;the VFP ABI, which is the
+</I>&gt;&gt;<i> &gt; &#160; &#160;&gt; &#160; &#160;VFP variant of the Procedure Call Standard
+</I>&gt;&gt;<i> &gt; &#160; &#160;for the ARM(R) Architecture
+</I>&gt;&gt;<i> &gt; &#160; &#160;&gt; &#160; &#160;(AAPCS). This ABI uses VFP registers to pass
+</I>&gt;&gt;<i> &gt; &#160; &#160;function arguments and return
+</I>&gt;&gt;<i> &gt; &#160; &#160;&gt; &#160; &#160;values, resulting in faster floating-point
+</I>&gt;&gt;<i> &gt; &#160; &#160;code. To use this variant,
+</I>&gt;&gt;<i> &gt; &#160; &#160;&gt; &#160; &#160;compile with -mfloat-abi=hard.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; The CodeSoucery is compiled as soft, so, to make
+</I>&gt;&gt;<i> &gt; the most use hard, libc,
+</I>&gt;&gt;<i> &gt; &gt; and newlib need to be compiled using hard. Using
+</I>&gt;&gt;<i> &gt; the softfp, might be the
+</I>&gt;&gt;<i> &gt; &gt; easiest, so the standard libraries can still be
+</I>&gt;&gt;<i> &gt; used.
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yes, softfp seems to be the best starting point
+</I>&gt;&gt;<i> here.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Another issue, maybe add two new types to eLua,
+</I>&gt;&gt;<i> &gt; long int (64) ,
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This already happened. Have you missed the recent
+</I>&gt;&gt;<i> system timer thread?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/IMPORTANT-New-feature-on-the-master-branch-system-timer-td6918200.html">http://elua-development.2368040.n2.nabble.com/IMPORTANT-New-feature-on-the-master-branch-system-timer-td6918200.html</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; float (32)
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> We could definitly do this, although I can see
+</I>&gt;&gt;<i> eLua breaking in various,
+</I>&gt;&gt;<i> wonderfully unexpected ways when the number type
+</I>&gt;&gt;<i> won't be able to represent
+</I>&gt;&gt;<i> a full 32-bit integer anymore :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; and leaving the standard as int, there is a lot
+</I>&gt;&gt;<i> &gt; of discussion on the forum
+</I>&gt;&gt;<i> &gt; &gt; about timer support etc 64 bits, so just lump
+</I>&gt;&gt;<i> &gt; both int-64, and float into
+</I>&gt;&gt;<i> &gt; &gt; expanding the types.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yupppp, you definitely missed the system timer
+</I>&gt;&gt;<i> thread :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; But, that is a lot of work.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I think the best option we have with this is LNUM.
+</I>&gt;&gt;<i> If LNUM can
+</I>&gt;&gt;<i> differentiate between single and double precision
+</I>&gt;&gt;<i> operations (like it does
+</I>&gt;&gt;<i> for integers and floats) we might be able to
+</I>&gt;&gt;<i> benefit from the hardware
+</I>&gt;&gt;<i> acceleration. I'll have to take a closer look at
+</I>&gt;&gt;<i> that at some point.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160; ------------------------------
+</I>&gt;&gt;<i> &gt; *From:* pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;&gt;<i> &gt; *To:* <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; *Sent:* Sunday, November 20, 2011 3:38 AM
+</I>&gt;&gt;<i> &gt; *Subject:* [eLua-dev] FP32 with fpu enabled
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Hi, did somebody try to compile as FP32 with fpu
+</I>&gt;&gt;<i> &gt; support (e.g. for
+</I>&gt;&gt;<i> &gt; &gt; the stm32f4 board)? P.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; --
+</I>&gt;&gt;<i> &gt; Jak se vyhnout nachlazen&#237; a dal&#353;&#237;m zdravotn&#237;m
+</I>&gt;&gt;<i> &gt; pot&#237;&#382;&#237;m v nep&#345;&#237;jemn&#233;m
+</I>&gt;&gt;<i> &gt; &gt; podzimn&#237;m obdob&#237;? &#268;t&#283;te speci&#225;l Zdrav&#237; na podzim
+</I>&gt;&gt;<i> &gt; na
+</I>&gt;&gt;<i> &gt; &gt; <A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Videokurzy MS Office zdarma! Port&#225;l VOLN&#221;.cz p&#345;in&#225;&#353;&#237; online v&#253;ukov&#225;
+</I>&gt;<i> videa, kter&#225; v&#225;s rychle, n&#225;zorn&#283; a z&#225;bavnou formou nau&#269;&#237; ovl&#225;dat
+</I>&gt;<i> programy Excel, Word a PowerPoint. Seri&#225;l najdete na
+</I>&gt;<i> <A HREF="http://web.volny.cz/data/click.php?id=1293">http://web.volny.cz/data/click.php?id=1293</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003002.html">[eLua-dev] FP32 with fpu enabled
+</A></li>
+	<LI>Next message: <A HREF="003007.html">[eLua-dev] FP32 with fpu enabled
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3006">[ date ]</a>
+              <a href="thread.html#3006">[ thread ]</a>
+              <a href="subject.html#3006">[ subject ]</a>
+              <a href="author.html#3006">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

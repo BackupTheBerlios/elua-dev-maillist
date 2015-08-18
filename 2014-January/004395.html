@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Driver I2C 100% Lua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2014-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Driver%20I2C%20100%25%20Lua&In-Reply-To=%3CCAL4-wQrSJp-mhKS_zhrDOCZUSBQeiZQWpfpbAy6UV2vT0%2BWGpw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004394.html">
+   <LINK REL="Next"  HREF="004396.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Driver I2C 100% Lua</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Driver%20I2C%20100%25%20Lua&In-Reply-To=%3CCAL4-wQrSJp-mhKS_zhrDOCZUSBQeiZQWpfpbAy6UV2vT0%2BWGpw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Driver I2C 100% Lua">martinwguy at gmail.com
+       </A><BR>
+    <I>Fri Jan 17 02:57:36 CET 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004394.html">[eLua-dev] Driver I2C 100% Lua, update with RTC
+</A></li>
+        <LI>Next message: <A HREF="004396.html">[eLua-dev] Driver I2C 100% Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4395">[ date ]</a>
+              <a href="thread.html#4395">[ thread ]</a>
+              <a href="subject.html#4395">[ subject ]</a>
+              <a href="author.html#4395">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 16/01/2014, Albert FERNANDES &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">albert.fernandes at 1100f.fr</A>&gt; wrote:
+&gt;<i> follow <A HREF="https://github.com/AlbertFERNANDES/elua-i2c">https://github.com/AlbertFERNANDES/elua-i2c</A>
+</I>&gt;<i>
+</I>&gt;<i> Is a driver I2C with basics functions.
+</I>
+Nice. Giving us dozens of I2C interfaces on all platforms with GPIOs!
+
+If you are interested in improving it, I have some suggestions:
+- I2C frequency setting? Some devices have a maximum speed that they
+can respond to, whereas this just runs as fast as possible.  However,
+that's probably not important in practice.  It's be interesting to
+know what frequency it runs at, how many bits per second it transmits
+on your platform,which you can probably calculate by sending 100kb of
+data at full speed and timing it in seconds.
+- There's another part of I2C, &quot;clock stretching&quot;, also for slow
+devices. A slave can pause the master's clock while it processes data
+and gets ready for the next bit by holding the clock low, so the
+master should check that the clock really is high before driving it
+low. See the example of &quot;i2c bit banging&quot; in wikipedia for the exact
+algorithm.
+- Is your Lua-fu strong enough to redefine i2c.*() so that it
+implements the same interface as eLua's I2C module? That would make
+all existing eLua I2C code be able to use your i2c interface
+immediately without modification, and would avoid people having to
+write every program twice, once for eLua 12c.*() and once for your
+interface.  I guess you'd need a specialised setup function (or have 2
+extra optional parameters in your version) to specify the two pio pins
+to be used by the new I2C ID that i2c.setup() would create when it is
+called.
+
+Thanks!
+
+    M
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004394.html">[eLua-dev] Driver I2C 100% Lua, update with RTC
+</A></li>
+	<LI>Next message: <A HREF="004396.html">[eLua-dev] Driver I2C 100% Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4395">[ date ]</a>
+              <a href="thread.html#4395">[ thread ]</a>
+              <a href="subject.html#4395">[ subject ]</a>
+              <a href="author.html#4395">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

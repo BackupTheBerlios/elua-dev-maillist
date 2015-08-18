@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua modules
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20modules&In-Reply-To=%3Cd3b6d880812140608pd41e475sc0d3594616ceb87e%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000183.html">
+   <LINK REL="Next"  HREF="000185.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua modules</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20modules&In-Reply-To=%3Cd3b6d880812140608pd41e475sc0d3594616ceb87e%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua modules">dadosutter at gmail.com
+       </A><BR>
+    <I>Sun Dec 14 15:08:25 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000183.html">[eLua-dev] Toolchain Build Errors
+</A></li>
+        <LI>Next message: <A HREF="000185.html">[eLua-dev] Flashing EVK1100
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#184">[ date ]</a>
+              <a href="thread.html#184">[ thread ]</a>
+              <a href="subject.html#184">[ subject ]</a>
+              <a href="author.html#184">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello eLunatics,
+   Possible ways of planning and coding eLua modules is a subject that would
+deserve a list for itself :)
+   But I would like to bring some considerations to this list and to report
+my recent experience on writing some experimental modules.
+
+   In the hurry of allowing eLua Lua apps to use the OLED display that came
+with our LM3S8962 kit, I ended up creating a too-device-oriented module
+&quot;disp&quot;, a not-generic-enough-api to deserve becoming The Display Module for
+eLua. I kind of knew it would be like this from the start but I really
+wanted to have it ready, before Bogdan sit to rest and solve it in 3 minutes
+:<i>) It was also my first contact with LM low-level library and if ever you
+</I>find yourselves in the same situation, don't hesitate, go ahead and code
+something that works, even if it is not exactly the eLua way of coding
+modules, because I think it is the best way to learn it.
+
+   So an eLua &quot;native&quot;, (in the sense it is part of the eLua core) &quot;disp&quot;
+module was born. It is included in the build when we select one of the LM3S
+as the board argument in scons and is (still) on the trunk version in our
+repo at BerliOS.
+   It does it's job, bringing to Lua apps all the functions implemented by
+the Luminary Micro RIT128x96x4 (the name of the oled display device) driver
+.......... and nothing more.
+   As we began to use it, we quiclky wrote a small game application, a
+single-player Pong, that also uses other devices on the kit-board (buttons,
+led's, speaker, .....). So I felt the need to create another module, this
+time a simple Lua module, that would be dinamically loaded by Lua's native
+mechanism to do that, thru the functions require() and module(). Another
+module was born and this time I called it lm3s, as it would expose the LM3S
+board devices and some utility functions and this name allows us to use it
+like: lm3s.isbuttonpressed( lm3s.button_left ), lm3s.led_1 and so on.
+   Then I realized that the disp display module I had wrote before should
+actually be included in this module, as it is only another device available
+in the LM3S boards. I can reimplement the lm3s devices above in C, including
+now the disp functions as one of them and call the module lm3s. But some
+syntax and implementation issues arise:
+
+1 - It will be a statically loaded module, as I don't know how to
+dinamically load C modules in eLua yet. It seems that Mike has done advances
+in this area but we haven't established an eLua standard way of doing this
+yet (and Bogdan is very busy porting eLua to the AVR32 board we've both got
+this week !! :).
+(there's also a little discussion here on how to easy the control of
+including or not the module in one build but that's for later :)
+
+2 - As the module will now contain more devices and some of them (ie: disp)
+have dedicated functions, the syntax possibilities grow and we (me and
+Rafael) will bring this discussion very soon (this week) to the list too. I
+don't know how you prefere to write things like:
+lm3s.disp.stringdraw( &quot;hello world&quot;, 10, 10, 15 )     or
+lm3s.disp_stringdraw( &quot;hello world&quot;, 10, 10, 15 )    or
+lm3s.disp.enable()
+
+   I am now working on a Timers-in-capture/counter mode module, only playing
+with the C code (again, to get used with the LM way of configuring and
+counting) and trying to visualize how it will integrate with the already
+existant Timer module (that only offers timers in timer mode). I am using
+interruptions and this brings yet another requirement; how to treat and
+handle them generically in eLua.
+   Is is so damn fun to be able to code it in so many different ways :) Yet
+we will need to find the best generic way for eLua and maybe some
+standard-exceptional-ways too.
+
+   Personally, I haven't visualized the complete portability of this generic
+API yet (but Bogdan has !!!!!! :). My feeling is that we will come up with a
+subset of features offered commonly by (most) MCU peripherals and find a
+clean and unified way of offering specific features/modes/functions of some
+of them. Also, some of the important modules (ie: ADC, DAC, ...) will also
+have to support external devices thru, for example, an SPI channel and it
+will have to be transparent for the final (Lua) user.
+
+   Sorry for the long e-mail but the subject is long and I would like only
+to introduce it, so we will all be planning and coding our eLua modules in
+the same style soon ! :)
+
+I am all ears :)
+Best
+Dado
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081214/679f60ad/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081214/679f60ad/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000183.html">[eLua-dev] Toolchain Build Errors
+</A></li>
+	<LI>Next message: <A HREF="000185.html">[eLua-dev] Flashing EVK1100
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#184">[ date ]</a>
+              <a href="thread.html#184">[ thread ]</a>
+              <a href="subject.html#184">[ subject ]</a>
+              <a href="author.html#184">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

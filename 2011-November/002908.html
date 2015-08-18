@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%0A%09%3D%3Fiso-8859-2%3Fq%3Fstm32f4%3D5F-%3D5Fmax%3D5Ffree%3D5Fmem%3D5F/%3D5Fra%3F%3D%0A%09%3D%3Fiso-8859-2%3Fq%3Fm%3D5Fsize%3F%3D&In-Reply-To=%3C1c6e6c3c0a290d017fdb7b97e6feb48b%40mail2.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002907.html">
+   <LINK REL="Next"  HREF="002911.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4_-_max_free_mem_/_ram_size</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%0A%09%3D%3Fiso-8859-2%3Fq%3Fstm32f4%3D5F-%3D5Fmax%3D5Ffree%3D5Fmem%3D5F/%3D5Fra%3F%3D%0A%09%3D%3Fiso-8859-2%3Fq%3Fm%3D5Fsize%3F%3D&In-Reply-To=%3C1c6e6c3c0a290d017fdb7b97e6feb48b%40mail2.volny.cz%3E"
+       TITLE="[eLua-dev] stm32f4_-_max_free_mem_/_ram_size">pito at volna.cz
+       </A><BR>
+    <I>Fri Nov 11 12:31:11 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002907.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+        <LI>Next message: <A HREF="002911.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2908">[ date ]</a>
+              <a href="thread.html#2908">[ thread ]</a>
+              <a href="subject.html#2908">[ subject ]</a>
+              <a href="author.html#2908">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Sooo - I put life(42,46) into /romfs and compiled:
+
+eLua# lua /rom/life.lua
+Press CTRL+Z to exit Lua
+..
+------------------------------------------
+------------------------------------------
+------------------------------------------
+------------------------------------------
+Life - generation 652, mem 172.1 kB
+
+IT WORKS!! GC shows between 120.1-174.0 kB.
+So the issue is somewhere with xmodem upload..
+P.
+
+----- P&#366;VODN&#205; ZPR&#193;VA -----
+Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+P&#345;edm&#283;t: Re: [eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+Datum: 11.11.2011 - 12:01:36
+
+&gt;<i> ..with bigger life() gc shows nice numbers :), but
+</I>&gt;<i> with following
+</I>&gt;<i> error:
+</I>&gt;<i> -------------------------------------
+</I>&gt;<i> -------------------------------------
+</I>&gt;<i> Life - generation 1, mem 170.4 kB
+</I>&gt;<i> Error: [string &quot;xmodem&quot;]:44: attempt to perform
+</I>&gt;<i> arithmetic on field
+</I>&gt;<i> '?' (a boolean value)
+</I>&gt;<i> 
+</I>&gt;<i> or
+</I>&gt;<i> 
+</I>&gt;<i> ----------------------------------------
+</I>&gt;<i> ----------------------------------------
+</I>&gt;<i> Life - generation 1, mem 167.4 kB
+</I>&gt;<i> Error: [string &quot;xmodem&quot;]:44: attempt to perform
+</I>&gt;<i> arithmetic on field
+</I>&gt;<i> '?' (a boolean value)
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> So the elua takes the table sizes, but there must
+</I>&gt;<i> be something only
+</I>&gt;<i> experts may discover :)
+</I>&gt;<i> p.
+</I>&gt;<i> 
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;<i> Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>,
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev]
+</I>&gt;<i> stm32f4_-_max_free_mem_/_ram_size
+</I>&gt;<i> Datum: 11.11.2011 - 11:20:55
+</I>&gt;<i> 
+</I>&gt;<i> &gt; So with this and allocator=multiple
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; // Allocator data: define your free memory zones
+</I>&gt;<i> &gt; here in two arrays
+</I>&gt;<i> &gt; // (start address and end address)
+</I>&gt;<i> &gt; // The F4 has 196K in total, but it split into 2
+</I>&gt;<i> &gt; sections:
+</I>&gt;<i> &gt; // RAM (xrw) : ORIGIN = 0x20000000, LENGTH =
+</I>&gt;<i> &gt; 128K 
+</I>&gt;<i> &gt; &gt;     // Major SRAM
+</I>&gt;<i> &gt; // CCMRAM (xrw) : ORIGIN = 0x10000000, LENGTH =
+</I>&gt;<i> &gt; 64K    // Backup
+</I>&gt;<i> &gt; SRAM
+</I>&gt;<i> &gt; #define CCSRAM_SIZE		( 64 * 1024 )
+</I>&gt;<i> &gt; #define CCSRAM_BASE		0x10000000
+</I>&gt;<i> &gt; #define SRAM_SIZE             	( 128 * 1024 )
+</I>&gt;<i> &gt; #define MEM_START_ADDRESS     	{ ( void* )end,
+</I>&gt;<i> &gt; (void* )( CCSRAM_BASE
+</I>&gt;<i> &gt; ) }
+</I>&gt;<i> &gt; #define MEM_END_ADDRESS       	{ ( void* )(
+</I>&gt;<i> &gt; SRAM_BASE + SRAM_SIZE -
+</I>&gt;<i> &gt; STACK_SIZE_TOTAL - 1 ), (void*)( CCSRAM_BASE +
+</I>&gt;<i> &gt; CCSRAM_SIZE - 1 ) }
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; it compiles, and after uploading (via xmodem)
+</I>&gt;<i> &gt; the
+</I>&gt;<i> &gt; &gt; life(32,46)
+</I>&gt;<i> &gt; it starts, but crashes:
+</I>&gt;<i> &gt; ..
+</I>&gt;<i> &gt; --------------------------------
+</I>&gt;<i> &gt; --------------------------------
+</I>&gt;<i> &gt; --------------------------------
+</I>&gt;<i> &gt; Life - generation 5, mem 117.2 kB
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; or with life (34,46):
+</I>&gt;<i> &gt; ..
+</I>&gt;<i> &gt; -----------------------------------
+</I>&gt;<i> &gt; -----------------------------------
+</I>&gt;<i> &gt; Life - generation 1, mem 120.6 kB
+</I>&gt;<i> &gt; Error: [string &quot;xmodem&quot;]:44: attempt to perform
+</I>&gt;<i> &gt; arithmetic on field
+</I>&gt;<i> &gt; '?' (a boolean value)
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; p.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; -- 
+</I>&gt;<i> &gt; Jak co nejl&#233;pe p&#345;ichystat automobil na provoz v
+</I>&gt;<i> &gt; nadch&#225;zej&#237;c&#237; zimn&#237;
+</I>&gt;<i> &gt; sez&#243;n&#283;? &#268;t&#283;te speci&#225;l P&#345;&#237;prava auta na zimu na
+</I>&gt;<i> &gt; <A HREF="http://web.volny.cz/data/click.php?id=1292">http://web.volny.cz/data/click.php?id=1292</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Jak co nejl&#233;pe p&#345;ichystat automobil na provoz v
+</I>&gt;<i> nadch&#225;zej&#237;c&#237; zimn&#237;
+</I>&gt;<i> sez&#243;n&#283;? &#268;t&#283;te speci&#225;l P&#345;&#237;prava auta na zimu na
+</I>&gt;<i> <A HREF="http://web.volny.cz/data/click.php?id=1292">http://web.volny.cz/data/click.php?id=1292</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+
+-- 
+Videokurzy MS Office zdarma! Port&#225;l VOLN&#221;.cz p&#345;in&#225;&#353;&#237; online v&#253;ukov&#225;
+videa, kter&#225; v&#225;s rychle, n&#225;zorn&#283; a z&#225;bavnou formou nau&#269;&#237; ovl&#225;dat
+programy Excel, Word a PowerPoint. Seri&#225;l najdete na
+<A HREF="http://web.volny.cz/data/click.php?id=1293">http://web.volny.cz/data/click.php?id=1293</A>
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002907.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+	<LI>Next message: <A HREF="002911.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2908">[ date ]</a>
+              <a href="thread.html#2908">[ thread ]</a>
+              <a href="subject.html#2908">[ subject ]</a>
+              <a href="author.html#2908">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

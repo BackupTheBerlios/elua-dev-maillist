@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Out-of-bounds value policy question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Out-of-bounds%20value%20policy%20question&In-Reply-To=%3CCANKDJfa3uPztkASvCybJzSEnk5AMEKmwo-B1ZOVGa1SzpEKRBQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002770.html">
+   <LINK REL="Next"  HREF="002772.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Out-of-bounds value policy question</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Out-of-bounds%20value%20policy%20question&In-Reply-To=%3CCANKDJfa3uPztkASvCybJzSEnk5AMEKmwo-B1ZOVGa1SzpEKRBQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Out-of-bounds value policy question">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat Oct  8 11:44:56 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002770.html">[eLua-dev] Out-of-bounds value policy question
+</A></li>
+        <LI>Next message: <A HREF="002772.html">[eLua-dev] Out-of-bounds value policy question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2771">[ date ]</a>
+              <a href="thread.html#2771">[ thread ]</a>
+              <a href="subject.html#2771">[ subject ]</a>
+              <a href="author.html#2771">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Oct 8, 2011 at 4:47 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi!
+</I>&gt;<i>  What's the eLua policy for handling things like when they set
+</I>&gt;<i> frequencies of 0,
+</I>&gt;<i> negative duty cycles, pwm frequencies of zero and so on?
+</I>&gt;<i>   I see that duty&gt;100 is currently set to 100, whereas bogus values
+</I>&gt;<i> just do random things on different platforms
+</I>&gt;<i> For example, on AVR32, setting an I2C frequency of zero currently
+</I>&gt;<i> gives a bit-size of 71.5 seconds, which just happens to be when its
+</I>&gt;<i> 32-bit timer wraps round at 60MHz.
+</I>&gt;<i>
+</I>&gt;<i> Should we quietly set, say, zero or negative frequencies to the lowest
+</I>&gt;<i> possible frequency (1Hz) so that thing &quot;just work&quot;, or should we give
+</I>&gt;<i> a run-time error?
+</I>&gt;<i>
+</I>
+I vote on throwing an error. I preffer verbose (throw error) over
+non-verbose (quitely set a default value).
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111008/fdc5ac66/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111008/fdc5ac66/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002770.html">[eLua-dev] Out-of-bounds value policy question
+</A></li>
+	<LI>Next message: <A HREF="002772.html">[eLua-dev] Out-of-bounds value policy question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2771">[ date ]</a>
+              <a href="thread.html#2771">[ thread ]</a>
+              <a href="subject.html#2771">[ subject ]</a>
+              <a href="author.html#2771">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

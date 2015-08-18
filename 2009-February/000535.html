@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Keplerizing eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Keplerizing%20eLua&In-Reply-To=%3Cd3b6d880902181131i58b91f8cocb654814d1ca27e1%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000533.html">
+   <LINK REL="Next"  HREF="000536.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Keplerizing eLua</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Keplerizing%20eLua&In-Reply-To=%3Cd3b6d880902181131i58b91f8cocb654814d1ca27e1%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Keplerizing eLua">dadosutter at gmail.com
+       </A><BR>
+    <I>Wed Feb 18 20:31:19 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000533.html">[eLua-dev] Keplerizing eLua
+</A></li>
+        <LI>Next message: <A HREF="000536.html">[eLua-dev] Keplerizing eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#535">[ date ]</a>
+              <a href="thread.html#535">[ thread ]</a>
+              <a href="subject.html#535">[ subject ]</a>
+              <a href="author.html#535">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thank you for the explanations Andr&#233;.
+They all seem good options for a roadmap planning.
+What I would like to begin with, for v0.6 if possible, is a _much_ simpler
+task. I only need to review the net module syntax (maybe to hear some
+opinions on the semantics but we'll probably not have time to implement it
+to v0.6) and the template files, for their extensions (lua pages?, lua
+scripts?).
+
+For a WASAPI bind, it seems that we would need a real net.select().
+Although we can simulate one with what we have today, this will probably be
+left for later, as Bogdan will replace our TCP/IP Stack (uIP) for another
+one, somewhere in the future.
+
+Orbit and Sputnik seem very promissing for the embedded world too but not
+before we have 1MB+ RAM on our kits. This is already available on some with
+external memory controllers.
+
+The main idea of lhttpd.lua was to show that a web server can be completely
+written in Lua and still perform pretty well. The problems we've had with
+ours show to have come from uIP, not from lhttpd.lua.
+
+It seems to me (although I would like to hear more from you all) that for
+v0.6 we could:
+
+- Change the opening block tag for Lua code in srvr scripts for &lt;% (as used
+in Kepler)
+- .lp extension for html files with Lua web scripting code embedded (&lt;% Lua
+code %&gt;
+- Review the basic syntax of the net module (I'm sure this will trigger a
+loooong discussion on many other features :)
+
+Dado
+
+
+
+
+On Wed, Feb 18, 2009 at 15:14, Andre Carregal &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">carregal at pobox.com</A>&gt; wrote:
+
+&gt;<i> (long mail ahead...)
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Feb 18, 2009 at 1:44 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;    Kepler (www.keplerproject.org) is &quot;the Lua way of doing web&quot; :) (it
+</I>&gt;<i> is
+</I>&gt;<i> &gt; actually one of them but afaik, by far the most used, most mature and
+</I>&gt;<i> most
+</I>&gt;<i> &gt; complete web framework for Lua).
+</I>&gt;<i>
+</I>&gt;<i> I wouldn't claim that so fast... let's see how things go first... :o)
+</I>&gt;<i>
+</I>&gt;<i> &gt;    We do not plan to embedd a full fancy web server like Xavante
+</I>&gt;<i> (Kepler's
+</I>&gt;<i> &gt; web srv), even with it's incredibly small footprint. Bogdan's
+</I>&gt;<i> &gt; concept-proof-yet-to-be-enhanced lhttpd web server offers all I needed
+</I>&gt;<i> here
+</I>&gt;<i> &gt; for initial demos and real world small aplications.
+</I>&gt;<i>
+</I>&gt;<i> I don't think Xavante would be a good option for eLua. Although
+</I>&gt;<i> Xavante has proved to be an excellent web server for certain
+</I>&gt;<i> applications, eLua needs something more &quot;fire and forget&quot; and Xavante
+</I>&gt;<i> needs some caring if it is supposed to be left running for long
+</I>&gt;<i> periods.
+</I>&gt;<i>
+</I>&gt;<i> The thing is that Xavante uses coroutines to allow multitasking
+</I>&gt;<i> without needing separate threads. While this is great for a developer
+</I>&gt;<i> setup and embedding into applications, it may not be the best solution
+</I>&gt;<i> for devices that need to be on &quot;forever&quot; for example. If one of the
+</I>&gt;<i> requests hang, the other also get stuck. Not a good scenario if you
+</I>&gt;<i> can't reset easily the server... :o)
+</I>&gt;<i>
+</I>&gt;<i> If you have the ability to run threads, then any C level webserver
+</I>&gt;<i> would probably be a better fit. The other solution would be to set a
+</I>&gt;<i> watchdog for Xavante, but I really would not recommend that for eLua.
+</I>&gt;<i>
+</I>&gt;<i> Note that the choice of web server has zero impact in the upper layers
+</I>&gt;<i> due to a decoupling layer called WSAPI. Once you have WSAPI
+</I>&gt;<i> implemented for a certain web server or launching method (CGI, FastCGI
+</I>&gt;<i> etc) you are basically done. Everything else depends mostly on WSAPI
+</I>&gt;<i> to run.
+</I>&gt;<i>
+</I>&gt;<i> Implementing WSAPI for a webserver is usually quite easy. WSAPI is
+</I>&gt;<i> basically a protocol that normalizes how to read data from the
+</I>&gt;<i> webserver (the request) and how to send it back (the response). More
+</I>&gt;<i> details on WSAPI can be found here:
+</I>&gt;<i> <A HREF="http://wsapi.luaforge.net/">http://wsapi.luaforge.net/</A>
+</I>&gt;<i>
+</I>&gt;<i> Once you have WSAPI in place, you actually can start developing web
+</I>&gt;<i> applications using wsapi.request and wsapi.response. While this is
+</I>&gt;<i> considered &quot;low level&quot;, it could be enough for most of eLua needs.
+</I>&gt;<i>
+</I>&gt;<i> If you need something higher level, there are two imediate options.
+</I>&gt;<i> The first would be using CGILua, a PHP like library that handles Lua
+</I>&gt;<i> Pages and Lua Scripts:
+</I>&gt;<i> <A HREF="http://www.keplerproject.org/cgilua/">http://www.keplerproject.org/cgilua/</A>
+</I>&gt;<i>
+</I>&gt;<i> The other would be using Orbit, a MVC based library that offers some
+</I>&gt;<i> very nice abstractions:
+</I>&gt;<i> <A HREF="http://orbit.luaforge.net/">http://orbit.luaforge.net/</A>
+</I>&gt;<i>
+</I>&gt;<i> Note that there is no easy answer as which would be better for every
+</I>&gt;<i> case. One simple solution would be to integrate WSAPI with the
+</I>&gt;<i> embedded web server and then let CGILua and Orbit as options for those
+</I>&gt;<i> who needed it.
+</I>&gt;<i>
+</I>&gt;<i> Once you have one of the page generator solutions in place, you can
+</I>&gt;<i> start using higher level applications for them. One excellent
+</I>&gt;<i> candidate would be Sputnik, that uses only WSAPI.
+</I>&gt;<i>
+</I>&gt;<i> Sputnik is usually seen as just another wiki, but it is way more than
+</I>&gt;<i> that. It is basically an hierarchical node store with versioning. If
+</I>&gt;<i> that is truly useful for eLua applications or not is another
+</I>&gt;<i> question... :o)
+</I>&gt;<i>
+</I>&gt;<i> Sorry if the mail got too long.
+</I>&gt;<i>
+</I>&gt;<i> Andr&#233;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/0af9472a/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/0af9472a/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000533.html">[eLua-dev] Keplerizing eLua
+</A></li>
+	<LI>Next message: <A HREF="000536.html">[eLua-dev] Keplerizing eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#535">[ date ]</a>
+              <a href="thread.html#535">[ thread ]</a>
+              <a href="subject.html#535">[ subject ]</a>
+              <a href="author.html#535">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

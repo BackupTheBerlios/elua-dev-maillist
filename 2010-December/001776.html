@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] What can I do?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3CAANLkTima7vTxz9WRq4JL%2B9M2aUR3vmHVN%2B-8bVgpgxJu%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001775.html">
+   <LINK REL="Next"  HREF="001777.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] What can I do?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3CAANLkTima7vTxz9WRq4JL%2B9M2aUR3vmHVN%2B-8bVgpgxJu%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] What can I do?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Dec  8 00:33:57 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001775.html">[eLua-dev] What can I do?
+</A></li>
+        <LI>Next message: <A HREF="001777.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1776">[ date ]</a>
+              <a href="thread.html#1776">[ thread ]</a>
+              <a href="subject.html#1776">[ subject ]</a>
+              <a href="author.html#1776">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Dec 7, 2010 at 12:52 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Tue, Dec 7, 2010 at 7:21 PM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+</I>&gt;&gt;<i> The things I need in the eLua mbed implementation for my own projects are as
+</I>&gt;&gt;<i> follows:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 1.&#160;&#160;&#160;&#160;&#160;&#160; Ethernet support (not in James&#8217;s mbed &#8216;preliminary&#8217; port at the
+</I>&gt;&gt;<i> moment).
+</I>&gt;<i>
+</I>&gt;<i> If you need TCP/IP, eLua needs more than just a port to mbed, a better
+</I>&gt;<i> TCP/IP stack (or at the best a better integration of the current one)
+</I>&gt;<i> is needed.
+</I>
+It could be made to work with the existing uIP module, but I think
+what we'd like to do is either switch to lwIP or some combination of a
+UDP stack and fuller TCP/IP stack such that in cases where minimal
+resources are available the user could just use the UDP stack.
+
+I personally haven't been using ethernet much on eLua so I'm not sure
+if/when I'd get to adding the current ethernet module to mbed or if
+I'd get around to the more extensive task of working on inserting a
+replacement stack.
+
+I'd definitely be willing to at least provide help to anyone who is
+interested in improving this area and has less familiarity with eLua
+and it's internals.
+
+&gt;&gt;<i>
+</I>&gt;&gt;<i> 2.&#160;&#160;&#160;&#160;&#160;&#160; Support for USB MSD (flash drives and hard disks). There does not
+</I>&gt;&gt;<i> seem to be any USB work in eLua to date, so this is maybe breaking
+</I>&gt;&gt;<i> completely new ground. However it looks relatively straightforward to slot
+</I>&gt;&gt;<i> this in under the current FAT filesystem support for SD/MMC. Later I will
+</I>&gt;&gt;<i> need serial over USB and MSD device emulation as I want to replace the
+</I>&gt;&gt;<i> auxiliary JTAG chip on the mbed with an on-chip implementation.
+</I>
+I don't think this is will be too hard.  At least for Luminary devices
+that provide hardware support for this, there's an example
+(usb_host_msc in the StellarisWare distribution) of how to set this up
+with FatFs (which we use).  I've thought about playing with this a bit
+on the 9B92 that I have, but haven't gotten around to it.  For LPC1768
+(what's in the mbed) there's also an example for this (called USBMem
+in the lcp17xx cmsis driver lib).
+
+I'd also like to try enabling a CDC (for LM3S there's also a code
+example for this), but I haven't gotten around to it because most of
+the luminary boards come with an integrated JTAG + UART device.
+
+Adding support on a single platform for any of these would probably be
+pretty easy.  Where we might have to put in more thought on would be
+what we might want to make generic and part of the eLua core of any of
+this and what shape that might take.
+
+&gt;&gt;<i>
+</I>&gt;&gt;<i> 3.&#160;&#160;&#160;&#160;&#160;&#160; Multi-threading support. Initially I thought of trying to put
+</I>&gt;&gt;<i> FreeRTOS or similar in under eLua, but on reflection that is likely to be
+</I>&gt;&gt;<i> too profligate with RAM as the Lua RAM overhead will then be per-thread.
+</I>&gt;<i>
+</I>&gt;<i> I beleive you're right.
+</I>&gt;<i>
+</I>&gt;&gt;<i> Then I read Patrick Rapin&#8217;s &#8220;Enhanced Coroutines in Lua&#8221; chapter in &#8220;Lua
+</I>&gt;&gt;<i> Programming Gems&#8221;. Basically this suggests a coroutine scheduler with an
+</I>&gt;&gt;<i> enhanced yield method which yields back to the scheduler until some event
+</I>&gt;&gt;<i> occurs. For example you could yield for 100ms and the scheduler could resume
+</I>&gt;&gt;<i> some other coroutine or run other functions in the main thread during this
+</I>&gt;&gt;<i> time. This seems an ideal approach for microcontrollers as it allows a
+</I>&gt;&gt;<i> non-blocking wait for interrupt and cooperative multi-threading.
+</I>&gt;<i>
+</I>&gt;<i> Man, I really have to get me that book :) However, I believe that an
+</I>&gt;<i> event-based system would work on the current system too, without the
+</I>&gt;<i> need to yield every 100ms. Just wait on the coroutine until some event
+</I>&gt;<i> occurs, and if it happens to be the 100ms timeout event yield back to
+</I>&gt;<i> the calling thread.
+</I>
+I'll have to look at this example again. IIRC his example is designed
+to work with pthreads and windows threads, but I suspect it wouldn't
+be hard to adapt to another, simpler threading API.
+
+Without having re-read the article, the idea here would be that
+instead of writing one's own coroutine scheduler in Lua, you would
+have a dedicated scheduler, written in C that is provided by the
+system.  I suspect that it wouldn't be too complicated for us to do
+something like this, especially if the scheduler is quite
+simple/stupid like the PIL example: <A HREF="http://www.lua.org/pil/9.4.html">http://www.lua.org/pil/9.4.html</A>
+
+FYI, the lpg sources for this article are here:
+<A HREF="http://www.lua.org/gems/lpg124.zip">http://www.lua.org/gems/lpg124.zip</A>
+
+&gt;<i>
+</I>&gt;&gt;<i> 4.&#160;&#160;&#160;&#160;&#160;&#160; LIN networking support &#8211; this should be relatively easy to build on
+</I>&gt;&gt;<i> top of the current serial port support, perhaps could even be done in Lua.
+</I>&gt;<i>
+</I>&gt;<i> You're probably right about this.
+</I>
+Ditto.  I'm not very familiar with this besides quickly looking it up
+on Wikipedia :-)  If it doesn't require anything more in terms of UART
+configuration than what we already provide, you could probably do it
+all in Lua and not even have to touch any C.  Depending on the
+application it may make more sense to use the platform abstraction API
+from the C side and have that handle receiving and decoding packets.
+We've already implemented some protocols on top of serial with decent
+success in the form of LuaRPC and RFS, both of which use the platform
+API from C.
+
+&gt;<i>
+</I>&gt;&gt;<i> Is anyone already working on any of the above? I&#8217;m guessing at least 1 is
+</I>&gt;&gt;<i> already in train &#8211; is it likely to deliver within the next quarter? I will
+</I>&gt;&gt;<i> be happy to contribute anything I have to do myself back to the project or
+</I>&gt;&gt;<i> to help anyone already working on something.
+</I>&gt;<i>
+</I>&gt;<i> Sorry, I have less and less free time to work on eLua, so I can't
+</I>&gt;<i> really help here :( I can however provide support if you decide to
+</I>&gt;<i> write it yourself.
+</I>
+I'm not directly working on any of these right now, but I certainly
+have interest in experimenting with #2 &amp; #3.  #1 is interesting, but I
+don't have direct need for it on my current projects.
+
+Also, ditto on providing support :-)
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001775.html">[eLua-dev] What can I do?
+</A></li>
+	<LI>Next message: <A HREF="001777.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1776">[ date ]</a>
+              <a href="thread.html#1776">[ thread ]</a>
+              <a href="subject.html#1776">[ subject ]</a>
+              <a href="author.html#1776">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

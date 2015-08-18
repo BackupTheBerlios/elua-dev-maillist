@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 Bootloader Flashing in Python
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Bootloader%20Flashing%20in%20Python&In-Reply-To=%3C1238715631563-2578184.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000747.html">
+   <LINK REL="Next"  HREF="000738.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 Bootloader Flashing in Python</H1>
+    <B>Aret Carlsen</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Bootloader%20Flashing%20in%20Python&In-Reply-To=%3C1238715631563-2578184.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] STM32 Bootloader Flashing in Python">aret at ncarlsen.net
+       </A><BR>
+    <I>Fri Apr  3 01:40:31 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000747.html">[eLua-dev] Simple eLua flash file system
+</A></li>
+        <LI>Next message: <A HREF="000738.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#737">[ date ]</a>
+              <a href="thread.html#737">[ thread ]</a>
+              <a href="subject.html#737">[ subject ]</a>
+              <a href="author.html#737">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+This is the only Linux tool for STM32 flash writing that I've been able to find.
+
+Running Ubuntu-Eee, I had to &quot;apt-get install python-serial&quot;.
+
+I spent a number of hours trying to debug why my writes weren't verifying before I realized that you have to erase on every write, at least for my STM32F103 (Futurlec board).  That's the &quot;-e&quot; option.
+
+When trying to read to a file, I received this error:
+
+
+Traceback (most recent call last):
+  File &quot;./stm32loader.py&quot;, line 392, in &lt;module&gt;
+    file(args[0], 'wb').write(rdata)
+TypeError: argument 1 must be string or read-only buffer, not list
+
+
+The fix was to replace line 392 with:
+
+# previously: file(args[0], 'wb').write(rdata)
+file(args[0], 'wb').write(''.join(map(chr,rdata)))
+
+
+-- 
+View this message in context: <A HREF="http://n2.nabble.com/STM32-Bootloader-Flashing-in-Python-tp2499766p2578184.html">http://n2.nabble.com/STM32-Bootloader-Flashing-in-Python-tp2499766p2578184.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000747.html">[eLua-dev] Simple eLua flash file system
+</A></li>
+	<LI>Next message: <A HREF="000738.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#737">[ date ]</a>
+              <a href="thread.html#737">[ thread ]</a>
+              <a href="subject.html#737">[ subject ]</a>
+              <a href="author.html#737">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

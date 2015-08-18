@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Building toolchain for arm cortex m3
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20toolchain%20for%20arm%20cortex%20m3&In-Reply-To=%3C7e5a21900907030724h440acd21gbb6385bd08cca6b%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000909.html">
+   <LINK REL="Next"  HREF="000911.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Building toolchain for arm cortex m3</H1>
+    <B>C&#233;sar Ra&#250;l Mamani Choquehuanca</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20toolchain%20for%20arm%20cortex%20m3&In-Reply-To=%3C7e5a21900907030724h440acd21gbb6385bd08cca6b%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Building toolchain for arm cortex m3">cesarmamani82 at gmail.com
+       </A><BR>
+    <I>Fri Jul  3 16:24:04 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000909.html">[eLua-dev] Building toolchain for arm cortex m3
+</A></li>
+        <LI>Next message: <A HREF="000911.html">[eLua-dev] Building toolchain for arm cortex m3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#910">[ date ]</a>
+              <a href="thread.html#910">[ thread ]</a>
+              <a href="subject.html#910">[ subject ]</a>
+              <a href="author.html#910">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi James,
+
+Thx for your answer. I cheked that and all is rigth (i think)
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:/usr/local/cross-cortex/bin$ ls
+arm-elf-addr2line  arm-elf-cpp        arm-elf-gcov     arm-elf-objdump
+arm-elf-strip
+arm-elf-ar         arm-elf-g++        arm-elf-gprof    arm-elf-ranlib
+cesar.c
+arm-elf-as         arm-elf-gcc        arm-elf-ld       arm-elf-readelf
+arm-elf-c++        arm-elf-gcc-4.3.3  arm-elf-nm       arm-elf-size
+arm-elf-c++filt    arm-elf-gccbug     arm-elf-objcopy  arm-elf-strings
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:/usr/local/cross-cortex/bin$
+
+
+, so i redo all , again i have the next message when i try to do this
+
+*$ make CFLAGS_FOR_TARGET=&quot;-ffunction-sections -fdata-sections
+-DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os
+-fomit-frame-pointer -mcpu=cortex-m3 -mthumb -D__thumb2__
+-D__BUFSIZ__=256&quot; CCASFLAGS=&quot;-mcpu=cortex-m3 -mthumb -D__thumb2__&quot;*
+
+(I dont paste the before part)
+Checking multilib configuration for newlib...
+Configuring in arm-elf/newlib
+configure: loading cache ./config.cache
+configure: error: `CC' has changed since the previous run:
+configure:   former value:  arm-elf-cc
+-B/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/ -isystem
+/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/targ-include
+-isystem /usr/local/cross-cortex/newlib-1.17.0/newlib/libc/include
+-B/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/libgloss/arm
+-L/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/libgloss/libnosys
+-L/usr/local/cross-cortex/newlib-1.17.0/libgloss/arm
+configure:   current value: arm-elf-cc
+-B/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/ -isystem
+/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/targ-include
+-isystem /usr/local/cross-cortex/newlib-1.17.0/newlib/libc/include
+configure: error: `CFLAGS' has changed since the previous run:
+configure:   former value:  -ffunction-sections -fdata-sections
+-DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer
+-mcpu=cortex-m3 -mthumb -D__thum2__ -D__BUFSIZ__=256
+configure:   current value: -ffunction-sections -fdata-sections
+-DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer
+-mcpu=cortex-m3 -mthumb -D__thumb2__ -D__BUFSIZ__=256
+configure: error: changes in the environment can compromise the build
+configure: error: run `make distclean' and/or `rm ./config.cache' and start
+over
+make[1]: *** [configure-target-newlib] Error 1
+make[1]: Leaving directory `/usr/local/cross-cortex/newlib-1.17.0/build'
+make: *** [all] Error 2
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:/usr/local/cross-cortex/newlib-1.17.0/build$
+
+
+that item belong the tutorial for building tooltchain cortex in the STEP 3:
+NEWLIB
+
+$ mkdir build
+$ cd build
+$ ../configure --target=arm-elf --prefix=$TOOLPATH --enable-interwork
+--disable-newlib-supplied-syscalls --with-gnu-ld --with-gnu-as
+--disable-shared
+*$ make CFLAGS_FOR_TARGET=&quot;-ffunction-sections -fdata-sections
+-DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer
+-mcpu=cortex-m3 -mthumb -D__thumb2__ -D__BUFSIZ__=256&quot;
+CCASFLAGS=&quot;-mcpu=cortex-m3 -mthumb -D__thumb2__&quot;
+*$ sudo -s -H
+# export PATH=/usr/local/cross-cortex/bin:$PATH
+# make install
+# exit
+$ cd ../..
+
+Best regards
+
+-- 
+C&#233;sar R. Mamani Ch.
+Estudante da Mestrado
+Pontificia Universidade Catolica
+Rio da Janeiro - Gavea
+
+2009/7/3 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+
+&gt;<i> It sounds like you do not have arm-elf-gcc in your path (check if you can
+</I>&gt;<i> run that from the command line).
+</I>&gt;<i>
+</I>&gt;<i> Check if arm-elf-gcc exists in /usr/local/cross-cortex/bin
+</I>&gt;<i>
+</I>&gt;<i> If you couldn't run it by just typing in the name, but it is in that
+</I>&gt;<i> directory above, make sure you do this, and then redo the ../configure stage
+</I>&gt;<i> for newlib.
+</I>&gt;<i>
+</I>&gt;<i> Hope that helps..
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Jul 2, 2009, at 3:59 PM, C&#233;sar Ra&#250;l Mamani Choquehuanca wrote:
+</I>&gt;<i>
+</I>&gt;<i>  hi all
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I trying to building toolchain for arm cortex-m3 Im doing that with the
+</I>&gt;&gt;<i> tutorial for www.giga.puc-rio.br/elua. I have successful in BINTUTILS
+</I>&gt;&gt;<i> STEP 1 and BASIC GCC STEP 2 but in NEWLIB STEP 3 I have the next messagem
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> $ make CFLAGS_FOR_TARGET=&quot;-ffunction-sections -fdata-sections
+</I>&gt;&gt;<i> -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer
+</I>&gt;&gt;<i> -mcpu=cortex-m3 -mthumb -D__thumb2__ -D__BUFSIZ__=256&quot;
+</I>&gt;&gt;<i> CCASFLAGS=&quot;-mcpu=cortex-m3 -mthumb -D__thumb2__&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> /cross-cortex/newlib-1.17.0/libgloss/arm -DPACKAGE_NAME=\&quot;newlib\&quot;
+</I>&gt;&gt;<i> -DPACKAGE_TARNAME=\&quot;newlib\&quot; -DPACKAGE_VERSION=\&quot;1.17.0\&quot;
+</I>&gt;&gt;<i> -DPACKAGE_STRING=\&quot;newlib\ 1.17.0\&quot; -DPACKAGE_BUGREPORT=\&quot;\&quot;  -I.
+</I>&gt;&gt;<i> -I../../../../../newlib/libc/argz -O2 -D__NO_SYSCALLS__ -fno-builtin
+</I>&gt;&gt;<i>  -ffunction-sections -fdata-sections -DPREFER_SIZE_OVER_SPEED
+</I>&gt;&gt;<i> -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer -mcpu=cortex-m3 -mthumb
+</I>&gt;&gt;<i> -D__thumb2__ -D__BUFSIZ__=256   -c -o lib_a-dummy.o `test -f 'dummy.c' ||
+</I>&gt;&gt;<i> echo '../../../../../newlib/libc/argz/'`dummy.c
+</I>&gt;&gt;<i> /bin/bash: arm-elf-cc: command not found
+</I>&gt;&gt;<i> make[5]: *** [lib_a-dummy.o] Error 127
+</I>&gt;&gt;<i> make[5]: Leaving directory
+</I>&gt;&gt;<i> `/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/libc/argz'
+</I>&gt;&gt;<i> make[4]: *** [all-recursive] Error 1
+</I>&gt;&gt;<i> make[4]: Leaving directory
+</I>&gt;&gt;<i> `/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/libc'
+</I>&gt;&gt;<i> make[3]: *** [all-recursive] Error 1
+</I>&gt;&gt;<i> make[3]: Leaving directory
+</I>&gt;&gt;<i> `/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib'
+</I>&gt;&gt;<i> make[2]: *** [all] Error 2
+</I>&gt;&gt;<i> make[2]: Leaving directory
+</I>&gt;&gt;<i> `/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib'
+</I>&gt;&gt;<i> make[1]: *** [all-target-newlib] Error 2
+</I>&gt;&gt;<i> make[1]: Leaving directory `/usr/local/cross-cortex/newlib-1.17.0/build'
+</I>&gt;&gt;<i> make: *** [all] Error 2
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:/usr/local/cross-cortex/newlib-1.17.0/build$
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I am a new ubuntu user and i dont know what happend
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> thx
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;&gt;<i> Estudante da Mestrado
+</I>&gt;&gt;<i> Pontificia Universidade Catolica
+</I>&gt;&gt;<i> Rio da Janeiro - Gavea
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: 847.448.0386
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090703/f9910fd1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090703/f9910fd1/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000909.html">[eLua-dev] Building toolchain for arm cortex m3
+</A></li>
+	<LI>Next message: <A HREF="000911.html">[eLua-dev] Building toolchain for arm cortex m3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#910">[ date ]</a>
+              <a href="thread.html#910">[ thread ]</a>
+              <a href="subject.html#910">[ subject ]</a>
+              <a href="author.html#910">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

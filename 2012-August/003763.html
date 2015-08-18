@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] issues - general
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20issues%20-%20general&In-Reply-To=%3CBAY002-W2132A0D8D22DBD69E101913DEBD0%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003762.html">
+   <LINK REL="Next"  HREF="003764.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] issues - general</H1>
+    <B>Karoly Molnar</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20issues%20-%20general&In-Reply-To=%3CBAY002-W2132A0D8D22DBD69E101913DEBD0%40phx.gbl%3E"
+       TITLE="[eLua-dev] issues - general">molnarkaroly at hotmail.com
+       </A><BR>
+    <I>Fri Aug 24 14:56:55 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003762.html">[eLua-dev] issues - general
+</A></li>
+        <LI>Next message: <A HREF="003764.html">[eLua-dev] issues - general
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3763">[ date ]</a>
+              <a href="thread.html#3763">[ thread ]</a>
+              <a href="subject.html#3763">[ subject ]</a>
+              <a href="author.html#3763">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Bogdan
+
+&gt;<i> Thank you for using the tracker. Fo some reason, people seem to avoid it.
+</I>No problem. I am using Redmine at work too so it was no pain to to use it :) Just the link is a bit hidden on the eLua webpage. Also Redmine uses the &quot;tracker&quot; terminology for the issues so I could find it quickly. Someone with e.g. Bugzilla background would not immediately recognize that this is the link to the issue/bug tracking system. I say this from experience, in a project our business partner did not understand for a while what we mean with &quot;trackers&quot;.
+
+&gt;<i> Pull requests are the way to go. If you want to fix the bugs, you can
+</I>
+&gt;<i> also assign yourself to them in our tracker.
+</I>
+OK I can do that. When I have fixed the issues shall I assign the 
+tracker back to you with a reference to the pull request and expect you 
+to close it when the change is migrated? 
+
+
+&gt;<i> Pull requests. Also, very good news. Could you let us know what port
+</I>&gt;<i> you're working on?
+</I>This is for XMOS event processors. The processors are pretty fast in embedded world but very constrained in terms of memory. Now I will have to separate the eLua code to a number of parallel threads that will run on at least two separate cpu cores and communicate thru the channel mechanism of the chip. So first I have leaned out the code as much as possible using an MBED board as reference. And now I am in the middle of separating it to two threads. I still fear that the port would not conclude to a &quot;full port&quot; because is not likely that all Lua and eLua featues would fit in the memory whatever I do (I may allocate 2x64K RAM  that shall contain the Lua VM itself, the Lua program, the stack and the heap as well). I am using the RomFS and a precompiled lua test program and my first is to be able to execute it on the XMOS.
+Also a question, do you have a set of tests to verify the lua and eLua functionality of the ports? May be a stupid question but I am an old-school developer and do not like to claim that I am ready unless I have tested my stuff thoroughly. I have found a test script for the rpc in the repo so far.
+
+Regards
+Karoly
+
+&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+</I>&gt;<i> Date: Fri, 24 Aug 2012 12:50:17 +0300
+</I>&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> Subject: Re: [eLua-dev] issues - general
+</I>&gt;<i> 
+</I>&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> On Fri, Aug 24, 2012 at 12:41 PM, Karoly Molnar
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">molnarkaroly at hotmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Ii have added two new issues to the eLua redmine
+</I>&gt;<i> &gt; <A HREF="http://tracker.eluaproject.net/issues/44">http://tracker.eluaproject.net/issues/44</A> and
+</I>&gt;<i> &gt; <A HREF="http://tracker.eluaproject.net/issues/45">http://tracker.eluaproject.net/issues/45</A> but I am also OK to fix these.
+</I>&gt;<i> 
+</I>&gt;<i> Thank you for using the tracker. Fo some reason, people seem to avoid it.
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Do
+</I>&gt;<i> &gt; you have a kind of process for this? I mean, shall I just propose my changes
+</I>&gt;<i> &gt; here in the mail thread for discussion or shall I clone the repo and make
+</I>&gt;<i> &gt; pull requests? Do you accept pull requests at all or prefer to keep the code
+</I>&gt;<i> &gt; in one hand?
+</I>&gt;<i> 
+</I>&gt;<i> Pull requests are the way to go. If you want to fix the bugs, you can
+</I>&gt;<i> also assign yourself to them in our tracker.
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Also I am working on a new eLua MCU porting which is just half ready but I
+</I>&gt;<i> &gt; am committed to finish it. Same question as above. Are pull requests
+</I>&gt;<i> &gt; accepted and is the normal way to bring in new ports?
+</I>&gt;<i> 
+</I>&gt;<i> Pull requests. Also, very good news. Could you let us know what port
+</I>&gt;<i> you're working on?
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Regards
+</I>&gt;<i> &gt; Karoly
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I> 		 	   		  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120824/9a070c5d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120824/9a070c5d/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003762.html">[eLua-dev] issues - general
+</A></li>
+	<LI>Next message: <A HREF="003764.html">[eLua-dev] issues - general
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3763">[ date ]</a>
+              <a href="thread.html#3763">[ thread ]</a>
+              <a href="subject.html#3763">[ subject ]</a>
+              <a href="author.html#3763">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

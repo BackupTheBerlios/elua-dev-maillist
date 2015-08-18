@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Separating the PWM C platform ops
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Separating%20the%20PWM%20C%20platform%20ops&In-Reply-To=%3CCAL4-wQot7%3D4Fo5e8kL-P6Tf%2BEvQtAuvbOB8NrK0iKtEp%3DQgSZQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002680.html">
+   <LINK REL="Next"  HREF="002684.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Separating the PWM C platform ops</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Separating%20the%20PWM%20C%20platform%20ops&In-Reply-To=%3CCAL4-wQot7%3D4Fo5e8kL-P6Tf%2BEvQtAuvbOB8NrK0iKtEp%3DQgSZQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Separating the PWM C platform ops">martinwguy at gmail.com
+       </A><BR>
+    <I>Sun Jul 24 16:52:18 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002680.html">[eLua-dev] New Mizar32 character LCD module?
+</A></li>
+        <LI>Next message: <A HREF="002684.html">[eLua-dev] Separating the PWM C platform ops
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2681">[ date ]</a>
+              <a href="thread.html#2681">[ thread ]</a>
+              <a href="subject.html#2681">[ subject ]</a>
+              <a href="author.html#2681">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi, sorry about all this mail, I tend to work on stuff in bursts
+
+Following the splitting of platform_adc_op( id, OPERATION, data) into
+6 separate functions, here's the same thing for the 4 similar PWM ops.
+
+It replaces platform_pwm_op( id, op, data ) where
+op==PLATFORM_PWM_OP_SET_CLOCK took a frequency and returned a frequency
+op==PLATFORM_PWM_OP_GET_CLOCK took nothing returned a frequency
+op==PLATFORM_PWM_OP_START and _STOP both took nothing and returned nothing
+
+with
+clock = platform_pwm_set_clock( id, clock)
+clock = platform_pwm_get_clock( id )
+platform_pwm_start( id ) and
+platform_pwm_stop( id )
+
+with resulting clarity in the documentation and smaller, faster code.
+
+This does not affect the Lau interface.
+
+I'd appreciate it if the attached patch could be tested on some
+platforms other than the avr32s I have.
+I've tested compilation of all supported boards except PC and SIM
+(which do not have PWM).
+
+My main doubt is on at91sam7x, where I had to replace some lines that
+read a machine register whose value was never used.
+Before, the compiler was fooled into not optimizing it out by
+returning it as the value of a function that was always ignored:
+res = AT91C_BASE_PWMC-&gt;PWMC_ISR;
+return(res)  // ignored
+now I have tried to achieve the same effect with a volatile variable:
+volatile u32 dummy;
+dummy = AT91C_BASE_PWMC-&gt;PWMC_ISR;
+but can't test this for lack of hardware.
+It's in platform_pwm_stop, so if someone with an at91sam7x could test
+that pwm output can be stopped and started again successfully with
+this patch applied I'd be grateful.
+
+Cheers
+
+    M
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: elua-separate-pwm-ops.patch
+Type: text/x-patch
+Size: 19801 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110724/536b00f3/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20110724/536b00f3/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002680.html">[eLua-dev] New Mizar32 character LCD module?
+</A></li>
+	<LI>Next message: <A HREF="002684.html">[eLua-dev] Separating the PWM C platform ops
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2681">[ date ]</a>
+              <a href="thread.html#2681">[ thread ]</a>
+              <a href="subject.html#2681">[ subject ]</a>
+              <a href="author.html#2681">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

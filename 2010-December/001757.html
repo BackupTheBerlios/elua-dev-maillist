@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Reducing code size of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTimGNmNE1kzop%2B4J_ehrSrLzcZ32E5UgqPqnvA0Y%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001756.html">
+   <LINK REL="Next"  HREF="001758.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Reducing code size of eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTimGNmNE1kzop%2B4J_ehrSrLzcZ32E5UgqPqnvA0Y%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Reducing code size of eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Dec  2 00:43:54 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001756.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+        <LI>Next message: <A HREF="001758.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1757">[ date ]</a>
+              <a href="thread.html#1757">[ thread ]</a>
+              <a href="subject.html#1757">[ subject ]</a>
+              <a href="author.html#1757">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Dec 2, 2010 at 1:34 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On Wed, Dec 1, 2010 at 9:07 PM, Bogdan Marinescu
+</I>&gt;&gt;<i> (www.atmel.com/dyn/resources/prod_documents/doc32074.pdf).
+</I>&gt;<i> Thanks!
+</I>&gt;<i>
+</I>&gt;&gt;<i> It turns
+</I>&gt;&gt;<i> out that the compiler emits long calls and the linker doesn't try to
+</I>&gt;&gt;<i> optimize this by default, but it does if two options (--relax
+</I>&gt;&gt;<i> --direct-data) are added to its command line.
+</I>&gt;<i>
+</I>&gt;<i> Thanks. However I just added these in src/platform/avr32/conf.py:
+</I>&gt;<i>
+</I>&gt;<i> comp.Append(LINKFLAGS = [...,'--relax','--direct-data'])
+</I>&gt;<i>
+</I>&gt;<i> and it has made no difference whatever to size of the resulting flash
+</I>&gt;<i> image. In there somethjing else I'm missing? I have:
+</I>&gt;<i>
+</I>&gt;<i> # Standard GCC Flags
+</I>&gt;<i> comp.Append(CCFLAGS =
+</I>&gt;<i> ['-ffunction-sections','-fdata-sections','-fno-strict-aliasing','-Wall'])
+</I>&gt;<i> comp.Append(LINKFLAGS =
+</I>&gt;<i> ['-nostartfiles','-nostdlib','-Wl,--gc-sections','-Wl,--allow-multiple-definition','-T',ldscript,'--relax','--direct-data'])
+</I>&gt;<i> comp.Append(ASFLAGS = ['-x','assembler-with-cpp','-c'])
+</I>&gt;<i> comp.Append(LIBS = ['c','gcc','m'])
+</I>
+I think it is mandatory to pass them with -Wl, like this:
+
+comp.Append(LINKFLAGS =
+['-nostartfiles','-nostdlib','-Wl,--gc-sections','-Wl,--allow-multiple-definition','-Wl,--relax','-Wl,--direct-data','-T',ldscript])
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001756.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+	<LI>Next message: <A HREF="001758.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1757">[ date ]</a>
+              <a href="thread.html#1757">[ thread ]</a>
+              <a href="subject.html#1757">[ subject ]</a>
+              <a href="author.html#1757">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

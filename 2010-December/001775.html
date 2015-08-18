@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] What can I do?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3CAANLkTi%3DOB5CtLzSW0sY7hg8Xpz_3gMVc_HY1P9OrYfg9%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001772.html">
+   <LINK REL="Next"  HREF="001776.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] What can I do?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3CAANLkTi%3DOB5CtLzSW0sY7hg8Xpz_3gMVc_HY1P9OrYfg9%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] What can I do?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Dec  7 19:52:13 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001772.html">[eLua-dev] What can I do?
+</A></li>
+        <LI>Next message: <A HREF="001776.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1775">[ date ]</a>
+              <a href="thread.html#1775">[ thread ]</a>
+              <a href="subject.html#1775">[ subject ]</a>
+              <a href="author.html#1775">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Dec 7, 2010 at 7:21 PM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+&gt;<i> The things I need in the eLua mbed implementation for my own projects are as
+</I>&gt;<i> follows:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 1.&#160;&#160;&#160;&#160;&#160;&#160; Ethernet support (not in James&#8217;s mbed &#8216;preliminary&#8217; port at the
+</I>&gt;<i> moment).
+</I>
+If you need TCP/IP, eLua needs more than just a port to mbed, a better
+TCP/IP stack (or at the best a better integration of the current one)
+is needed.
+
+&gt;<i>
+</I>&gt;<i> 2.&#160;&#160;&#160;&#160;&#160;&#160; Support for USB MSD (flash drives and hard disks). There does not
+</I>&gt;<i> seem to be any USB work in eLua to date, so this is maybe breaking
+</I>&gt;<i> completely new ground. However it looks relatively straightforward to slot
+</I>&gt;<i> this in under the current FAT filesystem support for SD/MMC. Later I will
+</I>&gt;<i> need serial over USB and MSD device emulation as I want to replace the
+</I>&gt;<i> auxiliary JTAG chip on the mbed with an on-chip implementation.
+</I>&gt;<i>
+</I>&gt;<i> 3.&#160;&#160;&#160;&#160;&#160;&#160; Multi-threading support. Initially I thought of trying to put
+</I>&gt;<i> FreeRTOS or similar in under eLua, but on reflection that is likely to be
+</I>&gt;<i> too profligate with RAM as the Lua RAM overhead will then be per-thread.
+</I>
+I beleive you're right.
+
+&gt;<i> Then I read Patrick Rapin&#8217;s &#8220;Enhanced Coroutines in Lua&#8221; chapter in &#8220;Lua
+</I>&gt;<i> Programming Gems&#8221;. Basically this suggests a coroutine scheduler with an
+</I>&gt;<i> enhanced yield method which yields back to the scheduler until some event
+</I>&gt;<i> occurs. For example you could yield for 100ms and the scheduler could resume
+</I>&gt;<i> some other coroutine or run other functions in the main thread during this
+</I>&gt;<i> time. This seems an ideal approach for microcontrollers as it allows a
+</I>&gt;<i> non-blocking wait for interrupt and cooperative multi-threading.
+</I>
+Man, I really have to get me that book :) However, I believe that an
+event-based system would work on the current system too, without the
+need to yield every 100ms. Just wait on the coroutine until some event
+occurs, and if it happens to be the 100ms timeout event yield back to
+the calling thread.
+
+&gt;<i> 4.&#160;&#160;&#160;&#160;&#160;&#160; LIN networking support &#8211; this should be relatively easy to build on
+</I>&gt;<i> top of the current serial port support, perhaps could even be done in Lua.
+</I>
+You're probably right about this.
+
+&gt;<i> Is anyone already working on any of the above? I&#8217;m guessing at least 1 is
+</I>&gt;<i> already in train &#8211; is it likely to deliver within the next quarter? I will
+</I>&gt;<i> be happy to contribute anything I have to do myself back to the project or
+</I>&gt;<i> to help anyone already working on something.
+</I>
+Sorry, I have less and less free time to work on eLua, so I can't
+really help here :( I can however provide support if you decide to
+write it yourself.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001772.html">[eLua-dev] What can I do?
+</A></li>
+	<LI>Next message: <A HREF="001776.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1775">[ date ]</a>
+              <a href="thread.html#1775">[ thread ]</a>
+              <a href="subject.html#1775">[ subject ]</a>
+              <a href="author.html#1775">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua Interrupts in Web Builder
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20Interrupts%20in%20Web%20Builder&In-Reply-To=%3CCANKDJfa2Gka87sCZ03edN1syhbKDndXPnKMHkmX_HT%3D58R3DLA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004116.html">
+   <LINK REL="Next"  HREF="004118.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua Interrupts in Web Builder</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20Interrupts%20in%20Web%20Builder&In-Reply-To=%3CCANKDJfa2Gka87sCZ03edN1syhbKDndXPnKMHkmX_HT%3D58R3DLA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Lua Interrupts in Web Builder">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed May 22 08:28:19 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004116.html">[eLua-dev] Lua Interrupts in Web Builder
+</A></li>
+        <LI>Next message: <A HREF="004118.html">[eLua-dev] DS18B20 with eLua + Mizar32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4125">[ date ]</a>
+              <a href="thread.html#4125">[ thread ]</a>
+              <a href="subject.html#4125">[ subject ]</a>
+              <a href="author.html#4125">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Mon, May 20, 2013 at 9:06 PM, Vagner nascimento &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">vagnernascimento at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi Carlo,
+</I>&gt;<i>
+</I>&gt;<i> You are right, only EKLM3S9D92 has interruptions implemented. The WB only
+</I>&gt;<i> configures a build environment and runs the eLua toolchain.
+</I>&gt;<i> I do not know what the effort to implement INT for LM3S8962 (in eLua).
+</I>&gt;<i>
+</I>
+Actually, LM3S8962 does have interrupt support. Take a look at
+src/platform/lm3s/platform_int.c and look for the '#include &quot;lm3s8962.h&quot;'
+line.
+
+Best,
+Bogdan
+
+
+&gt;<i> Best,
+</I>&gt;<i> Vagner
+</I>&gt;<i>
+</I>&gt;<i> Actually the WB only builds closed versions of eLua, but we are working to
+</I>&gt;<i> be able
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, May 20, 2013 at 2:20 PM, Carlo Caratori &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">carlocaratori at gmail.com</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hey Vagner,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks for your help. By taking a look at the differences btw v0.8 and
+</I>&gt;&gt;<i> v0.9 platform_conf.h I've noticed that the build elua interrupts macro was
+</I>&gt;&gt;<i> only added in the later one. But there's a problem, as you can see down
+</I>&gt;&gt;<i> here (the macro is inside a #ifdef)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> #ifdef ELUA_BOARD_EKLM3S9D92
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> #define BUILD_LUA_INT_HANDLERS
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> #define PLATFORM_INT_QUEUE_LOG_SIZE 5
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> #endif
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Does this mean that only EKLM3S9D92 has elua interrupt (and LM3S8962 not)?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks again
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2013/5/20 Vagner nascimento &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">vagnernascimento at gmail.com</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi Carlo,
+</I>&gt;&gt;&gt;<i> This option was not available to you from WB interface?
+</I>&gt;&gt;&gt;<i> Notice that WB is working with eLua v0.8 and there were few platforms
+</I>&gt;&gt;&gt;<i> with eLua interruptions.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Differences between versions for LM3S8962:
+</I>&gt;&gt;&gt;<i> v0.8 -
+</I>&gt;&gt;&gt;<i> <A HREF="https://github.com/elua/elua/blob/v0.8/src/platform/lm3s/platform_conf.h">https://github.com/elua/elua/blob/v0.8/src/platform/lm3s/platform_conf.h</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> v.09 -
+</I>&gt;&gt;&gt;<i> <A HREF="https://github.com/elua/elua/blob/v0.9/src/platform/lm3s/platform_conf.h">https://github.com/elua/elua/blob/v0.9/src/platform/lm3s/platform_conf.h</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> In a few of days the WB will be updated with eLua v0.9.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Vagner
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Sun, May 19, 2013 at 7:48 PM, Carlo Caratori &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">carlocaratori at gmail.com</A>
+</I>&gt;&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hey guys,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I've noticed that it is not possible to build lua
+</I>&gt;&gt;&gt;&gt;<i> interrupts(BUILD_LUA_INT_HANDLERS) for the LM3S8962 from the Web Builder.
+</I>&gt;&gt;&gt;&gt;<i> Is there any particular reason for that?
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Thanks in advance,
+</I>&gt;&gt;&gt;&gt;<i> Carlo Caratori
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130522/05cad7c1/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130522/05cad7c1/attachment-0001.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004116.html">[eLua-dev] Lua Interrupts in Web Builder
+</A></li>
+	<LI>Next message: <A HREF="004118.html">[eLua-dev] DS18B20 with eLua + Mizar32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4125">[ date ]</a>
+              <a href="thread.html#4125">[ thread ]</a>
+              <a href="subject.html#4125">[ subject ]</a>
+              <a href="author.html#4125">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

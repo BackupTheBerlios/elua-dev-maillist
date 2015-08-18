@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GPIO and timer interrupts for AVR32
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GPIO%20and%20timer%20interrupts%20for%20AVR32&In-Reply-To=%3CCA%2Bk0RGcsdjO%3D6WxOKXKCU%2BLGDifikLXhyaOqMW17xNXxASFsPg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003056.html">
+   <LINK REL="Next"  HREF="003058.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GPIO and timer interrupts for AVR32</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GPIO%20and%20timer%20interrupts%20for%20AVR32&In-Reply-To=%3CCA%2Bk0RGcsdjO%3D6WxOKXKCU%2BLGDifikLXhyaOqMW17xNXxASFsPg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] GPIO and timer interrupts for AVR32">dadosutter at gmail.com
+       </A><BR>
+    <I>Wed Nov 30 17:34:15 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003056.html">[eLua-dev] GPIO and timer interrupts for AVR32
+</A></li>
+        <LI>Next message: <A HREF="003058.html">[eLua-dev] GPIO and timer interrupts for AVR32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3057">[ date ]</a>
+              <a href="thread.html#3057">[ thread ]</a>
+              <a href="subject.html#3057">[ subject ]</a>
+              <a href="author.html#3057">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Wed, Nov 30, 2011 at 13:19, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;wrote:
+
+&gt;<i> On Wed, Nov 30, 2011 at 5:06 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi, I'm incuding the list in this, as it regards a user-visible change
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 30 November 2011 08:54, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt; On Wed, Nov 30, 2011 at 8:38 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt;&gt; Hi again. I've fixed some breakage in the timer interface:
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; tmr.delay(0, 500000)
+</I>&gt;&gt;<i> &gt;&gt; stdin:1: timer 500000 does not exist
+</I>&gt;&gt;<i> &gt;&gt;  - two params got swapped in one commit.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; They're not swapped, the API was changed. This was announced on the
+</I>&gt;&gt;<i> list:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/IMPORTANT-New-feature-on-the-master-branch-system-timer-td6918200.html">http://elua-development.2368040.n2.nabble.com/IMPORTANT-New-feature-on-the-master-branch-system-timer-td6918200.html</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I also updated the documentation with this information.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Ah. My mistake, sorry.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Can I suggest rethinking that change in a way that lets existing code
+</I>&gt;&gt;<i> continue to work, and lets people's existing knowledge of eLua
+</I>&gt;&gt;<i> continue to be valid?
+</I>&gt;&gt;<i> Swapping the parameters round has a high short-term cost in
+</I>&gt;&gt;<i> user-surprise and long-term makes it impossible to write portable eLua
+</I>&gt;&gt;<i> code, since tmr.delay() becomes unusable.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> In general, optional parameters are not at attractive as they seem, as
+</I>&gt;&gt;<i> they only lets you have one optional parameter per function (or a
+</I>&gt;&gt;<i> series of them where each one's optionality depends on the previous
+</I>&gt;&gt;<i> one being present).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> How about, instead of
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> tmr.delay(id, delay) -&gt; timer.delay(delay, [id])
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> use
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> tmr.delay(id, delay) -&gt; timer.delay(id, delay)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> where id may be nil to mean &quot;you choose&quot;, or to mirror the rest of the
+</I>&gt;&gt;<i> timer-choice structure by defining tmr.SYS or .SYSTEM or .SYSTICK or
+</I>&gt;&gt;<i> something?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I understand what you're suggesting, but the whole idea of a system timer
+</I>&gt;<i> was to allow people to worry about timer IDs as little as possible.
+</I>&gt;<i> Therefore it seemed like a good idea to make them not only have default
+</I>&gt;<i> values, but also completely optional.
+</I>&gt;<i> Also, please note that until eLua 1.0 the API is volatile and quite likely
+</I>&gt;<i> to change (if you think this is bad, wait until you see the new TCP/IP
+</I>&gt;<i> stack :) ). This was mentioned on the list a number of times, we should
+</I>&gt;<i> probably make it explicit on the main project page too. I think it is
+</I>&gt;<i> unavoidable, as we learn from our mistakes the API changes are bound to
+</I>&gt;<i> happen sooner or later. This is of course also true after 1.0, but at that
+</I>&gt;<i> point we'll make sure that we'll provide a compatibility layer with the old
+</I>&gt;<i> API for a while (a simple depreciation mechanism). Until 1.0 we get a bit
+</I>&gt;<i> more liberty for playing with the API, starting from the assumption that it
+</I>&gt;<i> is not too mature yet and that our projects/user base are still reasonably
+</I>&gt;<i> small and thus these kind of changes are unlikely to require a large
+</I>&gt;<i> development effort on our user side.
+</I>&gt;<i>
+</I>
+Yep.
+I know this can be annoying to early users and (specially) for
+bleeding-edge commercial uses, like Martin's and SimpleMachine's
+(Mizar32&lt;<A HREF="http://simplemachines.it/index.php?option=com_content&amp;view=article&amp;id=13&amp;Itemid=24">http://simplemachines.it/index.php?option=com_content&amp;view=article&amp;id=13&amp;Itemid=24</A>&gt;).
+But this is the main reason we don't call any of our versions v1.0 yet.
+The right time to discuss and refine the API, as Martin and others are
+doing, is now.
+And as Bogdan's mentioned, this is likely to happen even after v1.0, less
+often but probably. We'll then do our best not to break legacy code. This
+happens with Lua (and mostly everything else) too.
+To make this clear on our main doc/site is a good idea. I actually think
+this is written somewhere but not highlighted as we can see now.
+
+
+Dado
+
+
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>   M
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111130/1973d816/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111130/1973d816/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003056.html">[eLua-dev] GPIO and timer interrupts for AVR32
+</A></li>
+	<LI>Next message: <A HREF="003058.html">[eLua-dev] GPIO and timer interrupts for AVR32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3057">[ date ]</a>
+              <a href="thread.html#3057">[ thread ]</a>
+              <a href="subject.html#3057">[ subject ]</a>
+              <a href="author.html#3057">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

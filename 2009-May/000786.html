@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua-RPC Coming
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua-RPC%20Coming&In-Reply-To=%3CEMEWEMEW2_DELIMl45A9F38244e37caea8abe4ea8b6%2C%0A%09jbsnyder%40fanplastic.org%2C%200D408894-AA55-40E9-95EC-0DA%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000783.html">
+   <LINK REL="Next"  HREF="000784.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua-RPC Coming</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua-RPC%20Coming&In-Reply-To=%3CEMEWEMEW2_DELIMl45A9F38244e37caea8abe4ea8b6%2C%0A%09jbsnyder%40fanplastic.org%2C%200D408894-AA55-40E9-95EC-0DA%3E"
+       TITLE="[eLua-dev] Lua-RPC Coming">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed May  6 17:09:03 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000783.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+        <LI>Next message: <A HREF="000784.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#786">[ date ]</a>
+              <a href="thread.html#786">[ thread ]</a>
+              <a href="subject.html#786">[ subject ]</a>
+              <a href="author.html#786">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On May 6, 2009, at 3:05 AM, Bogdan Marinescu wrote:
+
+&gt;<i>
+</I>&gt;<i> Hi -
+</I>&gt;<i>
+</I>&gt;<i> I just wanted to let folks know that I'm working on getting LuaRPC (<A HREF="http://q12.org/lua/index.html">http://q12.org/lua/index.html</A> 
+</I>&gt;<i> ) up and running for eLua.  I've gotten it going with Lua 5.1.4 on  
+</I>&gt;<i> the desktop, and it seems to be working to the degree that can  
+</I>&gt;<i> initiate procedure calls with tables, numbers, etc.. as arguments,  
+</I>&gt;<i> and get return values back over local socket connections.
+</I>&gt;<i>
+</I>&gt;<i> Excellent news!
+</I>&gt;<i>
+</I>&gt;<i> The original code doesn't support shipping functions over the wire,  
+</I>&gt;<i> but I think it should be possible to do this with lua_dump, so that  
+</I>&gt;<i> one could modify functions on the remote &quot;server&quot; device (which in  
+</I>&gt;<i> this case would be eLua).  I'll drop it into eLua when I get it  
+</I>&gt;<i> working over serial, which I think, at least in principle, should be  
+</I>&gt;<i> fairly easy.
+</I>&gt;<i>
+</I>&gt;<i> Functions aren't hard, using lua_dump should do the trick just fine.  
+</I>&gt;<i> The tricky part becomes apparent if the function uses any kind of  
+</I>&gt;<i> globals. I think you can actually have a dumper that can send the  
+</I>&gt;<i> full function environment, including its globals, by using the debug  
+</I>&gt;<i> library to analyze it, but I wouldn't go there personally. Executing  
+</I>&gt;<i> something like &quot;pio.set(1)&quot; remotely doesn't need any of that stuff,  
+</I>&gt;<i> and it's what most people need anyway.
+</I>&gt;<i> About serial/socket: you probably thought about this already, but  
+</I>&gt;<i> just in case: remember to make your code as transport independent as  
+</I>&gt;<i> possible. It would be nice to use the PC to call function from a  
+</I>&gt;<i> robot running eLua via a radio connection at some point in the  
+</I>&gt;<i> future :)
+</I>
+Yep, this is part of the idea, and is the next step I've started is  
+separating out all the sockets stuff and adjusting the RPC code to use  
+generic open/read/write/close functions that can be supplied by  
+different transport layers.  I haven't decided exactly how I want to  
+do it, but it would be nice to make it selectable when the RPC  
+connection is initialized.  The existing code assumes the use of  
+sockets, but it's got enough abstraction that making the interface  
+generic shouldn't be too hard :-)
+
+I'm open to suggestions on the model to use for the interface between  
+the transport layer and the RPC layer.  Perhaps I'll take a look again  
+at how the TCP/IP vs Serial terminal stuff is handled in eLua.
+
+&gt;<i> I'm also thinking about duplicating this for C functions; that is,  
+</I>&gt;<i> having a very simple, restricted, yet functional RPC mechanism that  
+</I>&gt;<i> would work directly for C functions. I did something like this with  
+</I>&gt;<i> an AVR a while ago, and it worked quite nicely.
+</I>
+Interesting.  The existing module is built around two major things  
+serializing lua data types and executing calls in a protected  
+environment where errors can be custom-handled so that things get  
+returned to the caller properly when things go south.
+
+It should be possible to adapt things so that it'll work from the C  
+layer as well, though, since the RPC layer just sends chunks of bytes,  
+it might not be too hard to add a handling mechanism for that style of  
+usage too.  I don't
+
+&gt;<i>
+</I>&gt;<i> The Lua API has gone through some interesting changes between 4.0.x  
+</I>&gt;<i> and 5.1.x. I think I've mostly covered the bases as far as handling  
+</I>&gt;<i> those differences, but the only testing I've done is with some  
+</I>&gt;<i> examples provided by the original author.
+</I>&gt;<i>
+</I>&gt;<i> Hmmm. Anyone knows of a good test package for RPC systems? I don't.
+</I>
+Yeah, neither do I.  I think I may actually just do it by coming up  
+with some unit tests for eLua and run them over RPC.  Obviously there  
+are some differences and restrictions from running things locally, but  
+if it works reasonably well for a range of behavior both locally and  
+remotely, I would consider that acceptable.
+
+There are some things that are more RPC specific, in terms of making  
+sure it fails in the correct ways, but that could just be made  
+optional for when being used in RPC mode.
+
+I also like the idea of being able to run testing remotely with RPC  
+since it means that there's a bit more flexibility for code to be used  
+and for keeping track of results.  I don't like the idea of having an  
+extra set of scripts for the romfs to do testing, that one has to  
+decide whether or not to include, or having to send a large or  
+multiple scripts over xmodem.
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090506/5f6c3118/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090506/5f6c3118/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090506/5f6c3118/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090506/5f6c3118/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000783.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+	<LI>Next message: <A HREF="000784.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#786">[ date ]</a>
+              <a href="thread.html#786">[ thread ]</a>
+              <a href="subject.html#786">[ subject ]</a>
+              <a href="author.html#786">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

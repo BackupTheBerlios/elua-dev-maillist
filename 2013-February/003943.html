@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Compiling eLua &amp; ARM Toolchain
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Compiling%20eLua%20%26%20ARM%20Toolchain&In-Reply-To=%3CCAKVwhLNw_6vodsXFqUebPKzx6i0euduDS077%3DHhjE-qwGCwrQw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003930.html">
+   <LINK REL="Next"  HREF="003944.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Compiling eLua &amp; ARM Toolchain</H1>
+    <B>Seppo Takalo</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Compiling%20eLua%20%26%20ARM%20Toolchain&In-Reply-To=%3CCAKVwhLNw_6vodsXFqUebPKzx6i0euduDS077%3DHhjE-qwGCwrQw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Compiling eLua &amp; ARM Toolchain">seppo.takalo at iki.fi
+       </A><BR>
+    <I>Thu Feb 14 12:34:59 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003930.html">[eLua-dev] Compiling eLua &amp; ARM Toolchain
+</A></li>
+        <LI>Next message: <A HREF="003944.html">[eLua-dev] Compiling eLua &amp; ARM Toolchain
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3943">[ date ]</a>
+              <a href="thread.html#3943">[ thread ]</a>
+              <a href="subject.html#3943">[ subject ]</a>
+              <a href="author.html#3943">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>There is also different gnu-arm toolchain called Summon-arm toolchain which
+is in use at our RuuviTracker project.
+See <A HREF="https://github.com/esden/summon-arm-toolchain">https://github.com/esden/summon-arm-toolchain</A>
+
+This summon-arm differ on jsnyder's port because it supports hardware
+floating points.
+This is huge performance gain in lua, because Lua uses floating points for
+all numbers. (except when integer-lua is builded)
+
+You can check if your toolchain supports it by issuing following parameter
+&quot;--print-multi-lib&quot;
+
+Jsnyder's build:
+~/arm-cs-tools/bin$ ./arm-none-eabi-gcc --print-multi-lib
+.;
+thumb;@mthumb
+armv6-m;@<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mthumb at march</A>=armv6-m
+thumb2;@<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mthumb at march</A>=<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">armv7 at mfix-cortex-m3-ldrd</A>
+
+Summon-arm build:
+$ arm-none-eabi-gcc --print-multi-lib
+.;
+thumb/arm7tdmi-s;@<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mthumb at mcpu</A>=arm7tdmi-s
+thumb/cortex-m0;@<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mthumb at mcpu</A>=cortex-m0
+thumb/cortex-m3;@<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mthumb at mcpu</A>=cortex-m3
+thumb/cortex-m4;@<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mthumb at mcpu</A>=cortex-m4
+thumb/cortex-m4/float-abi-hard/fpuv4-sp-d16;@mthumb
+@mcpu=<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cortex-m4 at mfloat-abi</A>=<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">hard at mfpu</A>=fpv4-sp-d16
+
+
+Of course those new flags need to be defined in your &quot;conf.py&quot; build
+script. Floating points are not automatically enabled.
+
+I have following on our RuuviTracker's conf.py:
+TARGET_FLAGS = ['-mthumb', '-mcpu=cortex-m4', '-mfloat-abi=hard',
+'-mfpu=fpv4-sp-d16'] # Hardware floating point. Requires supporting
+toolchain
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130214/85117ca8/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130214/85117ca8/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003930.html">[eLua-dev] Compiling eLua &amp; ARM Toolchain
+</A></li>
+	<LI>Next message: <A HREF="003944.html">[eLua-dev] Compiling eLua &amp; ARM Toolchain
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3943">[ date ]</a>
+              <a href="thread.html#3943">[ thread ]</a>
+              <a href="subject.html#3943">[ subject ]</a>
+              <a href="author.html#3943">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

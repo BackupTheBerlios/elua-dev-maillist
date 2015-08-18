@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] The right place where add virtual serial (USB-CDC	class) on eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20The%20right%20place%20where%20add%20virtual%20serial%20%28USB-CDC%0A%09class%29%20on%20eLua&In-Reply-To=%3C391855.944.qm%40web161219.mail.bf1.yahoo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002412.html">
+   <LINK REL="Next"  HREF="002416.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] The right place where add virtual serial (USB-CDC	class) on eLua</H1>
+    <B>Tim michals</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20The%20right%20place%20where%20add%20virtual%20serial%20%28USB-CDC%0A%09class%29%20on%20eLua&In-Reply-To=%3C391855.944.qm%40web161219.mail.bf1.yahoo.com%3E"
+       TITLE="[eLua-dev] The right place where add virtual serial (USB-CDC	class) on eLua">tcmichals at yahoo.com
+       </A><BR>
+    <I>Fri Jun  3 15:24:33 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002412.html">[eLua-dev] The right place where add virtual serial (USB-CDC class)	on eLua
+</A></li>
+        <LI>Next message: <A HREF="002416.html">[eLua-dev] The right place where add virtual serial (USB-CDC class) on eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2415">[ date ]</a>
+              <a href="thread.html#2415">[ thread ]</a>
+              <a href="subject.html#2415">[ subject ]</a>
+              <a href="author.html#2415">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm adding adding it to the serial code in the platform code.&#160; for example:
+Transmit:
+
+void platform_s_uart_send( unsigned id, u8 data )
+{
+&#160;&#160;&#160;&#160; switch(id)
+&#160;&#160;&#160;&#160; {
+&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; case USB_SERIALPORT_1:
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; break;
+
+&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; default:
+&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; //HW based serial port
+
+&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; break;
+&#160;&#160;&#160;&#160; }
+}
+Receive:
+
+int platform_s_uart_recv( unsigned id, s32 timeout)
+{
+&#160;&#160;&#160;&#160; switch(id)
+&#160;&#160;&#160;&#160; {
+&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; case USB_SERIALPORT_1:
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; break;
+
+&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; default:
+&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; //HW based serial port
+
+&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; break;
+&#160;&#160;&#160;&#160; }
+}
+
+
+Invoking the receive ISR from USB interrupt:
+In platform_int.c,&#160; when a receive interrupt occurs call uart_common_rx_handler with the virtual serial number, USB_SERIALPORT_1, this in turn 
+calls platform_s_uart_recv, which is in the AVR32 platform. Bogdan made a change to common_uart.c to use a while statement:
+
+static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+{
+&#160; int data;
+
+&#160; if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+&#160; {
+&#160;&#160;&#160; while( -1 != ( data = platform_s_uart_recv( resnum, 0 ) ) ) &lt;--- call into the platform to get all data in the receive buffer, return -1 when there is no data. 
+&#160;&#160;&#160;&#160;&#160; cmn_rx_handler( resnum, ( u8 )data );
+&#160; }
+
+
+I'm doing this for a LPC23xx platform. Hope this helps.&#160; Also, I'm not supporting polling at this time, it is all interrupt driven. 
+
+
+
+
+________________________________
+From: Nuccio Raciti &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">raciti.nuccio at gmail.com</A>&gt;
+To: eLua Users and Development List (www.eluaproject.net) &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+Sent: Friday, June 3, 2011 4:31 AM
+Subject: [eLua-dev] The right place where add virtual serial (USB-CDC class) on eLua
+
+Hi,
+
+I need to add two USB virtual serial to the AVR32 platform, 
+the goal is to have both the console and the remote file system managed by 
+the USB port (with the benefits of simplicity and economy).
+Of course I want to keep (optional) the capability to have a traditional UART.
+
+The question is: Where is the right place to add this support?
+
+This is my first choice:
+* /platform/avr32/platform.c
++ /platform/avr32/usb-cdc.c
++ /platform/avr32/usb-cdc.h
+
+Or maybe I need to change eLua common code?
+
+Thanks and regards,
+Nuccio
+
+
+
+
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110603/69c3f500/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110603/69c3f500/attachment-0001.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002412.html">[eLua-dev] The right place where add virtual serial (USB-CDC class)	on eLua
+</A></li>
+	<LI>Next message: <A HREF="002416.html">[eLua-dev] The right place where add virtual serial (USB-CDC class) on eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2415">[ date ]</a>
+              <a href="thread.html#2415">[ thread ]</a>
+              <a href="subject.html#2415">[ subject ]</a>
+              <a href="author.html#2415">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

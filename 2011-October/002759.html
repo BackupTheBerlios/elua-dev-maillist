@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RPC over SOCK_STREAM
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3C1317843964331-6863543.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002752.html">
+   <LINK REL="Next"  HREF="002765.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RPC over SOCK_STREAM</H1>
+    <B>raman</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3C1317843964331-6863543.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] RPC over SOCK_STREAM">ramangopalan at gmail.com
+       </A><BR>
+    <I>Wed Oct  5 21:46:04 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002752.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+        <LI>Next message: <A HREF="002765.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2759">[ date ]</a>
+              <a href="thread.html#2759">[ thread ]</a>
+              <a href="subject.html#2759">[ subject ]</a>
+              <a href="author.html#2759">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+FYI, there is already desktop socket code here:
+<A HREF="https://github.com/jsnyder/luarpc">https://github.com/jsnyder/luarpc</A>
+
+Oops. I didn't check on this before. I will use this on my test branch.
+
+This doesn't actually send anything over the wire.  The way subtables
+of the slave work is that they create helpers that can replay indexing
+over the wire when an action is requested like calling a function
+(call) or assignment (newindex).  I suppose we could check these
+things when the helpers are created, but the slave/server will return
+errors if it can't index remotely when you try an operation that does
+require communication.
+
+Ah, great. That answers a lot of my questions.
+
+So, if you get through the connect phase, it probably at least did a
+header exchange to establish the connection.
+
+Yes, The initial header exchange works.
+
+&gt;<i> However, I ran into a few
+</I>&gt;<i> problems: pio.pin.setdir(###) does not return. It goes into a waiting
+</I>&gt;<i> state.
+</I>&gt;<i> I am sure the file descriptor returned by elua_accept(###) is valid. While
+</I>&gt;<i> tracing through the code, I realized that the state does not enter
+</I>&gt;<i> read_cmd_call(###). I can only wonder if there&#8217;s a problem with the code
+</I>&gt;<i> for
+</I>&gt;<i> transport_open_listener(###).
+</I>
+It would be nice to know if it gets into rpc_dispatch_helper(L,
+handle).  Does the client send an RPC_READY back to the server?  I'm
+guessing it does if it gets to that function at all and gets to a hung
+state.
+
+When I tried debugging, the control did not go through case: RPC_CMD_CALL.
+So, it doesn't send back the macro value to the server.
+
+I suppose I stripped out the debug code, so that would need to be
+added in to display this on the fly on the desktop side.  I can put
+this back and make it optional if you're not familiar enough with the
+code to put some instrumentation in?
+
+The debug code would be of great help. I'm using term for a quick display of
+events happening on the server side.
+
+&gt;<i>
+</I>&gt;<i> Do you have any suggestions for me ?
+</I>&gt;<i>
+</I>&gt;<i> I could put up my test branch online. (Where can I put the code ?) Is
+</I>&gt;<i> someone willing to work on this ? I could use some help.
+</I>
+I'd be more than willing to take a look at it.
+Awesome. I was involved with github for the SWIG project. I'll fork eLua, do
+the changes and request a pull.
+
+One more thing:
+I went though the previous post describing the issues with elua_uip.c
+Will this interfere with the performance of RPC over ethernet ?
+Do we have to do anything about this before ?
+
+Awaiting your response.
+Raman
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6863543.html">http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6863543.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002752.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+	<LI>Next message: <A HREF="002765.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2759">[ date ]</a>
+              <a href="thread.html#2759">[ thread ]</a>
+              <a href="subject.html#2759">[ subject ]</a>
+              <a href="author.html#2759">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

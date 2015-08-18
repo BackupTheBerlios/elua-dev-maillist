@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] QEI Module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20QEI%20Module&In-Reply-To=%3CCAL4-wQrfAmiebSxvW2prhAm9jLg-wO59N%3Dr_3V8FQ6W4RYtDWw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003355.html">
+   <LINK REL="Next"  HREF="003361.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] QEI Module</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20QEI%20Module&In-Reply-To=%3CCAL4-wQrfAmiebSxvW2prhAm9jLg-wO59N%3Dr_3V8FQ6W4RYtDWw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] QEI Module">martinwguy at gmail.com
+       </A><BR>
+    <I>Mon Mar 19 04:05:13 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003355.html">[eLua-dev] QEI Module
+</A></li>
+        <LI>Next message: <A HREF="003361.html">[eLua-dev] QEI Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3357">[ date ]</a>
+              <a href="thread.html#3357">[ thread ]</a>
+              <a href="subject.html#3357">[ subject ]</a>
+              <a href="author.html#3357">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 19 March 2012 00:03, jrambo316 &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jrambo316 at yahoo.com</A>&gt; wrote:
+&gt;<i> I tried:
+</I>&gt;<i> lm3s.qei.init( lm3s.qei.CH0, lm3s.qei.PHA, lm3s.qei.NO_SWAP,
+</I>&gt;<i> lm3s.qei.NO_INDEX, 10000 )
+</I>
+Hi.  Can I make some suggestions for this module that is being born?
+
+One is to avid all this verbose and repetitive syntax by using a
+string for multi-valued parameters instead of these verbose constants.
+Not only is that more Lua-like and shorter to code, but it is also
+faster as these &quot;platform constants&quot; require several table lookups,
+whereas comparing strings is a single instruction. Numerical values
+are appropriate at the C level: there is a Lua function to convert
+string parameters into integers: for example:
+
+  static const char const *args[] =
+    { &quot;off&quot;, &quot;on&quot;, &quot;left&quot;, &quot;right&quot;, NULL };
+
+  switch ( luaL_checkoption( L, 1, NULL, args ) )
+  {
+  case 0: ...
+  case 1: ...
+  case 2: ...
+  case 3: ...
+  default: return luaL_argerror( L, 1, NULL );
+  }
+
+Since we now have qei modules on two platforms i would also suggest
+making a generic qei.*() module rather than ending up with a different
+interfaces on each platform. After all, qei can ultimately be
+implemented on any platform using GPIO interrupts.
+
+These two suggestions would  turn the above code into:
+
+qei.init(&quot;CH0&quot;, &quot;PHA&quot;, &quot;NO_SWAP&quot;, &quot;NO_INDEX&quot;. 10000)
+
+For yes/no values it is more Lua-like just to use true and false, not
+verbose constants. Of course, they may not be boolean values - I don't
+know as I could find no documentation.
+
+So my 3rd suggestion: would be for elua-devs always to update the
+manual at the same time as they implement the interface - as part of
+the exact same commit that extends or changes the Lua interface, not
+as a final afterthought. That also ensuring that the manual remains
+complete and correct.
+You can still decide to change the Lua interface when it turns out not
+to be right - then you also change tha manual again.
+
+Thanks and happy hacking
+
+   M
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003355.html">[eLua-dev] QEI Module
+</A></li>
+	<LI>Next message: <A HREF="003361.html">[eLua-dev] QEI Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3357">[ date ]</a>
+              <a href="thread.html#3357">[ thread ]</a>
+              <a href="subject.html#3357">[ subject ]</a>
+              <a href="author.html#3357">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

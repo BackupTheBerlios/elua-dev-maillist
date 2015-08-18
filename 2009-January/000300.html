@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] On Timers &amp; ADC
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20On%20Timers%20%26%20ADC&In-Reply-To=%3C81fbe47d0901222328xf2f52a5t3cc7207ec6137ce1%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000298.html">
+   <LINK REL="Next"  HREF="000302.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] On Timers &amp; ADC</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20On%20Timers%20%26%20ADC&In-Reply-To=%3C81fbe47d0901222328xf2f52a5t3cc7207ec6137ce1%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] On Timers &amp; ADC">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Jan 23 08:28:38 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000298.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+        <LI>Next message: <A HREF="000302.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#300">[ date ]</a>
+              <a href="thread.html#300">[ thread ]</a>
+              <a href="subject.html#300">[ subject ]</a>
+              <a href="author.html#300">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> So I've been thinking about how to accomplish burst sampling at a given
+</I>rate
+&gt;<i> (or background sampling).  The Stellaris ADCs are programmable in terms of
+</I>&gt;<i> selecting a sampling rate, but the range is pretty limited, and fairly
+</I>fast
+&gt;<i> (125 ksamples/s - 1 msample/s).  In order to do more arbitrary rates, I'll
+</I>&gt;<i> need to use a timer.  The issue I see is: what if I'm already using a
+</I>timer,
+&gt;<i> or multiple timers for some purpose?  In cases where something like this
+</I>is
+&gt;<i> needed should timers be reserved/locked?
+</I>
+In the future, we'll most likely go with Mike's lock/unlock suggestion, so
+this will be automatic. For now the user should manage the resources
+himself.
+
+&gt;<i> I've not worked with all the other supported platforms, but from working
+</I>&gt;<i> with some other microcontrollers I think a timer will be needed.  In going
+</I>&gt;<i> with how things are already implemented (platform_uart_recv), I'm going to
+</I>&gt;<i> assume this is how I'll have to adjust things.
+</I>
+Precisely :)
+
+&gt;<i> As such, I suppose the ADC API should be amended a bit, as follows:
+</I>&gt;<i> void platform_adc_burst( unsigned id, u16* buf, unsigned
+</I>count, unsigned timer_id, u32 frequency );
+
+Right.
+
+&gt;<i> The current API then looks like this:
+</I>&gt;<i> int platform_adc_exists( unsigned id );
+</I>&gt;<i> u16 platform_adc_sample( unsigned id );
+</I>&gt;<i> u16 platform_adc_maxval( unsigned id );
+</I>&gt;<i> void platform_adc_start( unsigned id );
+</I>&gt;<i> int platform_adc_is_done( unsigned id );
+</I>&gt;<i> void platform_adc_set_mode( unsigned id, int mode );
+</I>&gt;<i> void platform_adc_burst( unsigned id, u16*
+</I>buf, unsigned count, unsigned timer_id, u32 frequency );
+
+The current approach is to have the &quot;common&quot; functions as separate function,
+and the other grouped in a common function (see platform_timer_op,
+platform_pwm_op ...) just to reduce the number of actual functions one needs
+to implement for a given backend (this looks less scary for someone that
+wants to port to a new backend :) ). In this case I'd make the exists,
+sample, start and is_done function independent, and put everything else in a
+platform_adc_op. It's not a requirement though, if this looks better to you
+then go for it, I'll leave it up to you.
+
+&gt;<i> If continuous mode sampling is to run at a rate that isn't in the range of
+</I>&gt;<i> 125 ksamples to 1 msamples, we might either need to have the set_mode
+</I>&gt;<i> function accept a timer (which is less useful in the case of doing
+</I>&gt;<i> single-shot, but timers can be used that way :-)), or have another
+</I>function
+&gt;<i> like burst, but that isn't blocking, and has a corresponding stop
+</I>function.
+
+What about this: make &quot;set_mode&quot; specify one more thing: blocking or
+non-blocking. After that, both sample and burst would work in that mode.
+This would eliminate the need for &quot;start&quot;, and would also make &quot;burst&quot;
+blocking when needed. And the timer would always be specified in &quot;burst&quot;, so
+we don't need as a parameter to &quot;mode&quot;.
+By the way, do we really need the &quot;continuous&quot; mode? Maybe we can specify
+&quot;0&quot; as a parameter to platform_adc_burst (which would mean &quot;do this at the
+maximum speed&quot;) and forget about the continous mode altogether. And then
+&quot;set mode&quot; would just set the blocking or non-blocking mode. Seems more
+&quot;natural&quot; this way.
+
+&gt;<i> I'm also going to add a smoothing option, which in the context of single
+</I>&gt;<i> shot or continuous simply means that  enough samples must be averaged
+</I>before
+&gt;<i> the result is_done.  For burst, we could do this too, either as
+</I>oversampling
+&gt;<i> (i.e. each burst sample is actually 5 averaged values, that are available
+</I>&gt;<i> because we're actually sampling at 5 times the rate passed to adc_burst)
+</I>or
+&gt;<i> with a moving average filter.  For single shot, these would be the same,
+</I>but
+&gt;<i> they differ when we're talking about continuous or burst sampling.  One
+</I>&gt;<i> requires that filter_length samples be collected prior to each averaged
+</I>&gt;<i> sample being released, and the other runs at the sampling rate, as soon as
+</I>&gt;<i> filter_length samples are collected so that the moving average has enough
+</I>&gt;<i> data. Hmm...
+</I>
+It shouldn't be diferent. Everything is oversampled by x, and every x sample
+you return an actual result to the system. This makes more sense if we adopt
+the frequency=0 convention I mentioned above.
+
+&gt;<i> The stellaris platform has hardware averaging, though it is designed for
+</I>&gt;<i> being used for oversampling, not just rolling averages.
+</I>
+But isn't the functionality similar? Or they just do a simple averaging in
+LM3S, instead of a moving average? (sorry, way too sleepy to check now).
+
+&gt;<i> This article does a decent job of outlining the issues:
+</I>&gt;<i> <A HREF="http://www.zlgmcu.com/luminary/download/LM3SAPP_ADC_OverSample_Tech_en.pdf">http://www.zlgmcu.com/luminary/download/LM3SAPP_ADC_OverSample_Tech_en.pdf</A>
+</I>
+I'll try to take a look at that. What I know for sure is that a 16x or even
+8x moving average filter can work wonders, so we'd better have that, even if
+it involves interrupts.
+A little homework for you :): try to figure out a way to have adc_burst mode
+work (optionally) in double buffering mode. It's really useful for lots of
+applications.
+
+&gt;<i> void platform_adc_set_smoothing( unsigned id, u8 length );
+</I>Agreed. And length should probably be a power of 2 to make things (like
+modulo and division operations) faster.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090123/311e93d1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090123/311e93d1/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000298.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+	<LI>Next message: <A HREF="000302.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#300">[ date ]</a>
+              <a href="thread.html#300">[ thread ]</a>
+              <a href="subject.html#300">[ subject ]</a>
+              <a href="author.html#300">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

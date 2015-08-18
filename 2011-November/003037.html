@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32f4DSCY%20-%20MCU%20settings%20-%20flash%20prefetch%20on&In-Reply-To=%3CCAJ%3DY9Y1fWt6eU6%2BxhQCSEgU0ErSb1f4FbcS%2B-GDwHGrjc8t_Yg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002997.html">
+   <LINK REL="Next"  HREF="003038.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32f4DSCY%20-%20MCU%20settings%20-%20flash%20prefetch%20on&In-Reply-To=%3CCAJ%3DY9Y1fWt6eU6%2BxhQCSEgU0ErSb1f4FbcS%2B-GDwHGrjc8t_Yg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Nov 28 18:53:23 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002997.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+        <LI>Next message: <A HREF="003038.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3037">[ date ]</a>
+              <a href="thread.html#3037">[ thread ]</a>
+              <a href="subject.html#3037">[ subject ]</a>
+              <a href="author.html#3037">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2011/11/21 pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;:
+&gt;<i> ..it would be a nice option to have for compiling eLua interpreter
+</I>&gt;<i> into ram (ie in CCM for stm32f4). Flash seems to be quite slow :)..
+</I>
+It's certainly be possible to force some more things into RAM.  One
+easy thing you can do is partially or fully disable LTR:
+<A HREF="http://www.eluaproject.net/doc/v0.8/en_arch_ltr.html">http://www.eluaproject.net/doc/v0.8/en_arch_ltr.html</A>
+
+However, some of the performance difference you'd see form this you
+could get by using &quot;local&quot; variables selectively within the program to
+reduce flash lookups.
+
+Also note that the CCM is only for data, the MCU won't execute any
+code in that RAM.  You could certainly use it for storing data
+structures and bytecode though.
+
+On a related note: I've turned on prefetch by default in the branch,
+removed a double call to the clock setup code that was being done, and
+double-checked the PLL setup, which I'm now pretty sure is correct
+after getting a bit confused by the example code that ST ships.  I'm
+not completely sure why they don't enable prefetch by default, there
+is a related errata, but I'm not sure exactly what affect it has since
+it seems like there's definitely a performance benefit to turning
+prefetch on, and they enable it by default on STM32F2xx parts.  The
+related Errata is:
+&quot;The ART Accelerator prefetch queue instruction is not supported.
+This limitation does not prevent the ART Accelerator from using the
+cache enable/disable
+capability and the selection of the number of wait states according to
+the system frequency&quot;
+
+&gt;<i> p.
+</I>&gt;<i>
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;<i> Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> P&#345;edm&#283;t: [eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</I>&gt;<i> Datum: 21.11.2011 - 10:53:47
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i> It seems to me the flash prefetch is not ON
+</I>&gt;&gt;<i> currently (in
+</I>&gt;&gt;<i> system_stm32f4xx.c line 396), the line shall be:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> FLASH-&gt;ACR = FLASH_ACR_PRFTEN | FLASH_ACR_ICEN
+</I>&gt;&gt;<i> |FLASH_ACR_DCEN |
+</I>&gt;&gt;<i> FLASH_ACR_LATENCY_5WS;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> A benchmark I do shows:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 1. without FLASH_ACR_PRFTEN set:
+</I>&gt;&gt;<i> ..1000x Iterations elapsed: 6.396281 secs
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2. with FLASH_ACR_PRFTEN:
+</I>&gt;&gt;<i> ..1000x Iterations elapsed: 5.618634 secs
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 3. with 4ws (do not do it at home, at your own
+</I>&gt;&gt;<i> risk, you may brick
+</I>&gt;&gt;<i> your board!):
+</I>&gt;&gt;<i> ..1000x Iterations elapsed: 5.258016 secs
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> P.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Jak se vyhnout nachlazen&#237; a dal&#353;&#237;m zdravotn&#237;m
+</I>&gt;&gt;<i> pot&#237;&#382;&#237;m v nep&#345;&#237;jemn&#233;m
+</I>&gt;&gt;<i> podzimn&#237;m obdob&#237;? &#268;t&#283;te speci&#225;l Zdrav&#237; na podzim
+</I>&gt;&gt;<i> na
+</I>&gt;&gt;<i> <A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Jak se vyhnout nachlazen&#237; a dal&#353;&#237;m zdravotn&#237;m pot&#237;&#382;&#237;m v nep&#345;&#237;jemn&#233;m
+</I>&gt;<i> podzimn&#237;m obdob&#237;? &#268;t&#283;te speci&#225;l Zdrav&#237; na podzim na
+</I>&gt;<i> <A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002997.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+	<LI>Next message: <A HREF="003038.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3037">[ date ]</a>
+              <a href="thread.html#3037">[ thread ]</a>
+              <a href="subject.html#3037">[ subject ]</a>
+              <a href="author.html#3037">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

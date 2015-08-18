@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problems with LuaRPC module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problems%20with%20LuaRPC%20module&In-Reply-To=%3CBANLkTiks1FEJqm33LkbWHchkNwDwgOEDYw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002495.html">
+   <LINK REL="Next"  HREF="002502.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problems with LuaRPC module</H1>
+    <B>Raman Gopalan</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problems%20with%20LuaRPC%20module&In-Reply-To=%3CBANLkTiks1FEJqm33LkbWHchkNwDwgOEDYw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Problems with LuaRPC module">ramangopalan at gmail.com
+       </A><BR>
+    <I>Sat Jun 11 13:00:10 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002495.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 27
+</A></li>
+        <LI>Next message: <A HREF="002502.html">[eLua-dev] Problems with LuaRPC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2499">[ date ]</a>
+              <a href="thread.html#2499">[ thread ]</a>
+              <a href="subject.html#2499">[ subject ]</a>
+              <a href="author.html#2499">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I seem to have problems with LuaRPC module. Just by running Elua on the
+target,
+a sample snippet such as slave, err = rpc.connect (&quot;COM11&quot;) throws
+me the error &quot;MY ERROR: no data received when attempting to read&quot;. (slave =
+nil)
+
+System configuration:
+Windows-7 + All the tools needed to burn the .bin file.
+(Have also tested it on Gnu/Linux, Ubuntu 10.04)
+
+Elua cross-compiled for:
+CPU: LM3S8962
+Micro-controller dev board: Luminary Micro, ARM Cortex M3
+
+I did however read through the source code to understand the protocol used
+while
+communicating with RPC.
+
+The files I have used for this problem definition:
+src/main.c, src/luarpc_elua_uart.c, src/modules/luarpc.c
+
+As mentioned earlier, just by cross compiling Elua for LM3S8962, the
+luarpc.exe
+throws me the error: &quot;MY ERROR: no data received when attempting to read&quot; on
+my PC console.
+
+luarpc.c:
+
+static int rpc_connect( lua_State *L ):
+
+    transport_write_u8( &amp;handle-&gt;tpt, RPC_CMD_CON );
+    client_negotiate( &amp;handle-&gt;tpt );
+
+At this point, we can expect the handshake between the micro and
+the PC through the luarpc.exe instance running on the PC.
+
+During the client_negotiate( &amp;handle-&gt;tpt ), it is supposed to send out the
+header &quot;LRPC(3)(default client config)&quot; ('3', for the RPC_PROTOCOL_VERSION,
+defined as an enum).
+
+I tweaked the boot_rpc() in src/main.c to check if the micro is receiving
+the header. I added the functions transport_read_buffer() and
+transport_write_buffer(). The micro receives junk values, a stream of '#'.
+Nonetheless, The UART module of the micro-controller works flawlessly.
+
+I have narrowed down on the source of the problem. I suspect that the
+luarpc.exe instance running on the PC isn't responsive.
+
+How do I proceed with the bug ? Please share your thoughts and give me a few
+suggestions.
+
+Also, it is given on the website that rpc.connect() returns a HANDLE to the
+slave. In the C definition of the same function, it returns an 'int'. Have I
+understood it correctly ?
+
+Raman, Student.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110611/40fc205f/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110611/40fc205f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002495.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 27
+</A></li>
+	<LI>Next message: <A HREF="002502.html">[eLua-dev] Problems with LuaRPC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2499">[ date ]</a>
+              <a href="thread.html#2499">[ thread ]</a>
+              <a href="subject.html#2499">[ subject ]</a>
+              <a href="author.html#2499">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

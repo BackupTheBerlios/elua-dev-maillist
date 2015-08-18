@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problem to import module in eLua - LM3S
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20to%20import%20module%20in%20eLua%20-%20LM3S&In-Reply-To=%3CCANKDJfZNB%2BhejgkwEikzEuO6_YYq3ey7yWxwBZ1jZU71nsVS1g%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003470.html">
+   <LINK REL="Next"  HREF="003472.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problem to import module in eLua - LM3S</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20to%20import%20module%20in%20eLua%20-%20LM3S&In-Reply-To=%3CCANKDJfZNB%2BhejgkwEikzEuO6_YYq3ey7yWxwBZ1jZU71nsVS1g%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Problem to import module in eLua - LM3S">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Apr 11 14:33:46 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003470.html">[eLua-dev] Problem to import module in eLua - LM3S
+</A></li>
+        <LI>Next message: <A HREF="003472.html">[eLua-dev] Problem to import module in eLua - LM3S
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3471">[ date ]</a>
+              <a href="thread.html#3471">[ thread ]</a>
+              <a href="subject.html#3471">[ subject ]</a>
+              <a href="author.html#3471">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Wed, Apr 11, 2012 at 3:18 PM, Marcus Vinicius Costa
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">marcusvc.costa at gmail.com</A>&gt; wrote:
+&gt;<i> Hi all...
+</I>&gt;<i>
+</I>&gt;<i> It has to do something different to import modules in eLua, I put in my code
+</I>&gt;<i> the &quot;require&quot;, but always i have a error in the execution.
+</I>&gt;<i>
+</I>&gt;<i> Source in file &quot;main.lua&quot;
+</I>&gt;<i> ...
+</I>&gt;<i> require &quot;http&quot;
+</I>&gt;<i> ...
+</I>&gt;<i>
+</I>&gt;<i> -- In terminal using a IDE Goat
+</I>&gt;<i> With the LS command I list all files in mmc card and the 2 files found are
+</I>&gt;<i> correct, &quot;main.lua&quot; and &quot;http.lua&quot;.
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; eLua v0.8 &#160;Copyright (C) 2007-2011 www.eluaproject.net
+</I>&gt;<i> &#160; &#160; eLua# ls
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; /rom
+</I>&gt;<i> &#160; &#160; Total on /rom: 0 bytes
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; /mmc
+</I>&gt;<i> &#160; &#160; http.lua &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; 5439 bytes
+</I>&gt;<i> &#160; &#160; main.lua &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; 7799 bytes
+</I>&gt;<i> &#160; &#160; Total on /mmc: 13238 bytes
+</I>&gt;<i>
+</I>&gt;<i> When I run the file &quot;main.lua&quot; an error occurs and says that the module was
+</I>&gt;<i> not found
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; eLua# lua /mmc/main.lua
+</I>&gt;<i> &#160; &#160; Press CTRL+Z to exit Lua
+</I>&gt;<i> &#160; &#160; lua: /mmc/main.lua:87: module 'http' not found:
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; no field package.preload['http']
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; no file '/mmc/http.lua'
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; no file '/mmc/http.lc'
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; no file '/rom/http.lua'
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; no file '/rom/http.lc'
+</I>&gt;<i> &#160; &#160; stack traceback:
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; [C]: in function 'require'
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; /mmc/main.lua:87: in main chunk
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; [C]: ?
+</I>&gt;<i>
+</I>&gt;<i> After the error, if I ask to list the files again nothing is found, as if
+</I>&gt;<i> the card was &quot;ejected&quot; by the system, only to reset it back to normal.
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; eLua# ls
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; /rom
+</I>&gt;<i> &#160; &#160; Total on /rom: 0 bytes
+</I>&gt;<i> &#160; &#160; /mmc
+</I>&gt;<i> &#160; &#160; Total on /mmc: 0 bytes
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; eLua#
+</I>&gt;<i>
+</I>&gt;<i> Someone tell me what might be happening to him can not find the module, what
+</I>&gt;<i> can I do to try to solve the problem?
+</I>
+That sounds like an SD card issue. Have you tried a different SD card?
+What happens if you do 'cat /mmc/http.lua' ?
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> Thanks in advance by the help
+</I>&gt;<i> Marcus Vinicius
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003470.html">[eLua-dev] Problem to import module in eLua - LM3S
+</A></li>
+	<LI>Next message: <A HREF="003472.html">[eLua-dev] Problem to import module in eLua - LM3S
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3471">[ date ]</a>
+              <a href="thread.html#3471">[ thread ]</a>
+              <a href="subject.html#3471">[ subject ]</a>
+              <a href="author.html#3471">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

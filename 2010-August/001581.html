@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Cleaning the eLua svn repository
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Cleaning%20the%20eLua%20svn%20repository&In-Reply-To=%3CAANLkTikyQH%3DLGBCuw8Zbj7g8kHZHNBFcgjYQ0D7JJeCT%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001592.html">
+   <LINK REL="Next"  HREF="001582.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Cleaning the eLua svn repository</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Cleaning%20the%20eLua%20svn%20repository&In-Reply-To=%3CAANLkTikyQH%3DLGBCuw8Zbj7g8kHZHNBFcgjYQ0D7JJeCT%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Cleaning the eLua svn repository">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Aug 12 13:06:46 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001592.html">[eLua-dev] Adding other files to web builder
+</A></li>
+        <LI>Next message: <A HREF="001582.html">[eLua-dev] Cleaning the eLua svn repository
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1581">[ date ]</a>
+              <a href="thread.html#1581">[ thread ]</a>
+              <a href="subject.html#1581">[ subject ]</a>
+              <a href="author.html#1581">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+  I just found the eLua coding style guidelines, which say:
+
+3. line terminators: THIS IS IMPORTANT! Use UNIX style (LF) line
+terminators, not DOS (CR/LF) or old Mac (CR) line terminators.
+
+but the eLua source tree has a mixture of files with LF and with CRLF
+line terminators.
+
+Since this seems to be the reason my previous patches appied cleanly
+in some environments and not in others, I wonder if it might be time
+to run a script to sanitize all the elua source files, or whether that
+might cause problems if people have large patch sets in the pipeline.
+I'd guess it needs to be done at some point...
+
+You can get a list of affected text files using
+find . \( -name .svn -prune \) -o -type f | egrep -v
+'\.(gif|png|jpg|bin)' | xargs grep -l '^M'
+(where ^M is a real control character obtained by the sequence
+control-V control-M)
+
+I also notice that this also lists
+  src/platform/stm32/FWLib/.sconsign.dblite
+which is probably in the svn repository by mistake
+
+cheers
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001592.html">[eLua-dev] Adding other files to web builder
+</A></li>
+	<LI>Next message: <A HREF="001582.html">[eLua-dev] Cleaning the eLua svn repository
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1581">[ date ]</a>
+              <a href="thread.html#1581">[ thread ]</a>
+              <a href="subject.html#1581">[ subject ]</a>
+              <a href="author.html#1581">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

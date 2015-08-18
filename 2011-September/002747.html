@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua net module/UIP &amp; multiple connections
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module/UIP%20%26%20multiple%20connections&In-Reply-To=%3CCANKDJfZQqhpw6pmxHGSnVMWfKkUq%3DEEty5rFzpws3TE%2BkQe3cg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002746.html">
+   <LINK REL="Next"  HREF="002740.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua net module/UIP &amp; multiple connections</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module/UIP%20%26%20multiple%20connections&In-Reply-To=%3CCANKDJfZQqhpw6pmxHGSnVMWfKkUq%3DEEty5rFzpws3TE%2BkQe3cg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua net module/UIP &amp; multiple connections">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Sep 27 10:07:15 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002746.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+        <LI>Next message: <A HREF="002740.html">[eLua-dev] str9.rtc code missing?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2747">[ date ]</a>
+              <a href="thread.html#2747">[ thread ]</a>
+              <a href="subject.html#2747">[ subject ]</a>
+              <a href="author.html#2747">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Sep 27, 2011 at 11:05 AM, Michael Sallaway &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">michael at sallaway.com</A>&gt;wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On 27/09/11 17:57, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> - some coding problems in the eLua uIP &quot;adapter&quot; (src/elua_uip.c)  prevent
+</I>&gt;&gt;<i> data from being properly received because the uIP interaction isn't properly
+</I>&gt;&gt;<i> handled. These errors (or at least most of them) were fixed.
+</I>&gt;&gt;<i> - uIP itself is a &quot;fire and forget&quot; stack by design: it gives you data and
+</I>&gt;&gt;<i> it expects you do something with it immediately. If more data arrives (on
+</I>&gt;&gt;<i> the same socket or on a different socket) the old data is overwritten. The
+</I>&gt;&gt;<i> solution to this was to add per-socket buffers. This means increased memory
+</I>&gt;&gt;<i> consumption, of course, but it also means that it's much harder to loose
+</I>&gt;&gt;<i> data.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> So does this mean it's more likely to be happy and work properly if the lua
+</I>&gt;<i> script blocks on the net.accept()? (and only uses a single socket/connection
+</I>&gt;<i> at a time)?\
+</I>&gt;<i>
+</I>
+Yes. It also means that you might loose data even in this scenario, however
+it's less likely.
+
+
+&gt;<i> I'm happy to run with that if it's the best workaround for now, just trying
+</I>&gt;<i> to get a feel for how it works.
+</I>
+
+Please try with blocking accept and let me know how it works for you.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110927/928ef55e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110927/928ef55e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002746.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+	<LI>Next message: <A HREF="002740.html">[eLua-dev] str9.rtc code missing?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2747">[ date ]</a>
+              <a href="thread.html#2747">[ thread ]</a>
+              <a href="subject.html#2747">[ subject ]</a>
+              <a href="author.html#2747">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

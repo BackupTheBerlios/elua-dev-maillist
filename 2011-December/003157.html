@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A shield for stm32f4disco - sram
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20shield%20for%20stm32f4disco%20-%20sram&In-Reply-To=%3CCANKDJfZB%3DivqxpPvqo8OSoGXtqc5S4yMRtDNCXwUXPJdbfxnSg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003144.html">
+   <LINK REL="Next"  HREF="003159.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A shield for stm32f4disco - sram</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20shield%20for%20stm32f4disco%20-%20sram&In-Reply-To=%3CCANKDJfZB%3DivqxpPvqo8OSoGXtqc5S4yMRtDNCXwUXPJdbfxnSg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] A shield for stm32f4disco - sram">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Dec 16 12:46:19 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003144.html">[eLua-dev] A shield for stm32f4disco - sram
+</A></li>
+        <LI>Next message: <A HREF="003159.html">[eLua-dev] A shield for stm32f4disco - sram
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3157">[ date ]</a>
+              <a href="thread.html#3157">[ thread ]</a>
+              <a href="subject.html#3157">[ subject ]</a>
+              <a href="author.html#3157">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Thu, Dec 15, 2011 at 9:39 PM, pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+
+&gt;<i> Bogdan, I'm thinking on a devel of a small shield for stm32f4disco
+</I>&gt;<i> board, as the first step with a sram on it. I've found a 2Mx16 55ns
+</I>&gt;<i> sram in my junk box, but it seems &quot;slow&quot; to me for that mcu. What is
+</I>&gt;<i> your experience as you run 1Mb sram in your stm32f103 eLuaBrain
+</I>&gt;<i> system? P.
+</I>&gt;<i>
+</I>
+First of all: excellent idea. Second: 55ns might be indeed a tad too slow.
+In general, the experience with external SRAM is that it slows Lua quite a
+bit. This is unfortunate, but both very logical (as every single value in
+Lua (be it number, string, table or anything else) is allocated on the
+heap) and necessary. So, as as rule of thumb, the faster the SRAM, the
+better (but you already knew that :) ). The SRAM on the STM3210E-EVAL has a
+10ns access time and it works quite well. I never looked at the SRAM
+initialization code, thus I don't know how the external memory controller
+is set; in particular, I don't know what timings are set for the external
+SRAM access. On the other hand, at 55ns the maximum theoretical speed is
+about 18MHz, which seems quite low. If I'd to this (and did I say this is
+an excellent idea already?) I'd try to at least design the whole thing for
+a faster memory. If you can find a 10ns memory in the same package as your
+55ns memory, chances are you won't even need to change your PCB, so
+everybody wins :)
+If you do this and you have some space left on your shield, please let me
+know, maybe we can fit the video generator there ...
+
+Best,
+Bogdan
+
+
+&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111216/48102ca7/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111216/48102ca7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003144.html">[eLua-dev] A shield for stm32f4disco - sram
+</A></li>
+	<LI>Next message: <A HREF="003159.html">[eLua-dev] A shield for stm32f4disco - sram
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3157">[ date ]</a>
+              <a href="thread.html#3157">[ thread ]</a>
+              <a href="subject.html#3157">[ subject ]</a>
+              <a href="author.html#3157">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

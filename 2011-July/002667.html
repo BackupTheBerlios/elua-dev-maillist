@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y3_%3DVitAh5Vd6RJHSkx61R-VC_YwJyG4RmV0bZqfSrhbw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002664.html">
+   <LINK REL="Next"  HREF="002668.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y3_%3DVitAh5Vd6RJHSkx61R-VC_YwJyG4RmV0bZqfSrhbw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jul 18 20:13:51 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002664.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002668.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2667">[ date ]</a>
+              <a href="thread.html#2667">[ thread ]</a>
+              <a href="subject.html#2667">[ subject ]</a>
+              <a href="author.html#2667">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jul 18, 2011 at 12:45 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 13 July 2011 02:17, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> For example, the seismographs here on Mount Etna sample at the rate of
+</I>&gt;&gt;<i> 27.27Hz, for which a small solar-powered data collecting station would
+</I>&gt;&gt;<i> be perfect, but I don't see how to do this yet.
+</I>&gt;<i>
+</I>&gt;<i> Ah, it can't be expressed in eLua because free-running ADC frequencies
+</I>&gt;<i> are currently integers at the C platform interface.
+</I>
+So, are you suggesting changing it so that it could be expressed in
+floating point or fixed point units as well?
+
+&gt;<i>
+</I>&gt;<i> Changing it to lua_Number
+</I>
+One thing we should keep in mind is making sure that such a change
+should work for both integer and floating point versions of eLua.
+Also, so far we don't pass any lua types or floating point types
+through the platform interface.
+
+This also brings up the issue of non-integer PWM percentages...
+
+&gt;<i> and making the associated changes in each
+</I>&gt;<i> platform implementation would make this possible, but unfortunately
+</I>&gt;<i> six of the adc functions, including adc.setclock(), all go through
+</I>&gt;<i> platform_adc_op() which forces the parameters and return values of six
+</I>&gt;<i> different functions to be of the same type, u32, whereas in reality
+</I>&gt;<i> they are of different types:
+</I>&gt;<i> GET_MAXVAL takes nothing and returns an ADC conversion value
+</I>&gt;<i> SET_SMOOTHING takes a power-of-two filter length and returns nothing
+</I>&gt;<i> SET_BLOCKING takes a boolean and returns nothing
+</I>&gt;<i> IS_DONE takes nothing and returns a boolean
+</I>&gt;<i> SET_TIMER takes a timer ID and returns nothing
+</I>&gt;<i> SET_CLOCK takes a frequency in Hz and returns a frequency in Hz.
+</I>&gt;<i>
+</I>&gt;<i> The six module functions, adc_getmaxval() and so on, each do their own
+</I>&gt;<i> thing for their parameters, then call platform_asdc_op() with a
+</I>&gt;<i> different constant &quot;operation&quot; parameter, then platform_adc_op just
+</I>&gt;<i> examines the &quot;operation&quot; parameter and does six different, unrelated
+</I>&gt;<i> things.
+</I>&gt;<i>
+</I>&gt;<i> I can't see an advantage to uniting these six functions at the C
+</I>&gt;<i> platform interface and attach a patch to make them six separate
+</I>&gt;<i> functions, which also makes the documentation simpler and clearer. It
+</I>&gt;<i> should also be very slightly faster and saves 26 bytes of code :)
+</I>&gt;<i>
+</I>&gt;<i> If this seems like a good idea to other people, can someone review
+</I>&gt;<i> these changes and check that they work on a platform with a full ADC
+</I>&gt;<i> implementation?
+</I>
+On this front, probably fair enough.  When I wrote the platform
+interface I was following the other platform interfaces which used the
+_op function, which is similar to a lot of POSIX functionality.
+
+I can try applying this on one or two platforms and see if it works for me.
+
+&gt;<i>
+</I>&gt;<i> I also noticed that the SET_FREERUNNING primitive is undocumented and
+</I>&gt;<i> is never called from anywhere, although a lot of platform code checks
+</I>&gt;<i> the value of s-&gt;freerunning (which I guess is always 0). &#160;Is this a
+</I>&gt;<i> work in progress awaiting completion?
+</I>
+It was something that I implemented, but there wasn't popular support
+for.  Essentially, if I recall, what it would do would be constantly
+write into the ring buffer and expire values even if they hadn't been
+picked up so that you would always get fresh data.  Right now I don't
+recall whether it simply requires setting the option to make it work
+or if it's broken.  I think it likely still works, there's just not
+way to turn it on and off at the moment.  If nobody wants it, I guess
+we can remove it.
+
+&gt;<i>
+</I>&gt;<i> &#160; &#160; M
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002664.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002668.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2667">[ date ]</a>
+              <a href="thread.html#2667">[ thread ]</a>
+              <a href="subject.html#2667">[ subject ]</a>
+              <a href="author.html#2667">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

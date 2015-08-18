@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ADC error on MBED
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20error%20on%20MBED&In-Reply-To=%3CAANLkTi%3DLkvcVhoK%2B2zNAdMzHDnrcyECwME%2B3daP1yt0q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001496.html">
+   <LINK REL="Next"  HREF="001494.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ADC error on MBED</H1>
+    <B>Thiago Naves</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20error%20on%20MBED&In-Reply-To=%3CAANLkTi%3DLkvcVhoK%2B2zNAdMzHDnrcyECwME%2B3daP1yt0q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] ADC error on MBED">naves.thiago at gmail.com
+       </A><BR>
+    <I>Fri Jul 30 08:45:10 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001496.html">[eLua-dev] ADC error on MBED
+</A></li>
+        <LI>Next message: <A HREF="001494.html">[eLua-dev] Lua Gravity in eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1497">[ date ]</a>
+              <a href="thread.html#1497">[ thread ]</a>
+              <a href="subject.html#1497">[ subject ]</a>
+              <a href="author.html#1497">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Jul 30, 2010 at 1:46 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> I get the same behavior here. When I was initially testing I figured
+</I>&gt;<i> it might be only happening on 4&amp;5, but I can get it to happen on other
+</I>&gt;<i> pins as well.
+</I>&gt;<i>
+</I>&gt;<i> It appears to be a hardware bug, actually:
+</I>&gt;<i> <A HREF="http://mbed.org/forum/mbed/topic/131/">http://mbed.org/forum/mbed/topic/131/</A>
+</I>&gt;<i>
+</I>
+That's not good.....=/
+
+
+&gt;<i>
+</I>&gt;<i> I can reproduce similar results with code generated from their online
+</I>&gt;<i> compiler as with your example program.
+</I>&gt;<i>
+</I>&gt;<i> Not our problem then xD
+</I>
+
+&gt;<i> I'm working on a change that will lower the ADC peripheral clock when
+</I>&gt;<i> possible by increasing the clock divider, but what I've tried doesn't
+</I>&gt;<i> seem to eliminate the issue.
+</I>&gt;<i>
+</I>&gt;<i> Another solution, which should work is reducing the impedance on the
+</I>&gt;<i> input to the ADC, which you could do by putting a buffer op-amp
+</I>&gt;<i> between the input pin and your voltage divider (or anything else
+</I>&gt;<i> you're measuring).  I seem to be able to generate these spurious
+</I>&gt;<i> spikes even with only about 150-300 ohms between p20 (eLua ADC 5) and
+</I>&gt;<i> ground, but I don't see any with a wire directly connected to ground.
+</I>&gt;<i> Trying higher impedances above 1k or so increase the frequency of the
+</I>&gt;<i> inaccuracies significantly.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I'll try the op-amp =)
+</I>
+Thanks a lot =)
+
+
+Best,
+
+Thiago
+
+
+
+
+
+&gt;<i>  On Wed, Jul 28, 2010 at 6:49 PM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; When using ADC on a MBED i'm getting this weird error that seems to be
+</I>&gt;<i> &gt; random:
+</I>&gt;<i> &gt; I'm using a voltage divider ( with a potentiometer ) as an input to the
+</I>&gt;<i> ADC.
+</I>&gt;<i> &gt; Using a multimeter I verify that I get voltages in 0~0.59 V range. When I
+</I>&gt;<i> &gt; leave the voltage at max and keep reading the ADC with the program below,
+</I>&gt;<i> I
+</I>&gt;<i> &gt; get values in range 720~760 most of the time, but at some point I start
+</I>&gt;<i> &gt; getting random values in range 1000~4095 &#8230; after a fiew samples it getts
+</I>&gt;<i> &gt; back to normal&#8230;.and then the problem happens again and so on&#8230;.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm using eLua trunk rev 762.
+</I>&gt;<i> &gt; I'm having this problem on MBED, but EK-LM3S8962 runs as expected with
+</I>&gt;<i> the
+</I>&gt;<i> &gt; same hardware and code ( only changing the ADC port )&#8230;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks for any help =)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm using this code:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; local port = 4
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; function sample( smoothing, clock, buffer )
+</I>&gt;<i> &gt;   local tmp, key
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   -- No blocking
+</I>&gt;<i> &gt;   adc.setblocking( port, 0 )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   -- Smoothing
+</I>&gt;<i> &gt;   adc.setsmoothing( port, smoothing )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   -- Clock
+</I>&gt;<i> &gt;   adc.setclock( port, clock, 1 )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   -- Start sampling
+</I>&gt;<i> &gt;   adc.sample( port, buffer )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   while true do
+</I>&gt;<i> &gt;     -- If samples are not being collected, start
+</I>&gt;<i> &gt;     if adc.isdone( port ) == 1 then
+</I>&gt;<i> &gt;       adc.sample( port, buffer )
+</I>&gt;<i> &gt;     end
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     -- Get a sample
+</I>&gt;<i> &gt;     tmp = adc.getsample( port )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     -- Got something ?
+</I>&gt;<i> &gt;     if tmp ~= nil then
+</I>&gt;<i> &gt;       term.print( 1, 1, string.format( &quot;%04d&quot;, tmp ) )
+</I>&gt;<i> &gt;     end
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     -- Hit ESC to stop
+</I>&gt;<i> &gt;     key = term.getchar( term.NOWAIT )
+</I>&gt;<i> &gt;     if key == term.KC_ESC then
+</I>&gt;<i> &gt;       break
+</I>&gt;<i> &gt;     end
+</I>&gt;<i> &gt;   end
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   term.clrscr()
+</I>&gt;<i> &gt;   term.moveto(1, 1)
+</I>&gt;<i> &gt; end
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; sample( 0, 4, 4 )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; ----------------------------
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thiago
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> Phone: (847) 448-0386
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100730/097dc1dc/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100730/097dc1dc/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001496.html">[eLua-dev] ADC error on MBED
+</A></li>
+	<LI>Next message: <A HREF="001494.html">[eLua-dev] Lua Gravity in eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1497">[ date ]</a>
+              <a href="thread.html#1497">[ thread ]</a>
+              <a href="subject.html#1497">[ subject ]</a>
+              <a href="author.html#1497">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

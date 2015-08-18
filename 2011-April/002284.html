@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 Toolchain Build (was Re: Ok if I hack ADC for	AVR32?)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20Toolchain%20Build%20%28was%20Re%3A%20Ok%20if%20I%20hack%20ADC%20for%0A%09AVR32%3F%29&In-Reply-To=%3CBANLkTi%3DvHej-ck83JxfsHxC3YN%3DXbZQeZQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002283.html">
+   <LINK REL="Next"  HREF="002285.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 Toolchain Build (was Re: Ok if I hack ADC for	AVR32?)</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20Toolchain%20Build%20%28was%20Re%3A%20Ok%20if%20I%20hack%20ADC%20for%0A%09AVR32%3F%29&In-Reply-To=%3CBANLkTi%3DvHej-ck83JxfsHxC3YN%3DXbZQeZQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 Toolchain Build (was Re: Ok if I hack ADC for	AVR32?)">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Apr 21 19:11:09 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002283.html">[eLua-dev] AVR32 Toolchain Build (was Re: Ok if I hack ADC for	AVR32?)
+</A></li>
+        <LI>Next message: <A HREF="002285.html">[eLua-dev] eLUA for SPARC LEON2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2284">[ date ]</a>
+              <a href="thread.html#2284">[ thread ]</a>
+              <a href="subject.html#2284">[ subject ]</a>
+              <a href="author.html#2284">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I suppose I was waiting until I had some confirmation that things
+worked on Linux before mentioning it on the list. Sounds like it does
+currently.  Feedback is welcome :-)
+
+On Wed, Apr 20, 2011 at 11:28 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> Hi James, I'm adding the list to this post as I think it's of general
+</I>&gt;<i> (if specialised) interest.
+</I>&gt;<i>
+</I>&gt;<i> On 20 April 2011 19:51, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> On Fri, Apr 15, 2011 at 12:55 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> On 15 April 2011 18:19, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> Side question: which avr toolchain are you using
+</I>&gt;&gt;&gt;<i> The AVR one, gcc-4.3.2
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> and have you had issues with floating point printf?
+</I>&gt;&gt;&gt;<i> Floating point? What's that? :D
+</I>&gt;&gt;&gt;<i> But no, I've had no problems, apart from their stopping distro support
+</I>&gt;&gt;&gt;<i> and integrating it into the huge AVR32 studio thing.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> OK, I did finally get the AS5 patches to build a toolchain, and
+</I>&gt;&gt;<i> floating point works for me in that version so it appears to have been
+</I>&gt;&gt;<i> a toolchain issue. &#160;While this one is getting quite a bit more
+</I>&gt;&gt;<i> complicated than my arm-eabi makefile, I posted an avr32 makefile
+</I>&gt;&gt;<i> which works for me on OS X and built for me on an Ubuntu box (haven't
+</I>&gt;&gt;<i> tested the binaries it generates yet):
+</I>&gt;&gt;<i> <A HREF="https://github.com/jsnyder/avr32-toolchain">https://github.com/jsnyder/avr32-toolchain</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Interestingly, unless I'm missing something the avr32 newlib seemed to
+</I>&gt;&gt;<i> be a lot less sensitive in terms of space savings when I turned on all
+</I>&gt;&gt;<i> the extra options I use for the arm toolchain beyond what's used for
+</I>&gt;&gt;<i> the 2 examples of avr32 builds I've found out there.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Building out of trunk I got images like this:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Minimal Space Saving Options on Newlib:
+</I>&gt;&gt;<i> only: --enable-target-optspace
+</I>&gt;&gt;<i> &#160;text &#160; &#160; data &#160; &#160; bss &#160; &#160; dec &#160; &#160; hex filename
+</I>&gt;&gt;<i> 119808 &#160; &#160; 1364 &#160; &#160;1480 &#160;122652 &#160; 1df1c elua_lualong_at32uc3a0128.elf
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> More Extensive Space Saving Options on Newlib:
+</I>&gt;&gt;<i> NEWLIB_FLAGS=&quot;-ffunction-sections -fdata-sections &#160; &#160; &#160; \
+</I>&gt;&gt;<i> -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -g -Os &#160; &#160; \
+</I>&gt;&gt;<i> -fomit-frame-pointer -fno-unroll-loops -D__BUFSIZ__=128 \
+</I>&gt;&gt;<i> -DSMALL_MEMORY&quot;
+</I>&gt;&gt;<i> &amp;
+</I>&gt;&gt;<i> --enable-target-optspace
+</I>&gt;&gt;<i> &#160;text &#160; &#160; data &#160; &#160; bss &#160; &#160; dec &#160; &#160; hex filename
+</I>&gt;&gt;<i> 119296 &#160; &#160; 1364 &#160; &#160;1480 &#160;122140 &#160; 1dd1c elua_lualong_at32uc3a0128.elf
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> One of the things that was interesting me with trying to build the
+</I>&gt;&gt;<i> toolchain myself was experimenting with stuff like this. &#160;Some of this
+</I>&gt;&gt;<i> might have some value in the whole stack space &amp; conserving SRAM issue
+</I>&gt;&gt;<i> as well maybe? &#160;I haven't done any comparisons there. &#160;It might also
+</I>&gt;&gt;<i> be that since the AVR32 port is younger that it doesn't have as many
+</I>&gt;&gt;<i> of these options for using fast but space hungry vs simple but slower.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &#160;I built a chain using crosstool ng and it seems fine for int but for builds in the recent past I would get &quot;g&quot; whenever trying to print a float.
+</I>&gt;&gt;&gt;<i> Strange. You could ask on the crosstool-ng mailing list... if you can
+</I>&gt;&gt;&gt;<i> fix it, the maintainer is very responsive
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'll send a ping in their direction to see if it's something on their
+</I>&gt;&gt;<i> radar. &#160;If not, I'll try and whip up a test case if I can. &#160;Given I
+</I>&gt;&gt;<i> now have a working version and a broken version and it likely has
+</I>&gt;&gt;<i> something to do with printf, perhaps it wouldn't be too hard to figure
+</I>&gt;&gt;<i> out what's broken :-)
+</I>&gt;<i>
+</I>&gt;<i> Nice! Built and installed perfectly, just following your instructions.
+</I>&gt;<i>
+</I>&gt;<i> Default Mizar32 build of git trunk:
+</I>&gt;<i>
+</I>&gt;<i> 122196 bytes with Atmel GCC 4.3.2
+</I>&gt;<i> 120660 bytes with jsnyder GCC 4.4.3
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160;M
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002283.html">[eLua-dev] AVR32 Toolchain Build (was Re: Ok if I hack ADC for	AVR32?)
+</A></li>
+	<LI>Next message: <A HREF="002285.html">[eLua-dev] eLUA for SPARC LEON2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2284">[ date ]</a>
+              <a href="thread.html#2284">[ thread ]</a>
+              <a href="subject.html#2284">[ subject ]</a>
+              <a href="author.html#2284">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

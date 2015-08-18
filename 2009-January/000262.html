@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Platform specific modules proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Platform%20specific%20modules%20proposal&In-Reply-To=%3C36dc677c0901090948v26e76511wfb9f622a2116ebd2%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000261.html">
+   <LINK REL="Next"  HREF="000263.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Platform specific modules proposal</H1>
+    <B>Mike Panetta</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Platform%20specific%20modules%20proposal&In-Reply-To=%3C36dc677c0901090948v26e76511wfb9f622a2116ebd2%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Platform specific modules proposal">panetta.mike at gmail.com
+       </A><BR>
+    <I>Fri Jan  9 18:48:05 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000261.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+        <LI>Next message: <A HREF="000263.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#262">[ date ]</a>
+              <a href="thread.html#262">[ thread ]</a>
+              <a href="subject.html#262">[ subject ]</a>
+              <a href="author.html#262">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>That sounds pretty good.  I had a slightly different approach in mind, but I
+am not sure how you would feel about it.  Basically the idea is we would
+turn the platform interface &quot;upside down&quot; from what it is now.  In other
+words, we would export only a (minimal compatible) Lua level interface,
+instead of the current way of exporting a generic (minimal) C interface.
+Each platform would be required to adhere to the minimal Lua interface (IE
+define the Lua module at the platform level), but at its discretion add
+additional functionality specific to that platform.
+
+In this manner we could possibly give access to the various platform modules
+in terms of functionality, like tmr.has_a(16BIT_TIMER), and,
+tmr.tmr(TIMER1).capable_of(PULSE_CAPTURE). Since all timers at the top level
+basically provide the same kinds of functionality (but may not export it the
+same way) this very well could work.
+
+An example usage might be something like:
+
+16bit_timers = tmr.has_a(16BIT_TIMER) -- returns an array of static constant
+'timer' objects
+
+The above code would return 8 timer objects on the LM3S CPUs with 4 timer
+modules, or 8 timer objects on an STM32F103ZE chip.
+
+Another way to find a timer to use could be done as follows:
+
+pwm_timers = tmr.has_a(PWM_TIMER) -- returns an array of static constant
+'timer' objects
+
+The above code on an LM3S with 4 timer modules would return 8 timer objects,
+or if it were run on an STM32F103ZE, it would only return 6, since only 6 of
+the timers are PWM capable.
+
+One you have access to a timer object, you could do several queries to it
+before configuring it. An example:
+
+16bit_timers[7]:capable_of(PWM_TIMER) -- returns true if the timer is
+capable of PWM operation.
+16bit_timers[7]:capabilities() -- returns a bitmask of all the capabilities
+for the timer.
+16bit_timers[7]:has_twin() -- returns the timer object of this timers twin,
+nil otherwise (for chainable timers)
+16bit_timers[1]:name() -- returns the name of the timer for this platform,
+if available.
+16bit_timers[1]:index() -- returns the platform specific index of this
+timer.
+
+16bit_timers[1]:pair(twin) -- pairs a 16bit timer with its twin. The 2
+timers (and the associated 32bit pair) must be in the 'unlocked' state.
+Returns the static const 32bit timer object associated with the pair, or nil
+if an error occured.
+
+16bit_timers[1]:lock() -- Marks a timer as used, so other processes (or
+coding errors) do not interrupt a timers config.
+16bit_timers[1]:unlock() -- Marks a timer as free to be reconfigured for
+other purposes.
+
+16bit_timers[1]:mode(...) -- Initializes a timer for a specific mode of
+operation. Timer must be in the unlocked state prior to calling this
+function. Available modes dependant on capabilities exported by the timer.
+See timer.capabilities(). If a requested mode is not available, an error is
+thrown.
+
+16bit_timers[1].counter -- sets or gets the 16bit timer counter register
+value.
+16bit_timers[1].reload -- sets or gets the 16bit timer reload register
+value.
+
+
+Obviously there are other functions/etc that would need to exist for a full
+implementation, but thats for further discussion. :)
+
+What do you guys think?
+
+Mike
+
+
+On Thu, Jan 8, 2009 at 4:16 PM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+&gt;<i> wrote:
+</I>
+&gt;<i> Hi again,
+</I>&gt;<i>
+</I>&gt;<i> As most of you know by now, our platform interface is generic enough to be
+</I>&gt;<i> implemented by any eLua target. The unfortunate side effect of this is that
+</I>&gt;<i> all the (potentially cool) specific features of each platform/board are left
+</I>&gt;<i> forgotten, and there's no way to access them directly. As some (probably
+</I>&gt;<i> most) people would gladly sacrifice portability over the possibility of
+</I>&gt;<i> taking full advantage of their CPUs, we need to find a way to address this
+</I>&gt;<i> need.
+</I>&gt;<i> This is my proposal:
+</I>&gt;<i>
+</I>&gt;<i> - every platform will have a module which name is the same as the platform
+</I>&gt;<i> name (&quot;lm3s&quot; for LM3S, &quot;stm32&quot; for STM32, you got the picture :) )
+</I>&gt;<i> - this module will have two types of &quot;submodules&quot; (for want a better term;
+</I>&gt;<i> what I mean is that each module will be able to embed other modules inside
+</I>&gt;<i> it):
+</I>&gt;<i>   1. submodules with the same name as the &quot;standard&quot; modules. For example:
+</I>&gt;<i> lm3s.uart, lm3s.tmr, lm3s.pio and so on. These will add to the functionality
+</I>&gt;<i> of the &quot;standard&quot; modules by providing platform-specific functions.
+</I>&gt;<i>   2. submodules that implement features found only on that platform/board.
+</I>&gt;<i> Dado's &quot;disp&quot; module is a very good example of this. By having a module
+</I>&gt;<i> &quot;lm3s.disp&quot; we know for sure that we're reffering to a display that can be
+</I>&gt;<i> found on the LM3S board. This is a temporary solution, as a generic display
+</I>&gt;<i> architecture would be a much better choice, but it's still good enough for
+</I>&gt;<i> our needs IMO.
+</I>&gt;<i>
+</I>&gt;<i> What say you?
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090109/2d104bf3/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090109/2d104bf3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000261.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+	<LI>Next message: <A HREF="000263.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#262">[ date ]</a>
+              <a href="thread.html#262">[ thread ]</a>
+              <a href="subject.html#262">[ subject ]</a>
+              <a href="author.html#262">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] collectgarbage(&quot;count&quot;)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3CA684BAD6-4EAF-4217-AD38-FDCAE9952C24%40mac.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001423.html">
+   <LINK REL="Next"  HREF="001426.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] collectgarbage(&quot;count&quot;)</H1>
+    <B>Stefan Brantschen</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3CA684BAD6-4EAF-4217-AD38-FDCAE9952C24%40mac.com%3E"
+       TITLE="[eLua-dev] collectgarbage(&quot;count&quot;)">stefan.brantschen at mac.com
+       </A><BR>
+    <I>Fri Jun 11 15:26:16 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001423.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+        <LI>Next message: <A HREF="001426.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1425">[ date ]</a>
+              <a href="thread.html#1425">[ thread ]</a>
+              <a href="subject.html#1425">[ subject ]</a>
+              <a href="author.html#1425">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+
+On 11 Jun 2010, at 14:22, Dado Sutter wrote:
+
+&gt;<i> But I didn't understant very well your problem. Are you getting the &quot;not enough memory&quot; errors during/right_after the collectgarbage( &quot;count&quot; ) instruction ? By the simply fact of executing it ? This sounds really strange.
+</I>
+OK, here's my test set-up. Sorry if am a bit lengthy, but you asked... :-) I try to get my head around eLua, so I thought I'd create some simple re-usable framework for handling several threads of control (&quot;agents&quot;) on the LM3S board, in order to learn how far I get with 64k of memory. So I have many agent instances going after their job, executing independently of each other. This way I handle events, one agent can signal the other for synchronization, and I plan non-blocking timing of these &quot;threads&quot;. You get the idea.
+
+In order to push the limits to see how far I can go (and to learn where to streamline my code to find a practical balance between abstraction in the framework and performance/execution size), I increased the number of agent instances, each of which is just stupidly counting up in order to have something to do for this test, and each 10th agent displays the counter value on the display on the board so I can follow what's going on.
+
+Now, my scheduler periodically executes and displays collectgarbage(&quot;count&quot;). As I increase the number of agent instances (implemented as closures over the same function for testing), the value of collectgarbage(&quot;count&quot;) goes up as well.
+
+And here's finally my observation and my answer to your question: with a sufficient number of agents, I get the &quot;not enough memory&quot; message, and at this point the value of collectgarbage(&quot;count&quot;) is between 30-40k. Of course it makes a difference if I call collectgarbage(&quot;collect&quot;) at each duty cycle, which allows me to run more agents at the cost of performance, but what happens is the same, just at a higher number of agents.
+
+I had expected to see the &quot;not enough memory&quot; error at or close to 64k, naively assuming that collectgarbage(&quot;count&quot;) gives the overall memory consumption. I know better now, so I guess I can infer that my test program with its non-collectable items plus stack is 24k if I get the above error message at collectgarbage(&quot;count&quot;) == 40k. Correct?
+
+Thanks for your help.
+
+Cheers
+-- Stefan 
+
+PS: BTW, I can run about 100 counting agents in parallel with tight garbage collection.
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001423.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+	<LI>Next message: <A HREF="001426.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1425">[ date ]</a>
+              <a href="thread.html#1425">[ thread ]</a>
+              <a href="subject.html#1425">[ subject ]</a>
+              <a href="author.html#1425">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

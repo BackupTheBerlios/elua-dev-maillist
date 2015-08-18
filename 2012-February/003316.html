@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 Port of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Port%20of%20eLua&In-Reply-To=%3CCAL4-wQqavL8_UHK37n2bcY7hHEhLOw7nFc2KrX9BE9jhTsvoJg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003305.html">
+   <LINK REL="Next"  HREF="003306.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 Port of eLua</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Port%20of%20eLua&In-Reply-To=%3CCAL4-wQqavL8_UHK37n2bcY7hHEhLOw7nFc2KrX9BE9jhTsvoJg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32 Port of eLua">martinwguy at gmail.com
+       </A><BR>
+    <I>Fri Feb 17 20:25:18 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003305.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+        <LI>Next message: <A HREF="003306.html">[eLua-dev] USB support on eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3316">[ date ]</a>
+              <a href="thread.html#3316">[ thread ]</a>
+              <a href="subject.html#3316">[ subject ]</a>
+              <a href="author.html#3316">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 16 February 2012 01:39, Rob Emanuele &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rob at emanuele.us</A>&gt; wrote:
+&gt;<i> Do you guys have opinions on how to handle remaps?
+</I>&gt;<i>
+</I>&gt;<i> For example, on the CFA-735 we have 3 ways of using I2C on the H1
+</I>&gt;<i> connector. &#160;We expose I2C1 in 2 different ways and a variety of I2C2.
+</I>&gt;<i>
+</I>&gt;<i> Would you want to call those I2C ids 1 to 3? &#160;Or create a standard
+</I>&gt;<i> interface for all the I2C ports and variants such as calling them 1 to
+</I>&gt;<i> 4 and then only allow the exposed ones on the board?
+</I>
+Yes, I think that would work. I don't think that device IDs are
+expected to have the same meanings between boards (except for the IDs
+of eLua's virtual devices) so I expect option 1 will work.
+AVR32 is worse yet, since it bit-bangs I2C on two GPIO lines so you
+could potentially hijack any two random GPIO pins and turn them into
+another I2C port. I never expect to support that; I just use the two
+pins normally assigned to its one and only TWI controller.
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003305.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+	<LI>Next message: <A HREF="003306.html">[eLua-dev] USB support on eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3316">[ date ]</a>
+              <a href="thread.html#3316">[ thread ]</a>
+              <a href="subject.html#3316">[ subject ]</a>
+              <a href="author.html#3316">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Xmodem transfer - issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FXmodem_transfer_-_issue%3F%3D&In-Reply-To=%3C8cba923f96eddd650d26ec3116915dc0%40mail3.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003658.html">
+   <LINK REL="Next"  HREF="003660.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Xmodem transfer - issue</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FXmodem_transfer_-_issue%3F%3D&In-Reply-To=%3C8cba923f96eddd650d26ec3116915dc0%40mail3.volny.cz%3E"
+       TITLE="[eLua-dev] Xmodem transfer - issue">pito at volna.cz
+       </A><BR>
+    <I>Sat Jun 30 16:24:45 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003658.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+        <LI>Next message: <A HREF="003660.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3659">[ date ]</a>
+              <a href="thread.html#3659">[ thread ]</a>
+              <a href="subject.html#3659">[ subject ]</a>
+              <a href="author.html#3659">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>With the previous picture it stopped at 65536+128 = 513 packets.
+So I changed the limit check (in xmodem.c) to a 64000 limit
+(500packets):
+...
+if(( ( p = realloc( *dest, limit ) ) == NULL ) || ( limit &gt; 64000 ))
+{
+// Not enough memory, force cancel and return
+xmodem_flush( XMODEM_FLUSH_AND_XM_CAN );
+return XMODEM_ERROR_OUTOFMEM;
+}
+...
+and it stopped there and it hangs as well (see enclosed picture). So
+my current understanding is:
+a) in the first case the realloc had only 65536 bytes (probably in
+the 64k CCM block)
+b) in this case &quot;outofmem&quot; return does not work properly..
+p.
+
+----- P&#366;VODN&#205; ZPR&#193;VA -----
+Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>,
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+P&#345;edm&#283;t: Re: [eLua-dev] Xmodem transfer - issue
+Datum: 30.6.2012 - 14:17:12
+
+&gt;<i> &gt; course, we can modify
+</I>&gt;<i> &gt; this so that XMODEM saves every block that it
+</I>&gt;<i> &gt; receives (or every N
+</I>&gt;<i> &gt; blocks) in &quot;save to file&quot; mode.
+</I>&gt;<i> that would be great - ie 4kb chunks, each written
+</I>&gt;<i> to ie mmc, sdcard
+</I>&gt;<i> latency is typically max 300ms, so xmodem may wait
+</I>&gt;<i> a little bit..
+</I>&gt;<i> 
+</I>&gt;<i> &gt; you should have
+</I>&gt;<i> &gt; received an &quot;out of memory&quot; error. How exactly
+</I>&gt;<i> &gt; does the transfer stop?
+</I>&gt;<i> &gt; Does it give an error or simply hang?
+</I>&gt;<i> enclosed pls find the picture, yes it simply hangs
+</I>&gt;<i> as depicted (the
+</I>&gt;<i> file to be transfered is about 73kB). p.
+</I>&gt;<i> 
+</I>-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: xmodemissue1.jpg
+Type: image/pjpeg
+Size: 30660 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120630/37c8d489/attachment-0001.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20120630/37c8d489/attachment-0001.bin</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003658.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+	<LI>Next message: <A HREF="003660.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3659">[ date ]</a>
+              <a href="thread.html#3659">[ thread ]</a>
+              <a href="subject.html#3659">[ subject ]</a>
+              <a href="author.html#3659">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

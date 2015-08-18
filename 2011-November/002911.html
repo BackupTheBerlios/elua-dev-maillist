@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%0A%09%3D%3Fiso-8859-2%3Fq%3Fstm32f4%3D5F-%3D5Fmax%3D5Ffree%3D5Fmem%3D5F/%3D5Fra%3F%3D%0A%09%3D%3Fiso-8859-2%3Fq%3Fm%3D5Fsize%3F%3D&In-Reply-To=%3C2d2fcc50d9a8219278392fc994b321d4%40mail1.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002908.html">
+   <LINK REL="Next"  HREF="002913.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4_-_max_free_mem_/_ram_size</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%0A%09%3D%3Fiso-8859-2%3Fq%3Fstm32f4%3D5F-%3D5Fmax%3D5Ffree%3D5Fmem%3D5F/%3D5Fra%3F%3D%0A%09%3D%3Fiso-8859-2%3Fq%3Fm%3D5Fsize%3F%3D&In-Reply-To=%3C2d2fcc50d9a8219278392fc994b321d4%40mail1.volny.cz%3E"
+       TITLE="[eLua-dev] stm32f4_-_max_free_mem_/_ram_size">pito at volna.cz
+       </A><BR>
+    <I>Fri Nov 11 13:58:01 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002908.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+        <LI>Next message: <A HREF="002913.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2911">[ date ]</a>
+              <a href="thread.html#2911">[ thread ]</a>
+              <a href="subject.html#2911">[ subject ]</a>
+              <a href="author.html#2911">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>So this seems to be the allocator section for stm32f4 (even it has
+to be tested by experts):
+
+// Allocator data: define your free memory zones here in two arrays
+// (start address and end address)
+// The F4 has 196K in total, but it is split into 3 sections:
+// SRAM (xrw) : ORIGIN = 0x20000000, SIZE = 128K      // Major SRAM
+// CCMDATARAM (xrw) : ORIGIN = 0x10000000, SIZE = 64K    // Core
+Coupled Data SRAM
+// BKPSRAM, SIZE = 4K // Backup SRAM
+// 
+#define CCMDATARAM_SIZE			( 64 * 1024 )
+#define SRAM_SIZE             	( 128 * 1024 )
+#define MEM_START_ADDRESS     	{ ( void* )end, (void* )(
+CCMDATARAM_BASE ) }
+#define MEM_END_ADDRESS       	{ ( void* )( SRAM_BASE + SRAM_SIZE -
+STACK_SIZE_TOTAL - 1 ), (void*)( CCMDATARAM_BASE + CCMDATARAM_SIZE -
+1 ) }
+//
+
+p.
+
+
+-- 
+Jak co nejl&#233;pe p&#345;ichystat automobil na provoz v nadch&#225;zej&#237;c&#237; zimn&#237;
+sez&#243;n&#283;? &#268;t&#283;te speci&#225;l P&#345;&#237;prava auta na zimu na
+<A HREF="http://web.volny.cz/data/click.php?id=1292">http://web.volny.cz/data/click.php?id=1292</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002908.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+	<LI>Next message: <A HREF="002913.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2911">[ date ]</a>
+              <a href="thread.html#2911">[ thread ]</a>
+              <a href="subject.html#2911">[ subject ]</a>
+              <a href="author.html#2911">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

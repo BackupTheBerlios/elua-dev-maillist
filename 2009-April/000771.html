@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua and yielding with lua_yield() function
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl3CEf439bba72a9b677ba703b484%2C%0A%09jbsnyder%40fanplastic.org%2C%201732702B-0040-4CDA-A7FC-524%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000770.html">
+   <LINK REL="Next"  HREF="000772.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua and yielding with lua_yield() function</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl3CEf439bba72a9b677ba703b484%2C%0A%09jbsnyder%40fanplastic.org%2C%201732702B-0040-4CDA-A7FC-524%3E"
+       TITLE="[eLua-dev] eLua and yielding with lua_yield() function">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Apr 13 21:41:03 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000770.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+        <LI>Next message: <A HREF="000772.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#771">[ date ]</a>
+              <a href="thread.html#771">[ thread ]</a>
+              <a href="subject.html#771">[ subject ]</a>
+              <a href="author.html#771">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Apr 13, 2009, at 2:12 PM, Mike Thompson wrote:
+
+&gt;<i> James,
+</I>&gt;<i>
+</I>&gt;<i> I would definitely be interested in taking a look at your branch.   
+</I>&gt;<i> If it
+</I>&gt;<i> can be made to work well, it may impact the direction I take with the
+</I>&gt;<i> project I'm working on.  However, it does seem that specifying a 1K
+</I>&gt;<i> stack for each C coroutine imposes a fairly heavy price in a limited  
+</I>&gt;<i> RAM
+</I>&gt;<i> environment for the features that Coco offers.
+</I>
+Yeah, I'm not sure why that was the case.  I didn't do that much  
+testing though, so I may be missing something.
+
+Sorry I didn't post it over the weekend into the main repository.  For  
+some reason I was getting some weird issues with git-svn not wanting  
+to create the branch for me.  I know why it's complaining, but I  
+didn't get around to fixing the issue.  I'll do so in the next few days.
+
+The code is up here if you don't mind browsing in git:
+<A HREF="http://github.com/jsnyder/elua/tree/cocobranch">http://github.com/jsnyder/elua/tree/cocobranch</A>
+
+I did not include the examples that come with coco.  Many of them will  
+probably just blow up if you run them straight without modification.   
+Try reducing the number of coroutines created to 10 and then ramp it  
+up for each case.
+
+&gt;<i> Looking over the Coco documentation it looks that both regular
+</I>&gt;<i> coroutines and Coco C coroutines can be mixed so perhaps it becomes a
+</I>&gt;<i> matter of using the new Coco capabilities judiciously on coroutines  
+</I>&gt;<i> that
+</I>&gt;<i> really need the capability.
+</I>
+I'm not sure what the deal is there.  Perhaps there's some stack  
+imparted by Lua that's increasing the amount of space needed?
+
+I'll email Mike Pall, who wrote the Coco patch, about some of these  
+issues sometime this week, and see if he has any suggestions/comments.
+
+&gt;<i>
+</I>&gt;<i> Unfortunately, a family emergency will be taking up a lot of my time
+</I>&gt;<i> over the next few weeks so it may take me a while to get back with
+</I>&gt;<i> comments on your work once a new branch is created.
+</I>
+I'm sorry to hear that.  I hope all goes well.
+
+-jsnyder
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090413/27f49144/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090413/27f49144/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000770.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+	<LI>Next message: <A HREF="000772.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#771">[ date ]</a>
+              <a href="thread.html#771">[ thread ]</a>
+              <a href="subject.html#771">[ subject ]</a>
+              <a href="author.html#771">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

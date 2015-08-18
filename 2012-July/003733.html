@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] lualong option and codesourcery
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20lualong%20option%20and%20codesourcery&In-Reply-To=%3CBAY152-W415B71B931F45E738DBAD4DEDD0%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003732.html">
+   <LINK REL="Next"  HREF="003734.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] lualong option and codesourcery</H1>
+    <B>Karoly Molnar</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20lualong%20option%20and%20codesourcery&In-Reply-To=%3CBAY152-W415B71B931F45E738DBAD4DEDD0%40phx.gbl%3E"
+       TITLE="[eLua-dev] lualong option and codesourcery">molnarkaroly at hotmail.com
+       </A><BR>
+    <I>Mon Jul 23 20:55:30 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003732.html">[eLua-dev] lualong option and codesourcery
+</A></li>
+        <LI>Next message: <A HREF="003734.html">[eLua-dev] lualong option and codesourcery
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3733">[ date ]</a>
+              <a href="thread.html#3733">[ thread ]</a>
+              <a href="subject.html#3733">[ subject ]</a>
+              <a href="author.html#3733">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Thanks for the hints. I have no idea on how it was working in the past or how it is supposed to be using because I have just started playing with eLua two days ago. So if I am asking newbie questions it is just because I am that :)
+I have done two things to reveal floating point in the lualong build:First, simply without knowing what I am looking for exactly, checked the objdump -x and -d of the elf file and was looking for individual functions that were bigger than 0x100, especially that were library functionsn starting with __ .  Then I have realized that there are a number of __&lt;operator&gt;df3 calls and functions in the binary. These are the double precision software floating point library calls. As much as I see they are only used by an sprintf call that is called from a function &quot;worker&quot; that I was unable to trace further, seems not to be part of eLua so I believe it is the part of the libc delivered with codesourcery. 
+00018118 &lt;worker&gt;:   18118:	e92d 43f0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, lr}   1811c:	b085      	sub	sp, #20.. skip   1813a:	4631      	mov	r1, r6   1813c:	463b      	mov	r3, r7   1813e:	f2c0 0202 	movt	r2, #2   18142:	4620      	mov	r0, r4   18144:	e88d 4300 	stmia.w	sp, {r8, r9, lr}----&gt; here   18148:	f7fc fb6e 	bl	14828 &lt;_sprintf_r&gt;   1814c:	2200      	movs	r2, #0
+I am using the latest sourcery release that is 2012.3.
+Do you see the same in the objdump when building with an older codesourcery?
+ThanksKaroly
+
+&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+</I>&gt;<i> Date: Mon, 23 Jul 2012 21:10:33 +0300
+</I>&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> Subject: Re: [eLua-dev] lualong option and codesourcery
+</I>&gt;<i> 
+</I>&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> On Mon, Jul 23, 2012 at 7:26 PM, Karoly Molnar &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">molnarkaroly at hotmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Hello,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I have tried to rebuild the eLua MBED target with codesourcery with the
+</I>&gt;<i> &gt; lualong option. The code is working and the code size has been somewhat
+</I>&gt;<i> &gt; reduced but it was still fairly big even after turning of all terminal,
+</I>&gt;<i> &gt; shell, rpc related options (practically I have commented out all optional
+</I>&gt;<i> &gt; macros in the platform_conf.h).
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Then I have checked the elf file with objdump and realized that it is still
+</I>&gt;<i> &gt; using software floating point libraries on some parts of the code, which I
+</I>&gt;<i> &gt; did not need in the lualong build. Further investigation has lead to that it
+</I>&gt;<i> &gt; is using a floating point version of sprintf().
+</I>&gt;<i> &gt; May I assume that I shall use a special stdlib or newlib that is build
+</I>&gt;<i> &gt; without floating point support? Can someone help me with  some instructions
+</I>&gt;<i> &gt; to rebuild it in the CortexM3/Codesourcery environment?
+</I>&gt;<i> 
+</I>&gt;<i> We have this little piece of code in src/newlib/stubs.c:
+</I>&gt;<i> 
+</I>&gt;<i> // If LUA_NUMBER_INTEGRAL is defined, &quot;redirect&quot; printf/scanf calls to their
+</I>&gt;<i> // integer counterparts
+</I>&gt;<i> #ifdef LUA_NUMBER_INTEGRAL
+</I>&gt;<i> int _vfprintf_r( struct _reent *r, FILE *stream, const char *format,
+</I>&gt;<i> va_list ap )
+</I>&gt;<i> {
+</I>&gt;<i>   return _vfiprintf_r( r, stream, format, ap );
+</I>&gt;<i> }
+</I>&gt;<i> 
+</I>&gt;<i> extern int __svfiscanf_r(struct _reent *,FILE *, _CONST char *,va_list);
+</I>&gt;<i> int __svfscanf_r( struct _reent *r, FILE *stream, const char *format,
+</I>&gt;<i> va_list ap )
+</I>&gt;<i> {
+</I>&gt;<i>   return __svfiscanf_r( r, stream, format, ap );
+</I>&gt;<i> }
+</I>&gt;<i> #endif // #ifdef LUA_NUMBER_INTEGRAL
+</I>&gt;<i> 
+</I>&gt;<i> What it does is link against special versions of the printf/scanf
+</I>&gt;<i> functions (vfiprintf/vfiscanf) that have no floating point support
+</I>&gt;<i> whatsoever. This used to work in the past and showed a clear
+</I>&gt;<i> improvement in the image size. If it doesn't work anymore, a couple of
+</I>&gt;<i> things come to mind:
+</I>&gt;<i> 
+</I>&gt;<i> - a broken Newlib build that doesn't ignore floating point operations
+</I>&gt;<i> for vfiprintf/vfiscanf as it should
+</I>&gt;<i> - FP functions are pulled in by other part(s) of the code
+</I>&gt;<i> 
+</I>&gt;<i> However, this seems to work on my fairly new master:
+</I>&gt;<i> 
+</I>&gt;<i> ~/work/elua/elua [master] $ lua build_elua.lua board=et-stm32 prog
+</I>&gt;<i> Generating binary image elua_lua_stm32f103re.bin...
+</I>&gt;<i>    text	   data	    bss	    dec	    hex	filename
+</I>&gt;<i>  227368	   1536	   1988	 230892	  385ec	elua_lua_stm32f103re.elf
+</I>&gt;<i> ~/work/elua/elua [master] $ lua build_elua.lua board=et-stm32 prog
+</I>&gt;<i> target=lualong
+</I>&gt;<i> [TARGET] elua_lualong_stm32f103re.bin
+</I>&gt;<i> Generating binary image elua_lualong_stm32f103re.bin...
+</I>&gt;<i>    text	   data	    bss	    dec	    hex	filename
+</I>&gt;<i>  190744	   1532	   1988	 194264	  2f6d8	elua_lualong_stm32f103re.elf
+</I>&gt;<i> 
+</I>&gt;<i> The difference most likely indicates that the FP functions are not
+</I>&gt;<i> pulled in, so I'm guessing there's a problem with your particular
+</I>&gt;<i> toolchain (I'm using arm-none-eabi-gcc (Sourcery G++ Lite 2011.03-42)
+</I>&gt;<i> 4.5.2 in Linux).
+</I>&gt;<i> One more question: how did you find out that the floating point
+</I>&gt;<i> libraries are pulled in the binary? What symbol(s) gave it away?
+</I>&gt;<i> 
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks
+</I>&gt;<i> &gt; Karoly
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I> 		 	   		  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120723/54ba9a18/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120723/54ba9a18/attachment-0001.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003732.html">[eLua-dev] lualong option and codesourcery
+</A></li>
+	<LI>Next message: <A HREF="003734.html">[eLua-dev] lualong option and codesourcery
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3733">[ date ]</a>
+              <a href="thread.html#3733">[ thread ]</a>
+              <a href="subject.html#3733">[ subject ]</a>
+              <a href="author.html#3733">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

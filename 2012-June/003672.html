@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Xmodem transfer - issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FXmodem_transfer_-_issue%3F%3D&In-Reply-To=%3C2fadd514e78271e16c8c2b6b60fd38f8%40mail2.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003671.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Xmodem transfer - issue</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FXmodem_transfer_-_issue%3F%3D&In-Reply-To=%3C2fadd514e78271e16c8c2b6b60fd38f8%40mail2.volny.cz%3E"
+       TITLE="[eLua-dev] Xmodem transfer - issue">pito at volna.cz
+       </A><BR>
+    <I>Sat Jun 30 21:41:33 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003671.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3672">[ date ]</a>
+              <a href="thread.html#3672">[ thread ]</a>
+              <a href="subject.html#3672">[ subject ]</a>
+              <a href="author.html#3672">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Are you sure the problem isn't the SD card?,
+</I>&gt;<i> something like a
+</I>&gt;<i> fat16 fs. could it be formatted just in case?
+</I>&gt;<i> 
+</I>&gt;<i> Best of luck,
+</I>&gt;<i> Marcelo
+</I>&gt;<i> 
+</I>I do not think it is the sdcard issue as I did a lot of recv and cp
+with it - see:
+eLua# ls
+
+/rom
+hanoi.lua                      7963 bytes
+lifebig.lua                    3432 bytes
+
+Total on /rom: 11395 bytes
+
+/mmc
+hanoi.lua                      7954 bytes
+lifebig.lua                    3431 bytes
+hanoi1.lua                     7963 bytes
+hanoi2.lua                     7963 bytes
+lorem1.txt                     16279 bytes
+lorem2.txt                     16279 bytes
+lorem3.txt                     16279 bytes
+lorem4.txt                     16279 bytes
+lorem5.txt                     16279 bytes
+lorem6.txt                     16279 bytes
+lorem7.txt                     16279 bytes
+lorem8.txt                     16279 bytes
+lorem9.txt                     16279 bytes
+lorem10.txt                    16279 bytes
+lorem64                        65130 bytes
+lorem96                        74675 bytes
+jjjjj                          21570 bytes
+picture                        24125 bytes
+
+Total on /mmc: 375601 bytes
+
+eLua#
+
+You may see the 75k file transfered with xmodem as well. I think the
+C malloc() decides once to allocate the xmodem buffer in SRAM,
+sometimes in the CCM (therefore the 64k limit). Currently the limit
+for realloc() is 64k (so it seems it works with CCM block now),
+moreover, it crashes at realloc() somehow, so it does not stop the
+xmodem upload in a clean manner (when the realloc cannot allocate
+enough ram) and it does not print the xmodem' error message &quot;..out
+of ram&quot;. 
+Of course the current xmodem implementation shall be changed to the
+one with a small xmodem buffer which will be appended to the file
+until all data received (unlimited amount of bytes  to be
+transfered). I think the stuff with malloc and realloc cannot work
+properly within eLua environment and segmented ram properly..
+p.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003671.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3672">[ date ]</a>
+              <a href="thread.html#3672">[ thread ]</a>
+              <a href="subject.html#3672">[ subject ]</a>
+              <a href="author.html#3672">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

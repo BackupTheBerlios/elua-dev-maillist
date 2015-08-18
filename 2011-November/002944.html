@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] arm-none-eabi-cc: command not found
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20arm-none-eabi-cc%3A%20command%20not%20found&In-Reply-To=%3CCAJ%3DY9Y3CbLu6%3D6SmQeozJzyPk%3D6DatD%3DTKWhrm72sa50kqwZaQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002943.html">
+   <LINK REL="Next"  HREF="002945.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] arm-none-eabi-cc: command not found</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20arm-none-eabi-cc%3A%20command%20not%20found&In-Reply-To=%3CCAJ%3DY9Y3CbLu6%3D6SmQeozJzyPk%3D6DatD%3DTKWhrm72sa50kqwZaQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] arm-none-eabi-cc: command not found">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Nov 14 03:30:34 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002943.html">[eLua-dev] arm-none-eabi-cc: command not found
+</A></li>
+        <LI>Next message: <A HREF="002945.html">[eLua-dev] arm-none-eabi-cc: command not found
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2944">[ date ]</a>
+              <a href="thread.html#2944">[ thread ]</a>
+              <a href="subject.html#2944">[ subject ]</a>
+              <a href="author.html#2944">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>If you're trying this on top of a previous attempt, you may want to
+make sure you do a &quot;make clean&quot; first, if you aren't doing that.
+
+Also, is &quot;arm-none-eabi-gcc&quot; in your path after you add
+$HOME/arm-cs-tools/bin to your path?
+
+
+
+On Sun, Nov 13, 2011 at 8:24 PM, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+&gt;<i> here is where i get to after:
+</I>&gt;<i> mkdir -p $HOME/arm-cs-tools/bin
+</I>&gt;<i> export PATH=$HOME/arm-cs-tools/bin:$PATH
+</I>&gt;<i> and then
+</I>&gt;<i> make install-cross
+</I>&gt;<i>
+</I>&gt;<i> it runs for a while and then:
+</I>&gt;<i>
+</I>&gt;<i> arm-none-eabi-cc
+</I>&gt;<i> -B/home/elua/programming/arm-eabi-toolchain/build/newlib/arm-none-eabi/newlib/
+</I>&gt;<i> -isystem
+</I>&gt;<i> /home/elua/programming/arm-eabi-toolchain/build/newlib/arm-none-eabi/newlib/targ-include
+</I>&gt;<i> -isystem
+</I>&gt;<i> /home/elua/programming/arm-eabi-toolchain/newlib-2011.03/newlib/libc/include
+</I>&gt;<i> -DPACKAGE_NAME=\&quot;newlib\&quot; -DPACKAGE_TARNAME=\&quot;newlib\&quot;
+</I>&gt;<i> -DPACKAGE_VERSION=\&quot;1.18.0\&quot; -DPACKAGE_STRING=\&quot;newlib\ 1.18.0\&quot;
+</I>&gt;<i> -DPACKAGE_BUGREPORT=\&quot;\&quot; -I.
+</I>&gt;<i> -I../../../../../../newlib-2011.03/newlib/libc/argz -D__NO_SYSCALLS__
+</I>&gt;<i> -DHAVE_RENAME -DHAVE_SYSTEM -fno-builtin&#160;&#160;&#160;&#160;&#160; -ffunction-sections
+</I>&gt;<i> -fdata-sections -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os
+</I>&gt;<i> -fomit-frame-pointer -fno-unroll-loops -D__BUFSIZ__=256 -mabi=aapcs -c -o
+</I>&gt;<i> lib_a-argz_append.o `test -f 'argz_append.c' || echo
+</I>&gt;<i> '../../../../../../newlib-2011.03/newlib/libc/argz/'`argz_append.c
+</I>&gt;<i> /bin/sh: arm-none-eabi-cc: command not found
+</I>&gt;<i> make[6]: *** [lib_a-dummy.o] Error 127
+</I>&gt;<i> make[6]: *** Waiting for unfinished jobs....
+</I>&gt;<i> /bin/sh: arm-none-eabi-cc: command not found
+</I>&gt;<i> make[6]: *** [lib_a-argz_add.o] Error 127
+</I>&gt;<i> /bin/sh: arm-none-eabi-cc: command not found
+</I>&gt;<i> make[6]: *** [lib_a-argz_add_sep.o] Error 127
+</I>&gt;<i> /bin/sh: arm-none-eabi-cc: command not found
+</I>&gt;<i> make[6]: *** [lib_a-argz_append.o] Error 127
+</I>&gt;<i> make[6]: Leaving directory
+</I>&gt;<i> `/home/elua/programming/arm-eabi-toolchain/build/newlib/arm-none-eabi/newlib/libc/argz'
+</I>&gt;<i> make[5]: *** [all-recursive] Error 1
+</I>&gt;<i> make[5]: Leaving directory
+</I>&gt;<i> `/home/elua/programming/arm-eabi-toolchain/build/newlib/arm-none-eabi/newlib/libc'
+</I>&gt;<i> make[4]: *** [all-recursive] Error 1
+</I>&gt;<i> make[4]: Leaving directory
+</I>&gt;<i> `/home/elua/programming/arm-eabi-toolchain/build/newlib/arm-none-eabi/newlib'
+</I>&gt;<i> make[3]: *** [all] Error 2
+</I>&gt;<i> make[3]: Leaving directory
+</I>&gt;<i> `/home/elua/programming/arm-eabi-toolchain/build/newlib/arm-none-eabi/newlib'
+</I>&gt;<i> make[2]: *** [all-target-newlib] Error 2
+</I>&gt;<i> make[2]: Leaving directory
+</I>&gt;<i> `/home/elua/programming/arm-eabi-toolchain/build/newlib'
+</I>&gt;<i> make[1]: *** [all] Error 2
+</I>&gt;<i> make[1]: Leaving directory
+</I>&gt;<i> `/home/elua/programming/arm-eabi-toolchain/build/newlib'
+</I>&gt;<i> make: *** [cross-newlib] Error 2
+</I>&gt;<i> rm arm-2011.03-42-arm-none-eabi/binutils-2011.03-42.tar.bz2
+</I>&gt;<i> arm-2011.03-42-arm-none-eabi/newlib-2011.03-42.tar.bz2
+</I>&gt;<i> [<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua at localhost</A> arm-eabi-toolchain]$
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sun, Nov 13, 2011 at 6:09 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sun, Nov 13, 2011 at 5:56 PM, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; Is it appropriate to ask this mail list about building the cross
+</I>&gt;&gt;<i> &gt; compiler
+</I>&gt;&gt;<i> &gt; for the arm-none-eabi toolchain?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I think it's perfectly reasonable as long as the list doesn't end up
+</I>&gt;&gt;<i> solely answering questions about cross-compiling toolchains. &#160;We do,
+</I>&gt;&gt;<i> after all, provide some form of instructions on how to build them and
+</I>&gt;&gt;<i> various community members have provided scripts, makefiles and howtos
+</I>&gt;&gt;<i> (myself included: <A HREF="https://github.com/jsnyder/arm-eabi-toolchain">https://github.com/jsnyder/arm-eabi-toolchain</A>).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Which instructions or scripts are you using to do the build?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If your subject is a hint, I suspect you got through some number of
+</I>&gt;&gt;<i> stages of the build and it may have failed in newlib? or something
+</I>&gt;&gt;<i> like that? Usually one gets errors like that if the cross compiling
+</I>&gt;&gt;<i> gcc that one has just built and installed into a new path is not in
+</I>&gt;&gt;<i> the binary search path (PATH) when configure ran for the stage of the
+</I>&gt;&gt;<i> build you're in if I recall. &#160;Depending on which instructions you're
+</I>&gt;&gt;<i> using and what actual stage you're at, there might be a different best
+</I>&gt;&gt;<i> recommendation, but certainly make sure that whatever shell you're
+</I>&gt;&gt;<i> doing the build from includes the path where arm-none-eabi-gcc will
+</I>&gt;&gt;<i> end up, precreate that bin directory if it doesn't already exist
+</I>&gt;&gt;<i> before you set path, i.e.:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> mkdir -p $PREFIX/bin
+</I>&gt;&gt;<i> export PATH=$PREFIX/bin:$PATH
+</I>&gt;&gt;<i> (where $PREFIX is the install prefix used by the scripts you're using)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> and then at least redo the configure, then continue building at the
+</I>&gt;&gt;<i> stage where things stoppped for you.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; james
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002943.html">[eLua-dev] arm-none-eabi-cc: command not found
+</A></li>
+	<LI>Next message: <A HREF="002945.html">[eLua-dev] arm-none-eabi-cc: command not found
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2944">[ date ]</a>
+              <a href="thread.html#2944">[ thread ]</a>
+              <a href="subject.html#2944">[ subject ]</a>
+              <a href="author.html#2944">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

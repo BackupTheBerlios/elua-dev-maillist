@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Inversion of timer.*() parameters
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Inversion%20of%20timer.%2A%28%29%20parameters&In-Reply-To=%3CCAJ%3DY9Y3EP2FdiXFaiR%2BuXh%3DpwpKzydH2A%2B%2BptzRut91OyLf%3DZQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003237.html">
+   <LINK REL="Next"  HREF="003238.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Inversion of timer.*() parameters</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Inversion%20of%20timer.%2A%28%29%20parameters&In-Reply-To=%3CCAJ%3DY9Y3EP2FdiXFaiR%2BuXh%3DpwpKzydH2A%2B%2BptzRut91OyLf%3DZQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Inversion of timer.*() parameters">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sun Jan  8 23:50:47 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003237.html">[eLua-dev] Inversion of timer.*() parameters
+</A></li>
+        <LI>Next message: <A HREF="003238.html">[eLua-dev] The eLua IDE: added the (experimental) capability to manage the DFU bootloader
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3239">[ date ]</a>
+              <a href="thread.html#3239">[ thread ]</a>
+              <a href="subject.html#3239">[ subject ]</a>
+              <a href="author.html#3239">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Jan 7, 2012 at 5:23 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 29 December 2011 22:54, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> On Thursday, December 29, 2011, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> In the recent &quot;system timer&quot; mods, an additional change was made that
+</I>&gt;&gt;&gt;<i> inverst the order of the timer parameters from
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &#160; &#160;tmr.delay(timer_id, delay)
+</I>&gt;&gt;&gt;<i> to
+</I>&gt;&gt;&gt;<i> &#160; &#160;tmr.delay(delay, timer_id)
+</I>&gt;<i>
+</I>&gt;&gt;<i> API changes are to EXPECTED until 1.0. actually i will add this to the docs.
+</I>&gt;<i>
+</I>&gt;<i> That's fine - how else would you improve and extend the user interface
+</I>&gt;<i> except by changing it?
+</I>&gt;<i> But when changes can be made in a way that improves functionality
+</I>&gt;<i> without breaking existing code, so much the better for anyone using
+</I>&gt;<i> it. &#160;If for some reason you must make a non-backward-compatible
+</I>&gt;<i> change, so be it. I don't see any &quot;must&quot; here. The system timer is
+</I>&gt;<i> great, but can be made available without creating an incompatibility.
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> As a compromise we could let tmr.delay(nil, 100) to mean &quot;use the system timer&quot;
+</I>&gt;<i>
+</I>&gt;<i> I dunno. That fits in with the existing structure, where physical
+</I>&gt;<i> timers and virtual timers coexisted happily. &#160;If people are boggled by
+</I>&gt;<i> tmr.delay(nil, 100), all they have to do is read the manual, and will
+</I>&gt;<i> find out about the extra things they can do with hardware timers and
+</I>&gt;<i> virtual timers.
+</I>
+I think he was making an &quot;ugliness&quot; argument against this.  Which I do
+and don't buy.  I've seen this sort of thing done for other languages
+like MATLAB where there aren't keyword parameters (as in python).  In
+MATLAB optional parameters that aren't the last parameter can be
+passed as empty lists, like this:
+y = filter(b,a,X,zi,dim)
+y = filter(b,a,X,[],dim)
+<A HREF="http://www.mathworks.com/help/techdoc/ref/filter.html">http://www.mathworks.com/help/techdoc/ref/filter.html</A>
+
+The MATLAB approach can get rather ugly though because sometimes you
+end up calling functions in this manner if the defaults are fine:
+foo(x,y,[],[],[],fs)
+
+'nil' however is not so bad, &quot;Which of the system timers do you want?&quot;
+nil or none, OK you get a system timer (or a default timer)
+
+&gt;<i>
+</I>&gt;<i> Another option would be to implement something new such as timer.*()
+</I>&gt;<i> for the new interface, which can redefine the primitives in the light
+</I>&gt;<i> of the evolution of the timer construct.
+</I>
+Something like this sounds appealing.  Or, the wrapper function idea I
+suggested where system timer functionality could be accessed by using:
+tmr.sys.*
+
+Likewise if there's concern about maybe doing consistent namespaces
+with that you could have a deprecation of tmr.* -&gt; tmr.hw.*?
+
+&gt;<i> After all, the platform interface has not undergone an incompatible
+</I>&gt;<i> change, only the Lua layer.
+</I>
+Well, the platform layer did make some changes, some of which I think
+were incompatible, like ordering of diff parameters.
+
+&gt;<i>
+</I>&gt;&gt;<i> tmr.delay(tmr.SYS_TIMER, 100) --current version
+</I>&gt;&gt;<i> future.tmr.delay(100) -- this is going to be used in the future
+</I>&gt;<i>
+</I>&gt;<i> I'm not so sure about that, since anything written to use
+</I>&gt;<i> future.tmr.*() would stop working when future.tmr becomes tmr, so we
+</I>&gt;<i> are still create a fracture between code for different versions of
+</I>&gt;<i> eLua, which cause long-term pain.
+</I>
+Well, on the plus side of this sort of approach, it might make it
+easier to identify what notation the code is using, which would make
+it easier to do things like automatically rewrite it in codebases (ala
+python 2to3: <A HREF="http://wiki.python.org/moin/2to3">http://wiki.python.org/moin/2to3</A>), and to have explicit
+failure messages once the deprecated style gets dropped.
+
+That said, if we were going to go this approach I wouldn't put it in a
+namespace like &quot;future&quot; I would prefer something like dividing tmr
+into tmr.sys.* and tmr.hw.* or something like that and have the
+default point alias functions on tmr.hw.* onto tmr.* for the short
+term.
+
+
+The one thing I really want to change is the ordering of the diff
+parameters:  start should go before end :-)
+
+
+&gt;<i>
+</I>&gt;<i> &#160; M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003237.html">[eLua-dev] Inversion of timer.*() parameters
+</A></li>
+	<LI>Next message: <A HREF="003238.html">[eLua-dev] The eLua IDE: added the (experimental) capability to manage the DFU bootloader
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3239">[ date ]</a>
+              <a href="thread.html#3239">[ thread ]</a>
+              <a href="subject.html#3239">[ subject ]</a>
+              <a href="author.html#3239">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

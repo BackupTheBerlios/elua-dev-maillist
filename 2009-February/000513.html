@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Large ADC Commit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1GI8Zae6739a4e6bc39a6a61dda%2C%0A%09jbsnyder%40fanplastic.org%2C%205AA9B438-F78A-40A8-9B3D-960%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000510.html">
+   <LINK REL="Next"  HREF="000515.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Large ADC Commit</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1GI8Zae6739a4e6bc39a6a61dda%2C%0A%09jbsnyder%40fanplastic.org%2C%205AA9B438-F78A-40A8-9B3D-960%3E"
+       TITLE="[eLua-dev] Large ADC Commit">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 01:08:33 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000510.html">[eLua-dev] Large ADC Commit
+</A></li>
+        <LI>Next message: <A HREF="000515.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#513">[ date ]</a>
+              <a href="thread.html#513">[ thread ]</a>
+              <a href="subject.html#513">[ subject ]</a>
+              <a href="author.html#513">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 17, 2009, at 5:40 PM, Dado Sutter wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Feb 17, 2009 at 20:21, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> As a side note, the example:
+</I>&gt;<i>
+</I>&gt;&gt;<i> channels = {0, 3}
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> adcvals = {}
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> for i, v in ipairs(channels) do
+</I>&gt;&gt;<i>   adc.sample(v)
+</I>&gt;&gt;<i>   adcvals = getsamples(v,1,adcvals,i)
+</I>&gt;&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Well, I'll have to find some more time to review this from the  
+</I>&gt;<i> start. The above example seems to be very common and the channel  
+</I>&gt;<i> sampling should be as &quot;synchronized&quot; as possible. Not wanting to add  
+</I>&gt;<i> still more complexity, it seems that the channels table (ie:) should  
+</I>&gt;<i> also be a param to &quot;atomize&quot; the sampling.
+</I>
+That would be nice. Hmm...
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Runs about as fast for adcscope.lua as the original integer version  
+</I>&gt;<i> did. ~355 us per 4 channels collecting one sample each
+</I>&gt;<i>
+</I>&gt;<i> Not bad but I expected more from LM adc :(
+</I>
+I'd like it to go faster as well.  I haven't tried timing a lot of  
+things in elua, so I'm not sure if this corresponds to general  
+function call overhead for the VM.
+
+That said, this is one reason why we have burst :-)  I've not pulled  
+out a function generator to figure out what the absolute maximum limit  
+is for this, but that should achieve or at least get quite near to the  
+1Msample/s that the LM hardware is rated for.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> When new tables were being created each cycle, about 430 us per  
+</I>&gt;<i> cycle were used, which would jump up much higher every once in a  
+</I>&gt;<i> while, probably due to garbage collection of the old tables that  
+</I>&gt;<i> were being generated like crazy :-)
+</I>&gt;<i>
+</I>&gt;<i> gc needs to be stopped or manually controlled here. Sampling times  
+</I>&gt;<i> and sampling intervals needs to be fully predictable.
+</I>
+I agree, though I'm not sure what the best strategy is here.
+
+As far as avoiding variable sample timing, I would use burst.  It  
+should be possible to set the mode to nonblocking, tell burst to  
+collect, say, 100 samples, and pull samples from the buffer before it  
+has completed the run.
+
+I've not tested this at all, though.  Also, on read the buffer does  
+disable interrupts for a very short period of time when the read  
+pointers are updated, so this could delay a sample for however many  
+instructions it takes to complete that small section.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I'm pretty sure that most of that 350 us is due to the lua vm and  
+</I>&gt;<i> not the underlying C code of the ADC module.
+</I>&gt;<i>
+</I>&gt;<i> Yes, probably but gc is beeing forced by the adc code.
+</I>
+At this point I'm not explicitly telling telling the garbage collector  
+to do anything.  If it runs it is based on the heuristics built into  
+the VM.  I'm not sure what the best strategy would be in terms of  
+requesting or preventing garbage collection.
+
+I'm open to comments on this front, for sure :-)
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/7c9f0bd3/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/7c9f0bd3/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/7c9f0bd3/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/7c9f0bd3/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000510.html">[eLua-dev] Large ADC Commit
+</A></li>
+	<LI>Next message: <A HREF="000515.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#513">[ date ]</a>
+              <a href="thread.html#513">[ thread ]</a>
+              <a href="subject.html#513">[ subject ]</a>
+              <a href="author.html#513">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

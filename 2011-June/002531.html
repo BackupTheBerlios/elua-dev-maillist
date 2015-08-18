@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTinD%2BMtVPNg-Z8FDKur44i7dyzbtDQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002529.html">
+   <LINK REL="Next"  HREF="002532.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTinD%2BMtVPNg-Z8FDKur44i7dyzbtDQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Jun 16 16:44:13 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002529.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002532.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2531">[ date ]</a>
+              <a href="thread.html#2531">[ thread ]</a>
+              <a href="subject.html#2531">[ subject ]</a>
+              <a href="author.html#2531">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 16 June 2011 16:04, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> How about (high level:
+</I>&gt;<i> write_to_address( id, address, data, len send_stop)
+</I>&gt;<i> write( id, data, len, send_stop ) --&gt; (no address involved)
+</I>&gt;<i> read_from_address( id, address, data, len, send_stop )
+</I>&gt;<i> read( id, data, len, send_stop ) --&gt; (no address involved)
+</I>&gt;<i> The sequence for buffer operations would be:
+</I>&gt;<i> 1. write_to_address
+</I>&gt;<i> 2. write
+</I>&gt;<i> 3. repeat 2 with all data to write
+</I>
+The register_number+value or eeprom_memory_address+data_to_write are
+not part of I2C.
+That's the format that DS1337 Real time clock and 24LC32A EEPROM, for
+example, impose on top of the I2C data stream to get separate pieces
+of information that they need, but that's nothing to do with I2C
+itself.
+
+The register+value formats and the address+data formats are a higher
+level than I2C: devices imposes another level of structure on top of
+the I2C protocol, by saying that different bytes of the data have
+specific meanings. The matching place to do that in the API is a
+higher level EEPROM API that which concatenates the register number
+and its value (or EEPROM memory address and data) into a single string
+and calls the i2c API with that.
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002529.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002532.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2531">[ date ]</a>
+              <a href="thread.html#2531">[ thread ]</a>
+              <a href="subject.html#2531">[ subject ]</a>
+              <a href="author.html#2531">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

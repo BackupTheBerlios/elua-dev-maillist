@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 PX patch (again/still)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20PX%20patch%20%28again/still%29&In-Reply-To=%3CAANLkTi%3DUD9sJzzemncnH5THUD09g%2BAq%3DhEVMdZKUHHxq%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002078.html">
+   <LINK REL="Next"  HREF="002076.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 PX patch (again/still)</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20PX%20patch%20%28again/still%29&In-Reply-To=%3CAANLkTi%3DUD9sJzzemncnH5THUD09g%2BAq%3DhEVMdZKUHHxq%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 PX patch (again/still)">dadosutter at gmail.com
+       </A><BR>
+    <I>Wed Feb 23 03:13:02 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002078.html">[eLua-dev] AVR32 PX patch (again/still)
+</A></li>
+        <LI>Next message: <A HREF="002076.html">[eLua-dev] AVR32 PX patch (again/still)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2080">[ date ]</a>
+              <a href="thread.html#2080">[ thread ]</a>
+              <a href="subject.html#2080">[ subject ]</a>
+              <a href="author.html#2080">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Feb 22, 2011 at 20:45, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 22 February 2011 20:45, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; OK, I think I know why. You're using the multiple allocator
+</I>&gt;<i> &gt;...
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdanm at bogdanm-desktop</A>:~/work/elua/elua0.8$ scons board=mizar32
+</I>&gt;<i> target=lualong prog -j2
+</I>&gt;<i> &gt;  text    data     bss     dec     hex filename
+</I>&gt;<i> &gt; 121344    1364    1480  124188   1e51c elua_lualong_at32uc3a0128.elf
+</I>&gt;<i>
+</I>&gt;<i> No, I'm using newlib, which is smaller, not simple which is even
+</I>&gt;<i> smaller but had that startup time problem
+</I>&gt;<i>
+</I>&gt;<i> scons board=mizar32 target=lualong allocator=newlib optram=0
+</I>&gt;<i> ...
+</I>&gt;<i>
+</I>&gt;<i> Programming 123164 bytes in 4 segments.
+</I>&gt;<i>     Verifying flash: ==================================================
+</I>&gt;<i> 100.0%
+</I>&gt;<i> Verify failed at address 0x80020000. Expected 00, read e1.
+</I>&gt;<i>
+</I>&gt;<i> If you're interested in &quot;size&quot; I get:
+</I>&gt;<i>  120320    1364    1480  123164   1e11c elua_lualong_at32uc3a0128.elf
+</I>&gt;<i>
+</I>&gt;<i> I guess you're not counting the BSS and DATA in the 120KB,
+</I>&gt;<i>
+</I>&gt;<i> &gt; What exactly are the &quot;three of four&quot; _critical_ bugs in 0.8 ?
+</I>&gt;<i>
+</I>&gt;<i> Well, in the AVR stuff there was the EVK1100 serial port not working
+</I>&gt;<i> at all due to being configured in SERMUX mode,
+</I>&gt;<i>
+</I>
+I think this was an option (not a bug), to allow the use of RFS (Remote File
+System) and terminal sharing the same UART, an important feature for eLua
+but not very well documented yet for new users.
+
+
+&gt;<i> the image being &gt;128KB for Mizar32 by default, I forget if there were
+</I>&gt;<i> others.  I would include the PX patch in the release fixes, but then I
+</I>&gt;<i> have a vested interest in not wanting to have to document two
+</I>&gt;<i> incompatible sets of pin names.
+</I>&gt;<i>
+</I>&gt;<i>    M
+</I>&gt;<i>
+</I>
+Best
+Dado
+
+
+
+&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110222/4c173a63/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110222/4c173a63/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002078.html">[eLua-dev] AVR32 PX patch (again/still)
+</A></li>
+	<LI>Next message: <A HREF="002076.html">[eLua-dev] AVR32 PX patch (again/still)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2080">[ date ]</a>
+              <a href="thread.html#2080">[ thread ]</a>
+              <a href="subject.html#2080">[ subject ]</a>
+              <a href="author.html#2080">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

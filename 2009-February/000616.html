@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] disp module revision
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20disp%20module%20revision&In-Reply-To=%3CEMEWEMEW2_DELIMl1QCxe7b58d8bc459273ee6a1998%2C%0A%09jbsnyder%40fanplastic.org%2C%2060147069-F015-4365-9344-443%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000615.html">
+   <LINK REL="Next"  HREF="000617.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] disp module revision</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20disp%20module%20revision&In-Reply-To=%3CEMEWEMEW2_DELIMl1QCxe7b58d8bc459273ee6a1998%2C%0A%09jbsnyder%40fanplastic.org%2C%2060147069-F015-4365-9344-443%3E"
+       TITLE="[eLua-dev] disp module revision">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Feb 27 19:59:37 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000615.html">[eLua-dev] disp module revision
+</A></li>
+        <LI>Next message: <A HREF="000617.html">[eLua-dev] disp module revision
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#616">[ date ]</a>
+              <a href="thread.html#616">[ thread ]</a>
+              <a href="subject.html#616">[ subject ]</a>
+              <a href="author.html#616">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm not suggesting that you rewrite anything low level.  What I meant  
+was that you could wrap the code to draw or write text in  
+RIT128x96x4Enable/RIT128x96x4Disable, which are driver provided  
+functions that I believe will toggle chip select for the display.   
+This way you wouldn't need the disable function, since whenever done  
+writing to the display you'd set the display to not pay attention to  
+stuff that might be going to the SD.
+
+-jsnyder
+
+
+On Feb 27, 2009, at 10:20 AM, Dado Sutter wrote:
+
+&gt;<i> This was a good reminder James,
+</I>&gt;<i>    I am not recoding any low-level functions of the LM drivers at  
+</I>&gt;<i> this moment though. All I did was to wrap them in Lua-bind  
+</I>&gt;<i> functions, in a one-to-one basis, offering in Lua the exact API   
+</I>&gt;<i> (init, on, off, enable, disable, clear, print, draw) that the  
+</I>&gt;<i> Luminary Micro drivers offer. My proposition was to simplify it,  
+</I>&gt;<i> merging some of the functions.
+</I>&gt;<i>    I am not sure if the LM drivers make an &quot;exclusive&quot; use of the  
+</I>&gt;<i> port but if they do, we'll have some extra work fixing it. To be  
+</I>&gt;<i> able to use mmc/sd cards and the rit oled at the same time is a must.
+</I>&gt;<i>   (by the way, I could not make Alvarez driver work on my LM3S8962  
+</I>&gt;<i> yet, probably because of some bad contact or bad card formatting but  
+</I>&gt;<i> I'll get there :)
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2009/2/27 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> One quick note here:
+</I>&gt;<i>
+</I>&gt;<i> I'm not sure what API you may be settling upon, but you may want to  
+</I>&gt;<i> consider the following:
+</I>&gt;<i>
+</I>&gt;<i> The display is on an SSI port that can, and in some cases (like  
+</I>&gt;<i> LM3S6965) is shared with another device (like the micro-SD slot).   
+</I>&gt;<i> I've not checked which/if any of the commands correspond to turning  
+</I>&gt;<i> of the chip select for the display, but you may wish to wrap drawing  
+</I>&gt;<i> commands in functions that enable and disable the chip select for  
+</I>&gt;<i> the display so that when we add the flash card support that Jesus  
+</I>&gt;<i> Alvarez ported, we can use both devices.
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Feb 26, 2009, at 7:55 PM, Dado Sutter wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Yes, we could keep that too, if really needed. It would cost a  
+</I>&gt;&gt;<i> simple test and on a normaly used-just-once function.
+</I>&gt;&gt;<i> But it would be a disp.on(freq) optional parameter and disp.init()  
+</I>&gt;&gt;<i> would be really dropped.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2009/2/26 Pedro Bittencourt &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt;
+</I>&gt;&gt;<i> Maybe... maybe as an optional parameter to on where default is 1M ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --Pedro Bittencourt
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Thu, Feb 26, 2009 at 10:37 PM, Dado Sutter  
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> Well, the disp module is platform (LM3S) dependent and, afaik, all  
+</I>&gt;&gt;<i> the LM3S kits have 50MHz clocks (pls correct me if I'm wrong).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This said, couldn't  disp.on could always call  
+</I>&gt;&gt;<i> rit128x96x4_init(1000000) ?  (1MHz SPI Clock ....)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If by LM3S-dependent we mean MCU-dependent and not LM kits- 
+</I>&gt;&gt;<i> dependent, we would have to leave disp.init(freq) out of my  
+</I>&gt;&gt;<i> &quot;integration proposition&quot;, merging only on+enable and off+disable.
+</I>&gt;&gt;<i> But do you think we will find many other (non Luminary Micro)  
+</I>&gt;&gt;<i> LM3Sxxxx kits with an integrated RIT OLED Display too ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2009/2/26 Pedro Bittencourt &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> There is a little problem there, the init parameter is clock  
+</I>&gt;&gt;<i> dependent...so a little &quot;intelligence&quot; would be necessary (like  
+</I>&gt;&gt;<i> checking the clock and make some maths to discover the appropriate  
+</I>&gt;&gt;<i> param to the initialization...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --Pedro Bittencourt
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Thu, Feb 26, 2009 at 5:38 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;  
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> Hello,
+</I>&gt;&gt;<i>    For the sake of kiss on the platform-dependent disp module, I  
+</I>&gt;&gt;<i> was thinking about reducing our current:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> init
+</I>&gt;&gt;<i> on
+</I>&gt;&gt;<i> off
+</I>&gt;&gt;<i> enable
+</I>&gt;&gt;<i> disable
+</I>&gt;&gt;<i> print
+</I>&gt;&gt;<i> draw  (pls note that drawString and drawImage are beeing renamed  
+</I>&gt;&gt;<i> for print and draw respectively, on v0.6)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ..... to simply:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> on
+</I>&gt;&gt;<i> off
+</I>&gt;&gt;<i> print
+</I>&gt;&gt;<i> draw
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> on/enable and off/disable functionalities would be merged (spi  
+</I>&gt;&gt;<i> channel setup and release, dc/dc converter powering on/off)
+</I>&gt;&gt;<i> also, init would be combined with on/enable, initializing the spi  
+</I>&gt;&gt;<i> clock always to 1000000. It is very unlikely that this spi channel  
+</I>&gt;&gt;<i> would be used concurrently for another function.
+</I>&gt;&gt;<i> A typical diplay usage would be:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> disp.on()  and
+</I>&gt;&gt;<i> disp.print() and/or disp.draw() at will...........
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The user would not care anymore for the concept of an &quot;spi  
+</I>&gt;&gt;<i> frequency&quot;, display/channel initialization and would simply use on  
+</I>&gt;&gt;<i> to begin use the display. disp.off would be used only in some cases  
+</I>&gt;&gt;<i> and mostly at the very end of the program.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The only functionality that we seem to loose is that an off-on  
+</I>&gt;&gt;<i> cicle would force a clear (I think so, if init forces a clear) and  
+</I>&gt;&gt;<i> contents would have to be rewritten/redrawn in case of a &quot;screen- 
+</I>&gt;&gt;<i> saver&quot; usage. But again, this doesn't seem to hurt or frequently  
+</I>&gt;&gt;<i> used.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Comments are welcome.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 644-2322
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090227/12c28653/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090227/12c28653/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090227/12c28653/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090227/12c28653/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000615.html">[eLua-dev] disp module revision
+</A></li>
+	<LI>Next message: <A HREF="000617.html">[eLua-dev] disp module revision
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#616">[ date ]</a>
+              <a href="thread.html#616">[ thread ]</a>
+              <a href="subject.html#616">[ subject ]</a>
+              <a href="author.html#616">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] What can I do?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3C002c01cb96e3%2412344870%24369cd950%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001780.html">
+   <LINK REL="Next"  HREF="001782.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] What can I do?</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3C002c01cb96e3%2412344870%24369cd950%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] What can I do?">john.hind at zen.co.uk
+       </A><BR>
+    <I>Wed Dec  8 15:20:31 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001780.html">[eLua-dev] What can I do?
+</A></li>
+        <LI>Next message: <A HREF="001782.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1781">[ date ]</a>
+              <a href="thread.html#1781">[ thread ]</a>
+              <a href="subject.html#1781">[ subject ]</a>
+              <a href="author.html#1781">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> -----Original Message-----
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+</I>&gt;<i> Sent: 08 December 2010 12:43
+</I>
+
+&gt;<i> Yes, they are already asynchronous, as explained. The only real
+</I>&gt;<i> limitation right now is the &quot;VM must run&quot; one. I don't know how to fix
+</I>&gt;<i> this without multithreading support (actual threads, not Lua threads),
+</I>&gt;<i> I'm not even sure it can be done. If the current model proves to be
+</I>&gt;<i> too simple for practical uses I'll probably have to add a simple
+</I>&gt;<i> threading library to eLua. But this is something I'll do only when I'm
+</I>&gt;<i> convinced that there aren't other practical solutions to try.
+</I>
+Ah! I understand now - you have already done something similar to what I am
+suggesting. However I would not describe this as asynchronous on the Lua
+side. It is only asynchronous if the Lua interpreter is idle when the
+interrupt occurs. Otherwise the queue effectively serialises the code to run
+synchronously after the current code terminates. My scheme is similar except
+it can also have coroutines as well as functions linked to ISRs and the
+scheduler/serialiser/queue is differently implemented. Coroutines would be
+useful for implementing state machines and DSP algorithims for processing
+data streams for example.
+
+What I got from Patrick Rapin was the insight that coroutine yields could
+replace blocking waits and polls. This allows a very familiar coding style
+were the blocking waits/polls of naive code are simply replaced by
+non-blocking yields. You could do the same thing with functions hooked to
+ISRs using global variables to maintain state between function calls, but
+that demands a very different, more sophisticated, coding style.
+
+You could regard this as an &quot;other practical solution to try&quot;!
+
+- John
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001780.html">[eLua-dev] What can I do?
+</A></li>
+	<LI>Next message: <A HREF="001782.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1781">[ date ]</a>
+              <a href="thread.html#1781">[ thread ]</a>
+              <a href="subject.html#1781">[ subject ]</a>
+              <a href="author.html#1781">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

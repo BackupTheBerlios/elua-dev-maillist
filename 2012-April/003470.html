@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problem to import module in eLua - LM3S
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20to%20import%20module%20in%20eLua%20-%20LM3S&In-Reply-To=%3CCAKoW%3DmDVrg-g9gYCZ9SJ0YtTyrD52whvkfooUqPzpHZ1KJE-XQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003469.html">
+   <LINK REL="Next"  HREF="003471.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problem to import module in eLua - LM3S</H1>
+    <B>Marcus Vinicius Costa</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20to%20import%20module%20in%20eLua%20-%20LM3S&In-Reply-To=%3CCAKoW%3DmDVrg-g9gYCZ9SJ0YtTyrD52whvkfooUqPzpHZ1KJE-XQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Problem to import module in eLua - LM3S">marcusvc.costa at gmail.com
+       </A><BR>
+    <I>Wed Apr 11 14:18:58 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003469.html">[eLua-dev] STM32F4 UART dropping chars (was New STM32 eLua	platform
+</A></li>
+        <LI>Next message: <A HREF="003471.html">[eLua-dev] Problem to import module in eLua - LM3S
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3470">[ date ]</a>
+              <a href="thread.html#3470">[ thread ]</a>
+              <a href="subject.html#3470">[ subject ]</a>
+              <a href="author.html#3470">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all...
+
+It has to do something different to import modules in eLua, I put in my
+code the &quot;require&quot;, but always i have a error in the execution.
+
+Source in file &quot;main.lua&quot;
+...
+require &quot;http&quot;
+...
+
+-- In terminal using a IDE Goat
+With the LS command I list all files in mmc card and the 2 files found are
+correct, &quot;main.lua&quot; and &quot;http.lua&quot;.
+
+    eLua v0.8  Copyright (C) 2007-2011 www.eluaproject.net
+    eLua# ls
+
+    /rom
+    Total on /rom: 0 bytes
+
+
+    /mmc
+    http.lua                       5439 bytes
+    main.lua                       7799 bytes
+    Total on /mmc: 13238 bytes
+
+When I run the file &quot;main.lua&quot; an error occurs and says that the module was
+not found
+
+    eLua# lua /mmc/main.lua
+    Press CTRL+Z to exit Lua
+    lua: /mmc/main.lua:87: module 'http' not found:
+            no field package.preload['http']
+            no file '/mmc/http.lua'
+            no file '/mmc/http.lc'
+            no file '/rom/http.lua'
+            no file '/rom/http.lc'
+    stack traceback:
+            [C]: in function 'require'
+            /mmc/main.lua:87: in main chunk
+            [C]: ?
+
+After the error, if I ask to list the files again nothing is found, as if
+the card was &quot;ejected&quot; by the system, only to reset it back to normal.
+
+    eLua# ls
+
+    /rom
+    Total on /rom: 0 bytes
+    /mmc
+    Total on /mmc: 0 bytes
+
+    eLua#
+
+Someone tell me what might be happening to him can not find the module,
+what can I do to try to solve the problem?
+
+Thanks in advance by the help
+Marcus Vinicius
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120411/dc7f98b1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120411/dc7f98b1/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003469.html">[eLua-dev] STM32F4 UART dropping chars (was New STM32 eLua	platform
+</A></li>
+	<LI>Next message: <A HREF="003471.html">[eLua-dev] Problem to import module in eLua - LM3S
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3470">[ date ]</a>
+              <a href="thread.html#3470">[ thread ]</a>
+              <a href="subject.html#3470">[ subject ]</a>
+              <a href="author.html#3470">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

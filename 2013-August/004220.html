@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Proper use of sx
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Proper%20use%20of%20sx&In-Reply-To=%3CCAL4-wQo2dergjSBq4Lrff6nXEwXG%3DXhC_qXuuVjW5RmhrNjVWA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004219.html">
+   <LINK REL="Next"  HREF="004221.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Proper use of sx</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Proper%20use%20of%20sx&In-Reply-To=%3CCAL4-wQo2dergjSBq4Lrff6nXEwXG%3DXhC_qXuuVjW5RmhrNjVWA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Proper use of sx">martinwguy at gmail.com
+       </A><BR>
+    <I>Wed Aug  7 23:20:31 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004219.html">[eLua-dev] Proper use of sx
+</A></li>
+        <LI>Next message: <A HREF="004221.html">[eLua-dev] rpc module not loaded in luarpc
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4220">[ date ]</a>
+              <a href="thread.html#4220">[ thread ]</a>
+              <a href="subject.html#4220">[ subject ]</a>
+              <a href="author.html#4220">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 7 August 2013 21:24, Richard M&#246;hn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard.moehn at fu-berlin.de</A>&gt; wrote:
+&gt;<i> On Wed, Aug 07, 2013 at 08:26:58AM -0500, Patrick Barrett wrote:
+</I>&gt;&gt;<i> I've had success using:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> sx -bl 32 config.lua
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best of Luck
+</I>&gt;<i>
+</I>&gt;<i> Thanks for your responses, Raman and Patrick. sx sends 128 byte packets
+</I>&gt;<i> as I understand it and the above version of sx doesn't work either. (My
+</I>&gt;<i> fault, probably, but I don't know what I'm doing wrong.) I have even
+</I>&gt;<i> experimented with TeraTerm on wine, but that's worse.
+</I>&gt;<i>
+</I>&gt;<i> Next I'll be trying TeraTerm on a Windows machine and then, possibly,
+</I>&gt;<i> write my own program for sending. Or is there a better way still?
+</I>
+It also depends on the elua end, since there are several flavours of
+XMODEM protocol.
+
+While working on our 120KB flash image, where there is no space for
+the shell, I wrote an xmodem receiver in Lua that works the same way
+as the build-in shell one. It's small, so implements the barest subset
+of XMODEM. In my tests (with minicom on Linux as the host end) it
+transferred data faster than the built-in elua xmodem written in C,
+probably due to better luck with protocol timing windows.  You could
+give it a try and see if it and your Windows box like each other
+better.
+  Usage is to put it in &quot;recv.lua&quot; on the embedded board (on SD card
+or in the ROMFS), then say
+    require &quot;recv&quot;
+  to the Lua prompt.  You can they use it the same as the &quot;recv&quot;
+builtin, to store the data in a file or to put it in RAM and run it
+directly.
+
+<A HREF="https://github.com/martinwguy/elua-tools">https://github.com/martinwguy/elua-tools</A>
+
+Enjoy :)
+
+   &lt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004219.html">[eLua-dev] Proper use of sx
+</A></li>
+	<LI>Next message: <A HREF="004221.html">[eLua-dev] rpc module not loaded in luarpc
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4220">[ date ]</a>
+              <a href="thread.html#4220">[ thread ]</a>
+              <a href="subject.html#4220">[ subject ]</a>
+              <a href="author.html#4220">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

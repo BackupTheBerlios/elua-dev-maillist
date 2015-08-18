@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 Bootloader Flashing in Python
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Bootloader%20Flashing%20in%20Python&In-Reply-To=%3CEMEWEMEW2_DELIMl2JDGRe2d863029da18c56a88a6b%2C%0A%09jbsnyder%40fanplastic.org%2C%20932B12A0-BA9D-4E7B-B062-9A9%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000684.html">
+   <LINK REL="Next"  HREF="000682.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 Bootloader Flashing in Python</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Bootloader%20Flashing%20in%20Python&In-Reply-To=%3CEMEWEMEW2_DELIMl2JDGRe2d863029da18c56a88a6b%2C%0A%09jbsnyder%40fanplastic.org%2C%20932B12A0-BA9D-4E7B-B062-9A9%3E"
+       TITLE="[eLua-dev] STM32 Bootloader Flashing in Python">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Mar 20 19:16:26 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000684.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+        <LI>Next message: <A HREF="000682.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#681">[ date ]</a>
+              <a href="thread.html#681">[ thread ]</a>
+              <a href="subject.html#681">[ subject ]</a>
+              <a href="author.html#681">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for the encouragement.  I figured that even with the XMODEM  
+stuff, it should be possible to get something working in under a  
+hundred lines.  If you've had success doing dual channel in 40 lines,  
+perhaps that's even an over-estimate, given rz and sz are available as  
+system commands on many unix-like operating systems (haven't seen a  
+python module).
+
+Did you have something that was passing through terminal commands?   
+I've not looked at the curses module much, but it seems like this  
+would be the right thing to use to pipe the stuff coming in over  
+serial through to whatever console was in use.
+
+If I do anything more than a hack, I'll be sure to post it.
+
+On Mar 19, 2009, at 3:54 PM, Arnim Littek wrote:
+
+&gt;<i>
+</I>&gt;<i> ________________________________________
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> 
+</I>&gt;<i> ] On Behalf Of James Snyder [<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>]
+</I>&gt;&gt;&gt;<i> terminal emulator are you using in Linux? I was unable to find a  
+</I>&gt;&gt;&gt;<i> decent one (&quot;decent&quot;=something that could compete with TeraTerm).
+</I>&gt;<i>
+</I>&gt;&gt;<i> If that doesn't work well, I'll be further tempted to try and hack  
+</I>&gt;&gt;<i> something together in Python... :-)
+</I>&gt;<i>
+</I>&gt;<i> I haven't looked hard yet at what can be done with Lua, but in  
+</I>&gt;<i> Python, knocking up something is trivially easy.  Starting with the  
+</I>&gt;<i> sample code in the pyserial package, you hardly have to think about  
+</I>&gt;<i> it.
+</I>&gt;<i>
+</I>&gt;<i> A first pass two-channel logger cost me 40 lines of Python.  It has  
+</I>&gt;<i> grown a bit over time, but is extensively used here.
+</I>&gt;<i>
+</I>&gt;<i> Like you're saying here, I've been unsatisfied with terminal  
+</I>&gt;<i> emulator/serial port software for Linux, and have munged one  
+</I>&gt;<i> together that suits, based on the above.
+</I>&gt;<i>
+</I>&gt;<i> And more recently I had the need to do a terminal emulator with  
+</I>&gt;<i> independent Tx and Rx speeds, which required some trivial hacking of  
+</I>&gt;<i> pyserial, but seems to work too.
+</I>&gt;<i>
+</I>&gt;<i> I'd put the code up, but it is just hacks, and you can roll your own  
+</I>&gt;<i> in an hour anyway.
+</I>&gt;<i>
+</I>&gt;<i> Arnim.
+</I>&gt;<i>
+</I>&gt;<i> Please consider the environment before printing this email
+</I>&gt;<i> Warning:  This electronic message together with any attachments is  
+</I>&gt;<i> confidential. If you receive it in error: (i) you must not read,  
+</I>&gt;<i> use, disclose, copy or retain it; (ii) please contact the sender  
+</I>&gt;<i> immediately by reply email and then delete the emails.
+</I>&gt;<i> The views expressed in this email may not be those of Sirtrack. <A HREF="http://www.sirtrack.com">http://www.sirtrack.com</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090320/6b634d24/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090320/6b634d24/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000684.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+	<LI>Next message: <A HREF="000682.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#681">[ date ]</a>
+              <a href="thread.html#681">[ thread ]</a>
+              <a href="subject.html#681">[ subject ]</a>
+              <a href="author.html#681">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

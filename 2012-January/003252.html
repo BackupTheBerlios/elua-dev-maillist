@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] El bug
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20El%20bug&In-Reply-To=%3CCANKDJfafBrhGgBWKHWRs0pi9N5zYo3jPGXunB_jD9-vAzvbXvA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003251.html">
+   <LINK REL="Next"  HREF="003253.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] El bug</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20El%20bug&In-Reply-To=%3CCANKDJfafBrhGgBWKHWRs0pi9N5zYo3jPGXunB_jD9-vAzvbXvA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] El bug">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jan 16 16:36:48 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003251.html">[eLua-dev] El bug
+</A></li>
+        <LI>Next message: <A HREF="003253.html">[eLua-dev] El bug
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3252">[ date ]</a>
+              <a href="thread.html#3252">[ thread ]</a>
+              <a href="subject.html#3252">[ subject ]</a>
+              <a href="author.html#3252">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jan 16, 2012 at 5:14 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 16 January 2012 14:45, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> First of all, congratulations for tracking this bug, it must've been a
+</I>&gt;&gt;<i> nightmare.
+</I>&gt;<i>
+</I>&gt;<i> Like most of these things, three weeks' sweat following dozens of
+</I>&gt;<i> things that it wasn't.. and in the end the change was to just move one
+</I>&gt;<i> line of code down by four lines.
+</I>
+This kind of thing tends to happen a lot to me. And it's extremely frustrating.
+
+&gt;<i>
+</I>&gt;&gt;<i> 'multiple' is just a version of
+</I>&gt;&gt;<i> dlmalloc (the allocator also used by Newlib) specifically compiled
+</I>&gt;&gt;<i> with support for multilple memory spaces. Using the allocator from
+</I>&gt;&gt;<i> Newlib for multiple memory spaces might lead to two main problems:
+</I>&gt;&gt;<i> Newlib's version might be too old to support multiple memory spaces or
+</I>&gt;&gt;<i> dlmalloc might not be compiled with the proper options for multiple
+</I>&gt;&gt;<i> memory spaces.
+</I>&gt;<i>
+</I>&gt;<i> Thanks for the extra info.
+</I>&gt;<i>
+</I>&gt;<i> Even the most recent newlib (with the bug fixed) only uses dlmalloc
+</I>&gt;<i> 2.6.5 from 2007, whereas eLua has 2.8.3 (most recent is 2.8.5). &#160;I
+</I>&gt;<i> think the reason for them sticking to that is that dlmalloc has
+</I>&gt;<i> doubled in size over the years. Code sizes are:
+</I>&gt;<i> simple &#160; &#160;832 bytes + 1 bss (!)
+</I>&gt;<i> newlib &#160; 2312 + 1040 data + 52 bss
+</I>&gt;<i> multiple 7092 + 480 data
+</I>
+I think I tried older versions of dlmalloc too and dismissed them
+because of some missing features. Can't remember the details though,
+this happened a few years ago.
+
+&gt;<i>
+</I>&gt;<i> They all seem too handle multiple memory spaces OK in eLua.
+</I>&gt;<i>
+</I>&gt;<i> In the tests i've run, the overall speed difference has been
+</I>&gt;<i> negligable between the different dlmallocs:
+</I>&gt;<i> simple: 22.0 seconds
+</I>&gt;<i> newlib: 13.5 seconds
+</I>&gt;<i> multiple: 13.5 seconds
+</I>&gt;<i>
+</I>&gt;<i> But yes, avoiding newlib's malloc might be a good default strategy, in
+</I>&gt;<i> case anyone is using a toolchain with newlib&lt;1.19.0
+</I>&gt;<i>
+</I>&gt;<i> incidentally, there is also the more recent TLSF allocator, which is
+</I>
+I tried to integrate TLSF quite a while ago and couldn't make it to
+work for the life of me. I got so frustrated that I gave up entirely.
+In any case, it does have a penalty: it has a two level zone size
+directory, as opposed to dl which keeps of all its zone sizes on a
+single level, thus wasting precious RAM (while increasing speed, of
+course). If you want to give it a spin, be my guest :)
+
+&gt;<i> guaranteed to run in constant time for every malloc and each free(),
+</I>&gt;<i> however much/little/fragmented RAM you are using, as well as having
+</I>&gt;<i> the usual good fragmentation, overhead and code size properties.
+</I>&gt;<i> Furthermore, instead of blindly calling sbrk() for &quot;More!&quot; when it
+</I>&gt;<i> runs out of memory, as the other three do, you pass it the available
+</I>&gt;<i> memory regions at program startup and it uses those. &#160;For our
+</I>&gt;<i> platforms, which have a fixed amount of RAM that is known in advance,
+</I>&gt;<i> that seems a more effective strategy.
+</I>&gt;<i> It's a bit hard to find but someone is conserving v2.0 at
+</I>&gt;<i> <A HREF="http://tlsf.baisoku.org/">http://tlsf.baisoku.org/</A> which has compiled code size of 5k and no
+</I>&gt;<i> data.
+</I>&gt;<i>
+</I>&gt;<i> Though I've sometimes grumbled about having three memory allocators,
+</I>&gt;<i> two build systems and so on, in finding this bug and noticing that it
+</I>&gt;<i> only happened when using one of them was the key to finding it.
+</I>&gt;<i>
+</I>&gt;<i> Thanks again for your suggestions along the way, which certainly helped
+</I>
+Thanks again for being patient enough to track this bastard :)
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> &#160; &#160;M
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003251.html">[eLua-dev] El bug
+</A></li>
+	<LI>Next message: <A HREF="003253.html">[eLua-dev] El bug
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3252">[ date ]</a>
+              <a href="thread.html#3252">[ thread ]</a>
+              <a href="subject.html#3252">[ subject ]</a>
+              <a href="author.html#3252">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

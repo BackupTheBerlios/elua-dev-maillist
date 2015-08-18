@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua net module/UIP &amp; multiple connections
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module/UIP%20%26%20multiple%20connections&In-Reply-To=%3C4E8183BA.30100%40sallaway.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002745.html">
+   <LINK REL="Next"  HREF="002747.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua net module/UIP &amp; multiple connections</H1>
+    <B>Michael Sallaway</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module/UIP%20%26%20multiple%20connections&In-Reply-To=%3C4E8183BA.30100%40sallaway.com%3E"
+       TITLE="[eLua-dev] eLua net module/UIP &amp; multiple connections">michael at sallaway.com
+       </A><BR>
+    <I>Tue Sep 27 10:05:14 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002745.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+        <LI>Next message: <A HREF="002747.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2746">[ date ]</a>
+              <a href="thread.html#2746">[ thread ]</a>
+              <a href="subject.html#2746">[ subject ]</a>
+              <a href="author.html#2746">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+On 27/09/11 17:57, Bogdan Marinescu wrote:
+&gt;<i> - some coding problems in the eLua uIP &quot;adapter&quot; (src/elua_uip.c) 
+</I>&gt;<i>  prevent data from being properly received because the uIP interaction 
+</I>&gt;<i> isn't properly handled. These errors (or at least most of them) were 
+</I>&gt;<i> fixed.
+</I>&gt;<i> - uIP itself is a &quot;fire and forget&quot; stack by design: it gives you data 
+</I>&gt;<i> and it expects you do something with it immediately. If more data 
+</I>&gt;<i> arrives (on the same socket or on a different socket) the old data is 
+</I>&gt;<i> overwritten. The solution to this was to add per-socket buffers. This 
+</I>&gt;<i> means increased memory consumption, of course, but it also means that 
+</I>&gt;<i> it's much harder to loose data.
+</I>
+So does this mean it's more likely to be happy and work properly if the 
+lua script blocks on the net.accept()? (and only uses a single 
+socket/connection at a time)?
+
+I'm happy to run with that if it's the best workaround for now, just 
+trying to get a feel for how it works.
+
+
+
+&gt;<i> That said, the &quot;accept&quot; part still doesn't work very well. It's OK 
+</I>&gt;<i> most of the time, but sometimes it doesn't respond to a request or 
+</I>&gt;<i> responds very slowly, and I've yet to understand why. I'm starting to 
+</I>&gt;<i> think that trying so hard to turn uIP into something it's not is just 
+</I>&gt;<i> not the right thing to do here. Ideally I'd be looking into lwIP, but 
+</I>&gt;<i> I really don't have enough time for that.
+</I>&gt;<i> With all this in mind, I'll try to integrate my TCP/IP changes to eLua 
+</I>&gt;<i> (into a separate branch for now), maybe this helps in your particular 
+</I>&gt;<i> case. But again, I simply can't estimate when I'll be able to do this.
+</I>
+No worries, that would be fantastic if you're able to. Greatly appreciated.
+
+Cheers,
+Michael
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002745.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+	<LI>Next message: <A HREF="002747.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2746">[ date ]</a>
+              <a href="thread.html#2746">[ thread ]</a>
+              <a href="subject.html#2746">[ subject ]</a>
+              <a href="author.html#2746">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

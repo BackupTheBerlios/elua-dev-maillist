@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Enabling%20Lua%20Tiny%20Ram%20in%20custom%20Lua%20port&In-Reply-To=%3C4F7A848F.7020409%40autosportlabs.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003436.html">
+   <LINK REL="Next"  HREF="003439.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Enabling Lua Tiny Ram in custom Lua port</H1>
+    <B>Brent Picasso</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Enabling%20Lua%20Tiny%20Ram%20in%20custom%20Lua%20port&In-Reply-To=%3C4F7A848F.7020409%40autosportlabs.com%3E"
+       TITLE="[eLua-dev] Enabling Lua Tiny Ram in custom Lua port">brent at autosportlabs.com
+       </A><BR>
+    <I>Tue Apr  3 07:03:11 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003436.html">[eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+</A></li>
+        <LI>Next message: <A HREF="003439.html">[eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3437">[ date ]</a>
+              <a href="thread.html#3437">[ thread ]</a>
+              <a href="subject.html#3437">[ subject ]</a>
+              <a href="author.html#3437">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks, James.
+
+What I'm noticing with the patch is when optimization is enabled, the 
+functions normally exposed in the libraries like mathlib, etc are not 
+being found at runtime. Something is amiss here; I'm digging some more.
+
+I'm noticing the eLua runtime has a different approach for finding the 
+rotables; a linker script defines the areas in memory where the rotables 
+can be found.
+
+Question: could the lua folder of the eLua source be more-or-less 
+dropped in to the src branch of the standard lua source and built like 
+the original lua code, compiled to a static library?
+
+Brent
+
+
+On 04/02/2012 06:43 PM, James Snyder wrote:
+&gt;<i> On Mon, Apr 2, 2012 at 12:29 PM, Brent Picasso&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">brent at autosportlabs.com</A>&gt;  wrote:
+</I>&gt;&gt;<i> Hi Martin,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Did a bit more digging- looks like the patch you provided didn't contain all
+</I>&gt;&gt;<i> of the optimizations described on the elua LTR page.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Specifically, there were quite a few differences in lrotable.c when
+</I>&gt;&gt;<i> comparing the patched file to what's currently in the elua project;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> for example, the references to enable explicit unions is missing:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> /* Return 1 if the given pointer is a rotable */
+</I>&gt;&gt;<i> #ifdef LUA_META_ROTABLES
+</I>&gt;&gt;<i> extern char stext[];
+</I>&gt;&gt;<i> extern char etext[];
+</I>&gt;&gt;<i> int luaR_isrotable(void *p) {
+</I>&gt;&gt;<i>    return stext&lt;= ( char* )p&amp;&amp;  ( char* )p&lt;= etext;
+</I>&gt;&gt;<i> }
+</I>&gt;&gt;<i> #endif
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The patch you provided for lua 5.1.4 - was it just an earlier version, or
+</I>&gt;&gt;<i> was it specifically limited for some reason?
+</I>&gt;<i> The patch that was posted on the mailing list differs from what's now
+</I>&gt;<i> in our main repository.  I'm not sure if there's a convenient
+</I>&gt;<i> broken-out version of of what's currently applied.  Bogdan might be
+</I>&gt;<i> able to answer that one.
+</I>&gt;<i>
+</I>&gt;<i> If someone does manage to collect this, I'd be appreciative if it gets
+</I>&gt;<i> posted to the list as I wouldn't mind putting it on a branch on my Lua
+</I>&gt;<i> mirror repository:
+</I>&gt;<i> <A HREF="https://github.com/jsnyder/lua">https://github.com/jsnyder/lua</A>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Thanks for your help!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Brent Picasso
+</I>&gt;&gt;<i> Autosport Labs
+</I>&gt;&gt;<i> Technology for Race and Street
+</I>&gt;&gt;<i> autosportlabs.com | twitter.com/AutosportLabs
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 03/30/2012 03:33 PM, Brent Picasso wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hi Martin,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I made some progress on enabling LTR in my port.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I got the patch applied and then attempted to register a test function using
+</I>&gt;&gt;<i> the instructions here:
+</I>&gt;&gt;<i> <A HREF="http://www.eluaproject.net/doc/v0.8/en_arch_ltr.html">http://www.eluaproject.net/doc/v0.8/en_arch_ltr.html</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> specifically, this code:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> const luaR_entry mod_map[] = // note: no static this time
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>    { LRO_STRKEY( &quot;f&quot; ), LRO_FUNCVAL( f_implementation ) },
+</I>&gt;&gt;<i>    { LRO_NILKEY, LRO_NILVAL }
+</I>&gt;&gt;<i> };
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> // note: in this case the &quot;luaopen_mod&quot; function isn't really needed anymore
+</I>&gt;&gt;<i> LUALIB_API int luaopen_mod( lua_State *L )
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>    return 0;
+</I>&gt;&gt;<i> }
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> declaring my function this way didn't seem to register it correctly with
+</I>&gt;&gt;<i> lua; I felt something was missing. So I dug into the implementation of
+</I>&gt;&gt;<i> luaI_openlib().
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Inspecting this function I then came up with a way to manually register
+</I>&gt;&gt;<i> functions in a 'light' way using the following macro:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> #define lua_registerlight(L,n,f) (lua_pushlightfunction(L, (f)),
+</I>&gt;&gt;<i> lua_setglobal(L, (n)))
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I have about 125 functions registered using the standard lua_register() ;
+</I>&gt;&gt;<i> switching to lua_registerlight()  netted me a memory usage savings before
+</I>&gt;&gt;<i> LTR of
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 23K to 13K usage as reported by print(collectgarbage(&quot;count&quot;)).  About 10K
+</I>&gt;&gt;<i> savings.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> However, I'm not sure if I'm really using the full capability of the LTR
+</I>&gt;&gt;<i> patch.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Is the above approach still using RAM for each function registration? Is
+</I>&gt;&gt;<i> there a better way to register my C functions with no memory usage?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thank you,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Brent Picasso
+</I>&gt;&gt;<i> Autosport Labs
+</I>&gt;&gt;<i> Technology for Race and Street
+</I>&gt;&gt;<i> autosportlabs.com | twitter.com/AutosportLabs
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 03/30/2012 06:37 AM, Martin Guy wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> hi
+</I>&gt;&gt;<i>    The Lua tiny ram patch as applicable to plain lua-5.1.4 is attached
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>        M
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I></PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003436.html">[eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+</A></li>
+	<LI>Next message: <A HREF="003439.html">[eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3437">[ date ]</a>
+              <a href="thread.html#3437">[ thread ]</a>
+              <a href="subject.html#3437">[ subject ]</a>
+              <a href="author.html#3437">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

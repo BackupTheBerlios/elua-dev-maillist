@@ -1,0 +1,220 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua vs. .net MF
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs.%20.net%20MF&In-Reply-To=%3CBANLkTi%3DmxuUQQALc8unmyZc_%3D7Pedrwbug%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002365.html">
+   <LINK REL="Next"  HREF="002366.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua vs. .net MF</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs.%20.net%20MF&In-Reply-To=%3CBANLkTi%3DmxuUQQALc8unmyZc_%3D7Pedrwbug%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua vs. .net MF">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu May  5 06:05:05 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002365.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+        <LI>Next message: <A HREF="002366.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2355">[ date ]</a>
+              <a href="thread.html#2355">[ thread ]</a>
+              <a href="subject.html#2355">[ subject ]</a>
+              <a href="author.html#2355">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, May 4, 2011 at 11:04 AM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+&gt;<i> How to put this delicately ...
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I've noticed a lot of activity with people using FEZ boards (like the Panda)
+</I>&gt;<i> and baseline .NET MF boards like the NetDuino for eLua. What advantages do
+</I>&gt;<i> you see with eLua over using the .NET MF environment they are designed for?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I'm afraid that having tried hard to get off the ground with eLua and also
+</I>&gt;<i> with the MBED environment, I bought a FEZ Domino and found the .NET
+</I>&gt;<i> environment (particularly with the GHI Electronics FEZ extensions) very much
+</I>&gt;<i> more capable than either. I'm now actually writing application code rather
+</I>&gt;<i> than trying to get device drivers working! Have you guys run into
+</I>&gt;<i> limitations that are causing you to go with eLua or is it just for the
+</I>&gt;<i> challenge of doing things from scratch?
+</I>
+I think it's a bit of both.  To start, when I started working with
+eLua things like .NET MF were either not yet available or were just
+starting to be discussed and hadn't really materialized.
+Unfortunately, we don't have the same sort of plug-and-play GUI IDE
+toolchain at this point that an environment like .NET MF might offer,
+and for the platforms we support we may not have full peripheral
+coverage for every device.  We have these sorts of things as goals,
+but we haven't yet reached them.
+
+That said, while it's not perfect, I'm fairly happy with it to use as
+a development environment and as a testing tool for a lot of purposes,
+and given my familiarity with the guts of it it's fairly easy to
+extend, port or fix if there are problems I run into.  I'm also really
+not that interested in getting locked into using .NET, when what I've
+got is mainly licensed under just about the most permissive license in
+existence :-)
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I wish eLua well and hope it will soon get up to the level of functionality
+</I>&gt;<i> offered by FEZ, which I think should serve as a benchmark for what needs to
+</I>&gt;<i> be achieved. I like the following features:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 1. You can buy single chips with the runtime already loaded and so do not
+</I>&gt;<i> require a JTAG or other specialist development hardware to get going.
+</I>
+This is somewhat inherent to supporting lots of hardware and currently
+not having a platform that's shipping with eLua as a &quot;preferred&quot;
+development environment.  While there's not anything that is currently
+available for order at the moment, there are projects like the Mizar32
+that are in progress that will make things like this a lot easier.
+
+mbed is also pretty easy to load eLua on and the filesystem is
+supported, but not all the device drivers are fleshed out :-)
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2. Unlike MBED, it is a genuine single-chip solution using on-chip USB
+</I>&gt;<i> resources for its development link.
+</I>
+With the proliferation of support for USB profiles, this is something
+that I would like to see in eLua as well.  By supporting CDC on some
+platforms we would even get USB&lt;-&gt;Serial for free out of the box, and
+then we could build on top of that for a fast native link for
+transferring data.  I suspect one of the reasons why we haven't really
+jumped on this is uneven support on the MCU-side for this type of
+interface.  Aside from supporting the obvious CDC link, I'm not sure
+what the obvious protocol choice would be.  I suspect we'd pretty much
+end up inventing one, or somehow building on top of the multiplexer
+work to provide a transparent high speed multiplexing serial link?
+
+Having hacked on some libusb code recently, I actually wouldn't be too
+afraid of fiddling with adding some sort of USB link.  It'd be great
+to take advantage of some of the built-in features that USB provides
+out of the box.
+
+That said, this is generally on a wish list more than a must have list
+for me :-)
+
+
+&gt;<i>
+</I>&gt;<i> 3. There is a free development system with support for both emulated and
+</I>&gt;<i> target debugging (although I am actually using the paid-for Visual Studio
+</I>&gt;<i> 2010 as I already had that).
+</I>&gt;<i>
+</I>
+I'm glad to see that there's at least some free/open support for this
+platform on it's way through Mono.
+
+I assume you're referring to the Visual Studio Express product however?
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 4. There are libraries / device drivers for all the I/O resources on the
+</I>&gt;<i> chips as well as for TCP/IP using an external chip. This includes more
+</I>&gt;<i> esoteric stuff like CAN and SD Card file systems. There is also full USB,
+</I>&gt;<i> both device and host.
+</I>
+We're fairly good here (aside from USB) on platforms like LM3S, but
+other platforms are more variable.  We do have CAN (on LM3S &amp; STM32)
+as well as FatFs on SD cards (via SPI, so any platform that has
+working SPI should be able to access SD cards connected to an SPI
+peripheral).
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 5. Multitasking is natively built-in.
+</I>&gt;<i>
+</I>
+Is this cooperative or preemptive?  Lua certainly has cooperative
+multitasking built-in.  eLua also now has the ability to provide some
+more primitive preemptive multitasking through the early-stage
+interrupt support.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Set against this, I would prefer the elegant minimalism of Lua to the rather
+</I>&gt;<i> bloated C# and full non-commercial open source would be preferable to the
+</I>&gt;<i> Corporate open source compromise, but for the moment, the other advantages
+</I>&gt;<i> outweigh this.
+</I>
+Fair enough :-) It's awesome to get a complete solution out of the box
+that &quot;just works&quot; and is inexpensive. I certainly really enjoyed the
+first time I pulled an Arduino out of the box and found how easy it
+was to just plug it in and use any of numerous ready-made examples and
+libraries.  I personally don't know enough about the implementation of
+the C# microframework to know where it falls down in comparison to Lua
+and where it excels aside from what you've mentioned to us.
+
+We're certainly trying to make it a better development tool to make
+our own lives easier and so that other people might find it useful as
+well.  I think some of the things you've mentioned are certainly on
+the roadmap or are things that we'd love to see as well, like some
+simple easy to order, load and develop with hardware that doesn't
+require a JTAG programmer (though, to be fair quite a number of the
+supported platforms either have integrated bootloaders, have
+integrated JTAG and/or have simple GUI tools for flashing even if the
+integrated flashing interface is JTAG (LM3S/TI for example)).
+
+Also, if you do have gripes or suggestions like this, I think we're
+always happy to have discussions about them.  I don't think anyone
+here is likely to start a flame war over criticism. Lua is not a
+religious language, it's full of compromises and it's a very pragmatic
+language.  Likewise, I think a lot of the people on this list are
+probably fairly pragmatic as well :-)
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002365.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+	<LI>Next message: <A HREF="002366.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2355">[ date ]</a>
+              <a href="thread.html#2355">[ thread ]</a>
+              <a href="subject.html#2355">[ subject ]</a>
+              <a href="author.html#2355">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

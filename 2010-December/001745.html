@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Reducing code size of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTinSkvkV%3DrGsp9SUR0wxWpOCB6%3Dp-BH%2B4PEGw_YS%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001751.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Reducing code size of eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTinSkvkV%3DrGsp9SUR0wxWpOCB6%3Dp-BH%2B4PEGw_YS%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Reducing code size of eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Dec  1 00:25:32 CET 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001751.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1745">[ date ]</a>
+              <a href="thread.html#1745">[ thread ]</a>
+              <a href="subject.html#1745">[ subject ]</a>
+              <a href="author.html#1745">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Nov 30, 2010 at 9:48 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On Tue, Nov 30, 2010 at 8:36 PM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> Heh. I found two places where references to floats/doubles are present
+</I>&gt;&gt;<i> even in lualong mode: the pack module (lpack.c) and the DumpNumber in
+</I>&gt;&gt;<i> ldump.c.
+</I>&gt;<i>
+</I>&gt;<i> Cool. I didn't hit those as I have pack and dump disabled at present
+</I>
+The fixes are now on trunk.
+One thing that I forgot about and that might make a large impact on
+the code size is a printf/scanf library without floating point
+support. If you don't feel like replacing the whole libc, you can
+start with these two functions, I'm sure the effect will be quite
+visible. That said, even if you find some non-floating point
+printf/scanf code and write your own, I have no idea how easy is to
+persuade newlib to forget about its internal functions and use yours
+instead. I looked at some point and I found a long chain of calls
+related to prints/scanf in newlib, a chain that might be very hard to
+break (sorry, I don't remember the details right now). Note that
+you'll probably have to replace other functions (like strtod). Might
+be worth trying anyway. Before doing something so radical though, it
+could be easier to check if Newlib itself has a way to compile
+integer-only printf/scanf at least. I _vaguely_ remember that you
+could do this with Newlib by setting some macros at compile time.
+Damn it, I distinctly remember seeing a page (probably a wiki page)
+that listed the libc functions used in Lua, but I can't find it right
+now for the life of me. This might be very helpful. I'll try again
+tomorrow after I get some rest.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001751.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1745">[ date ]</a>
+              <a href="thread.html#1745">[ thread ]</a>
+              <a href="subject.html#1745">[ subject ]</a>
+              <a href="author.html#1745">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

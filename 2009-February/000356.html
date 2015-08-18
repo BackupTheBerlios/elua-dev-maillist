@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3C81fbe47d0902060105g4ce41ed6yc2cf20c719e2c335%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000355.html">
+   <LINK REL="Next"  HREF="000340.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3C81fbe47d0902060105g4ce41ed6yc2cf20c719e2c335%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Feb  6 10:05:34 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000355.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+        <LI>Next message: <A HREF="000340.html">[eLua-dev] eLua and RTOS integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#356">[ date ]</a>
+              <a href="thread.html#356">[ thread ]</a>
+              <a href="subject.html#356">[ subject ]</a>
+              <a href="author.html#356">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>
+</I>&gt;<i> I agree here.  That said, if it isn't possible to really interrupt the VM,
+</I>&gt;<i> you could accomplish this indirectly with semaphores, and have handlers in
+</I>&gt;<i> Lua which execute when it next gets a chance to check them.
+</I>&gt;<i>
+</I>
+How would that be different from a &quot;Lua ISR&quot;? It would use the exact same
+mechanism. See below, maybe I wasn't very clear (this seem to happen a lot
+lately :) ).
+
+So, is the only way to &quot;interrupt&quot; Lua (without making major changes) to use
+&gt;<i> some sort of polling of state (be that register, semaphore, bit flag,
+</I>&gt;<i> whatever...) where Lua periodically checks for any pending notifications it
+</I>&gt;<i> should pay attention to?
+</I>&gt;<i>
+</I>
+Lua already does that via its hooks mechanism:
+
+<A HREF="http://www.lua.org/manual/5.1/manual.html#5.9">http://www.lua.org/manual/5.1/manual.html#5.9</A> (look at &quot;sethook&quot;)
+
+So, an &quot;ISR&quot; in eLua would be exactly a &quot;poll&quot; coming from Lua's VM, a
+&quot;poll&quot; that checks if hooks are enabled and executes them if they are. A C
+ISR would just enable the hook, then the VM would call it. From what I could
+gather, this is the safest way to &quot;interrupt&quot; Lua, because you don't
+actually interrupt it at all, the VM's main loop already checks for hooks
+and knows how to handle them properly.
+
+
+&gt;<i> I have looked at it, and I think, with some adaptations, I could shift some
+</I>&gt;<i> responsibilities from custom buffering code in the adc code to general
+</I>&gt;<i> buffering.
+</I>&gt;<i>
+</I>&gt;<i> One way or another I'll have something fairly feature complete coming up
+</I>&gt;<i> soon.
+</I>&gt;<i>
+</I>
+Can't wait! :)
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090206/9c253f5a/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090206/9c253f5a/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000355.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+	<LI>Next message: <A HREF="000340.html">[eLua-dev] eLua and RTOS integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#356">[ date ]</a>
+              <a href="thread.html#356">[ thread ]</a>
+              <a href="subject.html#356">[ subject ]</a>
+              <a href="author.html#356">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

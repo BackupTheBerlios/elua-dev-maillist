@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Building toolchain for arm cortex m3
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20toolchain%20for%20arm%20cortex%20m3&In-Reply-To=%3C94BB2461-61CB-4C22-BB21-FDD1E1AA7CEE%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000908.html">
+   <LINK REL="Next"  HREF="000910.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Building toolchain for arm cortex m3</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20toolchain%20for%20arm%20cortex%20m3&In-Reply-To=%3C94BB2461-61CB-4C22-BB21-FDD1E1AA7CEE%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Building toolchain for arm cortex m3">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jul  3 05:22:38 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000908.html">[eLua-dev] Building toolchain for arm cortex m3
+</A></li>
+        <LI>Next message: <A HREF="000910.html">[eLua-dev] Building toolchain for arm cortex m3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#909">[ date ]</a>
+              <a href="thread.html#909">[ thread ]</a>
+              <a href="subject.html#909">[ subject ]</a>
+              <a href="author.html#909">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>It sounds like you do not have arm-elf-gcc in your path (check if you  
+can run that from the command line).
+
+Check if arm-elf-gcc exists in /usr/local/cross-cortex/bin
+
+If you couldn't run it by just typing in the name, but it is in that  
+directory above, make sure you do this, and then redo the ../configure  
+stage for newlib.
+
+Hope that helps..
+
+-jsnyder
+
+On Jul 2, 2009, at 3:59 PM, C&#233;sar Ra&#250;l Mamani Choquehuanca wrote:
+
+&gt;<i> hi all
+</I>&gt;<i>
+</I>&gt;<i> I trying to building toolchain for arm cortex-m3 Im doing that with  
+</I>&gt;<i> the tutorial for www.giga.puc-rio.br/elua. I have successful in  
+</I>&gt;<i> BINTUTILS STEP 1 and BASIC GCC STEP 2 but in NEWLIB STEP 3 I have  
+</I>&gt;<i> the next messagem
+</I>&gt;<i>
+</I>&gt;<i> $ make CFLAGS_FOR_TARGET=&quot;-ffunction-sections -fdata-sections - 
+</I>&gt;<i> DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer  
+</I>&gt;<i> -mcpu=cortex-m3 -mthumb -D__thumb2__ -D__BUFSIZ__=256&quot; CCASFLAGS=&quot;- 
+</I>&gt;<i> mcpu=cortex-m3 -mthumb -D__thumb2__&quot;
+</I>&gt;<i>
+</I>&gt;<i> /cross-cortex/newlib-1.17.0/libgloss/arm -DPACKAGE_NAME=\&quot;newlib\&quot; - 
+</I>&gt;<i> DPACKAGE_TARNAME=\&quot;newlib\&quot; -DPACKAGE_VERSION=\&quot;1.17.0\&quot; - 
+</I>&gt;<i> DPACKAGE_STRING=\&quot;newlib\ 1.17.0\&quot; -DPACKAGE_BUGREPORT=\&quot;\&quot;  -I. - 
+</I>&gt;<i> I../../../../../newlib/libc/argz -O2 -D__NO_SYSCALLS__ -fno- 
+</I>&gt;<i> builtin      -ffunction-sections -fdata-sections - 
+</I>&gt;<i> DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer  
+</I>&gt;<i> -mcpu=cortex-m3 -mthumb -D__thumb2__ -D__BUFSIZ__=256   -c -o lib_a- 
+</I>&gt;<i> dummy.o `test -f 'dummy.c' || echo '../../../../../newlib/libc/ 
+</I>&gt;<i> argz/'`dummy.c
+</I>&gt;<i> /bin/bash: arm-elf-cc: command not found
+</I>&gt;<i> make[5]: *** [lib_a-dummy.o] Error 127
+</I>&gt;<i> make[5]: Leaving directory `/usr/local/cross-cortex/newlib-1.17.0/ 
+</I>&gt;<i> build/arm-elf/newlib/libc/argz'
+</I>&gt;<i> make[4]: *** [all-recursive] Error 1
+</I>&gt;<i> make[4]: Leaving directory `/usr/local/cross-cortex/newlib-1.17.0/ 
+</I>&gt;<i> build/arm-elf/newlib/libc'
+</I>&gt;<i> make[3]: *** [all-recursive] Error 1
+</I>&gt;<i> make[3]: Leaving directory `/usr/local/cross-cortex/newlib-1.17.0/ 
+</I>&gt;<i> build/arm-elf/newlib'
+</I>&gt;<i> make[2]: *** [all] Error 2
+</I>&gt;<i> make[2]: Leaving directory `/usr/local/cross-cortex/newlib-1.17.0/ 
+</I>&gt;<i> build/arm-elf/newlib'
+</I>&gt;<i> make[1]: *** [all-target-newlib] Error 2
+</I>&gt;<i> make[1]: Leaving directory `/usr/local/cross-cortex/newlib-1.17.0/ 
+</I>&gt;<i> build'
+</I>&gt;<i> make: *** [all] Error 2
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:/usr/local/cross-cortex/newlib-1.17.0/build$
+</I>&gt;<i>
+</I>&gt;<i> I am a new ubuntu user and i dont know what happend
+</I>&gt;<i>
+</I>&gt;<i> thx
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;<i> Estudante da Mestrado
+</I>&gt;<i> Pontificia Universidade Catolica
+</I>&gt;<i> Rio da Janeiro - Gavea
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: 847.448.0386
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 4012 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090702/2cf5c478/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090702/2cf5c478/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000908.html">[eLua-dev] Building toolchain for arm cortex m3
+</A></li>
+	<LI>Next message: <A HREF="000910.html">[eLua-dev] Building toolchain for arm cortex m3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#909">[ date ]</a>
+              <a href="thread.html#909">[ thread ]</a>
+              <a href="subject.html#909">[ subject ]</a>
+              <a href="author.html#909">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

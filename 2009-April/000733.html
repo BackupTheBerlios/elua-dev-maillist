@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev]  Masking global interrupts from AT91 Thumb code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%20Masking%20global%20interrupts%20from%20AT91%20Thumb%20code&In-Reply-To=%3C1238610711262-2570829.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000734.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev]  Masking global interrupts from AT91 Thumb code</H1>
+    <B>mpthompson</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%20Masking%20global%20interrupts%20from%20AT91%20Thumb%20code&In-Reply-To=%3C1238610711262-2570829.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev]  Masking global interrupts from AT91 Thumb code">mpthompson at gmail.com
+       </A><BR>
+    <I>Wed Apr  1 20:31:51 CEST 2009</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000734.html">[eLua-dev] Masking global interrupts from AT91 Thumb code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#733">[ date ]</a>
+              <a href="thread.html#733">[ thread ]</a>
+              <a href="subject.html#733">[ subject ]</a>
+              <a href="author.html#733">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Over the last few days I've been working on getting Atmel's USB handling infrastructure for Communication Device Class (CDC) running for eLua for the AT91SAM7S256.  Ralph Hempel already blazed the trial here and gave me a LOT of help and encouragement to an otherwise daunting task.  During this process I came across a solution to a situation that I think may help others working with AT91 ARMs.  
+
+With eLua being compiled under the control of scons, I have yet to determine how to conditionally compile some code with the ARM instruction set and other code with the Thumb instruction set.  Additionally, there is also the issue of controlling the optimization level on a per file basis to handle optimization bugs in certain critical code.
+
+In any case, I needed to mask interrupts at the processor level, but all C code in the project is compiled as Thumb code (except for the C startup assembly files) which doesn't give access to the CPSR register to mask interrupts.  Using Google I was only able to find helper routines that required the processor to be in ARM instruction mode or required the '-mthumb-interwork' option on all C code which gave me grief when linking eLua against other libraries.  
+
+In any case, to make a long story short, using hints and code snips from around the Internet I ended up creating my own helper routines that allow the masking of processor IRQ and FIQ interrupts from Thumb code.  They are only about 10 lines of in-line assembly.  I thought other people working eLua might find these useful when dealing with interrupt level drivers.
+
+The helper functions to enable/disable interrupts within Thumb code are shown below.  I've done in-line assembly for AVR microcontrollers within GCC, but this is my first foray into ARM/Thumb assembly code.  As far as I can tell, these functions work as intended, but please let me know if there are better ways to implement these functions.  
+
+BTW, USB support is now working beautifully with eLua and I get the Lua prompt over a USB virtual com port.  Thanks Ralph!!!
+
+Mike Thompson
+
+----------------------------------------------------------------
+#include &lt;interrupts.h&gt;
+
+//
+// The AT91 is based on the ARM7TDMI microcontroller core.
+// This microcontroller core implements two physically independent 
+// sources of interrupt:
+// 
+// FIQ - Fast Interrupt
+// IRQ - Normal Interrupt
+//
+// Both of these interrupts can be enabled/disabled at core level, by 
+// clearing/setting the corresponding bit in the CPSR (Current Processor 
+// Status Register):
+//
+// FIQ - bit 6 (clear = enabled, set = disabled)
+// IRQ - bit 7 (clear = enabled, set = disabled)
+//
+// The code below is specifically created to mask interrupts within
+// code compiled for the thumb instruction set.  To do this, the code
+// will first switch the AT91 to the ARM instruction set, disable the
+// interrupts by clearing the proper bits in the CPSR.  The original
+// value of the CPSR is returned so that it can be later restored to
+// return the interrupt bits to their previous values.
+//
+
+// Disable interrupts at the processor level.
+unsigned long DisableInterrupts(void)
+{
+    unsigned long savedCpsr;
+
+    asm volatile (
+        // Switch on ARM mode.
+        // Involves uncoditional jump and mode switch (opcode bx).
+        // The lowest bit in the address signals whether are (bit cleared)
+        // or thumb should be selected (bit set).   
+        &quot;.align 4 \n&quot;
+        &quot; mov r0, pc \n&quot;
+        &quot; bx r0 \n&quot;
+        &quot;.arm \n&quot;
+
+        // Save CPSR, mask interrupts and set updated CPSR.
+        &quot; mrs r0, cpsr \n&quot;
+        &quot; mov %0, r0 \n&quot;
+        &quot; orr r0, r0, #(0x80|0x40)\n&quot;
+        &quot; msr cpsr_c, r0 \n&quot;
+
+        // Switch to thumb mode.
+        // Lower bit of destination is set to 1.
+        &quot; add r0, pc, #1 \n&quot;
+        &quot; bx r0 \n&quot;
+        &quot;.align 2 \n&quot;
+        &quot;.thumb \n&quot;
+        : &quot;=r&quot; (savedCpsr)
+        : // no inputs
+        : &quot;r0&quot;
+    );
+
+    return savedCpsr;
+}
+
+
+// Restore interrupts at the processor level to a previous state.
+void RestoreInterrupts(unsigned long savedCpsr)
+{
+    asm volatile (
+        // Switch on ARM mode.
+        // Involves uncoditional jump and mode switch (opcode bx).
+        // The lowest bit in the address signals whether are (bit cleared)
+        // or thumb should be selected (bit set).   
+        &quot;.align 4 \n&quot;
+        &quot; mov r0, pc \n&quot;
+        &quot; bx r0 \n&quot;
+        &quot;.arm \n&quot;
+
+        // Update CPSR supplied by caller.
+        &quot; msr cpsr_c, %0 \n&quot;
+
+        // Switch to thumb mode.
+        // Lower bit of destination is set to 1.
+        &quot; add r0, pc, #1 \n&quot;
+        &quot; bx r0 \n&quot;
+        &quot;.align 2 \n&quot;
+        &quot;.thumb \n&quot;
+        : // no outputs
+        : &quot;r&quot; (savedCpsr)
+        : &quot;r0&quot;
+    );
+}
+
+
+
+-- 
+View this message in context: <A HREF="http://n2.nabble.com/Masking-global-interrupts-from-AT91-Thumb-code-tp2570829p2570829.html">http://n2.nabble.com/Masking-global-interrupts-from-AT91-Thumb-code-tp2570829p2570829.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000734.html">[eLua-dev] Masking global interrupts from AT91 Thumb code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#733">[ date ]</a>
+              <a href="thread.html#733">[ thread ]</a>
+              <a href="subject.html#733">[ subject ]</a>
+              <a href="author.html#733">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

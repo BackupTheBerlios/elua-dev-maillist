@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Microcontroller Filesystem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Microcontroller%20Filesystem&In-Reply-To=%3C92ab989c0902181319uf412e9ds1620cf412402df1f%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000556.html">
+   <LINK REL="Next"  HREF="000551.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Microcontroller Filesystem</H1>
+    <B>Andre Carregal</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Microcontroller%20Filesystem&In-Reply-To=%3C92ab989c0902181319uf412e9ds1620cf412402df1f%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Microcontroller Filesystem">carregal at pobox.com
+       </A><BR>
+    <I>Wed Feb 18 22:19:31 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000556.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+        <LI>Next message: <A HREF="000551.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#548">[ date ]</a>
+              <a href="thread.html#548">[ thread ]</a>
+              <a href="subject.html#548">[ subject ]</a>
+              <a href="author.html#548">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Feb 18, 2009 at 5:47 PM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+&gt;<i> 1. The concept of the &quot;engram&quot; or distributed closure packages the messaging
+</I>&gt;<i> of a function together with the messaging of runtime variables such that the
+</I>&gt;<i> variables are scoped local to the function at the receiving end. This seems
+</I>&gt;<i> safer and more flexible than recreating them as global variables.
+</I>
+Would this be closer to Erlang then?
+
+&gt;<i> 2. ALua seems to transmit functions as source strings. I am suggesting the
+</I>&gt;<i> use of &quot;byte codes&quot; (I'll start calling these VM Codes as I am aware that in
+</I>&gt;<i> Lua they are actually 32 bits!). This avoids the need to hold message
+</I>&gt;<i> definitions as strings and to compile them more than once. Each time the
+</I>&gt;<i> message is sent, a new closure is created from the same compiled function. I
+</I>&gt;<i> would like to marshal tables as VM Codes also, so the message can be fully
+</I>&gt;<i> decoded using the existing chunk reader. The messages are also (maybe)
+</I>&gt;<i> shorter this way.
+</I>
+Sure, this makes a lot of sense. My mention of ALua was more as a
+reference of previous work, not as a direction per se.
+
+&gt;<i> 3. The concept of effectively just storing a message as a persistence
+</I>&gt;<i> mechanism and playing it back when the processor node is restarted. (Didn't
+</I>&gt;<i> the earliest data stores work by delaying messages?)
+</I>
+This is really interesting, and it could eventually be used to restore
+node state for hot swapped processors. Not an easy task depending on
+the playback history... :o)
+
+&gt;<i> 4. The concept of using this persistence as the sole application storage
+</I>&gt;<i> mechanism avoids the need for a general filing system (for saving scripts
+</I>&gt;<i> anyway) and unifies the runtime messaging architecture with the development
+</I>&gt;<i> architecture.
+</I>
+I agree, nice.
+
+&gt;<i> I was more familiar with Rings. I do not really see the need for multiple
+</I>&gt;<i> Lua states in the microcontroller nodes - like with ALua, a single-threaded
+</I>&gt;<i> queued scheduler implemented in C but calling Lua event handlers seems
+</I>&gt;<i> adequate as long as the event handlers are kept brief, and coroutines can be
+</I>&gt;<i> used for heavier processing tasks. On PCs there would be (potentially)
+</I>&gt;<i> multiple &quot;virtual microcontroller&quot; nodes working exactly the same way - each
+</I>&gt;<i> node single threaded. This would be a &quot;share nothing&quot;
+</I>&gt;<i> multiprocessing/threading model and there'd be no problem implementing these
+</I>&gt;<i> with one OS thread or process per node.
+</I>
+True, and that's why I asked about Erlang up there. :o)
+
+Andr&#233;
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000556.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+	<LI>Next message: <A HREF="000551.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#548">[ date ]</a>
+              <a href="thread.html#548">[ thread ]</a>
+              <a href="subject.html#548">[ subject ]</a>
+              <a href="author.html#548">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

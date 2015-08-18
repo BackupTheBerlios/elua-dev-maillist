@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] C library
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20C%20library&In-Reply-To=%3CBANLkTi%3Dp9%2BGBFhJx%2B%2Bhv3WQfR5goT1tJWA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002549.html">
+   <LINK REL="Next"  HREF="002551.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] C library</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20C%20library&In-Reply-To=%3CBANLkTi%3Dp9%2BGBFhJx%2B%2Bhv3WQfR5goT1tJWA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] C library">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sun Jun 19 23:42:49 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002549.html">[eLua-dev] C library
+</A></li>
+        <LI>Next message: <A HREF="002551.html">[eLua-dev] C library
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2550">[ date ]</a>
+              <a href="thread.html#2550">[ thread ]</a>
+              <a href="subject.html#2550">[ subject ]</a>
+              <a href="author.html#2550">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>avr-libc is probably a good option to consider, especially if all the
+functions are available in non-assembler forms.  I hadn't heard about
+pdclib, that sounds interesting as well.  I'm willing to chip in on
+helping on implementation for this since I've started digging into
+what doing this would require a few times, but just haven't gotten
+around to starting to replace newlib functionality with an alternate
+library.
+
+One thing of note however:  I don't think that any of the scanf
+functions should be taking up 100 kB unless this is on a platform I'm
+not familiar with.  If that's really the case for some situation, I
+hope that version of scanf is getting a whole virtual machine +
+compiler for that amount of space, since an integer-only version eLua
+including c library can be scraped into 128 kB :-)  When I check a
+build of eLua for lm3s6965, floating point these are the top offenders
+(first column is decimal sizes):
+
+$ arm-none-eabi-nm elua_lua_lm3s6965.elf --size-sort -r -t d
+00004548 T _vfprintf_r
+00004344 T _svfprintf_r
+00003080 T _dtoa_r
+00003040 T _strtod_r
+00003032 T __svfscanf_r
+00003032 T __ssvfscanf_r
+00003024 T luaV_execute
+00003020 T uip_process
+00002676 T __ieee754_pow
+00001740 T __kernel_rem_pio2
+00001502 t chunk
+00001392 T __ieee754_acos
+00001300 t llex
+00001180 T __ieee754_asin
+00001118 T __gethex
+00001064 T expm1
+00001044 T __ieee754_log
+00001032 T _malloc_r
+00001032 D __malloc_av_
+00001028 T __ieee754_rem_pio2
+.... continues ....
+
+Here's some other random bits of code I've stumbled across when
+looking into this in the past:
+Also, Fabrice Bellard included a really horribly, horribly stripped
+down libc implementation in the linuxstart tarball for the JSLinux
+emulator. The functions he did include are BSD licensed and do include
+an implementation of vsnprintf (from BSD PPP):
+<A HREF="http://bellard.org/jslinux/linuxstart-20110526.tar.gz">http://bellard.org/jslinux/linuxstart-20110526.tar.gz</A>
+<A HREF="http://bellard.org/jslinux/">http://bellard.org/jslinux/</A>
+(which, by the way, is awesome.. and I think would make for a neat
+demo or virtual platform for us :-) )
+
+Here's another snprintf, looks somewhat large though:
+<A HREF="http://www.jhweiss.de/software/snprintf.html">http://www.jhweiss.de/software/snprintf.html</A>
+
+printf implementation comparison:
+<A HREF="http://www.and.org/vstr/printf_comparison">http://www.and.org/vstr/printf_comparison</A>
+
+Also there's the current BSD libc, though I'm guessing it'd be a bit
+on the heavy side:
+<A HREF="http://code.bsd64.org/cvsweb/freebsd/src/lib/libc/">http://code.bsd64.org/cvsweb/freebsd/src/lib/libc/</A>
+
+And there's the Android Bionic libc which is a modified version of the
+BSD libc with some modifications:
+<A HREF="http://lxr.e2g.org/source/bionic/libc/">http://lxr.e2g.org/source/bionic/libc/</A>
+- no support for locales
+- no support for wide chars (i.e. multi-byte characters)
+- its own smallish implementation of pthreads based on Linux futexes
+- support for x86, ARM and ARM thumb CPU instruction sets and kernel interfaces
+
+-jsnyder
+
+
+On Sun, Jun 19, 2011 at 12:03 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+&gt;<i> I'm using eLua at work right now (I hope to be able to push my ppc work back
+</I>&gt;<i> out, but I'm still waiting for the green light), so I'm keenly aware of the
+</I>&gt;<i> licensing stuff.
+</I>&gt;<i> On Sun, Jun 19, 2011 at 10:53 AM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sun, Jun 19, 2011 at 5:44 PM, Dean Hall &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dwhall256 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> avr-libc provides vfscanf and friends, but not vsfscanf. &#160;The license
+</I>&gt;&gt;&gt;<i> seems compatible. &#160;Might be something to learn from or adapt.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> <A HREF="http://svn.savannah.nongnu.org/viewvc/*checkout*/trunk/avr-libc/libc/stdio/vfscanf.c?root=avr-libc&amp;revision=2191&amp;content-type=text%2Fplain">http://svn.savannah.nongnu.org/viewvc/*checkout*/trunk/avr-libc/libc/stdio/vfscanf.c?root=avr-libc&amp;revision=2191&amp;content-type=text%2Fplain</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks! Until a few minutes ago I was sure that avr libc is GPL. With the
+</I>&gt;&gt;<i> new information I got from Dean I can also recommend avr libc as a good
+</I>&gt;&gt;<i> model.
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://pdclib.rootdirectory.de/">http://pdclib.rootdirectory.de/</A> is the url I have for pdclib.
+</I>&gt;<i>
+</I>&gt;<i> Thanks for the tip on avrlibc. &#160;I will give a look. &#160;If work does get
+</I>&gt;<i> sticky, I will work on the libc stuff on my own time to ensure it can be
+</I>&gt;<i> part of the project as a whole.
+</I>&gt;<i> I will probably start by writing unit tests on the existing code in order to
+</I>&gt;<i> ensure whatever C library is used, it won't break (e)lua.
+</I>&gt;<i>
+</I>&gt;<i> Matt
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Jun 19, 2011, at 09:27 , Bogdan Marinescu wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Sun, Jun 19, 2011 at 4:01 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> Hi All,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I was horrified this week to see that the newlib implementation of scanf
+</I>&gt;&gt;&gt;&gt;<i> ( well, the lower level grunt called by vsfscanf ) was adding 100k to my
+</I>&gt;&gt;&gt;&gt;<i> binary size.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I think I may experiment with another c library ( as Bogdan once
+</I>&gt;&gt;&gt;&gt;<i> suggested ) such as the Minix libc, or pdlibc.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Anyone else interested? &#160;If yes, I'll post my progress to the list in
+</I>&gt;&gt;&gt;&gt;<i> order to elicit feedback and to ease integration into the trunk or a branch.
+</I>&gt;&gt;&gt;&gt;<i> &#160;If no, I'll just work on it myself and merge the &#160;eLua trunk into my own
+</I>&gt;&gt;&gt;&gt;<i> stuff.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Totally interested. This is something I've been meaning to do for quite
+</I>&gt;&gt;&gt;&gt;<i> a while now, but never got the time (and things don't look like they're
+</I>&gt;&gt;&gt;&gt;<i> about to improve soon).
+</I>&gt;&gt;&gt;&gt;<i> I've heard about pdlibc, but right now (after a quick Google search,
+</I>&gt;&gt;&gt;&gt;<i> that is) it seems lost somewhere in the great bit bucket, can't find any
+</I>&gt;&gt;&gt;&gt;<i> relevant links. The Minix libc looked like a very good place to start when I
+</I>&gt;&gt;&gt;&gt;<i> checked it. Whatever you choose, please consider the licensing. If we are to
+</I>&gt;&gt;&gt;&gt;<i> include your work into the eLua tree we have to be sure that we use a libc
+</I>&gt;&gt;&gt;&gt;<i> with a compatible licensing. That includes MIT, BSD and (probably) Apache.
+</I>&gt;&gt;&gt;&gt;<i> It also completely excludes GNU and its derivates (so you can say goodbye to
+</I>&gt;&gt;&gt;&gt;<i> &quot;dietlibc&quot; for example)
+</I>&gt;&gt;&gt;&gt;<i> Good luck, and by all means, please keep me informed. I'll do my best to
+</I>&gt;&gt;&gt;&gt;<i> help.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002549.html">[eLua-dev] C library
+</A></li>
+	<LI>Next message: <A HREF="002551.html">[eLua-dev] C library
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2550">[ date ]</a>
+              <a href="thread.html#2550">[ thread ]</a>
+              <a href="subject.html#2550">[ subject ]</a>
+              <a href="author.html#2550">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

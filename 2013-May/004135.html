@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] IMPORTANT: new build system in master
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20new%20build%20system%20in%20master&In-Reply-To=%3CCANKDJfb6KRMKkACJh3kuNp2CdT-JG72p_QNsSz%3DdL8vcGg1oOA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004134.html">
+   <LINK REL="Next"  HREF="004136.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] IMPORTANT: new build system in master</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20new%20build%20system%20in%20master&In-Reply-To=%3CCANKDJfb6KRMKkACJh3kuNp2CdT-JG72p_QNsSz%3DdL8vcGg1oOA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] IMPORTANT: new build system in master">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri May 31 16:27:52 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004134.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+        <LI>Next message: <A HREF="004136.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4135">[ date ]</a>
+              <a href="thread.html#4135">[ thread ]</a>
+              <a href="subject.html#4135">[ subject ]</a>
+              <a href="author.html#4135">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello Martin and list,
+
+On Fri, May 31, 2013 at 4:25 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> &gt; PS: I feel a bit sad about SConstruct - we won't have it any more :(
+</I>&gt;<i>
+</I>&gt;<i> Bogdan, can you summarise what advantages the &quot;new build system&quot;
+</I>&gt;<i> brings please, and how this affects developers.
+</I>&gt;<i>
+</I>
+The new build system appeared mostly because I felt it integrates better
+with the rest of the system, especially the new configurator. As this whole
+system is written in Lua, integrated it with the Python-based scons felt
+quite a bit weird. What also felt weird is that we needed two separate
+interpreters (Pyton and Lua) only to compile Lua. All in all, things seemed
+to converge naturally towards a Lua-only build system. Plus, I was having
+trouble getting along with scons in some regards, which made the decision
+easier. The new build system is fully documented here:
+
+<A HREF="http://www.eluaproject.net/doc/master/en_building.html">http://www.eluaproject.net/doc/master/en_building.html</A>
+
+And the configurator too:
+
+<A HREF="http://www.eluaproject.net/doc/master/en_configurator.html">http://www.eluaproject.net/doc/master/en_configurator.html</A>
+
+The impact should be minimal to most users, which will now have to use &quot;lua
+build_elua.lua&quot; pretty much the same way they used &quot;scons&quot; in the past (and
+install a few things with luarocks, this is documented in the links above).
+
+
+&gt;<i> Do we just call &quot;build-elua.lua&quot; with the same parameters as before?
+</I>&gt;<i> Or are there user-visible changes too?
+</I>&gt;<i>
+</I>
+They are all documented in
+<A HREF="http://www.eluaproject.net/doc/master/en_building.html.">http://www.eluaproject.net/doc/master/en_building.html.</A> Probably the most
+important part besides using build_elua.lua instead of scons is that now we
+are always bulding for a board. In other words, the old invocation 'scons
+cpu=&lt;...&gt;&quot; doesn't work at all anymore. This makes sense, since eLua is
+generally built to run on a board, not a CPU. For the same name, the output
+is now named 'elua_lua_&lt;boardname&gt;.elf' instead of the previous
+'elua_lua_&lt;cpu&gt;.elf'.
+
+HTH,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i>    M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130531/697806fa/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130531/697806fa/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004134.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+	<LI>Next message: <A HREF="004136.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4135">[ date ]</a>
+              <a href="thread.html#4135">[ thread ]</a>
+              <a href="subject.html#4135">[ subject ]</a>
+              <a href="author.html#4135">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

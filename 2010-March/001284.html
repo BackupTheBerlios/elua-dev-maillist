@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] study path to eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20study%20path%20to%20eLua&In-Reply-To=%3C81fbe47d1003251528n6f692a65l8e6107e200ea0c01%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001283.html">
+   <LINK REL="Next"  HREF="001285.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] study path to eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20study%20path%20to%20eLua&In-Reply-To=%3C81fbe47d1003251528n6f692a65l8e6107e200ea0c01%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] study path to eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Mar 25 23:28:07 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001283.html">[eLua-dev] study path to eLua
+</A></li>
+        <LI>Next message: <A HREF="001285.html">[eLua-dev] study path to eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1284">[ date ]</a>
+              <a href="thread.html#1284">[ thread ]</a>
+              <a href="subject.html#1284">[ subject ]</a>
+              <a href="author.html#1284">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Hi Everyone
+</I>&gt;<i>
+</I>
+Hi!
+
+
+&gt;<i> In order to use eLua properly I am trying to learn more about
+</I>&gt;<i> microcontrollers in general. I know AVR ones can be programmed in C but many
+</I>&gt;<i> others require assembly. Would I be better off struggling through with
+</I>&gt;<i> assembly to gain an intimate knowledge a device or better off with something
+</I>&gt;<i> a little higher up like C?
+</I>
+
+You'll definitely be better off with assembly if you want to know your
+device intimately. Question is, do you really need it? Most of the time I
+find out that I don't. Especially for 32-bit CPUs, the trend between
+manufacturers is to provide extremely complete support libraries that will
+hide most of the low level part of programming. And because of this, unless
+you're trying to do some crazy ASM stuff or some very aggressive
+optimizations,  C is all you need.
+
+
+&gt;<i> Which one will help most with eLua?
+</I>&gt;<i>
+</I>
+None, probably. What would help most with eLua is to understand the
+peripherals of your MCU very well for at least two reasons:
+
+1. the eLua peripheral modules (uart, pio, pwm...) might not expose the
+whole functionality of your platform (this is almost always a work in
+progress in eLua :) )
+2. even if you have enough functionality in the eLua modules, you'll want to
+check the implementation details of your peripherals. For example, PWM and
+timers might use the same resources on one platform, and separate ones in
+another platform. eLua won't help much there, you need to know your MPU well
+enough to avoid this kind of stuff.
+
+If you really want to learn ASM or C and you don't know what to choose,
+choose C. (at least for starters) It has a much broader applicability, and
+it's easier to grasp than most ASMs out there.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100326/e01c5133/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100326/e01c5133/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001283.html">[eLua-dev] study path to eLua
+</A></li>
+	<LI>Next message: <A HREF="001285.html">[eLua-dev] study path to eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1284">[ date ]</a>
+              <a href="thread.html#1284">[ thread ]</a>
+              <a href="subject.html#1284">[ subject ]</a>
+              <a href="author.html#1284">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

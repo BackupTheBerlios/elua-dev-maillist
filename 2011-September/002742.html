@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] str9.rtc code missing?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20str9.rtc%20code%20missing%3F&In-Reply-To=%3CCANKDJfaNMw0dyQjVmCRFrQUszY-1w%3DpWyGzMNPV1LxhKu4CA6w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002740.html">
+   <LINK REL="Next"  HREF="002748.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] str9.rtc code missing?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20str9.rtc%20code%20missing%3F&In-Reply-To=%3CCANKDJfaNMw0dyQjVmCRFrQUszY-1w%3DpWyGzMNPV1LxhKu4CA6w%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] str9.rtc code missing?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Sep 27 09:23:33 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002740.html">[eLua-dev] str9.rtc code missing?
+</A></li>
+        <LI>Next message: <A HREF="002748.html">[eLua-dev] str9.rtc code missing?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2742">[ date ]</a>
+              <a href="thread.html#2742">[ thread ]</a>
+              <a href="subject.html#2742">[ subject ]</a>
+              <a href="author.html#2742">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Sep 26, 2011 at 4:25 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 29 August 2011 20:12, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> &gt; On Mon, Aug 29, 2011 at 11:30 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt;&gt; Are you suggesting using os.date to handle getting of date/time
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; yes. If we can just implement existing Lua conventions (such as LFS
+</I>&gt;<i> &gt;&gt; for filesystem operations, os.* for date operations and so on), that
+</I>&gt;<i> &gt;&gt; is not only more elegant, but improves the chances of standard Lua
+</I>&gt;<i> &gt;&gt; code working in eLua.  OK, we have to invent os.setdate() simply
+</I>&gt;<i> &gt;&gt; because Lua os.*() doesn't provide that, but the path of least
+</I>&gt;<i> &gt;&gt; resistence is to adopt the existing conventions for handling dates and
+</I>&gt;<i> &gt;&gt; times.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; So, are you suggesting that os.setdate would just take the table form
+</I>&gt;<i> &gt; (the &quot;*t&quot;) format? (<A HREF="http://www.lua.org/pil/22.1.html">http://www.lua.org/pil/22.1.html</A>)
+</I>&gt;<i>
+</I>&gt;<i> hum. yes, their os.time() and os.date() routines are bizarre, since
+</I>&gt;<i> they don't handle the time and the date respectively (!).
+</I>&gt;<i> time() reads the system date and time and returns it as a coded number
+</I>&gt;<i> or converts from the a table {year, month, day, hour, min, sec} to the
+</I>&gt;<i> coded representaton, while
+</I>&gt;<i> date() does basically the opposite.  What strange naming!
+</I>&gt;<i>
+</I>&gt;<i> As regards avoiding pulling in too much C library, I think we get
+</I>&gt;<i> gmtime() and mktime() anyway because some RTCs store the time
+</I>&gt;<i> internally as separate fields (e.g. DS1337) while systems without an
+</I>&gt;<i> RTC chip will count time linearly in some way, such as counting a
+</I>&gt;<i> systick interrupt, so I think we have to be able to convert between
+</I>&gt;<i> coded time and tables anyway.
+</I>&gt;<i>
+</I>&gt;<i> &gt; I guess what I was getting at was just that if we have to pick a
+</I>&gt;<i> &gt; locale for handling both printing (&quot;%x&quot; or &quot;%X&quot;) and maybe parsing
+</I>&gt;<i> &gt; that instead of supporting all the possible locales out there, we just
+</I>&gt;<i> &gt; pick a sane one that's a standard.
+</I>&gt;<i>
+</I>&gt;<i> The manual says that
+</I>&gt;<i> &quot;the representations for %x, %X, and %c change according to the locale
+</I>&gt;<i> and the system.&quot;
+</I>&gt;<i> so I think here we have a free hand. The order of the fields in ISO
+</I>&gt;<i> 8601 has the advantage of being unambiguous everywhere, while any
+</I>&gt;<i> choice of mm/dd/yy or dd/mm/yy will be wrong somewhere. Not to mention
+</I>&gt;<i> being Y2K-bugged.
+</I>&gt;<i> Who designed this awful part of the Lua library?!
+</I>&gt;<i> Sadly, the examples in PIL print dates with slashes XX/XX/XX XX:XX:XX
+</I>&gt;<i> whereas ISO 8601 advocates hyphens XXXX-XX-XX XX:XX:XX.
+</I>&gt;<i> Since no program could ever read and understand the output of %c or
+</I>&gt;<i> %x, given its variability, I think we can call it human-readable only,
+</I>&gt;<i> so can do what we want.
+</I>&gt;<i> I suggest YYYY-MM-DD and HH:MM:SS as per ISO
+</I>&gt;<i>
+</I>&gt;<i> &gt; Presumably we would support all the
+</I>&gt;<i> &gt; other formatting options to get individual components into a string.
+</I>&gt;<i> &gt; It looks like Lua uses strftime for handling those (which is in
+</I>&gt;<i> &gt; Newlib, not sure how much code size it takes up).
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; So, I guess there are a couple things here:
+</I>&gt;<i> &gt; 1) For os.date do we support all that strftime usually provides,
+</I>&gt;<i> &gt; including locales, ditto but with a fixed locale, or just the table
+</I>&gt;<i> &gt; format?
+</I>&gt;<i>
+</I>&gt;<i> I'd make os.date() exactly the same as standard Lua (well, just enable
+</I>&gt;<i> os.date() in the Lua source - it makes no calls to the OS). That way
+</I>&gt;<i> more standard Lua code will work in eLua.
+</I>&gt;<i> Locales are not an option for us due to their size - 6MB on Unix - so
+</I>&gt;<i> isdst is always returned false (or just undefined==nil==false) and we
+</I>&gt;<i> can just ignore it if they pass it to os.time(table).
+</I>&gt;<i>
+</I>&gt;<i> &gt; 2) For os.setdate do we support all the formatting options for date
+</I>&gt;<i> &gt; strings including locales, ditto but with a fixed locale, or just the
+</I>&gt;<i> &gt; table format?
+</I>&gt;<i>
+</I>&gt;<i> There are locales (language options such as date-printing order and
+</I>&gt;<i> whether floating point values are printed with a dot or a comma at the
+</I>&gt;<i> decimal point) and there are also timezones (when to apply daylight
+</I>&gt;<i> saving time, how many hours to offset from UTC).
+</I>&gt;<i> I don't think an embedded target has space for tables of timezones
+</I>&gt;<i> (6MB) or for language options (either.
+</I>&gt;<i>
+</I>&gt;<i> Parsing date strings is not a requirement. Nothing in Lua does this,
+</I>&gt;<i> it's incredibly complex and we don't have locale information (language
+</I>&gt;<i> tables are  (timezone tables for isdst are 6MB on Unix) to be able to
+</I>&gt;<i> do it.
+</I>&gt;<i>
+</I>&gt;<i> At the Lua level, I suggest os.settime() either:
+</I>&gt;<i> 1)  take a coded value, the same thing that os.time() returns, so that
+</I>&gt;<i> os.settime(os.time()) is (almost) a no-op and if a program wants to
+</I>&gt;<i> set the date and time using separate fields, it can use
+</I>&gt;<i> os.settime(os.date(table)),
+</I>&gt;<i> 2) or take either a number or a table and do the implicit call to
+</I>&gt;<i> os.date() for you.
+</I>&gt;<i> I'd tend towards the simpler option 1).
+</I>&gt;<i>
+</I>&gt;<i> I suppose the C platform layer should decide on one format, which I
+</I>&gt;<i> guess is the system-dependent number, as returned by os.time().
+</I>&gt;<i>
+</I>&gt;<i> &gt; I suppose
+</I>&gt;<i> &gt; we could provide options as we do for other things though for targets
+</I>&gt;<i> &gt; with smaller flash availability?
+</I>&gt;<i>
+</I>&gt;<i> You mean BUILD_OSDATE or something?  I think, if a program deals in
+</I>&gt;<i> time/date at all, it's probably because it wants to display it
+</I>&gt;<i> somewhere.  Making the whole time/date subsystem conditionally
+</I>&gt;<i> compiled might make more sense, since eliminating it all that drops
+</I>&gt;<i> all the gmtime()/mktime() stuff as well.
+</I>&gt;<i>
+</I>&gt;<i> There is other stuff in the os library too:
+</I>&gt;<i>
+</I>&gt;<i> os.clock() (elapsed time since the program started - fairly easy to
+</I>&gt;<i> implement once you have time/date stuff)
+</I>&gt;<i> os.difftime(t1, t2) - pretty easy if our coded numbers are in seconds.
+</I>&gt;<i>
+</I>&gt;<i> and I was already thinking of implementing the os library's file
+</I>&gt;<i> operations for systems with an mmc card:
+</I>&gt;<i> os.remove(filename)
+</I>&gt;<i> os.rename(oldname, newname)
+</I>&gt;<i> os.tmpname()
+</I>&gt;<i>
+</I>&gt;<i> but commenting out the lines that map those functions at the end of
+</I>&gt;<i> loslib.c should be enough until the day we inplement them.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> As regards code size, attached are versions of mktime() and gmtime()
+</I>&gt;<i> which use a sophisticated algorithm but don't do timezones. The newlib
+</I>&gt;<i> versions are pretty dumb, just looping from year to year, adding month
+</I>&gt;<i> sizes and testing for leap years, while these calculate the answers
+</I>&gt;<i> directly. Including these in the build replaces the ones in newlib and
+</I>&gt;<i> is 1700 bytes smaller (oh, and faster :). If you also disable the
+</I>&gt;<i> handling of negative times in this code (for dates  before 1970), you
+</I>&gt;<i> save another 68 bytes.
+</I>&gt;<i>
+</I>&gt;<i> You'll also want to remove the call to localtime() in
+</I>&gt;<i> src/lua/loslib::os_date().  Or provide a stub in the file that just
+</I>&gt;<i> calls gmtime().
+</I>&gt;<i>
+</I>&gt;<i>  if (*s == '!') {  /* UTC? */
+</I>&gt;<i>    stm = gmtime(&amp;t);
+</I>&gt;<i>    s++;  /* skip `!' */
+</I>&gt;<i>  }
+</I>&gt;<i>  else
+</I>&gt;<i>    stm = localtime(&amp;t);
+</I>&gt;<i>
+</I>&gt;<i> but I suggest leaving the &quot;!&quot;-skipping code, again so that standard
+</I>&gt;<i> Lua programs or libraries are more likely to work in eLua.
+</I>&gt;<i>
+</I>
+Wow, you've been busy :) The STR9 RTC code was written for a specific
+application with specific needs, I'm not even sure I should've add it to the
+master branch. But the discussion here can serve as a good starting point
+for a future generic RTC module.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110927/e20f3c40/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110927/e20f3c40/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002740.html">[eLua-dev] str9.rtc code missing?
+</A></li>
+	<LI>Next message: <A HREF="002748.html">[eLua-dev] str9.rtc code missing?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2742">[ date ]</a>
+              <a href="thread.html#2742">[ thread ]</a>
+              <a href="subject.html#2742">[ subject ]</a>
+              <a href="author.html#2742">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

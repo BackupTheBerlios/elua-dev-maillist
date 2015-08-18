@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] QEI Module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20QEI%20Module&In-Reply-To=%3CCAJ%3DY9Y0aOiyTFYjLx_VgdeOUV%3DNLgFYdT3QjPL97UYNEEtkq0w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003352.html">
+   <LINK REL="Next"  HREF="003356.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] QEI Module</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20QEI%20Module&In-Reply-To=%3CCAJ%3DY9Y0aOiyTFYjLx_VgdeOUV%3DNLgFYdT3QjPL97UYNEEtkq0w%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] QEI Module">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Mar 13 23:09:55 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003352.html">[eLua-dev] QEI Module
+</A></li>
+        <LI>Next message: <A HREF="003356.html">[eLua-dev] QEI Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3354">[ date ]</a>
+              <a href="thread.html#3354">[ thread ]</a>
+              <a href="subject.html#3354">[ subject ]</a>
+              <a href="author.html#3354">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Mar 10, 2012 at 3:38 PM, jrambo316 &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jrambo316 at yahoo.com</A>&gt; wrote:
+&gt;<i> I'll let you know how things go. &#160;My board has not arrived yet.
+</I>&gt;<i>
+</I>&gt;<i> 2 more questions:
+</I>&gt;<i> 1. &#160;I have been researching the QEI description in the datasheet trying to
+</I>&gt;<i> figure a way to get two velocity sensors per QEI rather than velocity and
+</I>&gt;<i> position. &#160;I am a little confused on the position integrator. &#160;One thing I
+</I>&gt;<i> came up with was to use the Phase A / Phase B switching capability to get a
+</I>&gt;<i> reading on A, switch, get a reading on B, switch, etc. &#160;Unfortunately, this
+</I>&gt;<i> would obviously cut my performance. &#160;Ideas?
+</I>
+To be honest I'm not certain that would be possible, depending on what
+you mean.  Though I've helped to convert the module to a
+platform-specific module that someone else provided I haven't looked
+into the implementation details of this particular platform.
+
+The phase A &amp; B channels are both needed for a given implementation so
+that one can disambiguate between rotation in one direction vs
+another.  Otherwise it would be behaving just like a counter. The
+velocity should just be a derivative of what the counter that's
+integrating both channels has been doing during the last number of
+clock cycles (or some filtered version of that).
+
+One can do quadrature decoding in software, or one can also use
+separate chips that will convert phase A/B into channels that might be
+a bit easier to to work with with just a counter or interrupts like
+this one: <A HREF="http://www.lsicsi.com/pdfs/Data_Sheets/LS7183_LS7184.pdf">http://www.lsicsi.com/pdfs/Data_Sheets/LS7183_LS7184.pdf</A>
+
+Depending on the needs of the project, it might be possible to
+multiplex multiple encoders onto a single QEI, but depending on the
+maximum frequency of the quadrature phase info, it's entirely possible
+to lose counts.  If for the application you might be confident that
+you can do the switching fast enough not to drop counts it might be
+possible, but I haven't looked at the qei peripheral in enough detail.
+
+&gt;<i>
+</I>&gt;<i> Also, I am wondering why the ability to use a timer input capture pin as an
+</I>&gt;<i> edge timer and generate an interrupt does not seem to be supported in the
+</I>&gt;<i> timer documentation. &#160;In this way, I think the general purpose timers could
+</I>&gt;<i> also be used for velocity measurement.
+</I>
+I think the edge count mode should do what you want?  We don't have
+that functionality implemented for eLua, but I think it should
+probably be straightforward from the docs?
+
+The platform also certainly supports triggering interrupts on
+different edges for GPIO, where you could implement quadrature
+decoding in an interrupt handler (with the assumption that the
+interrupt can run fast enough to capture all events... this might at
+least give you an indication of cases where events are missed if an
+interrupt fires while you're still in one that's running).
+
+
+&gt;<i>
+</I>&gt;<i> 2. &#160;From other posts, it looks as though you are familiar with eluarpc as
+</I>&gt;<i> well. &#160;I noticed that you guys are working on rpc over ip. &#160;For my purposes,
+</I>&gt;<i> I want to implement rpc over SPI or I2C or both. &#160;Anything in the works for
+</I>&gt;<i> that?
+</I>
+Either of these should be possible.  SPI might be pretty
+straightforward from the existing implementation, since SPI should
+mirror way we use a UART on a lot of levels:
+luarpc_elua_uart.c
+
+I2C would require working a bit more around that protocol, but
+shouldn't be too painful.  If you need help here I can try and provide
+some guidance though I haven't put in the time to try and implement
+this.
+
+&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i> Jim
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/QEI-Module-tp7182596p7361880.html">http://elua-development.2368040.n2.nabble.com/QEI-Module-tp7182596p7361880.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003352.html">[eLua-dev] QEI Module
+</A></li>
+	<LI>Next message: <A HREF="003356.html">[eLua-dev] QEI Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3354">[ date ]</a>
+              <a href="thread.html#3354">[ thread ]</a>
+              <a href="subject.html#3354">[ subject ]</a>
+              <a href="author.html#3354">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

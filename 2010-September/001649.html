@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Building eLua under windows
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20eLua%20under%20windows&In-Reply-To=%3CAANLkTikoLc%2B8v_BV%2BeB1Dni6CsOac3WzFPBWG1nyfJ_V%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001648.html">
+   <LINK REL="Next"  HREF="001650.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Building eLua under windows</H1>
+    <B>Pedro Bittencourt</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20eLua%20under%20windows&In-Reply-To=%3CAANLkTikoLc%2B8v_BV%2BeB1Dni6CsOac3WzFPBWG1nyfJ_V%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Building eLua under windows">pedrobittencourt87 at gmail.com
+       </A><BR>
+    <I>Sun Sep 12 00:08:55 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001648.html">[eLua-dev] Building eLua under windows
+</A></li>
+        <LI>Next message: <A HREF="001650.html">[eLua-dev] eLua-dev Digest, Vol 26, Issue 14
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1649">[ date ]</a>
+              <a href="thread.html#1649">[ thread ]</a>
+              <a href="subject.html#1649">[ subject ]</a>
+              <a href="author.html#1649">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Paul,
+
+Are using Cygwin or the mingw version of GCC? (don't know if this really
+matters to the problem, just to reconstruct the environment here to check it
+out).
+
+--Pedro Bittencourt
+
+
+On Sat, Sep 11, 2010 at 6:54 PM, Paul Verbeke &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">paverbeke at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> I was able to build eLua under windows last week. Seems something has
+</I>&gt;<i> happened since then, and when I try to build now I get the following:
+</I>&gt;<i>
+</I>&gt;<i> C:\elua0.7&gt;scons board=ek-lm3s6965 toolchain=codesourcery prog
+</I>&gt;<i> scons: Reading SConscript files ...
+</I>&gt;<i>
+</I>&gt;<i> *********************************
+</I>&gt;<i> Compiling eLua ...
+</I>&gt;<i> CPU:             LM3S6965
+</I>&gt;<i> Board:           EK-LM3S6965
+</I>&gt;<i> Platform:        lm3s
+</I>&gt;<i> Allocator:       newlib
+</I>&gt;<i> Boot Mode:       standard
+</I>&gt;<i> Target:          fplua
+</I>&gt;<i> Toolchain:       codesourcery
+</I>&gt;<i> ROMFS mode:      verbatim
+</I>&gt;<i> *********************************
+</I>&gt;<i>
+</I>&gt;<i> Building ROM File System...
+</I>&gt;<i> Encoded file bisect.lua (646 bytes)
+</I>&gt;<i> Encoded file hangman.lua (3378 bytes)
+</I>&gt;<i> Encoded file pong.lua (10729 bytes)
+</I>&gt;<i> Encoded file led.lua (1198 bytes)
+</I>&gt;<i> Encoded file piano.lua (3080 bytes)
+</I>&gt;<i> Encoded file pwmled.lua (917 bytes)
+</I>&gt;<i> Encoded file hello.lua (23 bytes)
+</I>&gt;<i> Encoded file info.lua (134 bytes)
+</I>&gt;<i> Encoded file morse.lua (3560 bytes)
+</I>&gt;<i> Encoded file adcscope.lua (2055 bytes)
+</I>&gt;<i> Encoded file adcpoll.lua (1414 bytes)
+</I>&gt;<i> Encoded file logo.lua (2679 bytes)
+</I>&gt;<i> Encoded file logo.bin (2048 bytes)
+</I>&gt;<i> Encoded file HelloLua.lua (51 bytes)
+</I>&gt;<i> Encoded file LuaTest.lua (437 bytes)
+</I>&gt;<i> Encoded file EK-LM3S6965.lua (1276 bytes)
+</I>&gt;<i> Done, total size is 33832 bytes
+</I>&gt;<i>
+</I>&gt;<i> scons: done reading SConscript files.
+</I>&gt;<i> scons: Building targets ...
+</I>&gt;<i> arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc\n
+</I>&gt;<i> ewlib -Isrc\lua -Isrc\modules -Isrc\platform\lm3s -Isrc\uip -Isrc\fatfs
+</I>&gt;<i> -ffuncti
+</I>&gt;<i> on-sections -fdata-sections -DELUA_CPU=LM3S6965 -DELUA_BOARD=EK-LM3S6965
+</I>&gt;<i> -DELUA_
+</I>&gt;<i> PLATFORM=LM3S -D__BUFSIZ__=128 -DELUA_CPU_LM3S6965 -DELUA_BOARD_EKLM3S6965
+</I>&gt;<i> -DELU
+</I>&gt;<i> A_PLATFORM_LM3S -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S6965 -Dgcc
+</I>&gt;<i> -Wall
+</I>&gt;<i> -c src\shell.c -o src\shell.o
+</I>&gt;<i> src\shell.c:274: error: 'shell_env' undeclared here (not in a function)
+</I>&gt;<i> scons: *** [src\shell.o] Error 1
+</I>&gt;<i> scons: building terminated because of errors.
+</I>&gt;<i>
+</I>&gt;<i> C:\elua0.7&gt;
+</I>&gt;<i> Also, when I try to build the cross compiler I get:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> C:\elua0.7&gt;scons -f cross-lua.py
+</I>&gt;<i>
+</I>&gt;<i> scons: *** An executable should have exactly one target with the suffix:
+</I>&gt;<i> .exe
+</I>&gt;<i> File &quot;C:\elua0.7\cross-lua.py&quot;, line 22, in &lt;module&gt;
+</I>&gt;<i>
+</I>&gt;<i> Any help would be appreciated.
+</I>&gt;<i>
+</I>&gt;<i> Paul
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100911/3b6bf466/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100911/3b6bf466/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001648.html">[eLua-dev] Building eLua under windows
+</A></li>
+	<LI>Next message: <A HREF="001650.html">[eLua-dev] eLua-dev Digest, Vol 26, Issue 14
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1649">[ date ]</a>
+              <a href="thread.html#1649">[ thread ]</a>
+              <a href="subject.html#1649">[ subject ]</a>
+              <a href="author.html#1649">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

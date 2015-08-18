@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A Few Models For Dealing With ADC Samples
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1KMqN6660abbf85e0530d91869c%2C%0A%09jbsnyder%40fanplastic.org%2C%2051FA68A5-CCCF-494A-9907-D97%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000584.html">
+   <LINK REL="Next"  HREF="000589.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A Few Models For Dealing With ADC Samples</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1KMqN6660abbf85e0530d91869c%2C%0A%09jbsnyder%40fanplastic.org%2C%2051FA68A5-CCCF-494A-9907-D97%3E"
+       TITLE="[eLua-dev] A Few Models For Dealing With ADC Samples">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sun Feb 22 05:52:18 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000584.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+        <LI>Next message: <A HREF="000589.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#588">[ date ]</a>
+              <a href="thread.html#588">[ thread ]</a>
+              <a href="subject.html#588">[ subject ]</a>
+              <a href="author.html#588">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 21, 2009, at 3:55 PM, Andre Carregal wrote:
+
+&gt;<i> (changing gears... screech...)
+</I>&gt;<i>
+</I>&gt;&gt;<i> On Feb 19, 2009, at 4:48 AM, Bogdan Marinescu wrote:
+</I>&gt;&gt;<i> Alright, a word of warning first: I'm not by any means a specialist  
+</I>&gt;&gt;<i> in ADCs,
+</I>&gt;&gt;<i> and I only used them in a buch of applications. That said, I do  
+</I>&gt;&gt;<i> have some
+</I>&gt;&gt;<i> ideas about how they work and what they're supposed to do, and a  
+</I>&gt;&gt;<i> few ideas
+</I>&gt;&gt;<i> of my own about the design of the module itself. The basic  
+</I>&gt;&gt;<i> principle here is
+</I>&gt;&gt;<i> KISS. I want the modules to cover all the needed functionality, but  
+</I>&gt;&gt;<i> no more
+</I>&gt;&gt;<i> than that. I definitely don't want a full blown API, but rather to  
+</I>&gt;&gt;<i> keep
+</I>&gt;&gt;<i> everything as lightweight as possible. For example, you might have  
+</I>&gt;&gt;<i> noticed
+</I>&gt;&gt;<i> that none of the modules currently exported by eLua use the &quot;object
+</I>&gt;&gt;<i> notation&quot;. This is intentional, as the &quot;standard&quot; notation is still  
+</I>&gt;&gt;<i> more
+</I>&gt;&gt;<i> widely used in different instances of embedded programming, plus it  
+</I>&gt;&gt;<i> keeps
+</I>&gt;&gt;<i> the implementation simpler. Of course, keeping a good balance  
+</I>&gt;&gt;<i> between a
+</I>&gt;&gt;<i> minimal API and a good functionality is an art in itself, something  
+</I>&gt;&gt;<i> that I
+</I>&gt;&gt;<i> don't pretend to master (but I try anyway :) ).
+</I>&gt;&gt;<i> With that in mind, I think that our current ADC module does enough to
+</I>&gt;&gt;<i> qualify as functional
+</I>&gt;<i>
+</I>&gt;<i> I hear you, crystal clear. I really came to the list with a very
+</I>&gt;<i> different point of view and this thread has been a good lesson of
+</I>&gt;<i> scale and politics for me... :o)
+</I>&gt;<i>
+</I>&gt;<i> As a side note, it's interesting how &quot;small&quot; is a subjective concept.
+</I>&gt;<i> For an astronomer, the moon is probably small... for me, something
+</I>&gt;<i> around 5k was small, but once you find that people are fighting for
+</I>&gt;<i> bytes suddenly the scale changes.
+</I>&gt;<i>
+</I>&gt;<i> I apologize for not spending time enough to get a feeling of the
+</I>&gt;<i> project bias and culture before manifesting my ideas and I promise to
+</I>&gt;<i> be more careful in the future.
+</I>
+There's no problem with discussing these things though (with some  
+limitations) :-)
+
+Even if the lower level APIs don't adopt an object style of notation,  
+there were a couple of things that came out there that were  
+interesting.  I think that the grouping or atomizing of channels is  
+something that may prove to be a very useful feature, which may not  
+have been communicated had we not gone down that path.  Also, I  
+personally have only started recently working with Lua, so getting  
+perspectives how others would want to implement something like this is  
+quite valuable.
+
+KISS is a difficult philosophy to adhere to when there are innumerable  
+ways to do even simple things.  Given that, I think that brainstorming  
+a bit about the different ways to do things can help in figuring out  
+what does and doesn't make sense about any given approach.  It also  
+should help with preventing cases where someone looks at this, many  
+months down the road, and wonders why some particularly braindead  
+decision was made :-)
+
+Also, giving good reasons to rip out useless or bizarre functionality  
+should help keep this smaller.
+
+All of that said, things do need to be balanced.  We don't want  
+something that needs even a megabyte of RAM to run in, so some ideas  
+will generally always be off the table :-)
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090221/cc2b8cbe/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090221/cc2b8cbe/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090221/cc2b8cbe/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090221/cc2b8cbe/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000584.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+	<LI>Next message: <A HREF="000589.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#588">[ date ]</a>
+              <a href="thread.html#588">[ thread ]</a>
+              <a href="subject.html#588">[ subject ]</a>
+              <a href="author.html#588">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eluaRPC
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eluaRPC&In-Reply-To=%3CCAJ%3DY9Y1%2BtAn8YOkS-W9DWDef9DW70XkpfYcurbSrVs_znKps9Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003397.html">
+   <LINK REL="Next"  HREF="003372.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eluaRPC</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eluaRPC&In-Reply-To=%3CCAJ%3DY9Y1%2BtAn8YOkS-W9DWDef9DW70XkpfYcurbSrVs_znKps9Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eluaRPC">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Mar 27 04:37:11 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003397.html">[eLua-dev] eluaRPC
+</A></li>
+        <LI>Next message: <A HREF="003372.html">[eLua-dev] RTC pull request
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3412">[ date ]</a>
+              <a href="thread.html#3412">[ thread ]</a>
+              <a href="subject.html#3412">[ subject ]</a>
+              <a href="author.html#3412">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Mar 23, 2012 at 12:55 PM, jrambo316 &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jrambo316 at yahoo.com</A>&gt; wrote:
+&gt;<i> Please have a look at my question concerning the rpc.server.
+</I>
+rpc.server is captive, ditto for the boot mode which just hops into that.
+
+rpc.peek should allow you to check for waiting data without blocking,
+telling it to dispatch when peek returns a 1 will attempt to handle a
+pending request.
+
+I've done some things like the following in the past to have a
+redefinable &quot;control&quot; function that executes regularly, but shares
+time with incoming RPC requests:
+
+autorun.lua:
+local state = {}
+local stime
+
+function control()
+end
+
+handle = rpc.listen(0,0)
+stime = tmr.start(0)
+while true do
+   -- Check for pending RPC request
+   if rpc.peek( handle ) then
+     rpc.dispatch( handle )
+   end
+   control()
+   tmr.delay( 1, 100000-tmr.gettimediff( 0, tmr.read(0), stime) )
+   stime = tmr.start(0)
+end
+
+there's also an rpc.adispatch function that basically does the same ting as:
+   if rpc.peek( handle ) then
+     rpc.dispatch( handle )
+   end
+
+&gt;<i>
+</I>&gt;<i> In my application, every elua board would be constantly performing its own
+</I>&gt;<i> functions and connecting / receiving rpc connections as needed. &#160;I would
+</I>&gt;<i> need to find another option if the rpc.server &quot;blocked&quot; the functions above
+</I>&gt;<i> just waiting for connections.
+</I>&gt;<i>
+</I>&gt;<i> This may be a stupid question. &#160;I can try and figure it out for myself if
+</I>&gt;<i> there is some example code I can analyze. &#160;The only example I saw on the
+</I>&gt;<i> website was from the client perspective.
+</I>&gt;<i>
+</I>&gt;<i> Is the &quot;boot to eluaRPC&quot; the only option to turn on the server or could it
+</I>&gt;<i> be turned on and off adhoc?
+</I>
+One can just execute the rpc.server() function form the Lua prompt,
+you don't have to boot to it.  I don't think rpc.server() ever really
+exits though on serial connections, so the peek/dispatch functions may
+be more appealing.
+
+Now as far as having two boards talk to each other, I _believe_ this
+should work, but I have not tried it recently after we made some
+additions that were needed to get this going.   If it doesn't
+currently work, it may just be due to some assumptions in the uart
+handling code.  If you do try this and it doesn't work I'd be happy to
+try and work through any issues on that front.
+
+Best.
+
+-jsnyder
+
+&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Jim
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/eluaRPC-tp7387837p7399382.html">http://elua-development.2368040.n2.nabble.com/eluaRPC-tp7387837p7399382.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+</PRE>
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003397.html">[eLua-dev] eluaRPC
+</A></li>
+	<LI>Next message: <A HREF="003372.html">[eLua-dev] RTC pull request
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3412">[ date ]</a>
+              <a href="thread.html#3412">[ thread ]</a>
+              <a href="subject.html#3412">[ subject ]</a>
+              <a href="author.html#3412">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

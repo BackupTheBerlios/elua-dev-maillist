@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Running C task concurrently (in background) with eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Running%20C%20task%20concurrently%20%28in%20background%29%20with%20eLua&In-Reply-To=%3CCAJ%3DY9Y0T52xkDHJhp7z1W9gAJS7h-mVBcffwo%3DQvxazug%3DC03Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004162.html">
+   <LINK REL="Next"  HREF="004160.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Running C task concurrently (in background) with eLua</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Running%20C%20task%20concurrently%20%28in%20background%29%20with%20eLua&In-Reply-To=%3CCAJ%3DY9Y0T52xkDHJhp7z1W9gAJS7h-mVBcffwo%3DQvxazug%3DC03Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Running C task concurrently (in background) with eLua">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Jun  5 00:44:33 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004162.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+        <LI>Next message: <A HREF="004160.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4163">[ date ]</a>
+              <a href="thread.html#4163">[ thread ]</a>
+              <a href="subject.html#4163">[ subject ]</a>
+              <a href="author.html#4163">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Jun 4, 2013 at 3:33 PM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+
+&gt;<i> The hook function is automatically called by the vm loop at regular
+</I>&gt;<i> intervals, so just call the heartbeat in the hook function and you don't
+</I>&gt;<i> need to worry about feeding the bytecode.
+</I>&gt;<i> As long as the Lua interpreter is running code, the hook function will be
+</I>&gt;<i> called, just make sure the Lua code has an infinite loop to keep it running
+</I>&gt;<i> or the hook will stop.
+</I>&gt;<i> This should have the same alternating effect you described.
+</I>&gt;<i>
+</I>
+Yep, this is what I was intending when I sent that reply.
+
+Side note on the &quot;if the VM stops, so do the hooks&quot; front.  There is some
+work on a branch that replaces the readline functionality to allow calling
+other things, including the eLua interrupt handler when nothing is being
+typed into the REPL.  It's not yet ready to merge, but it would allow you
+to keep doing &quot;background&quot; operations when it's blocking on line input at
+the REPL.
+
+
+&gt;<i> I don't know how to feed chunks of bytecode to the vm...
+</I>&gt;<i>
+</I>
+I'll also admit that I'm not sure whether what is being asked for is
+practical to do.  The code that handles reading in pre-compiled code to the
+Lua state is in lundump.c, with the public function for that being
+luaU_undump, which gets called when you do a lua_load and the chunk you
+provide is precompiled rather than source (otherwise it will parse &amp;
+compile).
+
+I'm not really sure how well it might work to feed bytecode through this to
+get it executed in the way that you're suggesting, since generally after
+you do a load you have to do a lua_pcall to execute it. So I believe you'd
+have to feed it a complete chunk (
+<A HREF="http://www.lua.org/manual/5.1/manual.html#2.4.1">http://www.lua.org/manual/5.1/manual.html#2.4.1</A>) before you'd be able to
+execute the constituent instructions.
+
+You could field this type of question on the Lua list, since functionally
+eLua shouldn't differ much from how you might do this in Lua:
+<A HREF="http://www.lua.org/lua-l.html">http://www.lua.org/lua-l.html</A>
+
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Thiago
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Jun 4, 2013 at 3:57 PM, Ashu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">knowlog at hotmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Thanks for the pointers/ links.
+</I>&gt;&gt;<i> On second part of my question -- lc byte-code loaded in memory, how can I
+</I>&gt;&gt;<i> execute it in chunks?
+</I>&gt;&gt;<i> If this use-case is supported in eLua; please point me to the hook
+</I>&gt;&gt;<i> function
+</I>&gt;&gt;<i> that I can feed lc byte-
+</I>&gt;&gt;<i> code chunks to.
+</I>&gt;&gt;<i> What I intend to do with that: switch/share execution control by
+</I>&gt;&gt;<i> alternately
+</I>&gt;&gt;<i> calling heartbeat and
+</I>&gt;&gt;<i> lc bytecode interpreter function (for chuck-at-a-time script execution)
+</I>&gt;&gt;<i> from
+</I>&gt;&gt;<i> a tight loop in main().
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> View this message in context:
+</I>&gt;&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/Running-C-task-concurrently-in-background-with-eLua-tp7578047p7578055.html">http://elua-development.2368040.n2.nabble.com/Running-C-task-concurrently-in-background-with-eLua-tp7578047p7578055.html</A>
+</I>&gt;&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130604/32cb456c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130604/32cb456c/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004162.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+	<LI>Next message: <A HREF="004160.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4163">[ date ]</a>
+              <a href="thread.html#4163">[ thread ]</a>
+              <a href="subject.html#4163">[ subject ]</a>
+              <a href="author.html#4163">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

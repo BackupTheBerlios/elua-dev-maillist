@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] FP32 with fpu enabled
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20FP32%20with%20fpu%20enabled&In-Reply-To=%3CCANKDJfbSrJewN_qh0Fca_d7kxJwKre8DY1Xsd5v8o8Du_xCR6A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002990.html">
+   <LINK REL="Next"  HREF="002992.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] FP32 with fpu enabled</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20FP32%20with%20fpu%20enabled&In-Reply-To=%3CCANKDJfbSrJewN_qh0Fca_d7kxJwKre8DY1Xsd5v8o8Du_xCR6A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] FP32 with fpu enabled">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sun Nov 20 18:26:08 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002990.html">[eLua-dev] FP32 with fpu enabled
+</A></li>
+        <LI>Next message: <A HREF="002992.html">[eLua-dev] FP32 with fpu enabled
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2991">[ date ]</a>
+              <a href="thread.html#2991">[ thread ]</a>
+              <a href="subject.html#2991">[ subject ]</a>
+              <a href="author.html#2991">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2011/11/20 pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+
+&gt;<i> There are few new DSP instructions (stm32f4) which might speed-up
+</I>&gt;<i> the soft math as well - marketing materials I saw say e.g.:
+</I>&gt;<i> Single cycle MUL/MAC: signed/unsigned multiply, signed/unsigned MAC,
+</I>&gt;<i> signed/unsigned MAC 64bit.
+</I>&gt;<i> They claim speeds improvements vs. CM3: 4x for 16bit MAC, 2x for
+</I>&gt;<i> 32bit MAC, up to 7x for 64bit MAC..
+</I>&gt;<i>
+</I>
+MAC is mostly a DSP operation, general purpose code doesn't use it that
+much, so I wouldn't hold my breath for too long.
+
+Best,
+Bogdan
+
+p.
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> Komu: &quot;Tim michals&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt;, &quot;eLua Users and
+</I>&gt;<i> Development List (www.eluaproject.net)&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] FP32 with fpu enabled
+</I>&gt;<i> Datum: 20.11.2011 - 17:14:44
+</I>&gt;<i>
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Sun, Nov 20, 2011 at 5:06 PM, Tim michals
+</I>&gt;<i> &gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt;  GCC provides three basic options for compiling
+</I>&gt;<i> &gt; &gt;  floating-point code:
+</I>&gt;<i> &gt; &gt;  &gt;
+</I>&gt;<i> &gt; &gt;    - Software floating point emulation, which is
+</I>&gt;<i> &gt; &gt;    the default. In this
+</I>&gt;<i> &gt; &gt;    &gt;    case, the compiler implements floating-point
+</I>&gt;<i> &gt; &gt;    arithmetic by means of library
+</I>&gt;<i> &gt; &gt;    &gt;    calls.
+</I>&gt;<i> &gt; &gt;    - VFP hardware floating-point support using
+</I>&gt;<i> &gt; &gt;    the soft-float ABI. This
+</I>&gt;<i> &gt; &gt;    &gt;    is selected by the -mfloat-abi=softfp option.
+</I>&gt;<i> &gt; &gt;    When you select this
+</I>&gt;<i> &gt; &gt;    &gt;    variant, the compiler generates VFP
+</I>&gt;<i> &gt; &gt;    floating-point instructions, but the
+</I>&gt;<i> &gt; &gt;    &gt;    resulting code uses the same call and return
+</I>&gt;<i> &gt; &gt;    conventions as code compiled
+</I>&gt;<i> &gt; &gt;    &gt;    with software floating point.
+</I>&gt;<i> &gt; &gt;    - VFP hardware floating-point support using
+</I>&gt;<i> &gt; &gt;    the VFP ABI, which is the
+</I>&gt;<i> &gt; &gt;    &gt;    VFP variant of the Procedure Call Standard
+</I>&gt;<i> &gt; &gt;    for the ARM(R) Architecture
+</I>&gt;<i> &gt; &gt;    &gt;    (AAPCS). This ABI uses VFP registers to pass
+</I>&gt;<i> &gt; &gt;    function arguments and return
+</I>&gt;<i> &gt; &gt;    &gt;    values, resulting in faster floating-point
+</I>&gt;<i> &gt; &gt;    code. To use this variant,
+</I>&gt;<i> &gt; &gt;    &gt;    compile with -mfloat-abi=hard.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; The CodeSoucery is compiled as soft, so, to make
+</I>&gt;<i> &gt; &gt; the most use hard, libc,
+</I>&gt;<i> &gt; &gt; &gt; and newlib need to be compiled using hard. Using
+</I>&gt;<i> &gt; &gt; the softfp, might be the
+</I>&gt;<i> &gt; &gt; &gt; easiest, so the standard libraries can still be
+</I>&gt;<i> &gt; &gt; used.
+</I>&gt;<i> &gt; &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Yes, softfp seems to be the best starting point
+</I>&gt;<i> &gt; here.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Another issue, maybe add two new types to eLua,
+</I>&gt;<i> &gt; &gt; long int (64) ,
+</I>&gt;<i> &gt; &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; This already happened. Have you missed the recent
+</I>&gt;<i> &gt; system timer thread?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/IMPORTANT-New-feature-on-the-master-branch-system-timer-td6918200.html">http://elua-development.2368040.n2.nabble.com/IMPORTANT-New-feature-on-the-master-branch-system-timer-td6918200.html</A>
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt; float (32)
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; We could definitly do this, although I can see
+</I>&gt;<i> &gt; eLua breaking in various,
+</I>&gt;<i> &gt; wonderfully unexpected ways when the number type
+</I>&gt;<i> &gt; won't be able to represent
+</I>&gt;<i> &gt; a full 32-bit integer anymore :)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt; and leaving the standard as int, there is a lot
+</I>&gt;<i> &gt; &gt; of discussion on the forum
+</I>&gt;<i> &gt; &gt; &gt; about timer support etc 64 bits, so just lump
+</I>&gt;<i> &gt; &gt; both int-64, and float into
+</I>&gt;<i> &gt; &gt; &gt; expanding the types.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Yupppp, you definitely missed the system timer
+</I>&gt;<i> &gt; thread :)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt; But, that is a lot of work.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I think the best option we have with this is LNUM.
+</I>&gt;<i> &gt; If LNUM can
+</I>&gt;<i> &gt; differentiate between single and double precision
+</I>&gt;<i> &gt; operations (like it does
+</I>&gt;<i> &gt; for integers and floats) we might be able to
+</I>&gt;<i> &gt; benefit from the hardware
+</I>&gt;<i> &gt; acceleration. I'll have to take a closer look at
+</I>&gt;<i> &gt; that at some point.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt;   ------------------------------
+</I>&gt;<i> &gt; &gt; *From:* pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;<i> &gt; &gt; *To:* <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; &gt; *Sent:* Sunday, November 20, 2011 3:38 AM
+</I>&gt;<i> &gt; &gt; *Subject:* [eLua-dev] FP32 with fpu enabled
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Hi, did somebody try to compile as FP32 with fpu
+</I>&gt;<i> &gt; &gt; support (e.g. for
+</I>&gt;<i> &gt; &gt; &gt; the stm32f4 board)? P.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; --
+</I>&gt;<i> &gt; &gt; Jak se vyhnout nachlazen&#237; a dal&#353;&#237;m zdravotn&#237;m
+</I>&gt;<i> &gt; &gt; pot&#237;&#382;&#237;m v nep&#345;&#237;jemn&#233;m
+</I>&gt;<i> &gt; &gt; &gt; podzimn&#237;m obdob&#237;? &#268;t&#283;te speci&#225;l Zdrav&#237; na podzim
+</I>&gt;<i> &gt; &gt; na
+</I>&gt;<i> &gt; &gt; &gt; <A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;<i> &gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; &gt; &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;<i> &gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; &gt; &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Videokurzy MS Office zdarma! Port&#225;l VOLN&#221;.cz p&#345;in&#225;&#353;&#237; online v&#253;ukov&#225;
+</I>&gt;<i> videa, kter&#225; v&#225;s rychle, n&#225;zorn&#283; a z&#225;bavnou formou nau&#269;&#237; ovl&#225;dat
+</I>&gt;<i> programy Excel, Word a PowerPoint. Seri&#225;l najdete na
+</I>&gt;<i> <A HREF="http://web.volny.cz/data/click.php?id=1293">http://web.volny.cz/data/click.php?id=1293</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111120/b19acc57/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111120/b19acc57/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002990.html">[eLua-dev] FP32 with fpu enabled
+</A></li>
+	<LI>Next message: <A HREF="002992.html">[eLua-dev] FP32 with fpu enabled
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2991">[ date ]</a>
+              <a href="thread.html#2991">[ thread ]</a>
+              <a href="subject.html#2991">[ subject ]</a>
+              <a href="author.html#2991">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

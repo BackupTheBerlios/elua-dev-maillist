@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] some success.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20some%20success.&In-Reply-To=%3CCAJ%3DY9Y1%2B-CUTd2TuHJe4O%3DycmKbScZap-qOZ0YFbupN%3DLwDTMw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002939.html">
+   <LINK REL="Next"  HREF="002941.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] some success.</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20some%20success.&In-Reply-To=%3CCAJ%3DY9Y1%2B-CUTd2TuHJe4O%3DycmKbScZap-qOZ0YFbupN%3DLwDTMw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] some success.">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Nov 14 00:01:53 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002939.html">[eLua-dev] some success.
+</A></li>
+        <LI>Next message: <A HREF="002941.html">[eLua-dev] arm-none-eabi-cc: command not found
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2940">[ date ]</a>
+              <a href="thread.html#2940">[ thread ]</a>
+              <a href="subject.html#2940">[ subject ]</a>
+              <a href="author.html#2940">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Nov 13, 2011 at 4:48 PM, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+&gt;<i> I was able to build the elua sources using the CodeSourcer lite tool chain.
+</I>&gt;<i> I am doing this inside a vmware fedora virtual machine with the following
+</I>&gt;<i> command:
+</I>&gt;<i> scons board=EK-LM3S9B92 toolchain=codesourcery
+</I>&gt;<i> The compile time was actually quite quick.
+</I>&gt;<i> The I tried to flash the elf image using the LM flash programmer that comes
+</I>&gt;<i> with EK-EKC-LM3S9B92 software.
+</I>
+You'll want to build it down to a bin image, using the prog option:
+scons board=EK-LM3S9B92 toolchain=codesourcery prog
+
+Then take the resulting .bin image and flash that.
+
+&gt;<i>
+</I>&gt;<i> The flash progammer states that the image is file length is larger than
+</I>&gt;<i> memory.
+</I>&gt;<i> I wonder a couple of things. Did I compile the elua image debug?
+</I>&gt;<i> I put some programs in the romfs directory and when doing so make the image
+</I>&gt;<i> to large? Also how do I do the equivalent of &quot;make clean&quot; using scons?
+</I>
+Adding programs to romfs will make the image grow, but I think it's
+more likely that it may have just been that you tried to burn the full
+elf file rather than the bin.  There are ways to crunch those down as
+well using the romfs=compress or romfs=compile
+(<A HREF="http://www.eluaproject.net/doc/v0.8/en_arch_romfs.html#mode">http://www.eluaproject.net/doc/v0.8/en_arch_romfs.html#mode</A>).  The
+former will require Lua be installed, as I recall, and the latter
+requires that you build a lua cross-compiler out of the eLua tree
+using a compiler for your native platform
+(<A HREF="http://www.eluaproject.net/doc/v0.8/en_using.html#cross">http://www.eluaproject.net/doc/v0.8/en_using.html#cross</A>).
+
+to &quot;make clean&quot; you can append a -c, like this:
+scons board=EK-LM3S9B92 toolchain=codesourcery -c
+
+It won't clean anything unless you specify the build dependencies
+though, so you can just do &quot;scons -c&quot;.  You can use scons -h to get a
+dump of the common command line options for building elua targets, and
+scons -H for scons-specific options.
+
+Best.
+
+-jsnyder
+
+
+&gt;<i>
+</I>&gt;<i> James
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002939.html">[eLua-dev] some success.
+</A></li>
+	<LI>Next message: <A HREF="002941.html">[eLua-dev] arm-none-eabi-cc: command not found
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2940">[ date ]</a>
+              <a href="thread.html#2940">[ thread ]</a>
+              <a href="subject.html#2940">[ subject ]</a>
+              <a href="author.html#2940">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

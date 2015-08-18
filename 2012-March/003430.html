@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Enabling%20Lua%20Tiny%20Ram%20in%20custom%20Lua%20port&In-Reply-To=%3C4F7634B0.10205%40autosportlabs.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003427.html">
+   <LINK REL="Next"  HREF="003426.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Enabling Lua Tiny Ram in custom Lua port</H1>
+    <B>Brent Picasso</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Enabling%20Lua%20Tiny%20Ram%20in%20custom%20Lua%20port&In-Reply-To=%3C4F7634B0.10205%40autosportlabs.com%3E"
+       TITLE="[eLua-dev] Enabling Lua Tiny Ram in custom Lua port">brent at autosportlabs.com
+       </A><BR>
+    <I>Sat Mar 31 00:33:20 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003427.html">[eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+</A></li>
+        <LI>Next message: <A HREF="003426.html">[eLua-dev] sermux doesn't work!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3430">[ date ]</a>
+              <a href="thread.html#3430">[ thread ]</a>
+              <a href="subject.html#3430">[ subject ]</a>
+              <a href="author.html#3430">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Martin,
+
+I made some progress on enabling LTR in my port.
+
+I got the patch applied and then attempted to register a test function 
+using the instructions here:
+<A HREF="http://www.eluaproject.net/doc/v0.8/en_arch_ltr.html">http://www.eluaproject.net/doc/v0.8/en_arch_ltr.html</A>
+
+specifically, this code:
+
+|<i>const luaR_entry mod_map[] =// note: no static this time
+</I>{
+   { LRO_STRKEY( &quot;f&quot; ), LRO_FUNCVAL( f_implementation ) },
+   { LRO_NILKEY, LRO_NILVAL }
+};
+
+// note: in this case the &quot;luaopen_mod&quot; function isn't really needed anymore
+LUALIB_API int luaopen_mod( lua_State *L )
+{
+   return 0;
+}
+
+|<i>
+</I>
+declaring my function this way didn't seem to register it correctly with 
+lua; I felt something was missing. So I dug into the implementation of 
+luaI_openlib().
+
+Inspecting this function I then came up with a way to manually register 
+functions in a 'light' way using the following macro:
+
+#define lua_registerlight(L,n,f) (lua_pushlightfunction(L, (f)), 
+lua_setglobal(L, (n)))
+
+I have about 125 functions registered using the standard lua_register() 
+; switching to lua_registerlight()  netted me a memory usage savings 
+before LTR of
+
+23K to 13K usage as reported by print(collectgarbage(&quot;count&quot;)).  About 
+10K savings.
+
+However, I'm not sure if I'm really using the full capability of the LTR 
+patch.
+
+Is the above approach still using RAM for each function registration? Is 
+there a better way to register my C functions with no memory usage?
+
+Thank you,
+
+*Brent Picasso*
+Autosport Labs
+Technology for Race and Street
+autosportlabs.com &lt;<A HREF="http://www.autosportlabs.com">http://www.autosportlabs.com</A>&gt; | 
+twitter.com/AutosportLabs &lt;<A HREF="http://twitter.com/AutosportLabs">http://twitter.com/AutosportLabs</A>&gt;
+
+On 03/30/2012 06:37 AM, Martin Guy wrote:
+&gt;<i> hi
+</I>&gt;<i>    The Lua tiny ram patch as applicable to plain lua-5.1.4 is attached
+</I>&gt;<i>
+</I>&gt;<i>        M
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120330/0d11d12e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120330/0d11d12e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003427.html">[eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+</A></li>
+	<LI>Next message: <A HREF="003426.html">[eLua-dev] sermux doesn't work!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3430">[ date ]</a>
+              <a href="thread.html#3430">[ thread ]</a>
+              <a href="subject.html#3430">[ subject ]</a>
+              <a href="author.html#3430">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

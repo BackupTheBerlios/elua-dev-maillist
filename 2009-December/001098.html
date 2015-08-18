@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Bug in net module ?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Bug%20in%20net%20module%20%3F&In-Reply-To=%3C4B16CDE8.4010503%40gmx.at%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001095.html">
+   <LINK REL="Next"  HREF="001099.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Bug in net module ?</H1>
+    <B>erny hombre</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Bug%20in%20net%20module%20%3F&In-Reply-To=%3C4B16CDE8.4010503%40gmx.at%3E"
+       TITLE="[eLua-dev] Bug in net module ?">hombre67 at gmx.at
+       </A><BR>
+    <I>Wed Dec  2 21:28:24 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001095.html">[eLua-dev] Bug in net module ?
+</A></li>
+        <LI>Next message: <A HREF="001099.html">[eLua-dev] Bug in net module ?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1098">[ date ]</a>
+              <a href="thread.html#1098">[ thread ]</a>
+              <a href="subject.html#1098">[ subject ]</a>
+              <a href="author.html#1098">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+Problem solved, I have overlooked the last parameter with_buffer of 
+elua_net_recv_internal. When set to 1, then the buffer is treated as 
+luaL_Buffer in the uip-application. Sorry for inconvenience.
+
+Erwin
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I have studied the code in elua_uip.c and I wonder why the following 
+</I>&gt;<i> code works:
+</I>&gt;<i>
+</I>&gt;<i> elua_net_size elua_net_recvbuf( int s, luaL_Buffer* buf, elua_net_size 
+</I>&gt;<i> maxsize, s16 readto, unsigned timer_id, u32 to_us )
+</I>&gt;<i> {
+</I>&gt;<i>   return elua_net_recv_internal( s, buf, maxsize, readto, timer_id, 
+</I>&gt;<i> to_us, 1 );
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> The parameter buf is a pointer to luaL_Buffer and this pointer is passed 
+</I>&gt;<i> to the function elua_net_recv_internal. elua_net_recv_internal 
+</I>&gt;<i> interprets buf as a pointer to a buffer where the received characters 
+</I>&gt;<i> are stored into. So the first received character overwrites the first 
+</I>&gt;<i> byte in luaL_Buffer, but luaL_Buffer does not start with a buffer but 
+</I>&gt;<i> with other data elements:
+</I>&gt;<i> typedef struct luaL_Buffer {
+</I>&gt;<i>   char *p;            /* current position in buffer */
+</I>&gt;<i>   int lvl;  /* number of strings in the stack (level) */
+</I>&gt;<i>   lua_State *L;
+</I>&gt;<i>   char buffer[LUAL_BUFFERSIZE];
+</I>&gt;<i> } luaL_Buffer;
+</I>&gt;<i>
+</I>&gt;<i> I think the correct call should be:
+</I>&gt;<i>
+</I>&gt;<i> elua_net_size elua_net_recvbuf( int s, luaL_Buffer* buf, elua_net_size 
+</I>&gt;<i> maxsize, s16 readto, unsigned timer_id, u32 to_us )
+</I>&gt;<i> {
+</I>&gt;<i>   return elua_net_recv_internal( s, buf-&gt;buffer, maxsize, readto, 
+</I>&gt;<i> timer_id, to_us, 1 );
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> Erwin
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001095.html">[eLua-dev] Bug in net module ?
+</A></li>
+	<LI>Next message: <A HREF="001099.html">[eLua-dev] Bug in net module ?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1098">[ date ]</a>
+              <a href="thread.html#1098">[ thread ]</a>
+              <a href="subject.html#1098">[ subject ]</a>
+              <a href="author.html#1098">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

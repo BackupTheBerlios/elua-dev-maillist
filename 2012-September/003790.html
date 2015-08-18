@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] PicoC-remix -- an eLua distro
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PicoC-remix%20--%20an%20eLua%20distro&In-Reply-To=%3CCANKDJfbPFsAF3Nxjj2PyHsX1ahPY2TawkogMpmT-Weh8%2BzD7UA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003791.html">
+   <LINK REL="Next"  HREF="003792.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] PicoC-remix -- an eLua distro</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PicoC-remix%20--%20an%20eLua%20distro&In-Reply-To=%3CCANKDJfbPFsAF3Nxjj2PyHsX1ahPY2TawkogMpmT-Weh8%2BzD7UA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] PicoC-remix -- an eLua distro">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Sep 18 09:59:04 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003791.html">[eLua-dev] PicoC-remix -- an eLua distro
+</A></li>
+        <LI>Next message: <A HREF="003792.html">[eLua-dev] PicoC-remix -- an eLua distro
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3790">[ date ]</a>
+              <a href="thread.html#3790">[ thread ]</a>
+              <a href="subject.html#3790">[ subject ]</a>
+              <a href="author.html#3790">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Raman,
+
+Glad to hear back from you!
+
+On Sun, Sep 16, 2012 at 5:00 PM, raman &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Dear eLua community,
+</I>&gt;<i>
+</I>&gt;<i> I trust you're all doing well. I have been caught up with university
+</I>&gt;<i> projects
+</I>&gt;<i> and assignments -- hence the long silence. Nevertheless, I still keep up
+</I>&gt;<i> with the evolution of the eLua code base. Bogdan: Great work on WOFS!
+</I>&gt;<i> I simply love it.
+</I>
+Thanks!
+
+&gt;<i>
+</I>&gt;<i> I have something to share with you all. Although this is not related to the
+</I>&gt;<i> development of eLua, it very much works on the eLua philosophy and
+</I>&gt;<i> code base. Literally - eLua is a philosophy for me and Lua is a very apt
+</I>&gt;<i> core for it. But out of curiosity, I started playing with eLua code base and
+</I>&gt;<i> replaced Lua with what my friends wanted to see -- a C interpreter on
+</I>&gt;<i> Cortex-M bare metal.
+</I>&gt;<i>
+</I>&gt;<i> I looked around the internet and found the PicoC interpreter:
+</I>&gt;<i> (<A HREF="http://code.google.com/p/picoc/">http://code.google.com/p/picoc/</A>). I put it together (after several
+</I>&gt;<i> modifications)
+</I>&gt;<i> with the eLua base system. So now, I can write interactive C code on the
+</I>&gt;<i> shell, run C programs from the MMC, read/run C programs from ROMFS --
+</I>&gt;<i> basically, everything I would do with eLua but with PicoC instead.
+</I>
+You, my friend, are awesome. I already knew that, but this is insanely
+awesome. Congratulations! I'm going to try this thing myself as soon
+as possible. I'm really curious how it behaves in a limited memory
+environment (I'm not worried about the compiled program, which would
+obivously require less RAM than Lua code, I'm more concerned about the
+compilation process itself). Plus, with us being able to manipulate
+the code generation step much easier than you'd be able to do this
+with GCC (whcih I imagine is the case), there are a lot of nick tricks
+that one can perform, such as relocatable code (think loadable
+modules), compile time support for debugging and so much more. I
+simply love the concept.
+
+&gt;<i>
+</I>&gt;<i> So, now, from PicoC, I could avail all platform functions with #include's.
+</I>&gt;<i> For
+</I>&gt;<i> example,
+</I>&gt;<i>
+</I>&gt;<i> #include &lt;adc.h&gt;
+</I>&gt;<i> #include &lt;term.h&gt;
+</I>&gt;<i> #include &lt;pio.h&gt;
+</I>&gt;<i> .....
+</I>&gt;<i>
+</I>&gt;<i> I am yet to document the API but it mostly assumes eLua's format
+</I>&gt;<i> for functions. For example, instead of pio.pin.setdir(pio.OUTPUT...) you
+</I>&gt;<i> have pio_pin_setdir(OUTPUT...) (and similar for other platform modules
+</I>&gt;<i> as well) in PicoC. Here OUTPUT is like a C macro and is stored in a rotable.
+</I>&gt;<i>
+</I>&gt;<i> I also wrote a tiny (magic) RAM patch for this system. PicoC doesn't
+</I>&gt;<i> have a garbage collector. So, for now, there is no way to query for
+</I>&gt;<i> SRAM consumption at runtime (hence &quot;magic&quot;). You can tell the
+</I>&gt;<i> difference between optram=0 and optram=1 only at build time.
+</I>&gt;<i>
+</I>&gt;<i> Currently, the system can be compiled for the following platforms:
+</I>&gt;<i> LM3S1968, LM3S8962, LM3S6965, LM3S6918, LM3S9B92,
+</I>&gt;<i> STM32F103RE, STM32F103ZE and i386. This can be compiled
+</I>&gt;<i> with scons. The standard eLua's scons syntax applies here too (with
+</I>&gt;<i> exceptions to 'boot' (not supported yet) and 'target'). The stuff I haven't
+</I>&gt;<i> yet included in PicoC-remix is in the TODO list.
+</I>&gt;<i>
+</I>&gt;<i> Please look for the code base here: <A HREF="https://github.com/witgor/remix">https://github.com/witgor/remix</A>
+</I>&gt;<i> A friend is maintaining it (<A HREF="https://github.com/witgor/">https://github.com/witgor/</A>)
+</I>&gt;<i>
+</I>&gt;<i> Finally, I'd like to think of this system as an eLua distro :) -- a flavor
+</I>&gt;<i> of eLua but with interpreted C instead.
+</I>
+I understand the concept, but I believe it is a bit more than that.
+For quite a while now, people at PUC Rio have suggested that I should
+split eLua into two parts: the platform interface part and the Lua
+part. This would allow the platform interface to be used with other
+projects too, which is exactly what you did here. I didn't embrace the
+idea because I was mostly interested in pushing eLua as a whole, not
+to maintain two separate projects, but what you did here convinced me
+that their idea was right. This shouldn't be a flavour of eLua, but a
+project with combines the &quot;platform interface&quot; (yet to be named as a
+separate project) and your awesome (yes, I like this word) work with
+PicoC. I'll take this into serious consideration and discuss it.
+
+&gt;<i>
+</I>&gt;<i> I'd like your thoughts and suggestions on PicoC-remix. Please give me
+</I>&gt;<i> a few tips on how to improvise on this.
+</I>
+Make it even more awesome! :) And please let me know if you need help,
+I'm really interested in this.
+Once again, congratulations and keep up the good work.
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Raman
+</I>&gt;<i>
+</I>&gt;<i> PS: I really love the Mizar32 platform. I'd like to get PicoC-remix to run
+</I>&gt;<i> on this. Unfortunately, I don't have the board with me yet but I'm going to
+</I>&gt;<i> get one soon.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/PicoC-remix-an-eLua-distro-tp7577676.html">http://elua-development.2368040.n2.nabble.com/PicoC-remix-an-eLua-distro-tp7577676.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003791.html">[eLua-dev] PicoC-remix -- an eLua distro
+</A></li>
+	<LI>Next message: <A HREF="003792.html">[eLua-dev] PicoC-remix -- an eLua distro
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3790">[ date ]</a>
+              <a href="thread.html#3790">[ thread ]</a>
+              <a href="subject.html#3790">[ subject ]</a>
+              <a href="author.html#3790">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

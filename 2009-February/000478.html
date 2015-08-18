@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eeprom
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eeprom&In-Reply-To=%3Cd3b6d880902170541k6e1e8838h2e018f29746c3430%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000472.html">
+   <LINK REL="Next"  HREF="000479.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eeprom</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eeprom&In-Reply-To=%3Cd3b6d880902170541k6e1e8838h2e018f29746c3430%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eeprom">dadosutter at gmail.com
+       </A><BR>
+    <I>Tue Feb 17 14:41:39 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000472.html">[eLua-dev] eeprom
+</A></li>
+        <LI>Next message: <A HREF="000479.html">[eLua-dev] eeprom
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#478">[ date ]</a>
+              <a href="thread.html#478">[ thread ]</a>
+              <a href="subject.html#478">[ subject ]</a>
+              <a href="author.html#478">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello Georges,
+
+On Tue, Feb 17, 2009 at 02:33, georges King &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">georgestheking at gmail.com</A>&gt;wrote:
+
+&gt;<i> About Lua program and autoboot.
+</I>&gt;<i>
+</I>&gt;<i> SD Card is the best way to start an Lua program.
+</I>
+
+Yes, specially now that we have support for it ! :)
+
+The ROM FS, using the same internal Flash used for eLua code, is actually a
+very nice option for many cases too.
+As it is a read-only fs today, programs are stored at build-time. But it is
+an easy process and eLua can start a program directly at boot time. All you
+need is to store your program in the ROMFS with the name &quot;autorun.lua&quot;. When
+eLua wakes up from a reset or power-on, after it's initializations, it looks
+for a so called program in the fs, starting the Lua interpreter to run it if
+it finds it. If not, eLua starts it's normal shell, from where you can run
+any program manually or the stand-alone interpreter too.
+
+
+&gt;<i> Another nice way is to use an I2C Eeprom to store the Lua program.
+</I>&gt;<i>
+</I>&gt;<i> It is a small ( 8 pins ) low cost component and It need only 2 wires to be
+</I>&gt;<i> connected ( I2C ).
+</I>&gt;<i> 64 Kbytes Eeprom is easy to find and low cost.
+</I>
+
+Sure, this is also an option.
+Please note that we began to write our &quot;eLua modules&quot;, focusing on support
+for internal peripherals usually found in MCUs. This type of external
+component support module is welcome too, specially if it can be abstracted
+for a generic/portable interface. We have an example of this with a GPS
+module written by an under-graduate students, T&#233;o Benjamin, that is beeing
+used today in &quot;Manfredo&quot; :) a self navigating robot that wonders thru the
+PUC Campus :).
+As your idea over the I2C bus, the GPS module wraps the UART interface for
+an RS-232 serial com with an external gps. It also illustrates how a module
+can be &quot;hybrid&quot;, with C code for using a position/distance calc lib we
+already had and with Lua code for the NMEA0182 sentences parsing and gps
+control.
+
+Another example would be an LCD module that uses 6~7 PIO pins to bit-bang
+control an hitachi protocol for an external char LCD. Such a module should
+be able to use MCU internal LCD controllers too, when available, offering
+full code portability at the Lua level.
+
+                  Best regards
+&gt;<i>
+</I>&gt;<i>                             Georges
+</I>&gt;<i>
+</I>&gt;<i>                                       Belgium
+</I>
+
+Regards
+Dado
+
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/6a91b11d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/6a91b11d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000472.html">[eLua-dev] eeprom
+</A></li>
+	<LI>Next message: <A HREF="000479.html">[eLua-dev] eeprom
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#478">[ date ]</a>
+              <a href="thread.html#478">[ thread ]</a>
+              <a href="subject.html#478">[ subject ]</a>
+              <a href="author.html#478">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

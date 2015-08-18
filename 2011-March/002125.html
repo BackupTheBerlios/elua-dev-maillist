@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Elua with a web server (wrote in true 'C')  inside.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Elua%20with%20a%20web%20server%20%28wrote%20in%20true%20%27C%27%29%20%20inside.&In-Reply-To=%3C1299264601.9352.10.camel%40nunzio-desktop%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002121.html">
+   <LINK REL="Next"  HREF="002109.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Elua with a web server (wrote in true 'C')  inside.</H1>
+    <B>Nuccio Raciti</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Elua%20with%20a%20web%20server%20%28wrote%20in%20true%20%27C%27%29%20%20inside.&In-Reply-To=%3C1299264601.9352.10.camel%40nunzio-desktop%3E"
+       TITLE="[eLua-dev] Elua with a web server (wrote in true 'C')  inside.">raciti.nuccio at gmail.com
+       </A><BR>
+    <I>Fri Mar  4 19:50:01 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002121.html">[eLua-dev] Elua with a web server (wrote in true 'C')  inside.
+</A></li>
+        <LI>Next message: <A HREF="002109.html">[eLua-dev] hi, stm32 DAC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2125">[ date ]</a>
+              <a href="thread.html#2125">[ thread ]</a>
+              <a href="subject.html#2125">[ subject ]</a>
+              <a href="author.html#2125">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I don't understand fully the &quot;eLua&quot; internals and I have just a little
+knowledge on WEB technologies, but I'm enjoying it, and I began to see
+that something works. As first step, I'm converting the &quot;lhttpd&quot; example
+in native 'C' code.... after some performance tests, I will try some
+AJAX example in order to understand where I have to optimise/implement.
+
+Thanks for the help that I give.
+
+
+Il giorno gio, 03/03/2011 alle 11.35 -0800, Tim michals ha scritto: 
+&gt;<i> I think the easiest would be a simple &quot;C&quot; web parser, to pull ASP tag
+</I>&gt;<i> and post  (AJAX) requests.  The AJAX and ASP then could run on a lua
+</I>&gt;<i> coroutine in a single lua state. So, inside of the main lua code you
+</I>&gt;<i> have a simple scheduler/dispatcher for events,  serial, A/D, AJAX, Web
+</I>&gt;<i> post requests, etc.   Yes, you loose the power have having lua script
+</I>&gt;<i> in the HTML, but to me that is replaced by having javascript parsing
+</I>&gt;<i> etc in the bowser.  Using HTML5 you can have a graphics ie gauges etc
+</I>&gt;<i> and just post values via socket and do all of the drawing graphics in
+</I>&gt;<i> java script...   One of the projects I was working with pulled java
+</I>&gt;<i> script, icons etc, from an external web site, so the embedded platform
+</I>&gt;<i> was nothing more then a simple get value/ set value using basic XML.
+</I>&gt;<i> But if you have SPI flash, it can live there... 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> ______________________________________________________________________
+</I>&gt;<i> 
+</I>&gt;<i> From: Nuccio Raciti &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">raciti.nuccio at gmail.com</A>&gt;
+</I>&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> Sent: Thu, March 3, 2011 12:52:28 PM
+</I>&gt;<i> Subject: Re: [eLua-dev] Elua with a web server (wrote in true 'C')
+</I>&gt;<i> inside.
+</I>&gt;<i> 
+</I>&gt;<i> yes,
+</I>&gt;<i> I'd like to get a good performance web server for small applications
+</I>&gt;<i> in
+</I>&gt;<i> AJAX, might be acceptable have one or two connections, so Mizar with
+</I>&gt;<i> 32Mbyte of ram, should keep a little array of one/two elua state.....
+</I>&gt;<i> 
+</I>&gt;<i> sounds interesting.
+</I>&gt;<i> 
+</I>&gt;<i> Nuccio.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Il giorno mer, 02/03/2011 alle 13.32 -0800, Tim Michals ha scritto: 
+</I>&gt;<i> &gt; I might be way off base with this answer... 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; So, the goal is to have PHP/ASP, now eLua tags, in the HTML pages.
+</I>&gt;<i> So the
+</I>&gt;<i> &gt; uIP stack would listen for the http commands and do some processing
+</I>&gt;<i> on the
+</I>&gt;<i> &gt; HTML until a eLua tag is found, then send it over to eLua for
+</I>&gt;<i> compile and
+</I>&gt;<i> &gt; processing. 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; The eLua tag is really a bunch of eLua code that gets compiled then
+</I>&gt;<i> &gt; executed. 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; A new/clone &quot;state&quot; from the &quot;eLua state&quot;  has to be created because
+</I>&gt;<i> once
+</I>&gt;<i> &gt; the socket is over, the state is then deleted. Or you can use the
+</I>&gt;<i> same state
+</I>&gt;<i> &gt; and use it to cache the code, and just execute the instructions.
+</I>&gt;<i> Since the
+</I>&gt;<i> &gt; html pages are static on the web server/ micro-controller. 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; The main issue to me is memory, having a state per socket would use
+</I>&gt;<i> a lot of
+</I>&gt;<i> &gt; memory.  Caching would make sense, but that is a lot of work.  In
+</I>&gt;<i> simple
+</I>&gt;<i> &gt; terms, move all of the eLua script out from the HTML and just have
+</I>&gt;<i> simple
+</I>&gt;<i> &gt; asp tags that map to eLua/Lua functions.  Just upload a new Lua
+</I>&gt;<i> script/web
+</I>&gt;<i> &gt; pages then you have a way to extend the interface.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Another Idea, use Lua to do XMLPRC/Ajax  processing, i.e. post XML
+</I>&gt;<i> pages and
+</I>&gt;<i> &gt; do all of the parsing in eLua, return the data, tables, etc, so on
+</I>&gt;<i> the web
+</I>&gt;<i> &gt; browser do all your work in Java script, i.e. tables, processing
+</I>&gt;<i> etc.  Thus
+</I>&gt;<i> &gt; using XML to get data, java script for presentation. 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; View this message in context:
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/Elua-with-a-web-server-wrote-in-true-C-inside-tp6082080p6082701.html">http://elua-development.2368040.n2.nabble.com/Elua-with-a-web-server-wrote-in-true-C-inside-tp6082080p6082701.html</A>
+</I>&gt;<i> &gt; Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002121.html">[eLua-dev] Elua with a web server (wrote in true 'C')  inside.
+</A></li>
+	<LI>Next message: <A HREF="002109.html">[eLua-dev] hi, stm32 DAC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2125">[ date ]</a>
+              <a href="thread.html#2125">[ thread ]</a>
+              <a href="subject.html#2125">[ subject ]</a>
+              <a href="author.html#2125">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

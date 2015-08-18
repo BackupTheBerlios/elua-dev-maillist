@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] is there a prebuilt image for the lm3s9b92 processor
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20is%20there%20a%20prebuilt%20image%20for%20the%20lm3s9b92%20processor&In-Reply-To=%3CCAJ%3DY9Y0ntOEWrLxL0aKvaFZ2ayy8c5B1s-AbbXxMJST7kczj3A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002960.html">
+   <LINK REL="Next"  HREF="002963.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] is there a prebuilt image for the lm3s9b92 processor</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20is%20there%20a%20prebuilt%20image%20for%20the%20lm3s9b92%20processor&In-Reply-To=%3CCAJ%3DY9Y0ntOEWrLxL0aKvaFZ2ayy8c5B1s-AbbXxMJST7kczj3A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] is there a prebuilt image for the lm3s9b92 processor">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Nov 15 21:37:30 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002960.html">[eLua-dev] is there a prebuilt image for the lm3s9b92 processor
+</A></li>
+        <LI>Next message: <A HREF="002963.html">[eLua-dev] is there a prebuilt image for the lm3s9b92 processor
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2962">[ date ]</a>
+              <a href="thread.html#2962">[ thread ]</a>
+              <a href="subject.html#2962">[ subject ]</a>
+              <a href="author.html#2962">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Nov 15, 2011 at 2:14 PM, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+&gt;<i> Thanks for the response.
+</I>&gt;<i> Actually to everyone.
+</I>&gt;<i>
+</I>&gt;<i> I would like to try to get dhcp to work and have tcp/ip console included.
+</I>&gt;<i> More so I want to be able to fish for myself.
+</I>&gt;<i> What is your build system like?
+</I>
+If you can build any sort of working image, TCP/IP shouldn't really be
+any different unless you've run into a bug or there's a
+configurational issue.  The SCons build system and the Lua one should
+generate the same binaries.  If they don't, we would count this as a
+bug :-)
+
+I can't locate my 9B92 board at the moment, so I can't double check
+this build to make sure that something isn't broken, but I'll try and
+locate it later if this doesn't work for you.
+
+I've put a bin file and platform_conf.h up:
+<A HREF="http://dl.dropbox.com/u/169337/elua_9b92/elua_lua_lm3s9b92.bin">http://dl.dropbox.com/u/169337/elua_9b92/elua_lua_lm3s9b92.bin</A>
+<A HREF="http://dl.dropbox.com/u/169337/elua_9b92/platform_conf.h">http://dl.dropbox.com/u/169337/elua_9b92/platform_conf.h</A>
+
+So, this one is set to have a default IP of 192.168.1.100
+
+Side note: I actually also recently worked on a 9D92 port that
+includes some fixes for 9B92 that I haven't merged in yet, but I don't
+recall any of those affecting TCP/IP.  Given that you're asking about
+this, I'll try and expedite merging in the common platform fixes.
+That branch also added some things like experimental USB CDC support:
+<A HREF="https://github.com/jsnyder/elua/tree/lm3s_usb_cdc">https://github.com/jsnyder/elua/tree/lm3s_usb_cdc</A>
+
+&gt;<i> James
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Nov 15, 2011 at 2:07 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Probably even the downloadable image should have working TCP/IP for 0.8
+</I>&gt;&gt;<i> here:
+</I>&gt;&gt;<i> <A HREF="http://www.eluaproject.net/get-started/downloads">http://www.eluaproject.net/get-started/downloads</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> However it will have the fixed IP I mentioned earlier. &#160;I can build an
+</I>&gt;&gt;<i> image if you let me know whether you want DHCP or static and whether
+</I>&gt;&gt;<i> you want the TCP/IP console.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, Nov 14, 2011 at 11:33 PM, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; Is there prebuilt image for the lm3s9b92 that features support tcp
+</I>&gt;&gt;<i> &gt; support.
+</I>&gt;&gt;<i> &gt; james
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002960.html">[eLua-dev] is there a prebuilt image for the lm3s9b92 processor
+</A></li>
+	<LI>Next message: <A HREF="002963.html">[eLua-dev] is there a prebuilt image for the lm3s9b92 processor
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2962">[ date ]</a>
+              <a href="thread.html#2962">[ thread ]</a>
+              <a href="subject.html#2962">[ subject ]</a>
+              <a href="author.html#2962">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

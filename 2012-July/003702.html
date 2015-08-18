@@ -1,0 +1,327 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] mmc - dofile OK, require Fails
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20mmc%20-%20dofile%20OK%2C%20require%20Fails&In-Reply-To=%3C1887235609.1112243.1341866246379.JavaMail.root%40zimbra-pri%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003700.html">
+   <LINK REL="Next"  HREF="003703.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] mmc - dofile OK, require Fails</H1>
+    <B>Tim Van Der Hulst</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20mmc%20-%20dofile%20OK%2C%20require%20Fails&In-Reply-To=%3C1887235609.1112243.1341866246379.JavaMail.root%40zimbra-pri%3E"
+       TITLE="[eLua-dev] mmc - dofile OK, require Fails">tim at agfirstbop.co.nz
+       </A><BR>
+    <I>Mon Jul  9 22:37:26 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003700.html">[eLua-dev] mmc - dofile OK, require Fails
+</A></li>
+        <LI>Next message: <A HREF="003703.html">[eLua-dev] mmc - dofile OK, require Fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3702">[ date ]</a>
+              <a href="thread.html#3702">[ thread ]</a>
+              <a href="subject.html#3702">[ subject ]</a>
+              <a href="author.html#3702">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>aha yep I did start playing around with luaconf.h yesterday to try to get it working also, I'll try just the /mmc path for now!~
+
+Oops it works, hooray~
+
+Thanks for the workaround!!
+
+TiM
+
+
+----- Original Message -----
+From: &quot;Marcus Vinicius Costa&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">marcusvc.costa at gmail.com</A>&gt;
+To: &quot;eLua Users and Development List (www.eluaproject.net)&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+Sent: Tuesday, July 10, 2012 8:07:19 AM
+Subject: Re: [eLua-dev] mmc - dofile OK, require Fails
+
+
+Hi all. 
+
+
+
+The module works perfectly in LM3S, I had problems at first but they were a hardware problem. 
+
+
+But when I migrated to board MIZAR32 I had the same problem as you, it does not found the module (the same code that was used on board LM3S). 
+
+
+To solve my problem, I discovered that it was not split terms in the path (;) to search the file using require, it can be seen in the debug you posted. 
+
+
+
+
+
+Error: [string &quot;xmodem&quot;]:23: module 'test' not found: 
+
+no field package.preload['test'] 
+
+no file '/mmc/test.lua;/mmc/ test.lc ;/rom/test.lua;/rom/ test.lc ' 
+
+no file '/mmc/ test.lc ;/rom/test.lua;/rom/ test.lc ' 
+
+no file '/rom/test.lua;/rom/ test.lc ' 
+
+no file '/rom/ test.lc ' 
+
+
+
+In this case, the module find correctly only on '/rom/ test.lc ' 
+
+
+where would be the correct (observed on board LM3S) 
+
+
+
+
+
+Error: [string &quot;xmodem&quot;]:23: module 'test' not found: 
+
+no field package.preload['test'] 
+
+no file '/mmc/test.lua' 
+
+no file '/mmc/ test.lc ' 
+
+no file '/rom/test.lua' 
+
+no file '/rom/ test.lc ' 
+
+
+
+
+
+To solve my problem I changed the file &quot;luaconf.h&quot; in line 110 as follows. 
+
+
+
+
+
+#define LUA_PATH_DEFAULT &quot;/mmc/?.lua;/mmc/?.lc;/rom/?.lua;/rom/?.lc&quot; 
+
+
+
+to 
+
+
+
+
+
+#define LUA_PATH_DEFAULT &quot;/mmc/?.lc&quot; 
+
+
+
+So it goes to look for the compiled file only in the MMC. This change solved my problem but not fixed the bug. 
+
+
+I hope I have helped 
+Marcus Vinicius 
+
+2012/7/9 Bogdan Marinescu &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A> &gt; 
+
+
+Hi, 
+
+
+On Mon, Jul 9, 2012 at 7:08 AM, Tim Van Der Hulst &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tim at agfirstbop.co.nz</A> &gt; wrote: 
+&gt;<i> related: 
+</I>&gt;<i> 
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/Problem-to-import-module-in-eLua-LM3S-td7455874.html">http://elua-development.2368040.n2.nabble.com/Problem-to-import-module-in-eLua-LM3S-td7455874.html</A> 
+</I>&gt;<i> 
+</I>&gt;<i> Can someone confirm for STM32 the &quot;require&quot; function works? 
+</I>
+The &quot;require&quot; function is definitely NOT platform dependent. I was on 
+vacation and I just returned today, I will test &quot;require&quot; as soon as I 
+can. In the meantime, can you please execute &quot;cat /mmc/test.lua&quot; from 
+the shell and confirm that it shows the correct data? 
+
+Thanks, 
+Bogdan 
+
+
+
+&gt;<i> 
+</I>&gt;<i> TiM 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> ----- Original Message ----- 
+</I>&gt;<i> From: &quot;Tim Van Der Hulst&quot; &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tim at agfirstbop.co.nz</A> &gt; 
+</I>&gt;<i> To: &quot;eLua Users and Development List ( www.eluaproject.net )&quot; &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A> &gt; 
+</I>&gt;<i> Sent: Monday, July 9, 2012 4:00:02 PM 
+</I>&gt;<i> Subject: Re: [eLua-dev] mmc - dofile OK, require Fails 
+</I>&gt;<i> 
+</I>&gt;<i> I most definately have 
+</I>&gt;<i> 
+</I>&gt;<i> module(...) 
+</I>&gt;<i> 
+</I>&gt;<i> in my file, yet it still fails! 
+</I>&gt;<i> 
+</I>&gt;<i> received and saved as /mmc/gprs.lua 
+</I>&gt;<i> eLua# recv 
+</I>&gt;<i> Waiting for file .done, got 641 bytes 
+</I>&gt;<i> -------------- 
+</I>&gt;<i> Error: [string &quot;xmodem&quot;]:26: module 'gprs' not found: 
+</I>&gt;<i> no field package.preload['gprs'] 
+</I>&gt;<i> no file '/mmc/gprs.lua;/mmc/ gprs.lc ;/rom/gprs.lua;/rom/ gprs.lc ' 
+</I>&gt;<i> no file '/mmc/ gprs.lc ;/rom/gprs.lua;/rom/ gprs.lc ' 
+</I>&gt;<i> no file '/rom/gprs.lua;/rom/ gprs.lc ' 
+</I>&gt;<i> no file '/rom/ gprs.lc ' 
+</I>&gt;<i> eLua# 
+</I>&gt;<i> 
+</I>&gt;<i> -------- 
+</I>&gt;<i> 
+</I>&gt;<i> I see a very old (2008) thread semi related: 
+</I>&gt;<i> 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/pipermail/elua-dev/2008-November/000102.html">https://lists.berlios.de/pipermail/elua-dev/2008-November/000102.html</A> 
+</I>&gt;<i> 
+</I>&gt;<i> [eLua-dev] Require(path/modulename) 
+</I>&gt;<i> 
+</I>&gt;<i> -------- 
+</I>&gt;<i> 
+</I>&gt;<i> Not sure what to test further, 
+</I>&gt;<i> 
+</I>&gt;<i> TiM 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> ----- Original Message ----- 
+</I>&gt;<i> From: &quot;Thiago Naves&quot; &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A> &gt; 
+</I>&gt;<i> To: &quot;eLua Users and Development List ( www.eluaproject.net )&quot; &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A> &gt; 
+</I>&gt;<i> Sent: Friday, July 6, 2012 12:47:59 PM 
+</I>&gt;<i> Subject: Re: [eLua-dev] mmc - dofile OK, require Fails 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Add 
+</I>&gt;<i> local module_name = module_name 
+</I>&gt;<i> 
+</I>&gt;<i> like 
+</I>&gt;<i> 
+</I>&gt;<i> local pio = pio 
+</I>&gt;<i> local uart = uart 
+</I>&gt;<i> local string = string 
+</I>&gt;<i> 
+</I>&gt;<i> for each module you wish to use in the code at the beginning of your file, 
+</I>&gt;<i> then add a 
+</I>&gt;<i> 
+</I>&gt;<i> module (...) 
+</I>&gt;<i> 
+</I>&gt;<i> after that to make you file into a module. 
+</I>&gt;<i> 
+</I>&gt;<i> Then you'll be able to use the require, but the dofile will not work. 
+</I>&gt;<i> 
+</I>&gt;<i> I've attached my MIDI module as an example. 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Best, 
+</I>&gt;<i> Thiago 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Thu, Jul 5, 2012 at 6:31 PM, Tim Van Der Hulst &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tim at agfirstbop.co.nz</A> &gt; wrote: 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Hi there, 
+</I>&gt;<i> 
+</I>&gt;<i> Might be coffee time but... 
+</I>&gt;<i> 
+</I>&gt;<i> dofile('/mmc/test.lua') -- OK 
+</I>&gt;<i> require('test') -- Fail!! 
+</I>&gt;<i> 
+</I>&gt;<i> ------------- 
+</I>&gt;<i> /mmc 
+</I>&gt;<i> test.txt 5 bytes 
+</I>&gt;<i> gprs.lua 2910 bytes 
+</I>&gt;<i> util.lua 385 bytes 
+</I>&gt;<i> test.lua 385 bytes 
+</I>&gt;<i> 
+</I>&gt;<i> Total on /mmc: 3685 bytes 
+</I>&gt;<i> 
+</I>&gt;<i> ------------- 
+</I>&gt;<i> 
+</I>&gt;<i> Error: [string &quot;xmodem&quot;]:23: module 'test' not found: 
+</I>&gt;<i> no field package.preload['test'] 
+</I>&gt;<i> no file '/mmc/test.lua;/mmc/ test.lc ;/rom/test.lua;/rom/ test.lc ' 
+</I>&gt;<i> no file '/mmc/ test.lc ;/rom/test.lua;/rom/ test.lc ' 
+</I>&gt;<i> no file '/rom/test.lua;/rom/ test.lc ' 
+</I>&gt;<i> no file '/rom/ test.lc ' 
+</I>&gt;<i> 
+</I>&gt;<i> ------------ 
+</I>&gt;<i> 
+</I>&gt;<i> I'm running on platform STM32 
+</I>&gt;<i> The CPU is a STM32F103RE 
+</I>&gt;<i> The board name is ET-STM32 
+</I>&gt;<i> 
+</I>&gt;<i> ------------ 
+</I>&gt;<i> 
+</I>&gt;<i> Help please! 
+</I>&gt;<i> 
+</I>&gt;<i> TiM 
+</I>&gt;<i> _______________________________________________ 
+</I>&gt;<i> eLua-dev mailing list 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________ 
+</I>&gt;<i> eLua-dev mailing list 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> _______________________________________________ 
+</I>&gt;<i> eLua-dev mailing list 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> _______________________________________________ 
+</I>&gt;<i> eLua-dev mailing list 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>_______________________________________________ 
+eLua-dev mailing list 
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> 
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003700.html">[eLua-dev] mmc - dofile OK, require Fails
+</A></li>
+	<LI>Next message: <A HREF="003703.html">[eLua-dev] mmc - dofile OK, require Fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3702">[ date ]</a>
+              <a href="thread.html#3702">[ thread ]</a>
+              <a href="subject.html#3702">[ subject ]</a>
+              <a href="author.html#3702">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

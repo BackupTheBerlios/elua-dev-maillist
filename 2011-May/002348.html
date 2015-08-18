@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Panda Board status
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Panda%20Board%20status&In-Reply-To=%3CBANLkTi%3DABEvanD%2B69scmc834h4sQ2mLBGg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002347.html">
+   <LINK REL="Next"  HREF="002349.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Panda Board status</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Panda%20Board%20status&In-Reply-To=%3CBANLkTi%3DABEvanD%2B69scmc834h4sQ2mLBGg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Panda Board status">dadosutter at gmail.com
+       </A><BR>
+    <I>Wed May  4 09:13:14 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002347.html">[eLua-dev] Panda Board status
+</A></li>
+        <LI>Next message: <A HREF="002349.html">[eLua-dev] Panda Board status
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2348">[ date ]</a>
+              <a href="thread.html#2348">[ thread ]</a>
+              <a href="subject.html#2348">[ subject ]</a>
+              <a href="author.html#2348">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello, (and also sorry for the late reply. Time will be really scarce in the
+next 3~4 weeks)
+   Having USB CDC now sounds like a great addition to eLua (Thankssssss !)
+   I'm not familiar with the implementations and could also not visualize
+how portable yours will be.
+But the what I could understand from the Virtual Serial Port metaphor seems
+to keep things simple and easy to use.
+
+Best
+Dado
+
+
+On Wed, May 4, 2011 at 03:30, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;wrote:
+
+&gt;<i> Hi (and sorry for the late reply),
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Apr 29, 2011 at 8:08 AM, Tim Michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I've created a fork and have basic serial ports and USB CDC serial
+</I>&gt;&gt;<i> working.
+</I>&gt;&gt;<i> Now just getting the data from the USB virtual serial port to the eLua
+</I>&gt;&gt;<i> framework.
+</I>&gt;&gt;<i> For example, the virtual serial port=1 +the last physical serial port.  So
+</I>&gt;&gt;<i> all of the UART functions are still used with a switch or if statement to
+</I>&gt;&gt;<i> make the physical Serial port+1 to USB virtual Serial.  Thoughts?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also, where the headache is it may not be connected with the code is
+</I>&gt;&gt;<i> running
+</I>&gt;&gt;<i> IE USB is disconnected... But the virtual UART functions will return -1 in
+</I>&gt;&gt;<i> this case.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The main issue is the USB CDC Serial can send a packet of data, more then
+</I>&gt;&gt;<i> one character.  So, looking at the code I was thinking of changing the
+</I>&gt;&gt;<i> common_uart.c
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>  if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+</I>&gt;&gt;<i>    cmn_rx_handler( resnum, platform_s_uart_recv( resnum, 0 ) );
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> to
+</I>&gt;&gt;<i> static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>  if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>    u8 _data;
+</I>&gt;&gt;<i>    while (-1 != (_data = platform_s_uart_recv( resnum, 0 ))
+</I>&gt;&gt;<i>      cmn_rx_handler( resnum, _data );
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So this way it just gets all of the data and buffers it etc, if not using
+</I>&gt;&gt;<i> ISR it uses the standard UART functions.  Enabling Interrupts on USB
+</I>&gt;&gt;<i> Serial
+</I>&gt;&gt;<i> is just a stub.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thoughts? OR just way off base? --
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Not way off base, but personally I think that the proper way to handle this
+</I>&gt;<i> would be to enable serial buffering (BUF_ENABLE_UART). This is exactly why
+</I>&gt;<i> we have buffers, they function as a &quot;bridge&quot; between two ends of a
+</I>&gt;<i> connection, one of which produces items and another consumes items,
+</I>&gt;<i> generally at different speeds. Please let me know if you need help with
+</I>&gt;<i> enabling the serial buffers.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110504/829e38a1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110504/829e38a1/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002347.html">[eLua-dev] Panda Board status
+</A></li>
+	<LI>Next message: <A HREF="002349.html">[eLua-dev] Panda Board status
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2348">[ date ]</a>
+              <a href="thread.html#2348">[ thread ]</a>
+              <a href="subject.html#2348">[ subject ]</a>
+              <a href="author.html#2348">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

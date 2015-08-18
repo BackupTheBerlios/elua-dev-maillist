@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A shield for stm32f4disco - sram
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FA_shield_for_stm32f4disco_-_sram%3F%3D&In-Reply-To=%3Cbea085c38ca4b5c90872bad20b706128%40mail3.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003157.html">
+   <LINK REL="Next"  HREF="003161.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A shield for stm32f4disco - sram</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FA_shield_for_stm32f4disco_-_sram%3F%3D&In-Reply-To=%3Cbea085c38ca4b5c90872bad20b706128%40mail3.volny.cz%3E"
+       TITLE="[eLua-dev] A shield for stm32f4disco - sram">pito at volna.cz
+       </A><BR>
+    <I>Fri Dec 16 14:18:14 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003157.html">[eLua-dev] A shield for stm32f4disco - sram
+</A></li>
+        <LI>Next message: <A HREF="003161.html">[eLua-dev] A shield for stm32f4disco - sram
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3159">[ date ]</a>
+              <a href="thread.html#3159">[ thread ]</a>
+              <a href="subject.html#3159">[ subject ]</a>
+              <a href="author.html#3159">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>..this is about the availability and the price of the SRAMS. BGA
+packages are nogo for DIY, SDRAMS are nogo for stm32f4, and PSRAMS
+are slow (~70ns) and BGA. 
+The only 10ns TSOP candidates I see are:
+IS61WV102416BLL-10TLI (10ns 1Mx16)
+IS61WV20488BLL-10TLI (10ns, 2Mx8)
+The big Q is where to get them cheap?? P.
+
+
+----- P&#366;VODN&#205; ZPR&#193;VA -----
+Od: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+Komu: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+P&#345;edm&#283;t: Re: [eLua-dev] A shield for stm32f4disco - sram
+Datum: 16.12.2011 - 12:46:19
+
+&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> On Thu, Dec 15, 2011 at 9:39 PM, pito
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Bogdan, I'm thinking on a devel of a small
+</I>&gt;<i> &gt; shield for stm32f4disco
+</I>&gt;<i> &gt; &gt; board, as the first step with a sram on it. I've
+</I>&gt;<i> &gt; found a 2Mx16 55ns
+</I>&gt;<i> &gt; &gt; sram in my junk box, but it seems &quot;slow&quot; to me
+</I>&gt;<i> &gt; for that mcu. What is
+</I>&gt;<i> &gt; &gt; your experience as you run 1Mb sram in your
+</I>&gt;<i> &gt; stm32f103 eLuaBrain
+</I>&gt;<i> &gt; &gt; system? P.
+</I>&gt;<i> &gt;
+</I>&gt;<i> 
+</I>&gt;<i> First of all: excellent idea. Second: 55ns might
+</I>&gt;<i> be indeed a tad too slow.
+</I>&gt;<i> In general, the experience with external SRAM is
+</I>&gt;<i> that it slows Lua quite a
+</I>&gt;<i> bit. This is unfortunate, but both very logical
+</I>&gt;<i> (as every single value in
+</I>&gt;<i> Lua (be it number, string, table or anything else)
+</I>&gt;<i> is allocated on the
+</I>&gt;<i> heap) and necessary. So, as as rule of thumb, the
+</I>&gt;<i> faster the SRAM, the
+</I>&gt;<i> better (but you already knew that :) ). The SRAM
+</I>&gt;<i> on the STM3210E-EVAL has a
+</I>&gt;<i> 10ns access time and it works quite well. I never
+</I>&gt;<i> looked at the SRAM
+</I>&gt;<i> initialization code, thus I don't know how the
+</I>&gt;<i> external memory controller
+</I>&gt;<i> is set; in particular, I don't know what timings
+</I>&gt;<i> are set for the external
+</I>&gt;<i> SRAM access. On the other hand, at 55ns the
+</I>&gt;<i> maximum theoretical speed is
+</I>&gt;<i> about 18MHz, which seems quite low. If I'd to this
+</I>&gt;<i> (and did I say this is
+</I>&gt;<i> an excellent idea already?) I'd try to at least
+</I>&gt;<i> design the whole thing for
+</I>&gt;<i> a faster memory. If you can find a 10ns memory in
+</I>&gt;<i> the same package as your
+</I>&gt;<i> 55ns memory, chances are you won't even need to
+</I>&gt;<i> change your PCB, so
+</I>&gt;<i> everybody wins :)
+</I>&gt;<i> If you do this and you have some space left on
+</I>&gt;<i> your shield, please let me
+</I>&gt;<i> know, maybe we can fit the video generator there
+</I>&gt;<i> ...
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> 
+</I>
+
+-- 
+Nakupujte v&#225;no&#269;n&#237; d&#225;rky levn&#283;ji. V&#237;ce o v&#225;no&#269;n&#237; akci Economia
+najdete na <A HREF="http://web.volny.cz/data/click.php?id=1313">http://web.volny.cz/data/click.php?id=1313</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003157.html">[eLua-dev] A shield for stm32f4disco - sram
+</A></li>
+	<LI>Next message: <A HREF="003161.html">[eLua-dev] A shield for stm32f4disco - sram
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3159">[ date ]</a>
+              <a href="thread.html#3159">[ thread ]</a>
+              <a href="subject.html#3159">[ subject ]</a>
+              <a href="author.html#3159">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

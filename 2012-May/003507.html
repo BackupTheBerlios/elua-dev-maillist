@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] added a rm to eLua shell
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20added%20a%20rm%20to%20eLua%20shell&In-Reply-To=%3CCAHDO%3Dv-kz9QCzk8zqu2jZjj%2Bc4gQUjbcHgqYCwA3TT3QttRxNw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003523.html">
+   <LINK REL="Next"  HREF="003514.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] added a rm to eLua shell</H1>
+    <B>Marcelo Politzer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20added%20a%20rm%20to%20eLua%20shell&In-Reply-To=%3CCAHDO%3Dv-kz9QCzk8zqu2jZjj%2Bc4gQUjbcHgqYCwA3TT3QttRxNw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] added a rm to eLua shell">mpolitzer.c at gmail.com
+       </A><BR>
+    <I>Tue May 15 01:02:23 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003523.html">[eLua-dev] Raspberry Pi as comprehensive eLua solution ?
+</A></li>
+        <LI>Next message: <A HREF="003514.html">[eLua-dev] added a rm to eLua shell
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3507">[ date ]</a>
+              <a href="thread.html#3507">[ thread ]</a>
+              <a href="subject.html#3507">[ subject ]</a>
+              <a href="author.html#3507">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Simple patch that adds rm to eLua shell and adds a &quot;static&quot; to the
+boot_order.
+Best Marcelo.
+
+
+--------------------------------------------------------------------------
+
+
+diff --git a/src/main.c b/src/main.c
+index 4ef1c1c..ccc3a3e 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -27,7 +27,7 @@
+
+ // Define here your autorun/boot files,
+ // in the order you want eLua to search for them
+-char *boot_order[] = {
++static char *boot_order[] = {
+ #if defined(BUILD_MMCFS)
+   &quot;/mmc/autorun.lua&quot;,
+   &quot;/mmc/autorun.lc&quot;,
+diff --git a/src/shell.c b/src/shell.c
+index 8647dcf..32279fd 100644
+--- a/src/shell.c
++++ b/src/shell.c
+@@ -60,6 +60,7 @@ static void shell_help( char* args )
+           &quot;                there, otherwise run it.&quot;);
+   printf( &quot;  cp &lt;src&gt; &lt;dst&gt; - copy source file 'src' to 'dst'\n&quot; );
+   printf( &quot;  ver         - print eLua version\n&quot; );
++  printf( &quot;  rm          - remove a file. (don't work for romfs)\n&quot; );
+ }
+
+ // 'lua' handler
+@@ -228,6 +229,14 @@ static void shell_ls( char* args )
+   printf( &quot;\n&quot; );
+ }
+
++static void shell_rm( char *args )
++{
++  if( remove( args ) != 0 )
++    perror( &quot;Error deleting file&quot; );
++  else
++    puts( &quot;File successfully deleted&quot; );
++}
++
+ // 'cat' and 'type' handler
+ static void shell_cat( char *args )
+ {
+@@ -338,6 +347,7 @@ static const SHELL_COMMAND shell_commands[] =
+   { &quot;cat&quot;, shell_cat },
+   { &quot;type&quot;, shell_cat },
+   { &quot;cp&quot;, shell_cp },
++  { &quot;rm&quot;, shell_rm },
+   { NULL, NULL }
+ };
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120514/f588908c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120514/f588908c/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003523.html">[eLua-dev] Raspberry Pi as comprehensive eLua solution ?
+</A></li>
+	<LI>Next message: <A HREF="003514.html">[eLua-dev] added a rm to eLua shell
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3507">[ date ]</a>
+              <a href="thread.html#3507">[ thread ]</a>
+              <a href="subject.html#3507">[ subject ]</a>
+              <a href="author.html#3507">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

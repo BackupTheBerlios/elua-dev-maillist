@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RFS / RPC
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RFS%20/%20RPC&In-Reply-To=%3CCAJ%3DY9Y0szRdDSNdkAOw_01pBB4wfWLtoboyWSC4xWKYxa%2BiQCA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002738.html">
+   <LINK REL="Next"  HREF="002726.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RFS / RPC</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RFS%20/%20RPC&In-Reply-To=%3CCAJ%3DY9Y0szRdDSNdkAOw_01pBB4wfWLtoboyWSC4xWKYxa%2BiQCA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RFS / RPC">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Sep 26 04:47:38 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002738.html">[eLua-dev] RFS / RPC
+</A></li>
+        <LI>Next message: <A HREF="002726.html">[eLua-dev] Getting Started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2739">[ date ]</a>
+              <a href="thread.html#2739">[ thread ]</a>
+              <a href="subject.html#2739">[ subject ]</a>
+              <a href="author.html#2739">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Sep 25, 2011 at 11:38 AM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> On Sep 20, 2011 2:05 PM, &quot;James Snyder&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Sep 20, 2011 at 9:23 AM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; Hi Folks,
+</I>&gt;&gt;<i> &gt; I have pitched eLua to use a POST / BIST test environment for one of our
+</I>&gt;&gt;<i> &gt; products and stakeholders seem to be on board. &#160;One issue I still have
+</I>&gt;&gt;<i> &gt; to
+</I>&gt;&gt;<i> &gt; resolve is the ability of test engineers to customize the environment
+</I>&gt;&gt;<i> &gt; and
+</I>&gt;&gt;<i> &gt; add their own scripts (in addition to what is installed in /rom).
+</I>&gt;&gt;<i> &gt; Is your feeling that RFS and/or RPC are mature enough for this task?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> In short: RFS on a dedicated serial line may be stable/mature (others
+</I>&gt;&gt;<i> would need to chime in). &#160;RPC is pretty stable/mature as long as you
+</I>&gt;&gt;<i> don't output anything else to the serial line being used for RPC.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Some additional notes, just for reference:
+</I>&gt;&gt;<i> There is also MMCFS (SD card w/ FAT) and it should probably also be
+</I>&gt;&gt;<i> possible to get the &quot;semifs&quot; semihosting support that I wrote for mbed
+</I>&gt;&gt;<i> FS to work for other ARM targets with a debugger active to access the
+</I>&gt;&gt;<i> debugger's filesystem, but I haven't explored making semihosting work
+</I>&gt;&gt;<i> any any other context than mbed.
+</I>&gt;<i>
+</I>&gt;<i> Unfortunately, I'm using PPC, so semifs is probably out. &#160;That probably
+</I>&gt;<i> isn't what I need anyway, since this will be running on a modem for use by
+</I>&gt;<i> HW testers. &#160;I may have serial (SPI) flash at my disposal, but not MMC. &#160;I
+</I>&gt;<i> may see if I can use YAFFS (a guy at my work ported that recently for SPI
+</I>&gt;<i> flash). &#160;I *might* have two serial ports to use.
+</I>
+Got it.  These tools do provide different abilities.  Are you just
+looking for a way to easily access updated code on the targets? do you
+need programmatic control?
+
+&gt;<i>
+</I>&gt;<i> Is eLua being used in any real products out there?
+</I>
+Yes, and we do have a page on our wiki that mentions some of the eLua
+users, though you may find it a little sparse on details:
+<A HREF="http://wiki.eluaproject.net/Who%20is%20using">http://wiki.eluaproject.net/Who%20is%20using</A>
+
+Some of the links on there are related to clients of a group a PUC Rio
+in Brazil (depending on the client Dado may be able to provide more
+details when he's back online again for some of those), plus some
+vendors of development kits that have hardware on the market (like
+Micromint <A HREF="http://www.micromint.com/index.php/SBC/eagle-50.html">http://www.micromint.com/index.php/SBC/eagle-50.html</A>) and
+some that are coming to market soon (Mizar32, mentioned on the page
+linked on the wiki).  There are other interested parties and projects
+under development that I/we can't comment on in public at the moment.
+
+The core of eLua, Lua + LTR (Lua Tiny RAM) + EGC (Emergency Garbage
+Collection) + (other newlib stuff) is pretty robust and has been
+tested with the same test suite as Lua has.  If you have specific
+questions about other components, definitely let me or the list know.
+Components with less extensive testing have been labeled as
+experimental in the docs.
+
+Certainly if you need help with porting or development we'll do our
+best to answer any questions you may have.
+
+&gt;<i>
+</I>&gt;<i> Matt
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; Matt
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002738.html">[eLua-dev] RFS / RPC
+</A></li>
+	<LI>Next message: <A HREF="002726.html">[eLua-dev] Getting Started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2739">[ date ]</a>
+              <a href="thread.html#2739">[ thread ]</a>
+              <a href="subject.html#2739">[ subject ]</a>
+              <a href="author.html#2739">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

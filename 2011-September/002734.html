@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Getting Started
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Getting%20Started&In-Reply-To=%3C4e7a5705.2fe.598b.434%40gis.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002733.html">
+   <LINK REL="Next"  HREF="002735.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Getting Started</H1>
+    <B>kyasi at gis.net</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Getting%20Started&In-Reply-To=%3C4e7a5705.2fe.598b.434%40gis.net%3E"
+       TITLE="[eLua-dev] Getting Started">kyasi at gis.net
+       </A><BR>
+    <I>Wed Sep 21 23:28:37 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002733.html">[eLua-dev] Getting Started
+</A></li>
+        <LI>Next message: <A HREF="002735.html">[eLua-dev] Getting Started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2734">[ date ]</a>
+              <a href="thread.html#2734">[ thread ]</a>
+              <a href="subject.html#2734">[ subject ]</a>
+              <a href="author.html#2734">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello James
+
+The zip files still do not work on my board.
+I verified that the MD5 of the zip and included files when arrived at my
+end
+had the same MD5 as you reported in your email reply.
+So I do not think the files are getting corrupted.
+
+this is a little strange... the eLuawebserver files you sent me work ok.
+And i went back and used the web builder, i deselected the build
+switches for SERMUX and RFS and i loaded the generated file to my board.
+( I did not expect this all to work because i tried that intially, but i
+just wanted to insure that i could get the lua prompt on the serial port
+to verify, connections and terminal emulator etc are all as they should
+be.  And Yes, with that file i get the proper v .8 prompt each time i
+hit reset or power cycle the board, but as we discussed before, i get
+the &quot;y&quot; response if i just use the terminal program for input because of
+the ser mux.
+
+So i do not understand what could possibly be going on.
+Especially since the same image works on your board.
+
+Thanks for spending the time with me. Ill try to install the toolchain
+and see if i can get anywhere with that.
+
+Ken
+
+
+
+----- Original Message Follows -----
+&gt;<i> On Wed, Sep 21, 2011 at 9:07 AM,  &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">kyasi at gis.net</A>&gt; wrote:
+</I>&gt;<i> &gt; Hi James
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Well the files still do not work on my system.
+</I>&gt;<i> &gt; I downloaded the updated hex and elf files that you provided.
+</I>&gt;<i> &gt; I have no problem programming the flash with these files but i still
+</I>&gt;<i> &gt; get no
+</I>&gt;<i> &gt; output on the serial port and no responses from inputs.
+</I>&gt;<i> &gt; I compared the new files to the original and their are differences,
+</I>&gt;<i> &gt; so i think that
+</I>&gt;<i> &gt; confirms i have the new files.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Since this image works on your EVK1100 i guess ill have to try to
+</I>&gt;<i> &gt; figure out why it does not work on my setup.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Just to confirm your set up.
+</I>&gt;<i> &gt; 1. you connect your terminal program to uart0 ( i have tired both )
+</I>&gt;<i> &gt; 2. you set terminal for 115.2k N 8 1 &#160;no flow control ( I have
+</I>tried
+&gt;<i> &gt; other combinations)
+</I>&gt;<i> &gt; 3. if you press the reset button on the board you get the prompt or
+</I>&gt;<i> &gt; if you just power cycle the board you get the prompt ? &#160;( i have
+</I>&gt;<i> &gt; tried both with no results )
+</I>&gt;<i> 
+</I>&gt;<i> Strange.  Yes, UART0, 115200 8N1.  Perhaps the file is getting mangled
+</I>&gt;<i> when downloaded since the hex file appears to be an ascii file?
+</I>&gt;<i> 
+</I>&gt;<i> Here's a zip containing the elf and hex:
+</I>&gt;<i> <A HREF="http://dl.dropbox.com/u/169337/eLua-Vanilla/eLua_at32uc3a0512.zip">http://dl.dropbox.com/u/169337/eLua-Vanilla/eLua_at32uc3a0512.zip</A>
+</I>&gt;<i> 
+</I>&gt;<i> Also, here are MD5s for all the files in the directory:
+</I>&gt;<i> 746d69168d898c1da1e9cad5a86ce220  eLua_at32uc3a0512.zip
+</I>&gt;<i> 78e410fa3dfd01cfe39c69c9419cf349  elua_lua_at32uc3a0512.elf
+</I>&gt;<i> 2967c61646d6a01dc3683e9d323a14be  elua_lua_at32uc3a0512.hex
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I checked my hardware again and other applications have no problem
+</I>&gt;<i> &gt; communicating thru the serial uart comm ports to the terminal
+</I>&gt;<i> program. &gt;
+</I>&gt;<i> &gt; I will try to figure this out.
+</I>&gt;<i> &gt; I will also try to install the tool chain.
+</I>&gt;<i> &gt; Can you tell me the command line and options you used to build this
+</I>&gt;<i> &gt; image ?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; thanks again for your help ?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; PS... can you tell me why when i respond to your emails it seems to
+</I>&gt;<i> &gt; start a new thread with the same subject line, but when you respond
+</I>&gt;<i> &gt; your reply goes to the proper thread when viewed thru the web
+</I>&gt;<i> &gt; archive ? &#160;I just &quot;reply all&quot; to the email message i get from you,
+</I>&gt;<i> &gt; but apparently that does not work as i expected.
+</I>&gt;<i> 
+</I>&gt;<i> I suspect you mean on the archives here?
+</I>&gt;<i> <A HREF="https://lists.berlios.de/pipermail/elua-dev/2011-September/thread.html">https://lists.berlios.de/pipermail/elua-dev/2011-September/thread.html</A>
+</I>&gt;<i> 
+</I>&gt;<i> Nabble seems to pick up on it correctly:
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/">http://elua-development.2368040.n2.nabble.com/</A>
+</I>&gt;<i> 
+</I>&gt;<i> The basic functionality for pipermail's tracking of threads depends on
+</I>&gt;<i> the email client maintaining the &quot;In-Reply-To&quot; header when it does a
+</I>&gt;<i> reply (it might, in some versions also use the subject line?).  I'm
+</I>&gt;<i> not sure why, but GMail (which is what I'm using for email) seems to
+</I>&gt;<i> make use of or maintain this header, while messages sent from your
+</I>&gt;<i> client do not. I'm not sure if there's a way to get it to behave
+</I>&gt;<i> differently depending on how you reply to messages.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Ken
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002733.html">[eLua-dev] Getting Started
+</A></li>
+	<LI>Next message: <A HREF="002735.html">[eLua-dev] Getting Started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2734">[ date ]</a>
+              <a href="thread.html#2734">[ thread ]</a>
+              <a href="subject.html#2734">[ subject ]</a>
+              <a href="author.html#2734">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

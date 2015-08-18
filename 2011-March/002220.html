@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Instrumenting stack usage
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Instrumenting%20stack%20usage&In-Reply-To=%3CAANLkTinsRwNk%2BXWC3ATTMZQ6gH0ihHQha5AcSjPO2VSc%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002216.html">
+   <LINK REL="Next"  HREF="002221.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Instrumenting stack usage</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Instrumenting%20stack%20usage&In-Reply-To=%3CAANLkTinsRwNk%2BXWC3ATTMZQ6gH0ihHQha5AcSjPO2VSc%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Instrumenting stack usage">martinwguy at gmail.com
+       </A><BR>
+    <I>Mon Mar 28 06:38:35 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002216.html">[eLua-dev] NVIC_configuration on STM32
+</A></li>
+        <LI>Next message: <A HREF="002221.html">[eLua-dev] Instrumenting stack usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2220">[ date ]</a>
+              <a href="thread.html#2220">[ thread ]</a>
+              <a href="subject.html#2220">[ subject ]</a>
+              <a href="author.html#2220">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've checked to see how much C stack is used in reality and attach a
+nasty patch that does the job.
+It works by zeroing the C stack at startup and checking to see how
+much of it is still zero just before printing the Lua prompt.
+
+The results confirm Bogdan's practical experience: Parsing a
+non-trivial program (50KB with lots of upvalues) needs 4096 bytes of C
+stack.
+This is tested on a 32-bit AVR32 platform, but suggests that the other
+platforms with the stack set to 2048 bytes will be unreliable.
+
+&gt;<i> Lua 5.1.4  Copyright (C) 1994-2011 Lua.org, PUC-Rio
+</I>2212 bytes of stack have been used
+&gt;<i>
+</I>2380 bytes of stack have been used
+&gt;<i> require &quot;life&quot;
+</I>3264 bytes of stack have been used
+&gt;<i> require &quot;ed&quot;
+</I>3948 bytes of stack have been used
+
+&gt;<i> Lua 5.1.4  Copyright (C) 1994-2011 Lua.org, PUC-Rio
+</I>2212 bytes of stack have been used
+&gt;<i> require &quot;ed&quot;
+</I>3948 bytes of stack have been used
+&gt;<i>
+</I>
+     M
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: lua-check-C-stack-usage.patch
+Type: text/x-patch
+Size: 2240 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110328/01685ccf/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20110328/01685ccf/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002216.html">[eLua-dev] NVIC_configuration on STM32
+</A></li>
+	<LI>Next message: <A HREF="002221.html">[eLua-dev] Instrumenting stack usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2220">[ date ]</a>
+              <a href="thread.html#2220">[ thread ]</a>
+              <a href="subject.html#2220">[ subject ]</a>
+              <a href="author.html#2220">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

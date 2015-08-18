@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua design change to allow synchronized PWM channel	start?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20design%20change%20to%20allow%20synchronized%20PWM%20channel%0A%09start%3F&In-Reply-To=%3CBANLkTi%3Dv1stLOvEsTcWVgPN2Qkuh-c6nVA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002245.html">
+   <LINK REL="Next"  HREF="002249.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua design change to allow synchronized PWM channel	start?</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20design%20change%20to%20allow%20synchronized%20PWM%20channel%0A%09start%3F&In-Reply-To=%3CBANLkTi%3Dv1stLOvEsTcWVgPN2Qkuh-c6nVA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua design change to allow synchronized PWM channel	start?">martinwguy at gmail.com
+       </A><BR>
+    <I>Wed Apr  6 11:23:56 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002245.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+        <LI>Next message: <A HREF="002249.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2247">[ date ]</a>
+              <a href="thread.html#2247">[ thread ]</a>
+              <a href="subject.html#2247">[ subject ]</a>
+              <a href="author.html#2247">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 4 April 2011 21:08, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+&gt;<i> Because of the large (and growing) number for supported platforms and
+</I>&gt;<i> architectures, the eLua platform-interface needs sometimes to be limited to
+</I>&gt;<i> what is common to all (or most).
+</I>&gt;<i> This doesn't mean we can extract the best from every target. For features
+</I>&gt;<i> found on some specific platforms, we have the Platform-Specific modules
+</I>&gt;<i> concept (See Platform Modules on our Main Menu options. Sorry, the sub-link
+</I>&gt;<i> system is not ideal {yet} to send you a link).
+</I>&gt;<i> I'm not sure if this is the case, as what you mentioned seem to exist in
+</I>&gt;<i> most platforms but, if not, you can write a module like avr32.pwm.&#160; to
+</I>&gt;<i> include functions specific to this platform. We've done it already, for some
+</I>&gt;<i> weird initialization taks on mbed and str912, for the str912 Real Time Clock
+</I>&gt;<i> and for supporting the EK-LM3Sxxxx RIT OLED displays.
+</I>
+Thanks for the thought. In fact, the AVR32 PWM has some extra stuff
+that people might need:
+- alignment: left-aligned waveform or centred (symmetrical) waveform
+- polarity: each cycle starts low then goes high, or starts hight then goes low
+- generating an interrupt at the end of each cycle of a waveform
+which I guess are not portable between platforms.
+However, for now I'm just trying to get something that works at all.
+These platform-specific refinements can happen in a second moment.
+
+Conversely, if some but not all of the platforms support some feature,
+say centre-aligned waveforms, then do we end up with
+at91.pwm.alignment() avr32.pwm.alignment() and
+other_board.pwm.alignment()?
+
+In the specific case we are talking about here, the API change to
+start/stop (/configure?) several PWM outputs in one call seems
+orthogonal to the other modules, as well as being a more convenient
+syntax, and if a platform can't do it in reality, it can just start
+several channels in a for loop in C, which will stil be more closely
+aligned than doing it with a for loop in Lua.
+
+&gt;<i> As Bogdan has mentioned, we don't mind (too much :) changing the API to
+</I>&gt;<i> support better models, even if this breaks some code and this is why we
+</I>&gt;<i> haven't called any of our versions a eLua 1.0 yet.
+</I>
+Sometimes the API needs redesigning (or refining) in the light of
+practical experience, but given the small amount of code already
+written for eLua, we should be able to do this without too much pain.
+It's kinder to users if we ensure that existing code that uses the old
+interface either continues working with some legacy interface, or
+fails to compile with an error.
+
+&gt;<i> But this should be done very carefully, not only to support one very used
+</I>&gt;<i> platform but to make sure the changes will bring benefits to all. If not
+</I>&gt;<i> possible, there will always be the handy solution of creating
+</I>&gt;<i> platform-specific modules.
+</I>
+Of course, although the API already contains stuff that cannot be
+implemented on all platforms.
+For example, the PWM interface thinks you can set the clock frequency
+independently for each channel, both at the Lua level and the C
+interface:
+but none of the platforms can do this.  Changing the clock of one
+channel changes it for all of the others (or &quot;some of the others&quot; in
+the AT91 case!) - something users need to be aware of while writing
+for a specific platform.
+
+Already, platform-independent code is difficult in eLua.  Look at
+led.lua for example.
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002245.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+	<LI>Next message: <A HREF="002249.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2247">[ date ]</a>
+              <a href="thread.html#2247">[ thread ]</a>
+              <a href="subject.html#2247">[ subject ]</a>
+              <a href="author.html#2247">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

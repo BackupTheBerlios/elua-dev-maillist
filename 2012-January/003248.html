@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 timer interrupts
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20timer%20interrupts&In-Reply-To=%3CCAL4-wQqSjg0Zc5yZig__2CpxSe0_thzeGc5UdS4sy57CyxVWjw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003254.html">
+   <LINK REL="Next"  HREF="003249.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 timer interrupts</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20timer%20interrupts&In-Reply-To=%3CCAL4-wQqSjg0Zc5yZig__2CpxSe0_thzeGc5UdS4sy57CyxVWjw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 timer interrupts">martinwguy at gmail.com
+       </A><BR>
+    <I>Mon Jan 16 08:02:46 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003254.html">[eLua-dev] El bug
+</A></li>
+        <LI>Next message: <A HREF="003249.html">[eLua-dev] AVR32 timer interrupts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3248">[ date ]</a>
+              <a href="thread.html#3248">[ thread ]</a>
+              <a href="subject.html#3248">[ subject ]</a>
+              <a href="author.html#3248">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+  I'm trying to test AVR32 Lua interrupts in trunk and don't see what
+I'm doing wrong.
+
+Using (adapted from the sample code at
+<A HREF="http://www.eluaproject.net/doc/v0.8/en_inthandlers.html">http://www.eluaproject.net/doc/v0.8/en_inthandlers.html</A>):
+
+function tmr_handler( resnum )
+  print( string.format( &quot;Timer interrupt for id %d&quot;, resnum ) )
+end
+cpu.set_int_handler( cpu.INT_TMR_MATCH, tmr_handler )  -- returns nil
+tmr.set_match_int(500000, tmr.INT_CYCLIC, 0 )  --once every half second
+cpu.sei( cpu.INT_TMR_MATCH, 0)
+
+it sits there for about 15 seconds, then starts going
+
+ERROR in elua_int_add: buffer overflow, interrupt not queued
+ERROR in elua_int_add: buffer overflow, interrupt not queued
+ERROR in elua_int_add: buffer overflow, interrupt not queued
+
+giving one message every half second.
+
+Likewise, for GPIO interrupts:
+
+button = pio.PX_16
+function gpio_negedge_handler( resnum )
+    local port, pin = pio.decode( resnum )
+    print( string.format( &quot;GPIO NEGEDGE interrupt on port %d, pin %d&quot;,
+port, pin ) )
+end
+cpu.set_int_handler( cpu.INT_GPIO_NEGEDGE, gpio_negedge_handler )
+cpu.sei( cpu.INT_GPIO_NEGEDGE, button )
+
+nothng happens until the 26th button press, at which point I get
+
+ERROR in elua_int_add: buffer overflow, interrupt not queued
+
+each time I press the button
+
+Does anyone know what I am missing here?
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003254.html">[eLua-dev] El bug
+</A></li>
+	<LI>Next message: <A HREF="003249.html">[eLua-dev] AVR32 timer interrupts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3248">[ date ]</a>
+              <a href="thread.html#3248">[ thread ]</a>
+              <a href="subject.html#3248">[ subject ]</a>
+              <a href="author.html#3248">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

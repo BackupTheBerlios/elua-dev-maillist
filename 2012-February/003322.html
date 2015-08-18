@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua on mbed
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20on%20mbed&In-Reply-To=%3CCAJ%3DY9Y3FyxZkxEivNTsQCcQrYJJS7UU-txbrgNcKjBqjK-zHow%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003326.html">
+   <LINK REL="Next"  HREF="003327.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua on mbed</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20on%20mbed&In-Reply-To=%3CCAJ%3DY9Y3FyxZkxEivNTsQCcQrYJJS7UU-txbrgNcKjBqjK-zHow%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua on mbed">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 22 17:00:23 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003326.html">[eLua-dev] eLua on mbed
+</A></li>
+        <LI>Next message: <A HREF="003327.html">[eLua-dev] &quot;The Go @ IDE&quot;  is available for Windows!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3322">[ date ]</a>
+              <a href="thread.html#3322">[ thread ]</a>
+              <a href="subject.html#3322">[ subject ]</a>
+              <a href="author.html#3322">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Feb 22, 2012 at 9:55 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Feb 22, 2012 at 5:52 PM, Tom Freund &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">digysol at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> read about the eLua project on mbed.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Any reason why the eLua platform source cannot be compiled through the web
+</I>&gt;&gt;<i> based compiler provided through mbed.org ?
+</I>&gt;<i>
+</I>&gt;<i> Quite simply, nobody implemented that yet. eLua's build system is
+</I>&gt;<i> quite complex and very different from mbed's compile-on-line
+</I>&gt;<i> philosophy. I believe it is possible to compile eLua using their
+</I>&gt;<i> on-line tools and I'll be happy if someone implements that.
+</I>&gt;<i> Personally, I find the idea of online toolchains completely
+</I>&gt;<i> unappealing, which is why I didn't invest any effort in this task.
+</I>
+It may have changed since I last tried this but there were two reasons
+why it didn't work previously:
+1) eLua is built around using certain hooks in newlib, and needs to be
+ported to other c libraries (the mbed compiler used armcc and a
+related c library). This isn't ultimately too painful to deal with.
+2) The compiler only supported C++.  eLua's LTR depends on designated
+initializers in C, which don't exist in C++:
+<A HREF="http://stackoverflow.com/questions/855996/c-equivalent-to-designated-initializers">http://stackoverflow.com/questions/855996/c-equivalent-to-designated-initializers</A>
+
+After hacking around the latter for a while, I finally just
+implemented a newlib + gcc based port for mbed.
+
+-jsnyder
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Tom Freund
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Digysol
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &quot;Software and hardware
+</I>&gt;&gt;<i> enabling
+</I>&gt;&gt;<i> collective intelligence
+</I>&gt;&gt;<i> looking after
+</I>&gt;&gt;<i> infrastructure&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Voice - 860-232-1614
+</I>&gt;&gt;<i> Skype ID - digysol
+</I>&gt;&gt;<i> www.scguild.com/Resume/1149I.html
+</I>&gt;&gt;<i> <A HREF="http://www.youtube.com/user/digysol">http://www.youtube.com/user/digysol</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003326.html">[eLua-dev] eLua on mbed
+</A></li>
+	<LI>Next message: <A HREF="003327.html">[eLua-dev] &quot;The Go @ IDE&quot;  is available for Windows!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3322">[ date ]</a>
+              <a href="thread.html#3322">[ thread ]</a>
+              <a href="subject.html#3322">[ subject ]</a>
+              <a href="author.html#3322">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

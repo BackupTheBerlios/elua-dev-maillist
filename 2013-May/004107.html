@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] net.lookup locked
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20net.lookup%20locked&In-Reply-To=%3CCAL4-wQrNVcG9Jqg1fcMuW%2BXbCSObZ7RSQqdVgfY7V2RYG7a71Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004106.html">
+   <LINK REL="Next"  HREF="004108.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] net.lookup locked</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20net.lookup%20locked&In-Reply-To=%3CCAL4-wQrNVcG9Jqg1fcMuW%2BXbCSObZ7RSQqdVgfY7V2RYG7a71Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] net.lookup locked">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu May 16 08:26:27 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004106.html">[eLua-dev] net.lookup locked
+</A></li>
+        <LI>Next message: <A HREF="004108.html">[eLua-dev] net.lookup locked
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4107">[ date ]</a>
+              <a href="thread.html#4107">[ thread ]</a>
+              <a href="subject.html#4107">[ subject ]</a>
+              <a href="author.html#4107">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Gabriel
+  Thanks for your detailed feedback
+
+&gt;<i> Before, I could not access eLua's shell because I was pointing to the wrong device, ttyUSB0 instead of ttyACM0.
+</I>
+OK thanks.
+
+2 - It works!!!!!! net.lookup could resolve names and return the
+correct parameters to net.connect :D
+
+&quot;It&quot; == ??? -rc2? -rc1? Both? To find the bug I need to divide the
+firmwares into ones that seem to work and those that are known to have
+some problem.
+I mean, I can test them here, but that doesn't mean that they work for you!
+
+&gt;<i> I have built a firmware from master branch and it does not work, only the firmware you sent me.
+</I>
+OK, good to know you are seeing the same results as me. Thanks.
+
+&gt;<i> What is the difference between these 2 branchs?
+</I>
+- The compiler (Atmel-GCC 3.4.1 on b.sm.it vs. my one built with ct-ng here)
+- builder.simplemachines.it doesn't define BUILD_RTC so you get no
+mizar32.rtc.*() Lua module, which was added since the web builder was
+written. That &quot;should&quot; make no difference to net.*() but if it's the
+kind of bug that corrupts memory at random, just adding one byte
+changes what gets crapped on
+- builder.sm.it is a 64-bit Linux, my laptop has 32-bit linux. That
+should make no difference either! But I have seen that the Atmel
+64-bit version generates binaries with 4 bytes more data than the same
+32-bit version, due to padding a one-character variable to 8 bytes
+instead of 4, and that would also move the rest of the data by 4 bytes
+and change which variable get corrupted.
+- something else that I haven't though of...
+
+&gt;<i> I would like to help more if you need, be programming, giving ideas or reporting bugs!
+</I>
+Thanks. Do let me know if -rc1 or -rc2 show any bugs. I'll run some
+more tests to see if I can find out what the deciding factor is. Of
+course, I'm hoping that the cause is that my compiler works and
+Atmel's doesn't but that's just my big-headedness ;-)
+
+   M
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004106.html">[eLua-dev] net.lookup locked
+</A></li>
+	<LI>Next message: <A HREF="004108.html">[eLua-dev] net.lookup locked
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4107">[ date ]</a>
+              <a href="thread.html#4107">[ thread ]</a>
+              <a href="subject.html#4107">[ subject ]</a>
+              <a href="author.html#4107">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

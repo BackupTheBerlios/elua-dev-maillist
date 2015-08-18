@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4 discovery board?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4%20discovery%20board%3F&In-Reply-To=%3CCAJ%3DY9Y13E%2BB9iJ_YB1Ru_g0ipMov4UZ2Sf2Es%3DiZynzDF65QLg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002834.html">
+   <LINK REL="Next"  HREF="002836.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4 discovery board?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4%20discovery%20board%3F&In-Reply-To=%3CCAJ%3DY9Y13E%2BB9iJ_YB1Ru_g0ipMov4UZ2Sf2Es%3DiZynzDF65QLg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] stm32f4 discovery board?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Oct 17 19:42:30 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002834.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+        <LI>Next message: <A HREF="002836.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2835">[ date ]</a>
+              <a href="thread.html#2835">[ thread ]</a>
+              <a href="subject.html#2835">[ subject ]</a>
+              <a href="author.html#2835">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>It looks like it should support both DFU &amp; the older serial mode (from
+page 59 of the Reference Manual):
+
+Embedded bootloader
+The embedded bootloader mode is used to reprogram the Flash memory
+using one of the following serial interfaces:
+&#9679; USART1(PA9/PA10)
+&#9679; USART3(PB10/11 and PC10/11)
+&#9679; CAN2(PB5/13)
+&#9679; USB OTG FS(PA11/12) in Device mode (DFU: device firmware upgrade).
+The USART peripherals operate at the internal 16 MHz oscillator (HSI)
+frequency, while the CAN and USB OTG FS require an external clock
+(HSE) multiple of 1 MHz (ranging from 4 to 26 MHz).
+The embedded bootloader code is located in system memory. It is
+programmed by ST during production. For additional information, refer
+to application note AN2606.
+
+Nice :-)
+
+On Mon, Oct 17, 2011 at 12:36 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+&gt;<i> On Sun, Oct 16, 2011 at 1:28 PM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sun, Oct 16, 2011 at 8:24 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Any further progress made on the interface from something other than
+</I>&gt;&gt;&gt;<i> windows? &#160;I've requested a sample of one of these boards to experiment with
+</I>&gt;&gt;&gt;<i> and saw a flurry of messages related to the interface but nothing entirely
+</I>&gt;&gt;&gt;<i> conclusive?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Again, has anyone tried stm32ld? If the protocol stayed the same (and why
+</I>&gt;&gt;<i> wouldn't it?) it should be quite straightforward to modify. Of course a bit
+</I>&gt;&gt;<i> of new hardware would be required too, but that should be fairly trivial.
+</I>&gt;<i>
+</I>&gt;<i> That's a good point as well. I haven't fully investigated whether
+</I>&gt;<i> they've kept this the same. &#160;It looks like BOOT0/BOOT1 are brought
+</I>&gt;<i> out.
+</I>&gt;<i>
+</I>&gt;<i> The getting started guide actually mention a DFU mode in conjunction
+</I>&gt;<i> with these pins which would be even better since there's freely
+</I>&gt;<i> available DFU software out there that's cross platform. &#160;I believe
+</I>&gt;<i> some of the earlier messages refer to trying this mode..
+</I>&gt;<i>
+</I>&gt;<i> FYI, aside from the avr-related dfu-programmer, there's also dfu-util:
+</I>&gt;<i> <A HREF="http://dfu-util.gnumonks.org/">http://dfu-util.gnumonks.org/</A>
+</I>&gt;<i>
+</I>&gt;<i> Which is used for openmoko, leaflabs maple, and some other hardware so
+</I>&gt;<i> it's probably a good candidate for a compatible loader.
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Perhaps if all else fails there may be some way to get the mcu into a dfu
+</I>&gt;&gt;&gt;<i> mode and upload firmware that way?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> James Snyder
+</I>&gt;&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;&gt;<i> ph: (847) 448-0386
+</I>&gt;&gt;&gt;<i> On Oct 13, 2011, at 17:31, Roger Critchlow &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rec at elf.org</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Thu, Oct 13, 2011 at 3:37 PM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> It isn't an ST-LINK.&#160; It is an ST-LINK V2.&#160; They use completely different
+</I>&gt;&gt;&gt;&gt;<i> protocols.&#160; The V1 uses USB mass storage class, the V2 is something
+</I>&gt;&gt;&gt;&gt;<i> proprietary.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> But I'm puzzled by the contents arm-utilities/stlink-download. &#160;Guess I
+</I>&gt;&gt;&gt;&gt;&gt;<i> should just compile something and try flashing.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> It probably won't work since it isn't a V1 ST-LINK.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You're right, it's a new usb product id, and the Interface reports as
+</I>&gt;&gt;&gt;<i> vendor specific where it used to be mass storage, and there's a third
+</I>&gt;&gt;&gt;<i> endpoint where there were only two before, and stlink-download gets nowhere
+</I>&gt;&gt;&gt;<i> with it because it never gets the mass storage driver loaded. &#160;I wonder if
+</I>&gt;&gt;&gt;<i> it's the same broken mass storage implementation underneath.
+</I>&gt;&gt;&gt;<i> -- rec --
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002834.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+	<LI>Next message: <A HREF="002836.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2835">[ date ]</a>
+              <a href="thread.html#2835">[ thread ]</a>
+              <a href="subject.html#2835">[ subject ]</a>
+              <a href="author.html#2835">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

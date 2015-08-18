@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20on%20LM3S%20Connection%20Issue%20%28was%20Re%3A%20eLua-dev%0A%20Digest%2C%20Vol%2035%2C%20Issue%2041%29&In-Reply-To=%3C1308488046052-6492843.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002543.html">
+   <LINK REL="Next"  HREF="002552.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)</H1>
+    <B>raman</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20on%20LM3S%20Connection%20Issue%20%28was%20Re%3A%20eLua-dev%0A%20Digest%2C%20Vol%2035%2C%20Issue%2041%29&In-Reply-To=%3C1308488046052-6492843.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)">ramangopalan at gmail.com
+       </A><BR>
+    <I>Sun Jun 19 14:54:06 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002543.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+        <LI>Next message: <A HREF="002552.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2544">[ date ]</a>
+              <a href="thread.html#2544">[ thread ]</a>
+              <a href="subject.html#2544">[ subject ]</a>
+              <a href="author.html#2544">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> What's odd here is that I did hook up a scope to both Rx and Tx lines
+</I>&gt;&gt;<i> and at least at the MCU it appears to be sending back the initial
+</I>&gt;&gt;<i> handshake reply.
+</I>&gt;<i>
+</I>&gt;<i> Sure, I too was able to confirm this with stub code.
+</I>
+Hello,
+
+You've been able to receive data from the MCU during this exchange
+using some alternate code? 
+
+I was able to confirm that the rx and tx on the micro-controller 
+are working fine.
+
+What's especially weird for me is that at
+least with what's opened and set up using the serial layer in LuaRPC
+it never seems to get _anything_ even if I double-send the header
+back.  I would presume that the serial layer were broken in general on
+Windows, since I can use TeraTerm to use the eLua shell, but STM32
+works fine.
+
+When I wrote a few extra lines of code to retransmit the header
+received, the micro-controller only transmitted a string of '#'. At 
+this point, I suspected the PC side transmit module. (./luarpc
+instance). Here I was certain that the bug was not relevant in 
+the Elua domain. Would you agree with my conclusion ?
+
+&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> What I can't figure out is why it never appears in
+</I>&gt;&gt;<i> the buffer in Windows.  There's plenty of buffer space allocated
+</I>&gt;&gt;<i> beforehand.  One difference I notice in timing between POSIX and
+</I>&gt;&gt;<i> Windows is that it seems to send the connection request byte and
+</I>&gt;&gt;<i> header as one &quot;packet&quot; whereas with windows there is a couple
+</I>&gt;&gt;<i> millisecond delay between the sending of the connection request byte
+</I>&gt;&gt;<i> and the 8 header bytes.  Additionally, there appears to be a longer
+</I>&gt;&gt;<i> delay in responding to the single 9 byte POSIX send vs the separated
+</I>&gt;&gt;<i> Windows 1 + 2ms + 8 byte send.  I haven't looked at timing on an STM32
+</I>&gt;&gt;<i> platform yet to see how it differs if at all but I wonder if this
+</I>&gt;&gt;<i> might be related to timing?
+</I>&gt;<i>
+</I>&gt;<i> Certainly, there is a very good possibility of the problem emanating from
+</I>&gt;<i> the
+</I>&gt;<i> delta delay. I have also obtained &quot;MY ERROR: header exchange failed&quot; in
+</I>&gt;<i> addition to the &quot;no data received when attempting to read&quot; error.
+</I>... [show rest of quote]
+
+The header exchange error is interesting, that indicates that it is
+reading something back.  Have you experienced that only on one
+particular platform or another?
+
+Yes, it brings up an interesting point. I have experienced this only
+on Windows. On Gnu/Linux, it just takes me to a waiting state. 
+One direct possibility for this might be the lack of FNDELAY in
+fcntl(fd, F_SETFL, 0); I am yet to confirm this in the source level.
+(serial/serial_posix.c). Is this the case ?
+
+&gt;<i>
+</I>&gt;<i> I have also tried building on Gnu/Linux. The response is identical. The
+</I>&gt;<i> ./luarpc
+</I>&gt;<i> instance, while executing rpc.connect(&quot;/dev/ttyUSB0&quot;) takes me to an
+</I>&gt;<i> infinite
+</I>&gt;<i> waiting state. (Despite its posix compliance, which was tested
+</I>&gt;<i> successfully
+</I>&gt;<i> on mac ?)
+</I>
+Could you let me know which version of Linux you're using?  It does
+work for me on Ubuntu x86_64 11.04.
+
+When I tried this just about a week ago, I was using Ubuntu Remix 
+(netbook edition), 10.04, Lucid Lynx, Intel X86
+
+I will try running it on a 10.10 box. Will keep you posted.
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jsnyder at erlanger</A>:~/Sources/elua$ ./luarpc test/test-rpc.lua
+Platform: LM3S
+CPU: LM3S6965
+Board: EK-LM3S6965
+CPU Clock: 50 MHz
+Memory Used: 7.759765625 kB
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jsnyder at erlanger</A>:~/Sources/elua$ uname -a
+Linux erlanger 2.6.38-10-generic #44-Ubuntu SMP Thu Jun 2 21:32:22 UTC
+2011 x86_64 x86_64 x86_64 GNU/Linux
+
+This is awesome. Can't wait for lrpc to work on my box.
+
+Also here's some stuff that was dumped into the system logs when the
+kernel was initializing the device:
+[10211.120029] usb 8-1: new full speed USB device using uhci_hcd and address
+3
+[10211.351617] usbcore: registered new interface driver usbserial
+[10211.351632] USB Serial support registered for generic
+[10211.351695] usbcore: registered new interface driver usbserial_generic
+[10211.351697] usbserial: USB Serial Driver core
+[10211.355645] USB Serial support registered for FTDI USB Serial Device
+[10211.355856] usb 8-1: Ignoring serial port reserved for JTAG
+[10211.355897] ftdi_sio 8-1:1.1: FTDI USB Serial Device converter detected
+[10211.356108] usb 8-1: Detected FT2232C
+[10211.356111] usb 8-1: Number of endpoints 2
+[10211.356113] usb 8-1: Endpoint 1 MaxPacketSize 64
+[10211.356115] usb 8-1: Endpoint 2 MaxPacketSize 64
+[10211.356117] usb 8-1: Setting MaxPacketSize 64
+[10211.358470] usb 8-1: FTDI USB Serial Device converter now attached to
+ttyUSB0
+[10211.358498] usbcore: registered new interface driver ftdi_sio
+[10211.358500] ftdi_sio: v1.6.0:USB FTDI Serial Converters Driver
+
+It'd be interesting if you've got a different version or perhaps got a
+different packet size configuration?
+
+&gt;<i>
+</I>&gt;<i> Have you encountered this before ?
+</I>
+Not on Linux, but I have also done most of my testing and evaluation
+on OS X.  I'd like to be able to reproduce this one on Linux as well
+since that would help narrow things down.
+
+I did try lengthening the delay on the server side for sending a reply
+back, but that doesn't seem to make any difference.  
+
+I did play around with timeout. It didn't make a difference. 
+
+It also doesn't seem to get anything if I try sending additional copies of
+the header
+or arbitrary data, the read in Windows just comes back empty
+regardless.  This makes me wonder if something is broken in the state
+with the windows driver at the time the data is sent, or perhaps one
+of them isn't playing precisely by the rules in terms of
+physical/RS-232 state?
+
+Sure, but on those occasions when I obtained &quot;Header exchange mismatch&quot;,
+I least suspected the driver. How do we proceed towards cornering the fault
+?
+
+Regarding your Linux setup, is the version of Linux you're running
+native or in a VM under windows? Is the 32 or 64 bit and which
+OS/kernel version might you be running?  I wonder if you're having the
+same issue under both or if there are different issues going on here?
+
+It was native, 32 bit, Kernel version: 2.6.2X.
+
+&gt;&gt;<i>
+</I>&gt;&gt;<i> It has definitely worked in the past on this platform.  I may start
+</I>&gt;&gt;<i> trying to find the last working version and then use git bisect to
+</I>&gt;&gt;<i> find what change caused the current problem.
+</I>&gt;<i>
+</I>&gt;<i> Awaiting your response.
+</I>
+One other quick note: replying to digests might make this thread a bit
+difficult to follow in the future.  If you're wanting to continue
+using digests for replies, might I suggest trying something like
+Nabble:
+<A HREF="http://elua-development.2368040.n2.nabble.com/">http://elua-development.2368040.n2.nabble.com/</A>
+
+It makes this list appear like a forum and even will allow you to
+subscribe to individual conversations. 
+
+Sure, will incorporate this protocol. Thanks.
+
+Awaiting your reply.
+
+Raman
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/LuaRPC-on-LM3S-Connection-Issue-was-Re-eLua-dev-Digest-Vol-35-Issue-41-tp6491948p6492843.html">http://elua-development.2368040.n2.nabble.com/LuaRPC-on-LM3S-Connection-Issue-was-Re-eLua-dev-Digest-Vol-35-Issue-41-tp6491948p6492843.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002543.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+	<LI>Next message: <A HREF="002552.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2544">[ date ]</a>
+              <a href="thread.html#2544">[ thread ]</a>
+              <a href="subject.html#2544">[ subject ]</a>
+              <a href="author.html#2544">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

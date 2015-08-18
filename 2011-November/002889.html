@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] how do you include a lua file as part of the binary image that you flash to a board.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20how%20do%20you%20include%20a%20lua%20file%20as%20part%20of%20the%20binary%0A%20image%20that%20you%20flash%20to%20a%20board.&In-Reply-To=%3CCA%2Bk0RGfh7%2BO9vMba3TXeZVJH2thjRVHCQnktuLApmQTgekeVgg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002887.html">
+   <LINK REL="Next"  HREF="002890.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] how do you include a lua file as part of the binary image that you flash to a board.</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20how%20do%20you%20include%20a%20lua%20file%20as%20part%20of%20the%20binary%0A%20image%20that%20you%20flash%20to%20a%20board.&In-Reply-To=%3CCA%2Bk0RGfh7%2BO9vMba3TXeZVJH2thjRVHCQnktuLApmQTgekeVgg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] how do you include a lua file as part of the binary image that you flash to a board.">dadosutter at gmail.com
+       </A><BR>
+    <I>Thu Nov 10 04:48:15 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002887.html">[eLua-dev] how do you include a lua file as part of the binary image that you flash to a board.
+</A></li>
+        <LI>Next message: <A HREF="002890.html">[eLua-dev] stm32f4 - timers issue in examples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2889">[ date ]</a>
+              <a href="thread.html#2889">[ thread ]</a>
+              <a href="subject.html#2889">[ subject ]</a>
+              <a href="author.html#2889">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+On Thu, Nov 10, 2011 at 01:27, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+&gt;<i> I would like to have a like a file as part of the binary image.
+</I>&gt;<i> is that possible. or is this done post elua binary image install.
+</I>&gt;<i> also isnt there a way to start running a lua file as part of the
+</I>&gt;<i> board startup?
+</I>
+Both of your requirements are supported by eLua.
+To have your file as part of the binary image, you need to include it
+on the ROM File System. This can be done at compile time, adding your
+file to the romfs folder (and a little extra configuration for now).
+This is (a bit superficially) explained at
+<A HREF="http://wiki.eluaproject.net/eLua%20File%20Systems">http://wiki.eluaproject.net/eLua%20File%20Systems</A> and in more detail
+at <A HREF="http://www.eluaproject.net/doc/v0.8/en_filesystems.html">http://www.eluaproject.net/doc/v0.8/en_filesystems.html</A>
+
+Another (easier) way, using the eLua Web Builder
+(builder.eluaproject.net), which allows you to upload your files to a
+personal area of your account and then select which files will be part
+or not of your eLua builds.
+We'll be ready to help you with any of your choice.
+
+In both cases, files can be added to the binary image in three
+different options:
+- Verbatim: Files are added as is
+- Compressed: Files are added in source-code format (compiled at run
+time) but the source is compressed to save space.
+- Compiled: Files are pre-compiled before being added to the binary
+eLua image. This saves still more space and avoids the extra compile
+step during the excecution. You loose the access to your source code
+at run time though but this is generaly not a problem.
+If you have enough space in your ROM, you can work in one &quot;mode&quot;
+during development and then switch to a more optimized one on the
+final production version.
+
+About your last question, all you need is to name your file
+&quot;autorun.lua&quot; (or autorun.lc in the case of a Lua pre compiled file),
+to make it run automatically upon an eLua &quot;boot&quot; or reset.
+When eLua starts, it checks to see if there is a file called
+autorun.lua (or .lc) in one of our File Systems. In this case the
+shell is not started and the program is immediately excecuted.
+This is mentioned on the eLua Boot sequence at
+<A HREF="http://www.eluaproject.net/doc/v0.8/en_arch_overview.html#boot">http://www.eluaproject.net/doc/v0.8/en_arch_overview.html#boot</A>
+
+Dado
+
+
+
+
+
+
+
+&gt;<i> james
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002887.html">[eLua-dev] how do you include a lua file as part of the binary image that you flash to a board.
+</A></li>
+	<LI>Next message: <A HREF="002890.html">[eLua-dev] stm32f4 - timers issue in examples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2889">[ date ]</a>
+              <a href="thread.html#2889">[ thread ]</a>
+              <a href="subject.html#2889">[ subject ]</a>
+              <a href="author.html#2889">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

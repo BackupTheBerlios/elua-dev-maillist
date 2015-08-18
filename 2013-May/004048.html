@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] at91sam7x build issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20at91sam7x%20build%20issue&In-Reply-To=%3CA31DB843-8CB8-422F-8E58-0FE4C2C64EA7%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004047.html">
+   <LINK REL="Next"  HREF="004049.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] at91sam7x build issue</H1>
+    <B>Lukas Kacer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20at91sam7x%20build%20issue&In-Reply-To=%3CA31DB843-8CB8-422F-8E58-0FE4C2C64EA7%40gmail.com%3E"
+       TITLE="[eLua-dev] at91sam7x build issue">kacer.lukas at gmail.com
+       </A><BR>
+    <I>Wed May  1 21:11:46 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004047.html">[eLua-dev] at91sam7x build issue
+</A></li>
+        <LI>Next message: <A HREF="004049.html">[eLua-dev] at91sam7x build issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4048">[ date ]</a>
+              <a href="thread.html#4048">[ thread ]</a>
+              <a href="subject.html#4048">[ subject ]</a>
+              <a href="author.html#4048">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>why do you think that it is using src/platform/sim ? if it is because eclipse shows that? 
+I use myself some scons plugin in eclipse and it is almost always wrong about these things.
+
+I remember that I had problem serial console with at91sam7x port, and could not figure out why. 
+it was because serial multiplex was enabled in eLua. to disable it you need to comment out BUILD_SERMUX in platform_conf.h
+
+do I understand you right, that when you turn on your board with, do you see eLua prompt? 
+if yes, then you don't have problem with serial multiplex. 
+
+Lukas 
+
+
+On May 1, 2013, at 20:48 PM, Ashu V. wrote:
+
+&gt;<i> Hi all,
+</I>&gt;<i> 
+</I>&gt;<i> Started exploring eLua since last couple of weeks, this is my first post to this list.
+</I>&gt;<i> 
+</I>&gt;<i> Here's my development host setup:
+</I>&gt;<i> Ubuntu 12.04
+</I>&gt;<i> gcc-arm-none-eabi 4.7 (2012q4)
+</I>&gt;<i> Eclipse/Juno CDT, w/Sconsolidator plugin
+</I>&gt;<i> 
+</I>&gt;<i> Trying to build standard eLua(v9) at91sam7x port as is, using -- scons cpu=at91sam7x512 prog
+</I>&gt;<i> Build process went well, no errors
+</I>&gt;<i> Expecting to see eLua prompt over RS232 connection, Moserial terminal on host side set to 115200, 8n1
+</I>&gt;<i> no movement there, tried sending ENTER (0D hex) that didn't cause any response from the target either.
+</I>&gt;<i> So, launched Eclipse in debug mode. First re-built the image with 
+</I>&gt;<i> comp.Append(CCFLAGS = ['-g']) and
+</I>&gt;<i> comp.Append(CCFLAGS = ['-O2','-fomit-frame-pointer']) optimization changed from -Os to O2 thinking that would be better for debugging.  
+</I>&gt;<i> Again, build process went well, no errors
+</I>&gt;<i> 
+</I>&gt;<i> However what I noticed that was disconcerting -- &quot;platform_conf.h&quot; that included in src/main.c seems to be coming from /src/platform/sim and not /src/platform/at91sam7x I would have expected, since build messages c/p below, clearly confirm that scons recognizes it's building for at91sam7x platform. 
+</I>&gt;<i> *********************************
+</I>&gt;<i> Compiling eLua ...
+</I>&gt;<i> CPU:             AT91SAM7X512
+</I>&gt;<i> Board:           SAM7-EX256
+</I>&gt;<i> Platform:        at91sam7x
+</I>&gt;<i> Allocator:       newlib
+</I>&gt;<i> Boot Mode:       standard
+</I>&gt;<i> Target:          lua
+</I>&gt;<i> Toolchain:       codesourcery
+</I>&gt;<i> ROMFS mode:      verbatim
+</I>&gt;<i> Version:         unknown
+</I>&gt;<i> *********************************   
+</I>&gt;<i> What could be wrong here? I can easily fix this one path issue, but my concern is, based on this instance, if there may be other places where wrong platform files/ settings may be pulled in(?) perhaps, causing my image to not showing eLua prompt (via RS232). I see console, terminal and related settings are enabled by default in src/platform/at91sam7x/platform_conf.h 
+</I>&gt;<i> 
+</I>&gt;<i> Any help will be greatly appreciated. Once past this, I intent to port eLua to at91sam7s; should be easy with 7x as reference. 
+</I>&gt;<i> 
+</I>&gt;<i> Thanks for any timely help.
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Ash
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130501/ea188150/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130501/ea188150/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004047.html">[eLua-dev] at91sam7x build issue
+</A></li>
+	<LI>Next message: <A HREF="004049.html">[eLua-dev] at91sam7x build issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4048">[ date ]</a>
+              <a href="thread.html#4048">[ thread ]</a>
+              <a href="subject.html#4048">[ subject ]</a>
+              <a href="author.html#4048">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

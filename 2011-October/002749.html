@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RPC over SOCK_STREAM
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3C1317740110603-6858931.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="002751.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RPC over SOCK_STREAM</H1>
+    <B>raman</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3C1317740110603-6858931.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] RPC over SOCK_STREAM">ramangopalan at gmail.com
+       </A><BR>
+    <I>Tue Oct  4 16:55:10 CEST 2011</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="002751.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2749">[ date ]</a>
+              <a href="thread.html#2749">[ thread ]</a>
+              <a href="subject.html#2749">[ subject ]</a>
+              <a href="author.html#2749">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I've been working on the implementation of RPC over Ethernet. I have been
+able to construct the luarpc instance on the PC, replacing the
+luarpc_desktop_uart.c code with socket code. I have also created
+luarpc_elua_net.c. So far, I have been able to establish a handshake between
+the micro and the PC. So, s, e = rpc.connect(&#8220;192.168.100.90&#8221;, 6655) returns
+without error and s corresponds to the slave.
+
+The luarpc instance on the PC is able to get values from the micro. So, pio
+= s.pio works, (pio corresponding to userdata). However, I ran into a few
+problems: pio.pin.setdir(###) does not return. It goes into a waiting state.
+I am sure the file descriptor returned by elua_accept(###) is valid. While
+tracing through the code, I realized that the state does not enter
+read_cmd_call(###). I can only wonder if there&#8217;s a problem with the code for
+transport_open_listener(###).
+
+Do you have any suggestions for me ?
+
+I could put up my test branch online. (Where can I put the code ?) Is
+someone willing to work on this ? I could use some help.
+
+Awaiting your response.
+
+Raman
+
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6858931.html">http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6858931.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="002751.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2749">[ date ]</a>
+              <a href="thread.html#2749">[ thread ]</a>
+              <a href="subject.html#2749">[ subject ]</a>
+              <a href="author.html#2749">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

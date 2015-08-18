@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] NetDuino: Serial TX to board fails
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20NetDuino%3A%20Serial%20TX%20to%20board%20fails&In-Reply-To=%3CBANLkTint0867z3FCVJ4FsvQMvnHP_miZSg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002375.html">
+   <LINK REL="Next"  HREF="002378.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] NetDuino: Serial TX to board fails</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20NetDuino%3A%20Serial%20TX%20to%20board%20fails&In-Reply-To=%3CBANLkTint0867z3FCVJ4FsvQMvnHP_miZSg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] NetDuino: Serial TX to board fails">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat May  7 23:06:23 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002375.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+        <LI>Next message: <A HREF="002378.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2376">[ date ]</a>
+              <a href="thread.html#2376">[ thread ]</a>
+              <a href="subject.html#2376">[ subject ]</a>
+              <a href="author.html#2376">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Sat, May 7, 2011 at 6:50 AM, sweetlilmre &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">sweetlilmre at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> Mike King wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; You might want to check out my patch.  Bogdan said he will revert back
+</I>&gt;<i> &gt; to it for master.  It fixes the things listed below.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> <A HREF="https://github.com/elua/elua/blob/1822ee1572e63ec033447d918b58466b36dba342/rfs_server_src/serial_win32.c">https://github.com/elua/elua/blob/1822ee1572e63ec033447d918b58466b36dba342/rfs_server_src/serial_win32.c</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; *The function ser_open could leak memory on failure.
+</I>&gt;<i> &gt; *Forgot to initialize the DCBlength field of the DCB structure.
+</I>&gt;<i> &gt; *Forgot to initialize the OVERLAPPED structure in the ser_read function.
+</I>&gt;<i> &gt; *Initialized the OVERLAPPED structure in the ser_select_byte function
+</I>&gt;<i> &gt; without regard to whether or not an asynchronous read operation is in
+</I>&gt;<i> &gt; progress.
+</I>&gt;<i> &gt; *I/O cancellation is done synchronously when it could be done
+</I>&gt;<i> &gt; asynchronously.
+</I>&gt;<i> &gt; *The function ser_read will not update the dest buffer when the
+</I>&gt;<i> &gt; fWaitingOnRead flag is set.  This also affects the ser_read_byte
+</I>&gt;<i> &gt; function.
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> I applied your patch and it seems to fix the issue! Brilliant stuff.
+</I>&gt;<i> The only change necessary was moving the declaration of dwRes to the top of
+</I>&gt;<i> ser_select_byte() so that it compiles under VS2010.
+</I>&gt;<i>
+</I>&gt;<i> Being a GIT noob I'm a little lost as to where your patch resides and the
+</I>&gt;<i> whole apply to master bit?
+</I>&gt;<i> Do I just need to wait and git pull to get this when its applied?
+</I>&gt;<i>
+</I>
+I merged both Mike's patch and your patch. Please pull again and let me know
+if it still works for you, as I had to merge both manually and some errors
+might have occured in the process.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110508/cff35907/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110508/cff35907/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002375.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+	<LI>Next message: <A HREF="002378.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2376">[ date ]</a>
+              <a href="thread.html#2376">[ thread ]</a>
+              <a href="subject.html#2376">[ subject ]</a>
+              <a href="author.html#2376">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

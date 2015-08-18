@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Still no eLua for AVR?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Still%20no%20eLua%20for%20AVR%3F&In-Reply-To=%3CCABsDq%3D-wHXLQo9JjEAscujSRgZibSZv136TTdcGbSfEH4gArMw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003784.html">
+   <LINK REL="Next"  HREF="003786.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Still no eLua for AVR?</H1>
+    <B>vasi vasi</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Still%20no%20eLua%20for%20AVR%3F&In-Reply-To=%3CCABsDq%3D-wHXLQo9JjEAscujSRgZibSZv136TTdcGbSfEH4gArMw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Still no eLua for AVR?">funlw65 at gmail.com
+       </A><BR>
+    <I>Sat Sep 15 17:49:17 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003784.html">[eLua-dev] Still no eLua for AVR?
+</A></li>
+        <LI>Next message: <A HREF="003786.html">[eLua-dev] Still no eLua for AVR?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3785">[ date ]</a>
+              <a href="thread.html#3785">[ thread ]</a>
+              <a href="subject.html#3785">[ subject ]</a>
+              <a href="author.html#3785">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>He, he, dead code removal? Just kidding... :D
+
+On Sat, Sep 15, 2012 at 6:43 PM, Jonas Schievink &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jonas at schievink.net</A>&gt;wrote:
+
+&gt;<i> Okay, compiling kinda worked. I got a lot of warnings and had to fix some
+</I>&gt;<i> headers (avr-libc gets included when a file is found in newlib and
+</I>&gt;<i> avr-libc), but it compiled then. It generated a 533 kb big .elf file which
+</I>&gt;<i> I tried to convert to intel hex format (for burning with avrdude), but the
+</I>&gt;<i> resulting file was only a few bytes... So I used avr-objdump to disassemble
+</I>&gt;<i> the .elf file and found out that the only content of the .text section was
+</I>&gt;<i> the default initialization code. So all eLua code got stripped out somehow.
+</I>&gt;<i> Does anyone has a clue of what's going on there?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  Thanks for your support, everyone!
+</I>&gt;&gt;<i> I finally built avr-gcc with in-tree builds of avr-libc and newlib
+</I>&gt;&gt;<i> (really: I have no clue if using two libc's can even work, but I need
+</I>&gt;&gt;<i> avr-libc as it defines registers, ports and everything else). It invoked
+</I>&gt;&gt;<i> the wrong assembler first (normal as instead of avr-as), but I fixed it
+</I>&gt;&gt;<i> with a symlink (there's probably a configure option that fixes that). The
+</I>&gt;&gt;<i> avr-libc in-tree build didn't work (and failed silently), but I compiled it
+</I>&gt;&gt;<i> after avr-gcc and installed it using the same prefix. A test-program has
+</I>&gt;&gt;<i> compiled good and runs fine (it just flashes a LED so I don't know if
+</I>&gt;&gt;<i> everything works yet).
+</I>&gt;&gt;<i> I'll try compiling eLua now!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ~ Jonas
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  Hi,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Wed, Sep 12, 2012 at 10:30 PM, Jonas Schievink &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jonas at schievink.net</A>&gt;
+</I>&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Well, I kind of expected that someone already did a port, because I
+</I>&gt;&gt;&gt;&gt;<i> can't be the only one who wants to run eLua on an AVR ;-)
+</I>&gt;&gt;&gt;&gt;<i> But the internet said &quot;No&quot; and now I've to do it when I want to use Lua
+</I>&gt;&gt;&gt;&gt;<i> (which is kinda good for collecting experience and helping others).
+</I>&gt;&gt;&gt;&gt;<i> Please don't misunderstand me, I really appreciate the time that all
+</I>&gt;&gt;&gt;&gt;<i> those people spend on making free software!
+</I>&gt;&gt;&gt;&gt;<i> It took me a lot of time compiling avr-gcc 4.7.1 but I guess I'll try
+</I>&gt;&gt;&gt;&gt;<i> 4.6 in the next days. I have the feeling that I'll fail anyways because I
+</I>&gt;&gt;&gt;&gt;<i> never used Newlib before and have no clue of how it will work together with
+</I>&gt;&gt;&gt;&gt;<i> eLua and my Arduino. I'll post my success/failure when I tried it!
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Good luck and please keep up posted! I'm personally focusing on 32-bit
+</I>&gt;&gt;&gt;<i> architectures, but I can lend some help for such a nice project.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>  Jonas
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>  Hi Jonas
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> eLua is a volunteer project so things only get done when people have
+</I>&gt;&gt;&gt;&gt;&gt;<i> time. I think in the past year or so, some of the core developers have had
+</I>&gt;&gt;&gt;&gt;&gt;<i> a lot on their plates.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Just curious, have you tried gcc 4.6 ? On other lists I have heard
+</I>&gt;&gt;&gt;&gt;&gt;<i> about some issue with 4.7, perhaps there have been significant changes with
+</I>&gt;&gt;&gt;&gt;&gt;<i> 4.7
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> -Patrick
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> On 12-09-12 02:42 PM, Jonas Schievink wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> After I saw my Arduino Mega uselessly lying around, I though that
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> having Lua on that thing would make it much more useful (or at least it
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> would be a semi-useful experiment). Searching the internet, I could not
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> find any existing ports for AVRs. Porting eLua to AVR should be possible
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> when using an ATmega128 or 256 with a bit of external SRAM using the XMEM
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> interface. Newlib is also available for AVR (however it seems to be not
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> much more useful than the default avr-libc).
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> So here's the question: Why isn't there a eLua port for AVR?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Meanwhile I've started my own try of porting, but I can't get gcc
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> 4.7.1 to compile/work with newlib (maybe the wrong version?)... GCC seems
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> to be really bugged at the time (can't find registers to spill and such
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> weird errors), or it's because I've never compiled a compiler myself and
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> have no experience... Any advices on that one?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> PS: This is my first mail ever in a mailing list, so please have
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> patience with me :-)
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> ______________________________**_________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>  ______________________________**_________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev</A>&gt;
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ______________________________**_________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev</A>&gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> ______________________________**_________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i> ______________________________**_________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev</A>&gt;
+</I>&gt;<i>
+</I>
+
+
+-- 
+Vasi
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120915/8f7f7e2d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120915/8f7f7e2d/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003784.html">[eLua-dev] Still no eLua for AVR?
+</A></li>
+	<LI>Next message: <A HREF="003786.html">[eLua-dev] Still no eLua for AVR?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3785">[ date ]</a>
+              <a href="thread.html#3785">[ thread ]</a>
+              <a href="subject.html#3785">[ subject ]</a>
+              <a href="author.html#3785">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

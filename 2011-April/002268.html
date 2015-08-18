@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Peripheral%20Function%20Side%20Effects%20%28was%3A%20eLua%0A%20design%20change%20to%20allow%20synchronized%20PWM%20channel%20start%3F%29&In-Reply-To=%3CBANLkTi%3DMnVENDZ3_b2wp%2B87W9U4ggYqVaA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002267.html">
+   <LINK REL="Next"  HREF="002270.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Peripheral%20Function%20Side%20Effects%20%28was%3A%20eLua%0A%20design%20change%20to%20allow%20synchronized%20PWM%20channel%20start%3F%29&In-Reply-To=%3CBANLkTi%3DMnVENDZ3_b2wp%2B87W9U4ggYqVaA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat Apr  9 19:24:59 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002267.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+        <LI>Next message: <A HREF="002270.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2268">[ date ]</a>
+              <a href="thread.html#2268">[ thread ]</a>
+              <a href="subject.html#2268">[ subject ]</a>
+              <a href="author.html#2268">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Apr 9, 2011 at 1:51 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> As usual, there is the opposite proverb as well: &quot;Never check for
+</I>&gt;<i> error conditions that you don't know how to handle&quot; :)
+</I>&gt;<i>
+</I>
+Then simply don't check for them. Just look at the warnings issued from the
+system and wonder &quot;what the f**k is this supposed to mean anyway?&quot; :)
+
+Right. So every time anyone sets a clock speed, it will always tell
+&gt;<i> them that it has also changed the clock speed of the other channels.
+</I>&gt;<i> And every time they set an output frequency &gt;1000Hz it will print a
+</I>&gt;<i> warning that the output frequency is imprecise.  That means spewing
+</I>&gt;<i> always!
+</I>&gt;<i>
+</I>
+Sure, but presumtively setting a clock speed is not something one does very
+often. Plus, I remind you that this is a feature which is supposed to be
+helpful mainly in the _prototyping_ phase. I for one would welcome a bit of
+help from my system while prototyping. In any case, there are ways to fix
+this:
+
+1. turn off warnings completely
+2. turn off warnings for the PWM module only
+3. turn off only that specific warning (probably wasteful to implement in
+terms of memory).
+4. associate levels to warnings and inhibit specific module/warning level
+combinations (not as powerful as 4 but less resource demanding)
+5. set a warning filter (a set of Lua regexps)
+
+And probably many others :)
+By the way, I don't have anything against turning all the warnings off by
+default.
+
+
+&gt;<i> &gt; Actually, as I think about this, I think that warnings like this
+</I>&gt;<i> &gt; should probably be off by default
+</I>&gt;<i>
+</I>&gt;<i> Here we agree. I guess that mean different compiles of the firmware:
+</I>&gt;<i> firmware with debug/warning/educational messages and without.
+</I>&gt;<i> I don't see a way to turn it on/off au runtime from the same firmware
+</I>&gt;<i> if you want the device to start on power on
+</I>&gt;<i> How about a new Lua module with warning.enable() and
+</I>&gt;<i> warning.disable()?  Or better, put it inside the module &quot;elua&quot;.
+</I>&gt;<i> elua.warnings = true (or non-nil?) to enable them.
+</I>&gt;<i>
+</I>
+My original proposal included exactly something like this inside the elua
+module.
+
+
+&gt;<i> While developing code you can easily add a line to do this at the
+</I>&gt;<i> start of the first file.
+</I>&gt;<i> Of course, I still need it under a compile-time flag for my precious 120KB.
+</I>&gt;<i>
+</I>
+You'll be able to load it as a module eventually :) Not sure how much it
+would help in this particular case though.
+
+
+&gt;<i> &gt; Heisenberg turn in his grave :-)
+</I>&gt;<i> Yes,  &quot;Theory&quot; means &quot;something that is not relevant to practice&quot; ;-)
+</I>&gt;<i>
+</I>
+You have spoken like a true engineer :)
+
+
+&gt;<i> I love those days when I can delete hundreds of lines of code.
+</I>&gt;<i> It feels good.  I vote we kill pio.decode() today
+</I>&gt;<i> <A HREF="http://tracker.eluaproject.net/issues/187">http://tracker.eluaproject.net/issues/187</A>
+</I>
+
+<A HREF="http://www.eluaproject.net/en_arch_ints.html#intlist">http://www.eluaproject.net/en_arch_ints.html#intlist</A>
+
+INT_GPIO_POSEDGE and INT_GPIO_NEGEDGE are called with an argument which is a
+(pio,port) combination (code). There is a single interrupt handler for each
+of these interrupts, so if you remove pio.decode() and you want to know
+which port generated the interrupt you'll have no way of doing that (at
+least not without issuing a lot of comparisons).
+I vaguely remember using it in a non-interrupt related context but I can't
+remember the details.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110409/e093c459/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110409/e093c459/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002267.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+	<LI>Next message: <A HREF="002270.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2268">[ date ]</a>
+              <a href="thread.html#2268">[ thread ]</a>
+              <a href="subject.html#2268">[ subject ]</a>
+              <a href="author.html#2268">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

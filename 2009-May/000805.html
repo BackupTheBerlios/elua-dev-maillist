@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Device Manager
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Device%20Manager&In-Reply-To=%3CEMEWEMEW2_DELIMl4AAsB309bc260912891a7f6b0fa%2C%0A%09jbsnyder%40fanplastic.org%2C%205DF81B99-B686-4695-A6D4-5EE%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000802.html">
+   <LINK REL="Next"  HREF="000803.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Device Manager</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Device%20Manager&In-Reply-To=%3CEMEWEMEW2_DELIMl4AAsB309bc260912891a7f6b0fa%2C%0A%09jbsnyder%40fanplastic.org%2C%205DF81B99-B686-4695-A6D4-5EE%3E"
+       TITLE="[eLua-dev] Device Manager">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon May 11 17:54:07 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000802.html">[eLua-dev] Device Manager
+</A></li>
+        <LI>Next message: <A HREF="000803.html">[eLua-dev] New linux platform for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#805">[ date ]</a>
+              <a href="thread.html#805">[ thread ]</a>
+              <a href="subject.html#805">[ subject ]</a>
+              <a href="author.html#805">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On May 11, 2009, at 3:12 AM, Bogdan Marinescu wrote:
+
+&gt;<i>
+</I>&gt;<i> OK. That's basically what I was wanting to know. On this front it  
+</I>&gt;<i> would be nice. I also thought about trying to support rpc or  
+</I>&gt;<i> exposing resources through plan 9's 9p. The Styx on a brick project (<A HREF="http://www.vitanuova.com/inferno/rcx_paper.html">http://www.vitanuova.com/inferno/rcx_paper.html</A> 
+</I>&gt;<i> ) from a few years back implemented this resource sharing/filesystem  
+</I>&gt;<i> protocol on a lego mindstorms brick.  There's source for it on a  
+</I>&gt;<i> google code project (<A HREF="http://code.google.com/p/inferno-os/">http://code.google.com/p/inferno-os/</A>) but I'm  
+</I>&gt;<i> not sure if I'll get around to trying this or something similar.  
+</I>&gt;<i> Part of the idea in plan 9 was to expose pretty much every resource  
+</I>&gt;<i> through the filesystem, 9p is the protocol used.
+</I>&gt;<i>
+</I>&gt;<i> Very interesting, I wasn't aware of the existence of plan 9. I took  
+</I>&gt;<i> a quick look at the protocol, and it sounds fine. Couldn't find the  
+</I>&gt;<i> source code for Styx-on-a-Brick (<A HREF="http://www.vitanuova.com/inferno/rcx_paper.html">http://www.vitanuova.com/inferno/rcx_paper.html</A> 
+</I>&gt;<i> ) after a quick googling, but I'll keep on trying :) Still not sure  
+</I>&gt;<i> how to interface with this from Linux (although I'm sure there's a  
+</I>&gt;<i> way), not to mention Windows.
+</I>
+I had the same questions the first time I read this article and dug  
+around.  The sources are indeed in that inferno-os project on google  
+code:
+<A HREF="http://code.google.com/p/inferno-os/source/browse/#svn/trunk/appl/demo/">http://code.google.com/p/inferno-os/source/browse/#svn/trunk/appl/demo/</A> 
+lego
+<A HREF="http://code.google.com/p/inferno-os/source/browse/#svn/trunk/lib/lego">http://code.google.com/p/inferno-os/source/browse/#svn/trunk/lib/lego</A>
+etc..  haven't dug around to try and figure out exactly what all is  
+needed from those sources to have a working chunk.
+
+This might be useful too:
+<A HREF="http://code.google.com/p/inferno-ds/">http://code.google.com/p/inferno-ds/</A>
+
+Now, on to interfacing from Linux, Windows, etc..:
+Linux has had v9fs included for some time: <A HREF="http://en.wikipedia.org/wiki/V9fs">http://en.wikipedia.org/wiki/V9fs</A>
+There are also numerous implementations of the server/client in  
+various languages:
+<A HREF="http://9p.cat-v.org/implementations">http://9p.cat-v.org/implementations</A>
+I can't imagine it would be too hard to take a C implementation and  
+hook it in with Lua.
+
+I wouldn't necessarily expect that it show up as a real filesystem on  
+all the platforms that would interface with it, I think in most cases  
+they would just be used through a library that speaks the protocol.
+
+&gt;<i>
+</I>&gt;<i> Not necessarily automount, I was more just thinking of a common  
+</I>&gt;<i> interface so that if one say added a new wireless stack and  
+</I>&gt;<i> conformed with the interface one could just use this transport layer  
+</I>&gt;<i> for console, rpc, etc without needing to do something custom for  
+</I>&gt;<i> each usage modality. I realize to some extent that this modality  
+</I>&gt;<i> might beak down somewhere but as with 9p one it seems like there  
+</I>&gt;<i> should be a possibility for a common filelike interface for not just  
+</I>&gt;<i> files but communication, direct control of non-file resources etc...
+</I>&gt;<i>
+</I>&gt;<i> Interesting, and it makes sense. And, as I said, this idea haunted  
+</I>&gt;<i> me too :) Maybe 9p is simple/robust enough to make this possible in  
+</I>&gt;<i> eLua. Not sure yet.
+</I>
+I'm not sure either.  I also don't know what the overhead looks like  
+for the implementations that are out there.  Conceptually it's quite  
+powerful, but I'm not convinced whether it is a good or bad fit.  The  
+Styx-on-a-brick project was particularly of interest because it  
+suggests that it can be used on the class of devices eLua considers  
+home :-)
+
+&gt;<i>
+</I>&gt;<i> This would be nice to have. Have you read Ralph Hempel's article in  
+</I>&gt;<i> lua gems?  I juat got the book this week.  He doesn't provide all  
+</I>&gt;<i> the details but he does discuss some of the decisions he made about  
+</I>&gt;<i> the c library as well as some of the math library
+</I>&gt;<i> choices. In particular his &quot;flong&quot; implementation, and I think he  
+</I>&gt;<i> got his single precision math library from sdcc (small device c  
+</I>&gt;<i> compiler). I somewhat wish there were more detail (or sources :) but  
+</I>&gt;<i> he does provide some interesting pointers.
+</I>&gt;<i>
+</I>&gt;<i> I talked to Ralph, and it turns out that he chose the Minix libc too  
+</I>&gt;<i> for pbLua :)  So we're on the right track here. About the floating  
+</I>&gt;<i> point emulation library, I'm still looking for alternatives. The  
+</I>&gt;<i> sdcc idea is nice, thanks for that. But this is one area in which  
+</I>&gt;<i> eLua and pbLua are different. If I'm not mistaken, pbLua can't even  
+</I>&gt;<i> be compiled with the number type set to double, it's integer by  
+</I>&gt;<i> default and uses a separate library for floating point numbers  
+</I>&gt;<i> (which is a nice idea and we'll have it too one day). So our choice  
+</I>&gt;<i> of a floating point emulation library might have to be different. I  
+</I>&gt;<i> worked on three floating point emulation libraries myself a while  
+</I>&gt;<i> ago, and I know how very tricky they can get, so we need to be  
+</I>&gt;<i> careful.
+</I>
+Yeah, I don't think it supports double.  He uses the &quot;flong&quot; (<A HREF="http://lua-users.org/lists/lua-l/2007-05/msg00306.html">http://lua-users.org/lists/lua-l/2007-05/msg00306.html</A> 
+) to handle things as longs if there's no decimal point and floats if  
+they have one.  It's an interesting tradeoff, but I don't think we'd  
+want to give up support for higher precision (when wanted/needed).  I  
+would tend towards whatever solution requires minimal maintenance and  
+code.  I suspect any transition could be done gradually rather than  
+having to wholesale make a switch?
+
+Does the branch you've put together work as-is or is it more of a work- 
+in-progress?
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/6bf5caea/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/6bf5caea/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/6bf5caea/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/6bf5caea/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000802.html">[eLua-dev] Device Manager
+</A></li>
+	<LI>Next message: <A HREF="000803.html">[eLua-dev] New linux platform for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#805">[ date ]</a>
+              <a href="thread.html#805">[ thread ]</a>
+              <a href="subject.html#805">[ subject ]</a>
+              <a href="author.html#805">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua network stack
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20network%20stack&In-Reply-To=%3CCAL4-wQq%2BT00HjxaWGabXgrBR6TGfXERBA_e3k3t2_bjp_bMQVQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004005.html">
+   <LINK REL="Next"  HREF="003984.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua network stack</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20network%20stack&In-Reply-To=%3CCAL4-wQq%2BT00HjxaWGabXgrBR6TGfXERBA_e3k3t2_bjp_bMQVQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua network stack">martinwguy at gmail.com
+       </A><BR>
+    <I>Sun Mar 24 12:28:33 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004005.html">[eLua-dev] eLua network stack
+</A></li>
+        <LI>Next message: <A HREF="003984.html">[eLua-dev] eLua network stack
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4012">[ date ]</a>
+              <a href="thread.html#4012">[ thread ]</a>
+              <a href="subject.html#4012">[ subject ]</a>
+              <a href="author.html#4012">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 22 March 2013 22:48, Gabriel Duarte &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A>&gt; wrote:
+&gt;<i> I took a look at eLua's source code to know how eLua interfaces with uIP.
+</I>&gt;<i> I saw that net module uses functions described into elua_uip.c, right?
+</I>
+If I remember correctly, yes, but it doesn't end there.
+
+For uIP, those then call functions in
+src/platform/*/platform.c
+called platform_ethernet_setup(), platform_eth_send_packet() and so
+on, as well as having a timer running in the background to do
+something periodically - probably to service timeouts and to retry
+lost packets, but have a look at what it is used for in uIP.
+
+If you are lucky, the platform_ethernet_*() functions and the timer
+will allow you to implemented them on top of lwIP, but only if you are
+lucky. Note that they depend on #ifdef BUILD_UIP, which turns the
+whole NET/ETHERNET subsystem and eLua module on and off, so you will
+also have to split all BUILD_UIP-dependent code into what is
+BUILD_UIP-specific, what is BUILD_LWIP-specific and what is
+BUILD_NET-specific.
+You can probably assume that BUILD_NET == BUILD_UIP || BUILD_LWIP, and
+that only one of BUILD_UIP and BUILD_LWIP can ever be defined at the
+same time.
+
+Note that there is also the option to have the eLua console on a
+telnet port, which is a different route to the platform_ethernet_*()
+functions, in addition to the Lua net.*() functions. Have a look at
+that path through the code also - my feeling it that is probably won't
+cause problems, but might help you understand the code structure, to
+see two different users of the ethernet subsystem.
+
+&gt;<i> So, in theory, if I implement the eLua net module calls using lwIP, should
+</I>&gt;<i> just work, right?
+</I>
+Oh, in theory, yes, everything should always just work.
+That's why computer programming is so easy. :)
+
+   M
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004005.html">[eLua-dev] eLua network stack
+</A></li>
+	<LI>Next message: <A HREF="003984.html">[eLua-dev] eLua network stack
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4012">[ date ]</a>
+              <a href="thread.html#4012">[ thread ]</a>
+              <a href="subject.html#4012">[ subject ]</a>
+              <a href="author.html#4012">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] project ideas/ feedback
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20project%20ideas/%20feedback&In-Reply-To=%3CAANLkTin0Mu%3Dw%2BewcaZLEMTYwX--M-v7vX%2B6uN0UduWcP%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001627.html">
+   <LINK REL="Next"  HREF="001630.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] project ideas/ feedback</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20project%20ideas/%20feedback&In-Reply-To=%3CAANLkTin0Mu%3Dw%2BewcaZLEMTYwX--M-v7vX%2B6uN0UduWcP%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] project ideas/ feedback">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Sep  1 15:11:04 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001627.html">[eLua-dev] project ideas/ feedback
+</A></li>
+        <LI>Next message: <A HREF="001630.html">[eLua-dev] project ideas/ feedback
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1628">[ date ]</a>
+              <a href="thread.html#1628">[ thread ]</a>
+              <a href="subject.html#1628">[ subject ]</a>
+              <a href="author.html#1628">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Hi Everyone
+</I>&gt;<i>
+</I>&gt;<i> I have quite a few scientific instruments here. Almost all all of them use
+</I>&gt;<i> Motorola's 68000 series or 6800 CPUs and a couple have old Intel based
+</I>&gt;<i> microcontrollers(I forgot the models).
+</I>&gt;<i>
+</I>&gt;<i> Being only 8 bit and 16 bit I have not attempted to load an eLua image right
+</I>&gt;<i> into an instrument but I had another idea. I was thinking about using a
+</I>&gt;<i> another microcontroller as an eprom emulator. If I had another eLua based
+</I>&gt;<i> controller perhaps I could use the GPIO lines to respond to read requests
+</I>&gt;<i> from the 16/8 bit 68K/6800 CPUs. If I could figure out a suitable
+</I>&gt;<i> instruction to send when I wanted everything to hold then I could step
+</I>&gt;<i> instruments through instructions very slowly. This might be a great tool
+</I>&gt;<i> servicing them and might allow them to be used for unintended purposes.
+</I>
+I'm not familiar with the external bus on the 68k, but there are
+basically two versions of such buses:
+
+1. synchronous - the bus has a WAIT signal that can be asserted by the
+memory subsystem (or other peripherlas) to indicate to the CPU that it
+is holding the bus, and it should only read data from the bus after
+WAIT is deasserted
+2. asynchronous - in this case the bus cycle time is well known; this
+is generally the case when accessing external memories (RAMs of Flash)
+
+If you can relate to 1 above, your approach should work. For 2,
+however, it's highly unlikely that you'll be able to generate a fast
+enough bus cycle from eLua to fool the CPU. It'd be hard even from ASM
+code, I imagine.
+eLua aside, have you though about fiddling with the clock? A clock
+generator is something very easy to build these days, and it should
+allow you to run the CPU as slow as you want.
+
+&gt;<i> Another thing I was thinking about was hijacking the instruments more
+</I>&gt;<i> directly. Do you think if I asserted the Motorola's CPU halt that I could
+</I>&gt;<i> then tap the inactive I/O lines with an Elua microcontroller. This would
+</I>&gt;<i> give me access to prefabricated circuits for just about everything. I could
+</I>&gt;<i> create some nice demos for PWM, LCD control etc...
+</I>
+Sure, if you keep the CPU in RESET you should be able to pretend it's
+not there (at least on the general purpose I/O lines) and do whatever
+you want with the rest of the circuit. But then you'll have to
+physically connect things to the PCB, which might be easy or a damn
+nightmare :)
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001627.html">[eLua-dev] project ideas/ feedback
+</A></li>
+	<LI>Next message: <A HREF="001630.html">[eLua-dev] project ideas/ feedback
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1628">[ date ]</a>
+              <a href="thread.html#1628">[ thread ]</a>
+              <a href="subject.html#1628">[ subject ]</a>
+              <a href="author.html#1628">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

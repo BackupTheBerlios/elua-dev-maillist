@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Timing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Timing&In-Reply-To=%3CEMEWEMEW2_DELIMl1HEfQ844d9dfe020c343bc9eab9%2C%0A%09jbsnyder%40fanplastic.org%2C%20F4518C8F-7288-42C1-922E-D76%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000543.html">
+   <LINK REL="Next"  HREF="000547.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Timing</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Timing&In-Reply-To=%3CEMEWEMEW2_DELIMl1HEfQ844d9dfe020c343bc9eab9%2C%0A%09jbsnyder%40fanplastic.org%2C%20F4518C8F-7288-42C1-922E-D76%3E"
+       TITLE="[eLua-dev] Timing">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 21:41:24 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000543.html">[eLua-dev] Timing
+</A></li>
+        <LI>Next message: <A HREF="000547.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#545">[ date ]</a>
+              <a href="thread.html#545">[ thread ]</a>
+              <a href="subject.html#545">[ subject ]</a>
+              <a href="author.html#545">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hmm.. In this case the tmr.getclock(0) is 50,000,000.
+
+The other thing that I certainly would assume is that tmr.read(0)  
+takes a little time itself, so that always adds a bit.  I'm just  
+trying to understand if what I'm getting is normal, and to also get a  
+sense for cost/benefit of using different approaches.
+
+I suppose one thing I could do is stack things up so that there are  
+many more operations being done per timed period to make sure that the  
+most significant source of time usage is from the timed operation and  
+not the timers themselves :-)
+
+-jsnyder
+
+
+On Feb 18, 2009, at 2:19 PM, Bogdan Marinescu wrote:
+
+&gt;<i> I'll be coming back to this topic later, but for now a quick note:  
+</I>&gt;<i> don't trust the output of platform_get_time_diff_us THAT much :) At  
+</I>&gt;<i> least verify what's the base clock of the timer, it will give you an  
+</I>&gt;<i> idea about how accurate this measurement is.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Feb 18, 2009 at 10:15 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> 
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> OK. At least I know my compiler isn't messed up :-)
+</I>&gt;<i>
+</I>&gt;<i> I'm curious now though whether similarly clocked ARM7 vs AVR vs  
+</I>&gt;<i> Cortex-M3 (ARM Thumb2) vs etc.. do for these types of tests.
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i> On Feb 18, 2009, at 10:24 AM, Dado Sutter wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hello,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Feb 18, 2009 at 10:59, James Snyder  
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; On Wed, Feb 18, 2009 at 02:19, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> 
+</I>&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> So, one of the things I've been doing recently is tracking timing  
+</I>&gt;&gt;<i> data for adcscope.lua when running it.  I've found certain things  
+</I>&gt;&gt;<i> that increase or decrease the amount of time spent getting samples,  
+</I>&gt;&gt;<i> but I hadn't actually checked what the bare minimum time would be  
+</I>&gt;&gt;<i> for a dry loop like the following:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; term.clrscr()
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; while 1 do
+</I>&gt;&gt;<i> &gt;  t1 = tmr.start(0)
+</I>&gt;&gt;<i> &gt;  t2 = tmr.read(0)
+</I>&gt;&gt;<i> &gt;  dtime = tmr.diff(0,t2,t1)
+</I>&gt;&gt;<i> &gt;  term.gotoxy(1,1)
+</I>&gt;&gt;<i> &gt;  term.putstr(string.format(&quot;Time (us): %06d&quot;,dtime))
+</I>&gt;&gt;<i> &gt; end
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; For LM3S6965, I get 79 us.  Is this correct?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 79us exactly in my EK-LM3S8962 too.
+</I>&gt;&gt;<i> (And I've figured out that you have disabled XMODEM Xfer on your  
+</I>&gt;&gt;<i> build :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Abra&#231;osssssssssss
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 644-2322
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/d851d760/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/d851d760/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/d851d760/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/d851d760/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000543.html">[eLua-dev] Timing
+</A></li>
+	<LI>Next message: <A HREF="000547.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#545">[ date ]</a>
+              <a href="thread.html#545">[ thread ]</a>
+              <a href="subject.html#545">[ subject ]</a>
+              <a href="author.html#545">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

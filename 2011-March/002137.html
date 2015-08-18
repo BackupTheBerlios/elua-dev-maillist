@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ET-STM32%20program%20via%20TTL%20%28or%20suggest%20me%20a%20USB%20to%0A%20serial%20converter%20cable%29&In-Reply-To=%3CAANLkTimJKwZD8%2BoYkxdoo1ki-8kVS%3DX%2Ba2cv%3DaSq6HVG%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002136.html">
+   <LINK REL="Next"  HREF="002138.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)</H1>
+    <B>Ronan Paix&#227;o</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ET-STM32%20program%20via%20TTL%20%28or%20suggest%20me%20a%20USB%20to%0A%20serial%20converter%20cable%29&In-Reply-To=%3CAANLkTimJKwZD8%2BoYkxdoo1ki-8kVS%3DX%2Ba2cv%3DaSq6HVG%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)">ronan at dapaixao.com.br
+       </A><BR>
+    <I>Wed Mar  9 04:50:38 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002136.html">[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+</A></li>
+        <LI>Next message: <A HREF="002138.html">[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2137">[ date ]</a>
+              <a href="thread.html#2137">[ thread ]</a>
+              <a href="subject.html#2137">[ subject ]</a>
+              <a href="author.html#2137">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I have the ET-STM32 stamp, but I use the cable supplied by the manufacturer
+with the usual interface (through the RS-232 chip). I can't really find
+where I got my USB-serial cable, but I have some tips about the Prolific
+ones. I have dealt with some of those cables, specially some of those small
+semi-transparent blue ones that look very cheap. If you don't want trouble
+don't buy those. As legend tells, those are not original prolific chips, but
+cheap copies. The legend also says that Prolific is aware of those copies
+and so they have altered the driver to not work with them. For those
+occasions when I have to deal with them, I have an older driver, version
+1013, which works with them. The filename is
+PL2303_Prolific_GPS_AllInOne_1013.exe, which can be found around the net,
+but I can't remember where I downloaded mine from.
+
+Ronan
+
+2011/3/8 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+
+&gt;<i> This is actually a good point.  I haven't had any major problems with
+</I>&gt;<i> this during usage over the course of a few months, but this may vary
+</I>&gt;<i> with some other USB-&gt;Serial devices.  Of course, one way to avoid all
+</I>&gt;<i> of this is to just use another UART on the board.  One other thing
+</I>&gt;<i> I'll add however is that the ICL3232 on the board does have a current
+</I>&gt;<i> limiting 100 Ohm resistor (R4) between the MCU's RX pin and the
+</I>&gt;<i> receiver output pin on the RS-323 level shifter, so I would expect
+</I>&gt;<i> this would be why I've had things behave as stably as they have. You
+</I>&gt;<i> could increase the resistance of R4 to maybe be a little more certain
+</I>&gt;<i> that the driver isn't going to be sinking too much current, but I
+</I>&gt;<i> don't think I'll bother since it's an SMT resistor. I'll check the
+</I>&gt;<i> next time I'm working on a device with this configuration to see how
+</I>&gt;<i> much that line is getting pulled down by the driver.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Mar 8, 2011 at 3:56 PM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; On Tue, Mar 8, 2011 at 10:37 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt; If you have TTL level serial interfacing with that module, yeah, you
+</I>&gt;<i> &gt;&gt; can just connect to the TX/RX pins which are PA9 and PA10.  Most of
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; ... that said, if you're using the ET-STM32 board you might have an
+</I>&gt;<i> &gt; electrical problem since the ET-STM32 already has a RS232 to UART
+</I>&gt;<i> &gt; level converter connected on the UART1 pins and this converter forces
+</I>&gt;<i> &gt; the RX pin level to 0V (idle) when there isn't anything connected to
+</I>&gt;<i> &gt; the UART1 using the cable supplied with the ET-STM32. I'd connect the
+</I>&gt;<i> &gt; other converter with a resistor on the RX pin to avoid potential
+</I>&gt;<i> &gt; problems with two different circuits driving the same pin. This
+</I>&gt;<i> &gt; problem might be more theoretical than practical but I'd still take it
+</I>&gt;<i> &gt; into account.
+</I>&gt;<i>
+</I>&gt;<i> Just to clarify do you mean the STM
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt; On Tue, Mar 8, 2011 at 9:58 AM, Bryan Laur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bjlaur at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt; Sorry, I should've been more explicit.
+</I>&gt;<i> &gt;&gt;&gt; You've probably already answered my question, but I'd like to make sure
+</I>&gt;<i> I
+</I>&gt;<i> &gt;&gt;&gt; got all the ducks in the row.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; The module I suggested is a TTL module, and therefore would not be
+</I>&gt;<i> plugged
+</I>&gt;<i> &gt;&gt;&gt; into the serial interface on the chip.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; To use this, I would simply attach the correct pins on the TTL module
+</I>&gt;<i> to the
+</I>&gt;<i> &gt;&gt;&gt; correct pins the STM32 module, correct?
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; There is no circuitry related to the TTL to RS232 chip that is
+</I>&gt;<i> required,
+</I>&gt;<i> &gt;&gt;&gt; correct?
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; On Tue, Mar 8, 2011 at 10:53 AM, Bogdan Marinescu
+</I>&gt;<i> &gt;&gt;&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Hi,
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; On Tue, Mar 8, 2011 at 5:47 PM, Bryan Laur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bjlaur at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt; Hey guys,
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt; I am interested in using eLua on the ET-STM32 module.
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt; I, however, am sick of using these profolic usb serial cables. I can
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt; never
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt; get them to work right.
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Interesting, I have one and works very well.
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt; I am wondering whether it is possible to interface with it's
+</I>&gt;<i> bootloader
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt; using a module such as this:
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> <A HREF="http://cgi.ebay.com/USB-TTL-Converter-Module-buildin-in-CP2102-/160553632013?pt=LH_DefaultDomain_0&amp;hash=item2561be010d">http://cgi.ebay.com/USB-TTL-Converter-Module-buildin-in-CP2102-/160553632013?pt=LH_DefaultDomain_0&amp;hash=item2561be010d</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt; My guess is yes, but I would like to confirm this before I make my
+</I>&gt;<i> &gt;&gt;&gt;&gt; &gt; purchase.
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; In theory, yes. Plus the CP2102 is a good chip from what I know.
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Best,
+</I>&gt;<i> &gt;&gt;&gt;&gt; Bogdan
+</I>&gt;<i> &gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; --
+</I>&gt;<i> &gt;&gt; James Snyder
+</I>&gt;<i> &gt;&gt; Biomedical Engineering
+</I>&gt;<i> &gt;&gt; Northwestern University
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> &gt;&gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> &gt;&gt; Phone: (847) 448-0386
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> Phone: (847) 448-0386
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110309/14456de3/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110309/14456de3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002136.html">[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+</A></li>
+	<LI>Next message: <A HREF="002138.html">[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2137">[ date ]</a>
+              <a href="thread.html#2137">[ thread ]</a>
+              <a href="subject.html#2137">[ subject ]</a>
+              <a href="author.html#2137">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

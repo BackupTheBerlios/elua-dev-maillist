@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32f4DSCY%20-%20MCU%20settings%20-%20flash%20prefetch%20on&In-Reply-To=%3CCAJ%3DY9Y1iEierhAC5vkf7B78Ac0_HHO%3DN4fbP229qGnTmf71XmQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003050.html">
+   <LINK REL="Next"  HREF="003052.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32f4DSCY%20-%20MCU%20settings%20-%20flash%20prefetch%20on&In-Reply-To=%3CCAJ%3DY9Y1iEierhAC5vkf7B78Ac0_HHO%3DN4fbP229qGnTmf71XmQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Nov 29 20:32:55 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003050.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+        <LI>Next message: <A HREF="003052.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3051">[ date ]</a>
+              <a href="thread.html#3051">[ thread ]</a>
+              <a href="subject.html#3051">[ subject ]</a>
+              <a href="author.html#3051">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2011/11/29 pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;:
+&gt;&gt;<i> Also I can confirm the ~13% performance difference
+</I>&gt;&gt;<i> on my own hardware,
+</I>&gt;<i>
+</I>&gt;<i> I am still not sure the prefetch cache works full speed as the 13%
+</I>&gt;<i> we measured is not much, indeed (but it could be masked by some
+</I>&gt;<i> processes within eLua however). When we did &quot;prefetch on&quot; on pic32mx
+</I>&gt;<i> (retrobsd) the filesystem performance went up by ~30% (where the
+</I>&gt;<i> most time we wait on sdcard's responses..)
+</I>
+I think it would be helpful to try one or more of the following:
+1) Try this on one of ST's other MCUs that has known working prefetch
+and toggle it
+
+2) Simplify the test case to sequential code that definitely doesn't
+branch and would always pull instructions from flash.  I haven't
+evaluated what's going on at the C level in this code to know how
+effective prefetch _should_ be.
+
+3) Lower the clock to one where you can run with zero wait states and
+compare performance between prefetch enabled with wait states and zero
+wait states. Given that a previous test in which the wait state
+setting was reduced resulted in a performance gain might suggest that
+this would yield a significant difference.
+
+Also note that this thing has an instruction cache and data cache,
+which may or may not be helping significantly depending on the code
+and how many hits and misses we might get.  I haven't traced through
+what Lua would be doing on the hardware level in the inner loop of the
+code example, but a quick test yielded this:
+
+Count: 54, 1000x 5.656045 sec -- prefetch &amp; caches on
+Count: 54, 1000x 7.241642 sec -- prefetch on, caches off
+Count: 54, 1000x 8.561787 sec -- prefetch off, caches off
+
+There's about a 15% time reduction between w/o and w/ prefetch, and
+about 21% for caches being enabled.
+
+None of this seems to meet with the marketing speak that says that
+prefetch should make it behave like zero wait state, but It's
+difficult to know if what we see is related to a hardware
+implementation deficiency or the nature of the test case.
+
+&gt;<i> p.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> &#381;ijte &#382;ivot gangstera ve velk&#233;m m&#283;st&#283;. Pl&#328;te mise pro kmotra,
+</I>&gt;<i> bojujte s ostatn&#237;mi hr&#225;&#269;i z cel&#233;ho sv&#283;ta. Zahrajte si hru Mafia na
+</I>&gt;<i> <A HREF="http://web.volny.cz/data/click.php?id=1305">http://web.volny.cz/data/click.php?id=1305</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003050.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+	<LI>Next message: <A HREF="003052.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3051">[ date ]</a>
+              <a href="thread.html#3051">[ thread ]</a>
+              <a href="subject.html#3051">[ subject ]</a>
+              <a href="author.html#3051">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

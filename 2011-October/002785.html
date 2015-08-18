@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RPC over SOCK_STREAM
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3CCAJ%3DY9Y1K1Y3QPnZ74WyfviWpNqGSu7Sg0By%3D8ap6NfWToPUXrQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002782.html">
+   <LINK REL="Next"  HREF="002828.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RPC over SOCK_STREAM</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3CCAJ%3DY9Y1K1Y3QPnZ74WyfviWpNqGSu7Sg0By%3D8ap6NfWToPUXrQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RPC over SOCK_STREAM">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Oct 12 05:29:47 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002782.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+        <LI>Next message: <A HREF="002828.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2785">[ date ]</a>
+              <a href="thread.html#2785">[ thread ]</a>
+              <a href="subject.html#2785">[ subject ]</a>
+              <a href="author.html#2785">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Oct 11, 2011 at 9:27 AM, raman &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/file/n6881171/rpc.socket.patch">http://elua-development.2368040.n2.nabble.com/file/n6881171/rpc.socket.patch</A>
+</I>&gt;<i> rpc.socket.patch
+</I>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> Thanks for your suggestions. I used the existing desktop socket code for
+</I>&gt;<i> LUARPC to test RPC over
+</I>&gt;<i> ethernet. I've been trying a whole lot of things to get this to work. I've
+</I>&gt;<i> been stuck. I've sent my
+</I>&gt;<i> work on this as a patch. Please look for attachment.
+</I>
+Thanks.  Plus or minus Bogdan's planned patches, I'll take a look at
+this to see if there's anything that stands out to me and get familiar
+with your implementation.  I would suspect that LuaRPC should play
+pretty well with the uIP-based stack even with the current
+bugs/shortcomings given that it is somewhat cautious about spitting
+out lots of bytes of data until it knows it has the undivided
+attention of the &quot;slave&quot; instance.
+
+&gt;<i>
+</I>&gt;<i> I was able to establish a handshake between the micro and my laptop. It
+</I>&gt;<i> connects without a problem.
+</I>&gt;<i>
+</I>&gt;<i> A few things:
+</I>&gt;<i>
+</I>&gt;<i> // Test lua code from desktop
+</I>&gt;<i> require(&quot;rpc&quot;)
+</I>&gt;<i> slave, err = rpc.connect(&quot;192.168.100.90&quot;, 12346)
+</I>&gt;<i> print(slave, err)
+</I>&gt;<i> pio = slave.pio
+</I>&gt;<i> pio.pin.setdir(pio.OUTPUT, pio.PF_0)
+</I>&gt;<i> pio.pin.sethigh(pio.PF_0)
+</I>
+I presume you're running this from a script generally and not
+interactively?  If so/not any difference there?
+
+Also, I presume it bails on the first call (setdir)?
+
+&gt;<i>
+</I>&gt;<i> // An extract: luarpc.c
+</I>&gt;<i> static void rpc_dispatch_helper( lua_State *L, ServerHandle *handle )
+</I>&gt;<i> {
+</I>&gt;<i> &#160;struct exception e;
+</I>&gt;<i>
+</I>&gt;<i> &#160;Try
+</I>&gt;<i> &#160;{
+</I>&gt;<i> &#160; &#160;// if accepting transport is open, read function calls
+</I>&gt;<i> &#160; &#160;if ( transport_is_open( &amp;handle-&gt;atpt ) )
+</I>&gt;<i> &#160; &#160;{
+</I>&gt;<i> &#160; &#160; &#160;Try
+</I>&gt;<i> &#160; &#160; &#160;{
+</I>&gt;<i> &#160; &#160; &#160; &#160;switch ( transport_read_u8( &amp;handle-&gt;atpt ) )
+</I>&gt;<i> &#160; &#160; &#160; &#160;{
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160;case RPC_CMD_CALL: &#160;// call function
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160;transport_write_u8( &amp;handle-&gt;atpt, RPC_READY );
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160;/* Control reaches this point without issues. After this point,
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; crashes */
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160;read_cmd_call( &amp;handle-&gt;atpt, L );
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160;break;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160;....
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> // An extract: luarpc.c
+</I>&gt;<i> static void read_cmd_call( Transport *tpt, lua_State *L )
+</I>&gt;<i> {
+</I>&gt;<i> &#160;int i, stackpos, good_function, nargs;
+</I>&gt;<i> &#160;u32 len;
+</I>&gt;<i> &#160;char *funcname;
+</I>&gt;<i> &#160;char *token = NULL;
+</I>&gt;<i>
+</I>&gt;<i> &#160;// read function name
+</I>&gt;<i> &#160;len = transport_read_u32( tpt ); /* function name string length */
+</I>&gt;<i> &#160;/* Control reaches this point without issues */
+</I>&gt;<i> &#160;funcname = ( char * )alloca( len + 1 );
+</I>&gt;<i> &#160;transport_read_string( tpt, funcname, len );
+</I>&gt;<i> &#160; &#160;/* Here, at this point, the code crashes. I suspect
+</I>&gt;<i> &#160; &#160; transport_read_string(###). */
+</I>&gt;<i> &#160;funcname[ len ] = 0;
+</I>
+Interesting..
+
+Does it actually all-out crash or just hang?  Depending on your
+platform and the type of crash we may have code for a fault handler
+that might spit out some characters on UART0 that might inform you of
+at least what type of fault occurred.  If not, it's always possible to
+modify the fault handlers to do something a bit more useful on
+failure.
+
+I'd be curious if it faults, throws an exception from
+transport_read_buffer or something else happens...
+
+&gt;<i>
+</I>&gt;<i> &#160;// get function
+</I>&gt;<i> &#160;// @@@ perhaps handle more like variables instead of using a long string?
+</I>&gt;<i> &#160;// @@@ also strtok is not thread safe
+</I>&gt;<i> &#160;token = strtok( funcname, &quot;.&quot; );
+</I>&gt;<i> &#160;lua_getglobal( L, token );
+</I>&gt;<i> &#160;token = strtok( NULL, &quot;.&quot; );
+</I>&gt;<i> &#160;while( token != NULL )
+</I>&gt;<i> &#160;{
+</I>&gt;<i> &#160; &#160;lua_getfield( L, -1, token );
+</I>&gt;<i> &#160; &#160;lua_remove( L, -2 );
+</I>&gt;<i> &#160; &#160;token = strtok( NULL, &quot;.&quot; );
+</I>&gt;<i> &#160;}
+</I>&gt;<i> &#160;....
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> I have modified the SConstruct file and introduced a two other boot options
+</I>&gt;<i> 'socket'
+</I>&gt;<i> and 'serial'. So, scons cpu=lm3s8962 toolchain=codesourcery boot=socket prog
+</I>&gt;<i> works fine. I've also introduced the macros ELUA_BOOT_RPC_SERIAL and
+</I>&gt;<i> ELUA_BOOT_RPC_SOCKET
+</I>&gt;<i> to do come conditional compilation.
+</I>
+OK, that sounds fine for now.  We can adjust if needed later.
+
+&gt;<i>
+</I>&gt;<i> Please give me your suggestions. Please let me know how we can take the
+</I>&gt;<i> development forward.
+</I>
+Thanks again for taking some initiative here.  I'm looking forward to
+seeing this working and we can hopefully figure out whether the hangup
+is related to the RPC-side of the implementation or something going on
+with the TCP/IP stack.
+
+&gt;<i>
+</I>&gt;<i> Cheers!
+</I>&gt;<i>
+</I>&gt;<i> Raman
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6881171.html">http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6881171.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002782.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+	<LI>Next message: <A HREF="002828.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2785">[ date ]</a>
+              <a href="thread.html#2785">[ thread ]</a>
+              <a href="subject.html#2785">[ subject ]</a>
+              <a href="author.html#2785">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

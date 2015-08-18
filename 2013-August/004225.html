@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New build system - questions, missing bits
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20build%20system%20-%20questions%2C%20missing%20bits&In-Reply-To=%3CCANKDJfb571_hR-%3DtejGw_WEP5_21RxDeZqqHfP5ko2VL%2BxPNTw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004224.html">
+   <LINK REL="Next"  HREF="004226.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New build system - questions, missing bits</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20build%20system%20-%20questions%2C%20missing%20bits&In-Reply-To=%3CCANKDJfb571_hR-%3DtejGw_WEP5_21RxDeZqqHfP5ko2VL%2BxPNTw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] New build system - questions, missing bits">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Aug 19 10:18:31 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004224.html">[eLua-dev] New build system - questions, missing bits
+</A></li>
+        <LI>Next message: <A HREF="004226.html">[eLua-dev] How can I use eLua as embedded interpreter in my firmware ?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4225">[ date ]</a>
+              <a href="thread.html#4225">[ thread ]</a>
+              <a href="subject.html#4225">[ subject ]</a>
+              <a href="author.html#4225">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+
+On Mon, Aug 19, 2013 at 4:29 AM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> Some questions about few things that seem to be missing or work
+</I>&gt;<i> differently with the new build system.
+</I>&gt;<i>
+</I>&gt;<i> All of the testing for this is on the LM3S platform (e.g. EK-LM3S8962).
+</I>&gt;<i>
+</I>&gt;<i> 1) How do I include the bitarray module in a build?
+</I>&gt;<i> Under scons the bitarray module was included automatically.
+</I>&gt;<i> Under the lua build system it is not included, and I have not figured out
+</I>&gt;<i> any way to get it included,
+</I>&gt;<i> short of editing the build system files.
+</I>&gt;<i> e.g. edit config/modules.lua
+</I>&gt;<i> add
+</I>&gt;<i>   bitarray = {},
+</I>&gt;<i> under
+</I>&gt;<i>  local elua_generic_modules = {
+</I>&gt;<i>
+</I>
+bitarray is not an &quot;official&quot; module (because it doesn't have any
+associated documentation), so it was not included in the configurator. I
+need to fix this (both the documentation and the configurator side).
+
+&gt;<i>
+</I>&gt;<i> 2) Interrupt constants seem to be missing from cpu module.
+</I>&gt;<i> If I build it with elua interrupts on, using scons the cpu module would
+</I>&gt;<i> have constants like cpu.INT_TMR_MATCH,
+</I>&gt;<i> with the lua build system these constants are not generated.
+</I>&gt;<i>
+</I>
+That was an error in the LM3S8962 CPU header file, fixed on master now,
+
+
+&gt;<i>
+</I>&gt;<i> 3) Why was linenoise turned off by default for the lm3s processors?
+</I>&gt;<i> Not a big deal, since as long as one knows that it exists, one can turn it
+</I>&gt;<i> back on.
+</I>&gt;<i> But I was curious if there was a particular reason to not use linenoise on
+</I>&gt;<i> the lm3s platform.
+</I>&gt;<i>
+</I>
+Nope, no particular reason, except for saving some flash / RAM.
+
+
+&gt;<i> 4) How do you make the new build system only compile the files you are
+</I>&gt;<i> actually using?
+</I>&gt;<i> Even if you tell it to not use a particular module (e.g. i2c, or, as noted
+</I>&gt;<i> above bitarray, which is not used at all)
+</I>&gt;<i> the lua build scripts still compile the .c file.  Seems like a waste of
+</I>&gt;<i> time to keep recompiling things that are not
+</I>&gt;<i> being used.  I did not check to see if scons did this also, just used to
+</I>&gt;<i> build systems knowing enough to only
+</I>&gt;<i> compile the files that are actually used by a particular target.
+</I>&gt;<i>
+</I>
+There is no way to do this right now, the build system doesn't try to do
+any optimizations on the compilation time. It simply scans the sources and
+compiles all of them. Something that will be addressed in the future (but
+with low priority).
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i>   Thanks
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130819/e8c41d78/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130819/e8c41d78/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004224.html">[eLua-dev] New build system - questions, missing bits
+</A></li>
+	<LI>Next message: <A HREF="004226.html">[eLua-dev] How can I use eLua as embedded interpreter in my firmware ?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4225">[ date ]</a>
+              <a href="thread.html#4225">[ thread ]</a>
+              <a href="subject.html#4225">[ subject ]</a>
+              <a href="author.html#4225">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

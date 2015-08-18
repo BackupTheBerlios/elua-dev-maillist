@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Maybe I found memory leak
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Maybe%20I%20found%20memory%20leak&In-Reply-To=%3C1339662548880-7577488.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003593.html">
+   <LINK REL="Next"  HREF="003601.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Maybe I found memory leak</H1>
+    <B>framer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Maybe%20I%20found%20memory%20leak&In-Reply-To=%3C1339662548880-7577488.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] Maybe I found memory leak">rasa at go2.pl
+       </A><BR>
+    <I>Thu Jun 14 10:29:08 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003593.html">[eLua-dev] Maybe I found memory leak
+</A></li>
+        <LI>Next message: <A HREF="003601.html">[eLua-dev] Maybe I found memory leak
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3600">[ date ]</a>
+              <a href="thread.html#3600">[ thread ]</a>
+              <a href="subject.html#3600">[ subject ]</a>
+              <a href="author.html#3600">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I can presentation this case on screencast.  eLua works on software
+simulator. All allocation function (malloc, realloc, free) run through
+wrapper and we can logs allocation memory in real time. It is presentation
+on  <A HREF="http://ftp.vado.pl:10080/an/other/test.zip">http://ftp.vado.pl:10080/an/other/test.zip</A>
+<A HREF="http://ftp.vado.pl:10080/an/other/test.zip">http://ftp.vado.pl:10080/an/other/test.zip</A>  (~25Mb).  Problem come in when
+interpreter obtain syntactic error. Debug session presentation on 
+<A HREF="http://ftp.vado.pl:10080/an/other/test2.zip">http://ftp.vado.pl:10080/an/other/test2.zip</A>
+<A HREF="http://ftp.vado.pl:10080/an/other/test2.zip">http://ftp.vado.pl:10080/an/other/test2.zip</A>  (~23Mb).   If  interpreter
+obtain syntactic error then break function /luaY_parser/ in
+/chunk(&amp;lexstate);/ and not free struct FuncState *pfuncstate. 
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/Maybe-I-found-memory-leak-tp7577478p7577488.html">http://elua-development.2368040.n2.nabble.com/Maybe-I-found-memory-leak-tp7577478p7577488.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003593.html">[eLua-dev] Maybe I found memory leak
+</A></li>
+	<LI>Next message: <A HREF="003601.html">[eLua-dev] Maybe I found memory leak
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3600">[ date ]</a>
+              <a href="thread.html#3600">[ thread ]</a>
+              <a href="subject.html#3600">[ subject ]</a>
+              <a href="author.html#3600">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32F4
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4&In-Reply-To=%3CCADhEetWiNeQnZJGtx8xUVTs-Fd0MrEpDueC6HBqrMeEwVRxxKA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004312.html">
+   <LINK REL="Next"  HREF="004314.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32F4</H1>
+    <B>Peter Edwards</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4&In-Reply-To=%3CCADhEetWiNeQnZJGtx8xUVTs-Fd0MrEpDueC6HBqrMeEwVRxxKA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32F4">sweetlilmre at gmail.com
+       </A><BR>
+    <I>Sun Dec  1 15:45:56 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004312.html">[eLua-dev] STM32F4
+</A></li>
+        <LI>Next message: <A HREF="004314.html">[eLua-dev] STM32F4
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4313">[ date ]</a>
+              <a href="thread.html#4313">[ thread ]</a>
+              <a href="subject.html#4313">[ subject ]</a>
+              <a href="author.html#4313">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I am probably talking out of turn here, but can't you assign a variable to
+stm32f4discovery.gw e.g mygw and then use that?
+
+-(e)
+On 1 Dec 2013 15:56, &quot;Bill&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">softlanding at gmail.com</A>&gt; wrote:
+
+&gt;<i> got it working. Is there a way to get the functions only 2 deep i.e.
+</I>&gt;<i> gw.receive() instead of stm32f4discovery.gw.receive()
+</I>&gt;<i>
+</I>&gt;<i> thanks for all the help.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Nov 29, 2013 at 10:47 AM, Richard M&#246;hn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard.moehn at fu-berlin.de</A>
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On Fri, Nov 29, 2013 at 10:24:11AM -0600, Bill wrote:
+</I>&gt;&gt;<i> &gt; I seem to be missing a step, I was getting a fail at comproto, but now
+</I>&gt;&gt;<i> it
+</I>&gt;&gt;<i> &gt; is only at receive.
+</I>&gt;&gt;<i> &gt; I get:
+</I>&gt;&gt;<i> &gt; &gt; stm32f4discovery.comproto.receive()
+</I>&gt;&gt;<i> &gt; stdin:1: attempt to call field 'receive' (a nil value)
+</I>&gt;&gt;<i> &gt; stack traceback:
+</I>&gt;&gt;<i> &gt;         stdin:1: in main chunk
+</I>&gt;&gt;<i> &gt;         [C]: ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You might open the eLua shell, start the Lua shell and type the
+</I>&gt;&gt;<i> following:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     &gt; = stm32f4discovery
+</I>&gt;&gt;<i>     &gt; = stm32f4discovery.comproto
+</I>&gt;&gt;<i>     &gt; = stm32f4discovery.comproto.receive
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If the first one fails, it might be because platform_name was not
+</I>&gt;&gt;<i> properly set in boards/known/stm32f4discovery.lua. If the second one
+</I>&gt;&gt;<i> fails, something with the registration of the module went wrong. If the
+</I>&gt;&gt;<i> third one fails, something with the registration of the function went
+</I>&gt;&gt;<i> wrong.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> And there is an issue with you stripped-down version of receive(): One
+</I>&gt;&gt;<i> can't use the normal &quot;return&quot; from C to return a value to Lua. Instead,
+</I>&gt;&gt;<i> it must be pushed onto the stack and then you return the number of
+</I>&gt;&gt;<i> things you have pushed on the stack. Therefore, the function should look
+</I>&gt;&gt;<i> like this:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     static int stm32f4discovery_comproto_receive(lua_State *L)
+</I>&gt;&gt;<i>     {
+</I>&gt;&gt;<i>         lua_pushinteger(L, 42);
+</I>&gt;&gt;<i>         return 1;
+</I>&gt;&gt;<i>     }
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You can read about this here:
+</I>&gt;&gt;<i> <A HREF="http://www.lua.org/manual/5.1/manual.html#3">http://www.lua.org/manual/5.1/manual.html#3</A> The book Programming in Lua
+</I>&gt;&gt;<i> probably is an easier introduction, though.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Richard
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20131201/47f58843/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20131201/47f58843/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004312.html">[eLua-dev] STM32F4
+</A></li>
+	<LI>Next message: <A HREF="004314.html">[eLua-dev] STM32F4
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4313">[ date ]</a>
+              <a href="thread.html#4313">[ thread ]</a>
+              <a href="subject.html#4313">[ subject ]</a>
+              <a href="author.html#4313">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

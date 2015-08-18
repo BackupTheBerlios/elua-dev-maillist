@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 Bootloader Flashing in Python
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Bootloader%20Flashing%20in%20Python&In-Reply-To=%3CEMEWEMEW2_DELIMl2IEPn93f4f2cc55beac2216484d%2C%0A%09jbsnyder%40fanplastic.org%2C%2080AE7D1A-AE4E-44FE-B50C-CB0%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000676.html">
+   <LINK REL="Next"  HREF="000678.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 Bootloader Flashing in Python</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Bootloader%20Flashing%20in%20Python&In-Reply-To=%3CEMEWEMEW2_DELIMl2IEPn93f4f2cc55beac2216484d%2C%0A%09jbsnyder%40fanplastic.org%2C%2080AE7D1A-AE4E-44FE-B50C-CB0%3E"
+       TITLE="[eLua-dev] STM32 Bootloader Flashing in Python">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Mar 19 20:25:47 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000676.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+        <LI>Next message: <A HREF="000678.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#677">[ date ]</a>
+              <a href="thread.html#677">[ thread ]</a>
+              <a href="subject.html#677">[ subject ]</a>
+              <a href="author.html#677">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm not sure if there's a way to do it with XMODEM, but there is for  
+ZMODEM:
+<A HREF="http://adammonsen.com/post/256">http://adammonsen.com/post/256</A>
+
+So I assume if eLua had ZMODEM support you could do the send example,  
+replacing rz with recv from the eLua shell.
+
+-jsnyder
+
+On Mar 19, 2009, at 1:48 PM, Bogdan Marinescu wrote:
+
+&gt;<i> Oh yes, I tried CuteCom a while ago. I'll give them credit for  
+</I>&gt;<i> choosing the name: &quot;cute&quot; describes it perfectly. Simple interface,  
+</I>&gt;<i> very little functionality. Cute, but wrong :)
+</I>&gt;<i> I also think screen is the best choice in Linux, better than minicom  
+</I>&gt;<i> anyway. But can you do XMODEM from screen?
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Mar 19, 2009 at 8:43 PM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> FYI: CuteCom is basically like Bray's terminal, if you've used it on  
+</I>&gt;<i> windows.  It doesn't really handle terminal characters, so anything  
+</I>&gt;<i> that's drawing text on the screen with term isn't going to work  
+</I>&gt;<i> correctly.
+</I>&gt;<i>
+</I>&gt;<i> Oh well :-)
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mar 19, 2009, at 1:11 PM, James Snyder wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mar 19, 2009, at 3:10 AM, Bogdan Marinescu wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Between this and the new patches Bogdan committed for being  
+</I>&gt;&gt;&gt;<i> agnostic about line endings, I can now cut windows out of the loop  
+</I>&gt;&gt;&gt;<i> for STM32 development :-)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You da man! :) Out of curiosity, what terminal emulator are you  
+</I>&gt;&gt;&gt;<i> using in Linux? I was unable to find a decent one  
+</I>&gt;&gt;&gt;<i> (&quot;decent&quot;=something that could compete with TeraTerm).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I haven't yet found something that is as easy to work with as  
+</I>&gt;&gt;<i> TeraTerm, which I do find somewhat irritating.  For quick and dirty  
+</I>&gt;&gt;<i> stuff (no transfers, just console) I just use screen, which one can  
+</I>&gt;&gt;<i> fire up by just pointing it at the tty device (screen /dev/ttyUSB0  
+</I>&gt;&gt;<i> 115200).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I've tried a few things including minicom, and haven't been  
+</I>&gt;&gt;<i> thrilled with them.  One thing that I just stumbled upon, and  
+</I>&gt;&gt;<i> haven't tried yet is CuteCom (<A HREF="http://cutecom.sourceforge.net/">http://cutecom.sourceforge.net/</A>).   
+</I>&gt;&gt;<i> I'm going to try and compile that on my Mac, it looks like it's at  
+</I>&gt;&gt;<i> least in the Ubuntu repositories though.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If that doesn't work well, I'll be further tempted to try and hack  
+</I>&gt;&gt;<i> something together in Python... :-)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> FYI: I have an ADC implementation for STM32 that should basically  
+</I>&gt;&gt;&gt;<i> work, but something is causing a hang on boot when I enable the  
+</I>&gt;&gt;&gt;<i> ADC peripheral clock on boot.  I'll commit that and some changes  
+</I>&gt;&gt;&gt;<i> to elua_adc that allow it to handle situations where a single  
+</I>&gt;&gt;&gt;<i> interrupt gives you values from a series of channels.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Good news, keep up the good work! After all the docs I wrote (and  
+</I>&gt;&gt;&gt;<i> I'm still writing) I'm not even sure I know how to program  
+</I>&gt;&gt;&gt;<i> anymore :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm sure it'll come back to you :-)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I did get past that other issue I had mentioned, which, if I  
+</I>&gt;&gt;<i> recall, came down to some issues of ordering the startup sequence.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I've found that the Stellaris platform is much easier to write  
+</I>&gt;&gt;<i> something and have it behave the way you expect it to, without  
+</I>&gt;&gt;<i> having to dig through large swaths of the reference documentation  
+</I>&gt;&gt;<i> for the hardware.  That simplicity does have a cost, in that  
+</I>&gt;&gt;<i> there's way more flexibility with STM32, but I find it takes more  
+</I>&gt;&gt;<i> time to debug, and that solutions are sometimes non-obvious after  
+</I>&gt;&gt;<i> the fact :-)  I don't think I'm alone there, since I've seen plenty  
+</I>&gt;&gt;<i> of discussions on the STM32 forums that sound similar to my own  
+</I>&gt;&gt;<i> experiences.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Right now non-clocked conversion seems to work OK, and it runs at a  
+</I>&gt;&gt;<i> similar speed to LM3S6965 with adcscope.lua.  While this chip is  
+</I>&gt;&gt;<i> clocked faster, I think it's not bad for a first pass at settings  
+</I>&gt;&gt;<i> things up.  Their DMA support also allows for some flexibility  
+</I>&gt;&gt;<i> that, in some ways, I like better than the dedicated FIFOs on  
+</I>&gt;&gt;<i> Luminary.  The DMA includes both source and destination address  
+</I>&gt;&gt;<i> incrementation, and has separate interrupts for half-full/complete  
+</I>&gt;&gt;<i> events.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I feel like their docs and/or driver model could be more friendly  
+</I>&gt;&gt;<i> to someone who isn't intimately familiar with their peripheral  
+</I>&gt;&gt;<i> architecture, though.  You definitely cannot write driver  
+</I>&gt;&gt;<i> interfaces that differ much from their code examples using only the  
+</I>&gt;&gt;<i> driver manual.  You need the chip reference manual to figure out  
+</I>&gt;&gt;<i> how the hardware works, and then you can find the appropriate calls  
+</I>&gt;&gt;<i> to set things up.  Certainly you have to do this, to some degree,  
+</I>&gt;&gt;<i> on all platforms, but with Luminary's docs I got most of what I  
+</I>&gt;&gt;<i> needed just from their driver manual, and from a few app notes.   
+</I>&gt;&gt;<i> This makes me wonder a bit about what things are like with other  
+</I>&gt;&gt;<i> manufacturer's offerings :-)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090319/7fc021da/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090319/7fc021da/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090319/7fc021da/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090319/7fc021da/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000676.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+	<LI>Next message: <A HREF="000678.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#677">[ date ]</a>
+              <a href="thread.html#677">[ thread ]</a>
+              <a href="subject.html#677">[ subject ]</a>
+              <a href="author.html#677">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua open hardware
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20open%20hardware&In-Reply-To=%3C81fbe47d0902120007l3dbf09aej69da110d6b20ddbf%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000357.html">
+   <LINK REL="Next"  HREF="000359.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua open hardware</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20open%20hardware&In-Reply-To=%3C81fbe47d0902120007l3dbf09aej69da110d6b20ddbf%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua open hardware">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Feb 12 09:07:17 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000357.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+        <LI>Next message: <A HREF="000359.html">[eLua-dev] eLua open hardware
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#358">[ date ]</a>
+              <a href="thread.html#358">[ thread ]</a>
+              <a href="subject.html#358">[ subject ]</a>
+              <a href="author.html#358">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+There was recently a discussion on the Lua list about Lua on embedded
+devices, and thinks got pretty hot (in a good way :) ), so I invited all the
+people that wanted to continue that discussion to join this list (since the
+profile of the Lua list suggests that it's not the best place to discuss
+regular hardware). We had more than 10 people joining the elua-dev list
+after this announcement, so I expect things to become pretty hot here too :)
+I'll try to resume the discussions by including the last relevent message
+from the Lua list (this message is from Mike Panetta):
+
+========================================
+
+On Wed, Feb 11, 2009 at 12:22 PM, Tony Bauer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">luatony at gmail.com</A>&gt; wrote:
+
+&gt;<i> More embedded notes (with some Lua content):
+</I>&gt;<i>
+</I>&gt;<i> Yes, the LPC2478 is pretty nice.  My brother was looking at using one
+</I>&gt;<i> at work (no Lua, though), but that project is currently on hold.
+</I>&gt;<i>
+</I>&gt;<i> Somebody will make a Cortex M3 with an external bus.  The NXP LPC17xx
+</I>&gt;<i> series (Cortex M3) looks pretty nice; the LPC1768 has 64K RAM, 512K
+</I>&gt;<i> flash, MAC, USB OTG, 2xCAN, 4xUART, PWM, QEP, etc, but no external
+</I>&gt;<i> bus.
+</I>
+
+I am willing to bet that either Luminary or ST Micro will be the first out
+the gate with such a design.  In fact ST Micro has a new line of chips on
+the back burner to release some time this year I think, but you have to sign
+an NDA to see the product map, which I have not done so have no clue as to
+whats there.  I personally think they may be waiting to pop right on the
+market with available product as soon as Luminary announces what it has up
+its sleeves.  They seem to be in a tight heat with each other as far as
+parts competition goes.
+
+I agree its too bad that ST does not have a cortex part with Ethernet
+though, as they are the lowest price chip on the market right now with the
+STM32F103ZET6 (512K Flash, 64K RAM, CAN, USB, 8 timers, 4 of which are
+capable of doing QEI, 2 of which are capable of doing motion PWM, 5
+U(S)ARTS, 3 SPI, 2 I2C etc etc..... in an LQFP144) at $10.25 *IN SINGLES* at
+AVNET.
+
+I do not think that Luminary can compete with ST on price at the moment
+because of process size (smaller process size means more dice per wafer
+which means cheaper chips... but you already knew that :)  Thats of course
+assuming that ST uses a smaller process then Luminary does (Isn't Luminary
+Fabless?).
+
+One thing that has made me pro ST (besides the price) is that ST seems to
+characterize the power consumption of their chips better then Luminary
+does.  They also seem to use less power then either Luminary or NXP parts at
+the same clock.  However, that may be misleading as the Luminary parts have
+faster flash in them, so mips/watt may be less in the Luminary parts then in
+the ST ones when running from Flash, but I have no data to back that up (or
+dispute it).
+
+
+&gt;<i>
+</I>&gt;<i> In reality, all the really cool chips are BGA, but those make QFPs
+</I>&gt;<i> look easy to prototype.  There are companies selling products that
+</I>&gt;<i> claim to make prototyping with SMT parts easier, such as SchmartBoard,
+</I>&gt;<i> but I haven't tried them.
+</I>&gt;<i>
+</I>
+QFP's (and QFN's) *ARE* easy to prototype with, esp if you designed the part
+footprint yourself. QFP's can be soldered in a jiffy with a rake soldering
+technique, and when you get good at it you won't even need to use solder
+braid to get the shorts out because there won't be any. QFN's take a little
+bit longer (the ones with a thermal pad on the bottom are easier IMO because
+you can fix them down with it) but are also a no brainer.  I designed a
+powersupply/LIPo charger with an LTC3556 USB power manager chip and hand
+soldered it. First proto worked perfectly, no bridges or anything.  It took
+me 2-3 hrs to complete the soldering job, all by hand.  My next protos will
+hopefully be done by toaster method, but I need to build a controller
+first.  Its kinda hard to get the parts when your unemployed :P
+
+I personally think that most peoples fears to soldering SMT parts is due to
+them never having tried it.  Before I first started using SMT in my designs
+I thought the same thing.  One day I just broke down and used some SMT parts
+on a small design, one that would be ok to trash if I fudged it up.
+Soldering the board was much much easier then I first thought, even the
+QFP's! (It was an ATMega128 design).  Since then I have never wanted to go
+back to through hole parts, except for little pieces of free wired 'art'
+that I have made. :)
+
+
+&gt;<i>
+</I>&gt;<i> Still, ARM MCUs are getting down in size; the STM32F103T8 has 20K RAM,
+</I>&gt;<i> 64K flash in a 36 pin QFN.  But to run Lua decently, you'll need at
+</I>&gt;<i> least a QFP80 (e.g. LPC1758 with 64K, ST STR911FAM4x with 96K SRAM).
+</I>&gt;<i> BTW, you always have to read the fine print; for example, in both the
+</I>&gt;<i> STR9 and LPC238x, the 96K SRAM is also used for the Ethernet buffers,
+</I>&gt;<i> so if you use the network, you won't actually have 96K available.
+</I>
+
+So very true.  All of the large ram NXP parts are like that.  They have a
+64K main RAM area, and 2 16K buffer/DMA areas for the Ethernet and USB
+controllers.  Supposedly you can execute out of the DMA RAM, but I think
+some of the parts have eratta related to that...  And I would not hold my
+breath on the NXP Cortex-M3 parts, it took over a year between when some of
+the LPC24xx parts were 'released' and when they actually became available to
+purchase in any real quantities.  The LCD parts were the worst I believe,
+just becoming available around 2 months or so ago.
+
+
+&gt;<i>
+</I>&gt;<i> Compilers &amp; DSPs: most DSPs need the manufacturer's compilers (I know
+</I>&gt;<i> TI's do); however, IIRC, the ADI Blackfin DSPs use gcc.  Someday I may
+</I>&gt;<i> try compiling Lua for a TI C6701 board, but that's not going to happen
+</I>&gt;<i> for a while.
+</I>&gt;<i>
+</I>&gt;<i> CAN is a 1Mbps network, so there's no way a UART will work.  You can
+</I>&gt;<i> add them externally, e.g. via a SPI port.
+</I>
+
+Meh, UARTS in some chips can go up to 4Mbps now.  I do agree that using SPI
+would be easier though, as Microchip has SPI-&gt;CAN bridge chips available.
+
+
+&gt;<i>
+</I>&gt;<i> Finally, because this bugs me, some terminology notes:
+</I>&gt;<i> SoC - System on a Chip.  So, a chip that integrates almost everything
+</I>&gt;<i> a piece of equipment (system) needs.  A good example is a highly
+</I>&gt;<i> integrated chip for MP3 players.
+</I>&gt;<i> SiP - System on a Package.
+</I>&gt;<i> MCU - Microcontroller.  A CPU that includes all its memory on chip.
+</I>&gt;<i> MCUs go back to the very early days, with such chips as the Intel
+</I>&gt;<i> 8042, before the term SoC was ever used.
+</I>&gt;<i> MPU - Microprocessor.  A CPU that needs external memory (e.g. x86,
+</I>&gt;<i> Atmel AT91RM9200)
+</I>&gt;<i>
+</I>&gt;<i> If there really is enough interest, we should start thinking about
+</I>&gt;<i> starting a dedicated embedded processor Lua mailing list.  Then we can
+</I>&gt;<i> go off topic without fear!
+</I>
+
+I agree 100%!  I would love to continue this discussion.
+
+========================================
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090212/12eea459/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090212/12eea459/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000357.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+	<LI>Next message: <A HREF="000359.html">[eLua-dev] eLua open hardware
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#358">[ date ]</a>
+              <a href="thread.html#358">[ thread ]</a>
+              <a href="subject.html#358">[ subject ]</a>
+              <a href="author.html#358">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

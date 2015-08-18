@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua works on Stellaris Launchpad - was Re: eLua for the TI Stellaris Launchpad?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20works%20on%20Stellaris%20Launchpad%20-%20was%20Re%3A%20eLua%20for%20the%0A%20TI%20Stellaris%20Launchpad%3F&In-Reply-To=%3C20130319005902.199780%40gmx.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003979.html">
+   <LINK REL="Next"  HREF="003983.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua works on Stellaris Launchpad - was Re: eLua for the TI Stellaris Launchpad?</H1>
+    <B>scdr at gmx.com</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20works%20on%20Stellaris%20Launchpad%20-%20was%20Re%3A%20eLua%20for%20the%0A%20TI%20Stellaris%20Launchpad%3F&In-Reply-To=%3C20130319005902.199780%40gmx.com%3E"
+       TITLE="[eLua-dev] eLua works on Stellaris Launchpad - was Re: eLua for the TI Stellaris Launchpad?">scdr at gmx.com
+       </A><BR>
+    <I>Tue Mar 19 01:59:01 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003979.html">[eLua-dev] eluino and constrain function
+</A></li>
+        <LI>Next message: <A HREF="003983.html">[eLua-dev] eLua works on Stellaris Launchpad - was Re: eLua for the TI Stellaris Launchpad?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3980">[ date ]</a>
+              <a href="thread.html#3980">[ thread ]</a>
+              <a href="subject.html#3980">[ subject ]</a>
+              <a href="author.html#3980">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Got eLua running on the Stellaris Launchpad
+
+The code is up in the LM4 branch on my github repository. &#160;
+<A HREF="https://github.com/ecdr/elua">https://github.com/ecdr/elua</A>
+
+Build it without floating point support. 
+scons target=lualong cpu=LM4F120 toolchain=codesourcery prog
+ 
+I have only done a little testing so far (hello world, got it to blink the LEDs).
+It ran out of memory when trying to run the life example.
+Some devices are turned off at the moment (no ADC, no CAN).
+
+Also thank you to Andres Molina-Markham 
+
+
+
+&gt;<i> ----- Original Message -----
+</I>&gt;<i> From: Andres Molina-Markham
+</I>&gt;<i> Sent: 02/21/13 08:06 AM
+</I>&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> Subject: Re: [eLua-dev] eLua for the TI Stellaris Launchpad?
+</I>&gt;<i> 
+</I>&gt;<i> Thanks scdr,
+</I>&gt;<i> 
+</I>&gt;<i> I added an entry to the SConstruct file in order to use scons and fixed some typos in the building python script (changes at <A HREF="https://github.com/am-m/elua">https://github.com/am-m/elua</A>). However, it seems that there is at least one file missing in the driver lib folder:
+</I>&gt;<i> 
+</I>&gt;<i> After running:
+</I>&gt;<i> 
+</I>&gt;<i> $ scons cpu=LM4F120 toolchain=codesourcery
+</I>&gt;<i> 
+</I>&gt;<i> I get the following compilation error (I am also attaching the full output to this email):
+</I>&gt;<i> 
+</I>&gt;<i> src/platform/lm3s/usblib/usbmode.c:35:37: fatal error: driverlib/rtos_bindings.h: No such file or directory
+</I>&gt;<i> 
+</I>&gt;<i> I compiled on:
+</I>&gt;<i> Linux ubuntu 3.5.0-23-generic #35-Ubuntu SMP Thu Jan 24 13:05:29 UTC 2013 i686 i686 i686 GNU/Linux
+</I>&gt;<i> 
+</I>&gt;<i> Cheers,
+</I>&gt;<i> 
+</I>&gt;<i> Andres
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Feb 20, 2013, at 8:37 PM, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A> wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; My work on adapting eLua to the Stellaris Launchpad (LM4F120) is on github.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; <A HREF="https://github.com/ecdr/elua">https://github.com/ecdr/elua</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Almost all changes so far are in the lm3s platform directory.
+</I>&gt;<i> &gt; Updated the Stellarisware and USB libraries to latest versions (friendlier license and LM4F compatible)
+</I>&gt;<i> &gt; Added information about Stellaris Launchpad to the platform files
+</I>&gt;<i> &gt; Tweaked the build files a bit to (hopefully) add the LM4F120 (Stellaris Launchpad)
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; This is very much a rough draft
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; I have run it through a compiler (not gcc), and it did compile.
+</I>&gt;<i> &gt; Have not tried to link it.
+</I>&gt;<i> &gt; Have not tried to run it.
+</I>&gt;<i> &gt; Have not tried to build it with the regular build system.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Some of the changes I made in order to regularize handling of pin MUXing may break the versions for some
+</I>&gt;<i> &gt; of the other LM3S.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; So input, testing, suggestions, patches, etc. welcome, but use at your own risk.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Have not done anything about reducing memory footprint.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I></PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003979.html">[eLua-dev] eluino and constrain function
+</A></li>
+	<LI>Next message: <A HREF="003983.html">[eLua-dev] eLua works on Stellaris Launchpad - was Re: eLua for the TI Stellaris Launchpad?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3980">[ date ]</a>
+              <a href="thread.html#3980">[ thread ]</a>
+              <a href="subject.html#3980">[ subject ]</a>
+              <a href="author.html#3980">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problems with LuaRPC module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problems%20with%20LuaRPC%20module&In-Reply-To=%3CBANLkTi%3DBjU-nVtKPcngi3MqhFCsZZqB4sQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002499.html">
+   <LINK REL="Next"  HREF="002501.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problems with LuaRPC module</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problems%20with%20LuaRPC%20module&In-Reply-To=%3CBANLkTi%3DBjU-nVtKPcngi3MqhFCsZZqB4sQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Problems with LuaRPC module">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sat Jun 11 22:29:59 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002499.html">[eLua-dev] Problems with LuaRPC module
+</A></li>
+        <LI>Next message: <A HREF="002501.html">[eLua-dev] RPC_PROTOCOL_VERSION
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2502">[ date ]</a>
+              <a href="thread.html#2502">[ thread ]</a>
+              <a href="subject.html#2502">[ subject ]</a>
+              <a href="author.html#2502">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Jun 11, 2011 at 6:00 AM, Raman Gopalan &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I seem to have problems with LuaRPC module. Just by running Elua on the
+</I>&gt;<i> target,
+</I>&gt;<i> a sample snippet such as slave, err = rpc.connect (&quot;COM11&quot;) throws
+</I>&gt;<i> me the error &quot;MY ERROR: no data received when attempting to read&quot;. (slave =
+</I>&gt;<i> nil)
+</I>&gt;<i>
+</I>&gt;<i> System configuration:
+</I>&gt;<i> Windows-7 + All the tools needed to burn the .bin file.
+</I>&gt;<i> (Have also tested it on Gnu/Linux, Ubuntu 10.04)
+</I>&gt;<i>
+</I>&gt;<i> Elua cross-compiled for:
+</I>&gt;<i> CPU: LM3S8962
+</I>&gt;<i> Micro-controller dev board: Luminary Micro, ARM Cortex M3
+</I>
+Are you sure that you started the rpc server on eLua's side of the
+connection?  The simplest way to do this is to use the boot=luarpc
+build option, however you can also start lua on the mcu, then run
+rpc.server(&lt;timer_id&gt;,&lt;uart_id&gt;) and then disconnect and connect to
+the server using luarpc.  If the server isn't explicitly started using
+one of these methods LuaRPC on the desktop side is going to try and
+talk to the eLua &quot;shell&quot;.
+
+&gt;<i>
+</I>&gt;<i> I did however read through the source code to understand the protocol used
+</I>&gt;<i> while
+</I>&gt;<i> communicating with RPC.
+</I>&gt;<i>
+</I>&gt;<i> The files I have used for this problem definition:
+</I>&gt;<i> src/main.c, src/luarpc_elua_uart.c, src/modules/luarpc.c
+</I>&gt;<i>
+</I>&gt;<i> As mentioned earlier, just by cross compiling Elua for LM3S8962, the
+</I>&gt;<i> luarpc.exe
+</I>&gt;<i> throws me the error: &quot;MY ERROR: no data received when attempting to read&quot; on
+</I>&gt;<i> my PC console.
+</I>&gt;<i>
+</I>&gt;<i> luarpc.c:
+</I>&gt;<i>
+</I>&gt;<i> static int rpc_connect( lua_State *L ):
+</I>&gt;<i>
+</I>&gt;<i> &#160;&#160;&#160; transport_write_u8( &amp;handle-&gt;tpt, RPC_CMD_CON );
+</I>&gt;<i> &#160;&#160;&#160; client_negotiate( &amp;handle-&gt;tpt );
+</I>&gt;<i>
+</I>&gt;<i> At this point, we can expect the handshake between the micro and
+</I>&gt;<i> the PC through the luarpc.exe instance running on the PC.
+</I>&gt;<i>
+</I>&gt;<i> During the client_negotiate( &amp;handle-&gt;tpt ), it is supposed to send out the
+</I>&gt;<i> header &quot;LRPC(3)(default client config)&quot; ('3', for the RPC_PROTOCOL_VERSION,
+</I>&gt;<i> defined as an enum).
+</I>&gt;<i>
+</I>&gt;<i> I tweaked the boot_rpc() in src/main.c to check if the micro is receiving
+</I>&gt;<i> the header. I added the functions transport_read_buffer() and
+</I>&gt;<i> transport_write_buffer(). The micro receives junk values, a stream of '#'.
+</I>&gt;<i> Nonetheless, The UART module of the micro-controller works flawlessly.
+</I>
+Here it sounds like you are using the rpc boot mode, which has worked
+for me on Mac OS X, Win XP and Linux. I'm not sure why you would
+receive a stream of &quot;#&quot; values.
+
+Did you change any other parameters?  What compilers are you using,
+etc..?  I assume you're not using the multiplexer (mux) or anything
+like that and that you haven't modified the baud rates?
+
+
+&gt;<i>
+</I>&gt;<i> I have narrowed down on the source of the problem. I suspect that the
+</I>&gt;<i> luarpc.exe instance running on the PC isn't responsive.
+</I>&gt;<i>
+</I>&gt;<i> How do I proceed with the bug ? Please share your thoughts and give me a few
+</I>&gt;<i> suggestions.
+</I>
+I suspect that maybe there's a configuration problem if you're having
+the issue on multiple platforms?  It's hard to know without knowing
+if/what you have or might have configured or adjusted.  To my
+knowledge the current code should work with boot=luarpc with proper
+platform configuration and compilation and if the desktop client
+builds correctly.  Knowing which build environment you're using on the
+desktop and perhaps any adjustments you've made might help.  One
+shortcoming of the way the desktop client works with serial
+connections is that it doesn't take a baud parameter and therefore
+just assumes that the connection will be at 115200, so if you've
+changed that it certainly won't pick it up.
+
+Are you using the built-in FTDI-based virtual com port interface that
+the LM3S board provides?
+
+&gt;<i>
+</I>&gt;<i> Also, it is given on the website that rpc.connect() returns a HANDLE to the
+</I>&gt;<i> slave. In the C definition of the same function, it returns an 'int'. Have I
+</I>&gt;<i> understood it correctly ?
+</I>
+Yes, the way the Lua API works is that you push values on the stack
+which you wish to return to the user and you return to the VM the
+number of results that are on the stack for it.
+
+&gt;<i>
+</I>&gt;<i> Raman, Student.
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002499.html">[eLua-dev] Problems with LuaRPC module
+</A></li>
+	<LI>Next message: <A HREF="002501.html">[eLua-dev] RPC_PROTOCOL_VERSION
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2502">[ date ]</a>
+              <a href="thread.html#2502">[ thread ]</a>
+              <a href="subject.html#2502">[ subject ]</a>
+              <a href="author.html#2502">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

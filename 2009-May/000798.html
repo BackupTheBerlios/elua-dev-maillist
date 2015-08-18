@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GC Parameters &amp; Emergency Collection
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3C200905100348.34133.bobby%40sharedrealm.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000796.html">
+   <LINK REL="Next"  HREF="000799.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GC Parameters &amp; Emergency Collection</H1>
+    <B>Robert G. Jakabosky</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3C200905100348.34133.bobby%40sharedrealm.com%3E"
+       TITLE="[eLua-dev] GC Parameters &amp; Emergency Collection">bobby at sharedrealm.com
+       </A><BR>
+    <I>Sun May 10 12:48:33 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000796.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+        <LI>Next message: <A HREF="000799.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#798">[ date ]</a>
+              <a href="thread.html#798">[ thread ]</a>
+              <a href="subject.html#798">[ subject ]</a>
+              <a href="author.html#798">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+I finally got a working i686-elf toolchain compiled and eLua to boot in a VirualBox instance.
+
+Also I found out that eLua will not start when using the Lilo boot loader.  I was trying Lilo first since it is smaller then grub and I thought it would be easier to install eLua on a floppy.  Turned out that it was much easier to install grub on a floppy and there was enough room for eLua too.
+
+On Saturday 09, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> wrote:
+&gt;<i>
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Many, many thanks for this !!! I wanted to do this for quite a while
+</I>&gt;<i> &gt; now, but didn't find the time to do it. Your patch is excellent for
+</I>&gt;<i> &gt; eLua and its goals, so it's a Great Thing to have it running on our
+</I>&gt;<i> &gt; targets. Thanks again.
+</I>&gt;<i>
+</I>&gt;<i> Ditto. Thanks for getting this up and going. I will do some testing
+</I>&gt;<i> with this, this weekend if I get a chance. I'm curious if this might
+</I>&gt;<i> allow pushing limits a bit more where we would previously run out of
+</I>&gt;<i> memory where the problem could be helped by emergency gc.
+</I>
+With the patch you can now set a memory limit when starting a Lua script from the eLua shell.
+
+eLua# lua -m 51 /rom/life.lua
+
+The '-m' option lets you set the memory limit in Kbytes.
+
+51Kbytes was the lowwest I was able to get life.lua to run at with eLua.  On my linux host vanilla Lua with the EGC patch can only run life.lua with a minimal memory limit of 60Kbytes.  Looks like the ROTables in eLua saved about 9Kbytes here.
+
+The attached patch is for stress testing the EGC only.  It forces a full GC cycle on every allocation, so it is very slow (life.lua required over 30 minutes to run, compared to 4 minutes).  I was able to run all the Lua scripts that eLua includes by default with that stress testing enabled.
+
+Normally I would also run the stress testing under valgrind to test for any bad memory accesses, but that is only possible if eLua is run as an app. under a host OS.
+
+&gt;<i> &gt; And I couldn't agree with you more, and this why I feel so excited
+</I>&gt;<i> &gt; for having EGC in eLua. I'll have to think of a good batch of tests
+</I>&gt;<i> &gt; for making your patch shine in its full potential :)
+</I>&gt;<i>
+</I>&gt;<i> Would the torture tests for the egc patch work in really low memory
+</I>&gt;<i> conditions like with 64k of SRAM?
+</I>&gt;<i>
+</I>&gt;<i> I think we should also have a general test suite for to simplify the
+</I>&gt;<i> verification of builds across our multiple platforms.  I think I may
+</I>&gt;<i> start after luarpc is working with eLua.
+</I>
+It should be possible to pick torture tests that will work with just 64k of memory.
+
+I normally run the Lua scripts from:
+<A HREF="http://shootout.alioth.debian.org/">http://shootout.alioth.debian.org/</A>
+
+when stress testing the EGC patch.  Some of those scripts will require more then 64k for that dataset that they process.
+
+-- 
+Robert G. Jakabosky
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090510/73931254/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090510/73931254/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: full_gc_on_alloc.patch
+Type: text/x-diff
+Size: 309 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090510/73931254/attachment.patch">https://lists.berlios.de/pipermail/elua-dev/attachments/20090510/73931254/attachment.patch</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000796.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+	<LI>Next message: <A HREF="000799.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#798">[ date ]</a>
+              <a href="thread.html#798">[ thread ]</a>
+              <a href="subject.html#798">[ subject ]</a>
+              <a href="author.html#798">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

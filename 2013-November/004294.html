@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] porting to STM32
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20porting%20to%20STM32&In-Reply-To=%3CCAK4o1Wwmg2Gi4m75t9sAXBzxBhHq3uoqHw4UenwGuZ1xDPMsLA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004292.html">
+   <LINK REL="Next"  HREF="004295.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] porting to STM32</H1>
+    <B>Justin Cormack</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20porting%20to%20STM32&In-Reply-To=%3CCAK4o1Wwmg2Gi4m75t9sAXBzxBhHq3uoqHw4UenwGuZ1xDPMsLA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] porting to STM32">justin at specialbusservice.com
+       </A><BR>
+    <I>Mon Nov 18 21:51:35 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004292.html">[eLua-dev] porting to STM32
+</A></li>
+        <LI>Next message: <A HREF="004295.html">[eLua-dev] assembling commands for SPI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4294">[ date ]</a>
+              <a href="thread.html#4294">[ thread ]</a>
+              <a href="subject.html#4294">[ subject ]</a>
+              <a href="author.html#4294">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 18 Nov 2013 19:25, &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Yes, it would ideally be as simple as ts Richard described. More complex
+</I>scenarios involve different CPUs, it all depends on your target board.
+
+Well my aim was to pick one as close as possible to what's supported but
+with slightly different IO built in, and the memory size I want...
+
+&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Nov 18, 2013 at 9:22 PM, Justin Cormack &lt;
+</I><A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">justin at specialbusservice.com</A>&gt; wrote:
+&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, Nov 18, 2013 at 1:58 PM, Richard M&#246;hn
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard.moehn at fu-berlin.de</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; On Mon, Nov 18, 2013 at 09:22:38AM +0000, Justin Cormack wrote:
+</I>&gt;&gt;<i> &gt;&gt; How different are the STM32 eval boards? I see there is a port for
+</I>&gt;&gt;<i> &gt;&gt; STM32F4DISCOVERY, if I were to pick another board with the same CPU
+</I>&gt;&gt;<i> &gt;&gt; but different peripherals/memory size would porting just be a matter
+</I>&gt;&gt;<i> &gt;&gt; of config for the other peripherals or are there annoying random
+</I>&gt;&gt;<i> &gt;&gt; differences? Anyone got an estimate of the amount of work?
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Hi Justin,
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I have ported eLua to a board designed at Freie Universit&#228;t Berlin. It
+</I>&gt;&gt;<i> &gt; features an STM32F415RG processor, a JTAG interface, which in
+</I>connection
+&gt;&gt;<i> &gt; with [1] works like the Mini USB port on the DISCOVERY board, and a
+</I>&gt;&gt;<i> &gt; Micro USB port that again works like the Micro USB port of the
+</I>DISCOVERY
+&gt;&gt;<i> &gt; board. No configuration should be needed for these.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Apart from the peripherals, porting was quite easy. You simply
+</I>&gt;&gt;<i> &gt; copy/include the file boards/known/stm32f4discovery.lua and do some
+</I>&gt;&gt;<i> &gt; minor adjustments. The header file for the 415RG processor was the same
+</I>&gt;&gt;<i> &gt; as for the 407VG.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks very much, that sounds quite simple.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Justin
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20131118/662bc6d1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20131118/662bc6d1/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004292.html">[eLua-dev] porting to STM32
+</A></li>
+	<LI>Next message: <A HREF="004295.html">[eLua-dev] assembling commands for SPI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4294">[ date ]</a>
+              <a href="thread.html#4294">[ thread ]</a>
+              <a href="subject.html#4294">[ subject ]</a>
+              <a href="author.html#4294">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] added a rm to eLua shell
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20added%20a%20rm%20to%20eLua%20shell&In-Reply-To=%3CDD44438273DF4B53B4238572CE1CD61E%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003524.html">
+   <LINK REL="Next"  HREF="003525.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] added a rm to eLua shell</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20added%20a%20rm%20to%20eLua%20shell&In-Reply-To=%3CDD44438273DF4B53B4238572CE1CD61E%40fanplastic.org%3E"
+       TITLE="[eLua-dev] added a rm to eLua shell">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon May 21 21:17:40 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003524.html">[eLua-dev] added a rm to eLua shell
+</A></li>
+        <LI>Next message: <A HREF="003525.html">[eLua-dev] configpin for lm3s
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3527">[ date ]</a>
+              <a href="thread.html#3527">[ thread ]</a>
+              <a href="subject.html#3527">[ subject ]</a>
+              <a href="author.html#3527">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+
+
+On Saturday, May 19, 2012 at 5:46 PM, Marcelo Politzer wrote:
+
+&gt;<i> Sorry it took a long time to answer.
+</I>&gt;<i> 
+</I>&gt;<i> So the current implementation of eLua filesystems interaction with newlib is incomplete?
+</I>&gt;<i> 
+</I>&gt;<i> 2012/5/17 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A> (mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>)&gt;
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; On Tue, May 15, 2012 at 2:02 AM, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A> (mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>)&gt; wrote:
+</I>&gt;<i> &gt; &gt; Simple patch that adds rm to eLua shell and adds a &quot;static&quot; to the
+</I>&gt;<i> &gt; &gt; boot_order.
+</I>&gt;<i> &gt; &gt; Best Marcelo.
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; --------------------------------------------------------------------------
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; diff --git a/src/main.c b/src/main.c
+</I>&gt;<i> &gt; &gt; index 4ef1c1c..ccc3a3e 100644
+</I>&gt;<i> &gt; &gt; --- a/src/main.c
+</I>&gt;<i> &gt; &gt; +++ b/src/main.c
+</I>&gt;<i> &gt; &gt; @@ -27,7 +27,7 @@
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; // Define here your autorun/boot files,
+</I>&gt;<i> &gt; &gt; // in the order you want eLua to search for them
+</I>&gt;<i> &gt; &gt; -char *boot_order[] = {
+</I>&gt;<i> &gt; &gt; +static char *boot_order[] = {
+</I>&gt;<i> &gt; &gt; #if defined(BUILD_MMCFS)
+</I>&gt;<i> &gt; &gt; &quot;/mmc/autorun.lua&quot;,
+</I>&gt;<i> &gt; &gt; &quot;/mmc/autorun.lc (<A HREF="http://autorun.lc">http://autorun.lc</A>)&quot;,
+</I>&gt;<i> &gt; &gt; diff --git a/src/shell.c b/src/shell.c
+</I>&gt;<i> &gt; &gt; index 8647dcf..32279fd 100644
+</I>&gt;<i> &gt; &gt; --- a/src/shell.c
+</I>&gt;<i> &gt; &gt; +++ b/src/shell.c
+</I>&gt;<i> &gt; &gt; @@ -60,6 +60,7 @@ static void shell_help( char* args )
+</I>&gt;<i> &gt; &gt; &quot; there, otherwise run it.&quot;);
+</I>&gt;<i> &gt; &gt; printf( &quot; cp &lt;src&gt; &lt;dst&gt; - copy source file 'src' to 'dst'\n&quot; );
+</I>&gt;<i> &gt; &gt; printf( &quot; ver - print eLua version\n&quot; );
+</I>&gt;<i> &gt; &gt; + printf( &quot; rm - remove a file. (don't work for romfs)\n&quot; );
+</I>&gt;<i> &gt; &gt; }
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; // 'lua' handler
+</I>&gt;<i> &gt; &gt; @@ -228,6 +229,14 @@ static void shell_ls( char* args )
+</I>&gt;<i> &gt; &gt; printf( &quot;\n&quot; );
+</I>&gt;<i> &gt; &gt; }
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; +static void shell_rm( char *args )
+</I>&gt;<i> &gt; &gt; +{
+</I>&gt;<i> &gt; &gt; + if( remove( args ) != 0 )
+</I>&gt;<i> &gt; &gt; + perror( &quot;Error deleting file&quot; );
+</I>&gt;<i> &gt; &gt; + else
+</I>&gt;<i> &gt; &gt; + puts( &quot;File successfully deleted&quot; );
+</I>&gt;<i> &gt; &gt; +}
+</I>&gt;<i> &gt; &gt; +
+</I>&gt;<i> &gt; &gt; // 'cat' and 'type' handler
+</I>&gt;<i> &gt; &gt; static void shell_cat( char *args )
+</I>&gt;<i> &gt; &gt; {
+</I>&gt;<i> &gt; &gt; @@ -338,6 +347,7 @@ static const SHELL_COMMAND shell_commands[] =
+</I>&gt;<i> &gt; &gt; { &quot;cat&quot;, shell_cat },
+</I>&gt;<i> &gt; &gt; { &quot;type&quot;, shell_cat },
+</I>&gt;<i> &gt; &gt; { &quot;cp&quot;, shell_cp },
+</I>&gt;<i> &gt; &gt; + { &quot;rm&quot;, shell_rm },
+</I>&gt;<i> &gt; &gt; { NULL, NULL }
+</I>&gt;<i> &gt; &gt; };
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; How about an implementation for &quot;rm&quot; for our various file systems? The
+</I>&gt;<i> &gt; FS operations are described in inc/newlib/devman.h:
+</I>&gt;<i> 
+</I>&gt;<i> Yes that would be the correct thing to do.
+</I>&gt;<i> and by the looks of the current implementation of the unlink there isn't much action going on...
+</I>&gt;<i> 
+</I>&gt;<i> int _unlink_r( struct _reent *r, const char *name )
+</I>&gt;<i> {
+</I>&gt;<i> r-&gt;_errno = ENOSYS;
+</I>&gt;<i> return -1;
+</I>&gt;<i> }
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> &gt; // A device structure with pointers to all the device functions
+</I>&gt;<i> &gt; typedef struct
+</I>&gt;<i> &gt; {
+</I>&gt;<i> &gt; char name[ DM_MAX_DEV_NAME + 1 ];
+</I>&gt;<i> &gt; int ( *p_open_r )( struct _reent *r, const char *path, int flags, int mode );
+</I>&gt;<i> &gt; int ( *p_close_r )( struct _reent *r, int fd );
+</I>&gt;<i> &gt; _ssize_t ( *p_write_r ) ( struct _reent *r, int fd, const void *ptr,
+</I>&gt;<i> &gt; size_t len );
+</I>&gt;<i> &gt; _ssize_t ( *p_read_r )( struct _reent *r, int fd, void *ptr, size_t len );
+</I>&gt;<i> &gt; off_t ( *p_lseek_r )( struct _reent *r, int fd, off_t off, int whence );
+</I>&gt;<i> &gt; void* ( *p_opendir_r )( struct _reent *r, const char* name );
+</I>&gt;<i> &gt; struct dm_dirent* ( *p_readdir_r )( struct _reent *r, void *dir );
+</I>&gt;<i> &gt; int ( *p_closedir_r )( struct _reent *r, void* dir );
+</I>&gt;<i> &gt; const char* ( *p_getaddr_r )( struct _reent *r, int fd );
+</I>&gt;<i> &gt; } DM_DEVICE;
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; You'd need to add a &quot;rm&quot; and implement it for each file system. The
+</I>&gt;<i> &gt; ones that will support it will probably be MMCFS, RFS and SemiFS
+</I>&gt;<i> &gt; (mBED).
+</I>&gt;<i> &gt; Your patch is thus incomplete. I'm not even sure how it works in its
+</I>&gt;<i> &gt; current form, since it seems to completely bypass devman.c and
+</I>&gt;<i> &gt; probably just use the MMCFS code directly.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Not even that by the looks of it. 
+</I>&gt;<i> 
+</I>&gt;<i> I would still add this unrelated to 'rm' part of the patch to the code that cleans
+</I>&gt;<i> a global symbol that is not being used anywhere else.
+</I>&gt;<i> 
+</I>&gt;<i> &gt; +static char *boot_order[] = { 
+</I>&gt;<i> 
+</I>&gt;<i> Other than that it really does seem that a lot has to be done before a 'rm' comes to life.
+</I>
+I don't think it has to be too complicated.  Basically, you'd need to follow the template of the other _xxx_r functions in stubs  to do a check and then call a p_unlink_r function, which would need to be defined or null for each FS (and included in the DM_DEVICE struct), then the individual FSs that implement the function would need to call the requisite functionality to perform the actual operation.
+
+I could be wrong though since I haven't ever added to the list of supported device functions.
+
+The other longstanding unimplemented feature is handling subdirectories for things like mmcfs and others where possible.  I think that doesn't actually even require adding a new device function since we have opendir/readdir/closedir.
+
+Best.
+
+-jsnyder
+ 
+&gt;<i> 
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;<i> &gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> (mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>)
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> (mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>)
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> --
+</I>&gt;<i> Sorry about the noise.
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Marcelo
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> (mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>)
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003524.html">[eLua-dev] added a rm to eLua shell
+</A></li>
+	<LI>Next message: <A HREF="003525.html">[eLua-dev] configpin for lm3s
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3527">[ date ]</a>
+              <a href="thread.html#3527">[ thread ]</a>
+              <a href="subject.html#3527">[ subject ]</a>
+              <a href="author.html#3527">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

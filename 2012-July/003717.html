@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Ram usage with byte resolution
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Ram%20usage%20with%20byte%20resolution&In-Reply-To=%3CCANKDJfY9OigUtywndX-VVvjZQmL6qm15e1293qGuV-xo-%3DHzpA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003716.html">
+   <LINK REL="Next"  HREF="003718.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Ram usage with byte resolution</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Ram%20usage%20with%20byte%20resolution&In-Reply-To=%3CCANKDJfY9OigUtywndX-VVvjZQmL6qm15e1293qGuV-xo-%3DHzpA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Ram usage with byte resolution">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Jul 19 15:22:53 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003716.html">[eLua-dev] Ram usage with byte resolution
+</A></li>
+        <LI>Next message: <A HREF="003718.html">[eLua-dev] Ram usage with byte resolution
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3717">[ date ]</a>
+              <a href="thread.html#3717">[ thread ]</a>
+              <a href="subject.html#3717">[ subject ]</a>
+              <a href="author.html#3717">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Jul 19, 2012 at 4:19 PM, agostain &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">agostino.difiglia at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Martin Guy wrote
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> is it possible to investigate the RAM usage of my lua program with byte
+</I>&gt;&gt;&gt;<i> resolution?
+</I>&gt;&gt;&gt;<i> Right now I found only collectgarbage(&quot;count&quot;) which gives me the usage
+</I>&gt;&gt;&gt;<i> in
+</I>&gt;&gt;&gt;<i> KB.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If you are using floating point eLua, the return value has fractional
+</I>&gt;&gt;<i> bits.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> print (collectgarbage(&quot;count&quot;))
+</I>&gt;&gt;<i> 17.20703125
+</I>&gt;&gt;&gt;<i> print (17.20703125 * 1024)
+</I>&gt;&gt;<i> 17620
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> That is not true. I dived into the code of the garbagecollector.  since
+</I>&gt;&gt;<i> lua_gc returns an int right shifted by 10 the garbagecollector function
+</I>&gt;&gt;<i> will never show me fractionals even if I compile as floating elua.
+</I>
+Then the easiest solution is to change the code to return the int
+without shifting by 10. Not sure how this would affect the rest of the
+system, but it's worth a try.
+
+Best,
+Bogdan
+
+&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If you're using integer eLua you don't have this option.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> In Lua5.2, instead, it returns the KB and fraction of a KB as two
+</I>&gt;&gt;<i> results to address this problem. See
+</I>&gt;&gt;<i> <A HREF="http://www.lua.org/manual/5.2/manual.html#pdf-collectgarbage">http://www.lua.org/manual/5.2/manual.html#pdf-collectgarbage</A>
+</I>&gt;&gt;<i> so another option would be for you to build your eLua by porting
+</I>&gt;&gt;<i> Lua5.2 into it :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     M
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> That would be an option but I don't know what kind of effects it would
+</I>&gt;&gt;<i> have to my actual code. Have you tried to port it?
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at .berlios</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/Ram-usage-with-byte-resolution-tp7577602p7577604.html">http://elua-development.2368040.n2.nabble.com/Ram-usage-with-byte-resolution-tp7577602p7577604.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003716.html">[eLua-dev] Ram usage with byte resolution
+</A></li>
+	<LI>Next message: <A HREF="003718.html">[eLua-dev] Ram usage with byte resolution
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3717">[ date ]</a>
+              <a href="thread.html#3717">[ thread ]</a>
+              <a href="subject.html#3717">[ subject ]</a>
+              <a href="author.html#3717">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

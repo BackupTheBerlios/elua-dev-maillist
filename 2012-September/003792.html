@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] PicoC-remix -- an eLua distro
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PicoC-remix%20--%20an%20eLua%20distro&In-Reply-To=%3C1347993616905-7577680.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003790.html">
+   <LINK REL="Next"  HREF="003793.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] PicoC-remix -- an eLua distro</H1>
+    <B>raman</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PicoC-remix%20--%20an%20eLua%20distro&In-Reply-To=%3C1347993616905-7577680.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] PicoC-remix -- an eLua distro">ramangopalan at gmail.com
+       </A><BR>
+    <I>Tue Sep 18 20:40:16 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003790.html">[eLua-dev] PicoC-remix -- an eLua distro
+</A></li>
+        <LI>Next message: <A HREF="003793.html">[eLua-dev] Support for Lua on GNU Gengen
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3792">[ date ]</a>
+              <a href="thread.html#3792">[ thread ]</a>
+              <a href="subject.html#3792">[ subject ]</a>
+              <a href="author.html#3792">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Dear Bogdan,
+
+&gt;&gt;<i> (<A HREF="http://code.google.com/p/picoc/">http://code.google.com/p/picoc/</A>). I put it together (after several 
+</I>&gt;&gt;<i> modifications) 
+</I>&gt;&gt;<i> with the eLua base system. So now, I can write interactive C code on the 
+</I>&gt;&gt;<i> shell, run C programs from the MMC, read/run C programs from ROMFS -- 
+</I>&gt;&gt;<i> basically, everything I would do with eLua but with PicoC instead.
+</I>&gt;&gt;<i> ...[show rest of quote]
+</I>
+&gt;<i> You, my friend, are awesome. I already knew that, but this is insanely 
+</I>&gt;<i> awesome. Congratulations! I'm going to try this thing myself as soon 
+</I>&gt;<i> as possible. I'm really curious how it behaves in a limited memory 
+</I>&gt;<i> environment (I'm not worried about the compiled program, which would 
+</I>&gt;<i> obivously require less RAM than Lua code, I'm more concerned about the 
+</I>&gt;<i> compilation process itself).
+</I>
+Thank you! I had a lot of fun playing around with this. Please do give a
+shot
+at it. Do let me know how it works.
+
+&gt;<i> Plus, with us being able to manipulate 
+</I>&gt;<i> the code generation step much easier than you'd be able to do this 
+</I>&gt;<i> with GCC (whcih I imagine is the case), there are a lot of nick tricks 
+</I>&gt;<i> that one can perform, such as relocatable code (think loadable 
+</I>&gt;<i> modules), compile time support for debugging and so much more. I 
+</I>&gt;<i> simply love the concept.
+</I>
+Bogdan, I'm sorry. I don't understand the part about GCC. Can you
+please explain this to me a bit more?
+
+&gt;&gt;<i> Currently, the system can be compiled for the following platforms: 
+</I>&gt;&gt;<i> LM3S1968, LM3S8962, LM3S6965, LM3S6918, LM3S9B92, 
+</I>&gt;&gt;<i> STM32F103RE, STM32F103ZE and i386. This can be compiled 
+</I>&gt;&gt;<i> with scons. The standard eLua's scons syntax applies here too (with 
+</I>&gt;&gt;<i> exceptions to 'boot' (not supported yet) and 'target'). The stuff I
+</I>&gt;&gt;<i> haven't 
+</I>&gt;&gt;<i> yet included in PicoC-remix is in the TODO list. 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Please look for the code base here: <A HREF="https://github.com/witgor/remix">https://github.com/witgor/remix</A>
+</I>&gt;&gt;<i> A friend is maintaining it (<A HREF="https://github.com/witgor/">https://github.com/witgor/</A>) 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Finally, I'd like to think of this system as an eLua distro :) -- a
+</I>&gt;&gt;<i> flavor 
+</I>&gt;&gt;<i> of eLua but with interpreted C instead. ...[show rest of quote]
+</I>
+&gt;<i> I understand the concept, but I believe it is a bit more than that. 
+</I>&gt;<i> For quite a while now, people at PUC Rio have suggested that I should 
+</I>&gt;<i> split eLua into two parts: the platform interface part and the Lua 
+</I>&gt;<i> part. This would allow the platform interface to be used with other 
+</I>&gt;<i> projects too, which is exactly what you did here. I didn't embrace the 
+</I>&gt;<i> idea because I was mostly interested in pushing eLua as a whole, not 
+</I>&gt;<i> to maintain two separate projects, but what you did here convinced me 
+</I>&gt;<i> that their idea was right.
+</I>
+Great! I have also started working on another similar project. I wanted
+to have a Lisp interpreter running on bare metal. I got the Pico dialect,
+played around with it and finally linked it with parts of the platform
+interface. (I haven't put up the code so far - It's going to take a while
+before it's usable) I would be interested in doing this as well. For now,
+the Lisp runs on my LM3S8962 (and i368). I can't do much with it apart
+from (load ')-ing stuff from MMC :)
+
+&gt;<i> This shouldn't be a flavour of eLua, but a 
+</I>&gt;<i> project with combines the &quot;platform interface&quot; (yet to be named as a 
+</I>&gt;<i> separate project) and your awesome (yes, I like this word) work with 
+</I>&gt;<i> PicoC. 
+</I>
+This would be a nice but as Martin said, how can things be done in a
+maintainable way? What are your views on this? 
+
+&gt;<i> I'll take this into serious consideration and discuss it.
+</I>
+Can you please suggest how we can take this forward?
+
+&gt;&gt;<i> 
+</I>&gt;&gt;<i> I'd like your thoughts and suggestions on PicoC-remix. Please give me 
+</I>&gt;&gt;<i> a few tips on how to improvise on this. 
+</I>
+&gt;<i> Make it even more awesome! :) And please let me know if you need help, 
+</I>&gt;<i> I'm really interested in this. 
+</I>&gt;<i> Once again, congratulations and keep up the good work. 
+</I>
+Sure thing. Thank you Bogdan :) This has been a lot of fun.
+
+Best,
+Raman
+
+
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/PicoC-remix-an-eLua-distro-tp7577676p7577680.html">http://elua-development.2368040.n2.nabble.com/PicoC-remix-an-eLua-distro-tp7577676p7577680.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003790.html">[eLua-dev] PicoC-remix -- an eLua distro
+</A></li>
+	<LI>Next message: <A HREF="003793.html">[eLua-dev] Support for Lua on GNU Gengen
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3792">[ date ]</a>
+              <a href="thread.html#3792">[ thread ]</a>
+              <a href="subject.html#3792">[ subject ]</a>
+              <a href="author.html#3792">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

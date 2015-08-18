@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4DSCY - 32bit timers available?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4DSCY%20-%2032bit%20timers%20available%3F&In-Reply-To=%3CCAJ%3DY9Y1dZU%3D7--H2W4e8fO24qga62Hf7H-qdsb7mK%2Bv8nohOnQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002931.html">
+   <LINK REL="Next"  HREF="002933.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4DSCY - 32bit timers available?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4DSCY%20-%2032bit%20timers%20available%3F&In-Reply-To=%3CCAJ%3DY9Y1dZU%3D7--H2W4e8fO24qga62Hf7H-qdsb7mK%2Bv8nohOnQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] stm32f4DSCY - 32bit timers available?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sun Nov 13 18:36:29 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002931.html">[eLua-dev] stm32f4DSCY - 32bit timers available?
+</A></li>
+        <LI>Next message: <A HREF="002933.html">[eLua-dev] stm32f4DSCY - 32bit timers available?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2932">[ date ]</a>
+              <a href="thread.html#2932">[ thread ]</a>
+              <a href="subject.html#2932">[ subject ]</a>
+              <a href="author.html#2932">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This is something that's just been added:
+<A HREF="http://elua-development.2368040.n2.nabble.com/IMPORTANT-New-feature-on-the-master-branch-system-timer-td6918200.html">http://elua-development.2368040.n2.nabble.com/IMPORTANT-New-feature-on-the-master-branch-system-timer-td6918200.html</A>
+
+2011/11/13 pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;:
+&gt;<i> Well, it seems the
+</I>&gt;<i>
+</I>&gt;<i> now = tmr.read()
+</I>&gt;<i>
+</I>&gt;<i> reads the systick timer in usecs. Probably 64bit.
+</I>&gt;<i> Worth of mentioning in ref manual, though..
+</I>&gt;<i> :)
+</I>&gt;<i> P.
+</I>&gt;<i>
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;<i> Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] stm32f4DSCY - 32bit timers available?
+</I>&gt;<i> Datum: 13.11.2011 - 11:49:26
+</I>&gt;<i>
+</I>&gt;&gt;<i> ..basically what I am looking for is a 64bit
+</I>&gt;&gt;<i> variable &quot;TIMER&quot; which
+</I>&gt;&gt;<i> is incremented by internal systick and runs free
+</I>&gt;&gt;<i> from reset. For
+</I>&gt;&gt;<i> example in pic32lua there is a now=pic.TimerRead()
+</I>&gt;&gt;<i> which reads the
+</I>&gt;&gt;<i> actual value of TIMER. The default increment of
+</I>&gt;&gt;<i> TIMER variable there
+</I>&gt;&gt;<i> is 100ns (3.5Myears run). This simple var allows
+</I>&gt;&gt;<i> basically any timer
+</I>&gt;&gt;<i> related functionality one needs.p.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;&gt;<i> Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;&gt;<i> Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> P&#345;edm&#283;t: [eLua-dev] stm32f4DSCY - 32bit timers
+</I>&gt;&gt;<i> available?
+</I>&gt;&gt;<i> Datum: 13.11.2011 - 10:56:05
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; Hi, trying to measure time diff with ie:
+</I>&gt;&gt;<i> &gt; -- measure time diff
+</I>&gt;&gt;<i> &gt; function bench()
+</I>&gt;&gt;<i> &gt; local stime, etime, dtime, clock
+</I>&gt;&gt;<i> &gt; clock = tmr.setclock( 1000, 2 )
+</I>&gt;&gt;<i> &gt; print (&quot;START\r\n&quot;)
+</I>&gt;&gt;<i> &gt; stime = tmr.start(2) -- start timer 2
+</I>&gt;&gt;<i> &gt; while uart.getchar( 0, 0 ) == &quot;&quot; do
+</I>&gt;&gt;<i> &gt; stime = stime
+</I>&gt;&gt;<i> &gt; end
+</I>&gt;&gt;<i> &gt; etime = tmr.read(2) -- get end time
+</I>&gt;&gt;<i> &gt; print (&quot;STOP\r\n&quot;)
+</I>&gt;&gt;<i> &gt; dtime = etime - stime
+</I>&gt;&gt;<i> &gt; print ( dtime )
+</I>&gt;&gt;<i> &gt; term.print(string.format(&quot;Elapsed: %f
+</I>&gt;&gt;<i> &gt; (secs)\n&quot;,dtime/clock))
+</I>&gt;&gt;<i> &gt; end
+</I>&gt;&gt;<i> &gt; bench()
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; but it seems to me all the timers are 16 bit, so
+</I>&gt;&gt;<i> &gt; they overrun fast
+</I>&gt;&gt;<i> &gt; unless clock is set to small values (ie 1kHz).
+</I>&gt;&gt;<i> &gt; Are
+</I>&gt;&gt;<i> &gt; &gt; there any 32bit
+</I>&gt;&gt;<i> &gt; timers (or better 64bit) available? Or can we
+</I>&gt;&gt;<i> &gt; chain them somehow?
+</I>&gt;&gt;<i> &gt; Thanks!
+</I>&gt;&gt;<i> &gt; (bikeNomad distro, stm32f4disco kit).
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; --
+</I>&gt;&gt;<i> &gt; Videokurzy MS Office zdarma! Port&#225;l VOLN&#221;.cz
+</I>&gt;&gt;<i> &gt; p&#345;in&#225;&#353;&#237; online v&#253;ukov&#225;
+</I>&gt;&gt;<i> &gt; videa, kter&#225; v&#225;s rychle, n&#225;zorn&#283; a z&#225;bavnou
+</I>&gt;&gt;<i> &gt; formou
+</I>&gt;&gt;<i> &gt; &gt; nau&#269;&#237; ovl&#225;dat
+</I>&gt;&gt;<i> &gt; programy Excel, Word a PowerPoint. Seri&#225;l
+</I>&gt;&gt;<i> &gt; najdete
+</I>&gt;&gt;<i> &gt; &gt; na
+</I>&gt;&gt;<i> &gt; <A HREF="http://web.volny.cz/data/click.php?id=1293">http://web.volny.cz/data/click.php?id=1293</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Jak se vyhnout nachlazen&#237; a dal&#353;&#237;m zdravotn&#237;m
+</I>&gt;&gt;<i> pot&#237;&#382;&#237;m v nep&#345;&#237;jemn&#233;m
+</I>&gt;&gt;<i> podzimn&#237;m obdob&#237;? &#268;t&#283;te speci&#225;l Zdrav&#237; na podzim
+</I>&gt;&gt;<i> na
+</I>&gt;&gt;<i> <A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Jak se vyhnout nachlazen&#237; a dal&#353;&#237;m zdravotn&#237;m pot&#237;&#382;&#237;m v nep&#345;&#237;jemn&#233;m
+</I>&gt;<i> podzimn&#237;m obdob&#237;? &#268;t&#283;te speci&#225;l Zdrav&#237; na podzim na
+</I>&gt;<i> <A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002931.html">[eLua-dev] stm32f4DSCY - 32bit timers available?
+</A></li>
+	<LI>Next message: <A HREF="002933.html">[eLua-dev] stm32f4DSCY - 32bit timers available?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2932">[ date ]</a>
+              <a href="thread.html#2932">[ thread ]</a>
+              <a href="subject.html#2932">[ subject ]</a>
+              <a href="author.html#2932">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

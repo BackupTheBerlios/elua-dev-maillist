@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Help for coding:read from console and put into a file
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Help%20for%20coding%3Aread%20from%20console%20and%20put%20into%20a%20file&In-Reply-To=%3C1374204665336-7578094.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004200.html">
+   <LINK REL="Next"  HREF="004202.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Help for coding:read from console and put into a file</H1>
+    <B>tan</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Help%20for%20coding%3Aread%20from%20console%20and%20put%20into%20a%20file&In-Reply-To=%3C1374204665336-7578094.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] Help for coding:read from console and put into a file">tan_whee_min at yahoo.com.sg
+       </A><BR>
+    <I>Fri Jul 19 05:31:05 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004200.html">[eLua-dev] Help for coding: Read from console and put into a file
+</A></li>
+        <LI>Next message: <A HREF="004202.html">[eLua-dev] Help for coding:read from console and put into a file
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4201">[ date ]</a>
+              <a href="thread.html#4201">[ thread ]</a>
+              <a href="subject.html#4201">[ subject ]</a>
+              <a href="author.html#4201">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi! My router is pre-loaded with lua functions. I'm trying to read from
+console what I type and put it into a file in my router. The lua only have
+basic input/output functions like file:read,file:write,io:open,etc. It does
+not have rs232 or urat library.
+
+I wrote the code below:
+       inp = assert(io.open(&quot;/dev/ttyS1&quot;,&quot;r&quot;))
+       out = assert(io.open(&quot;rtest.txt&quot;,&quot;w&quot;))
+    while true do	      
+       data = inp:read(&quot;*all&quot;)
+       data = string.gsub(data, &quot;\r\n&quot;, &quot;\n&quot;)
+       out:write(data)
+     end
+     assert(out:close())
+
+The code does not work. Can anybody help and advise?
+
+Tan
+
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/Help-for-coding-read-from-console-and-put-into-a-file-tp7578094.html">http://elua-development.2368040.n2.nabble.com/Help-for-coding-read-from-console-and-put-into-a-file-tp7578094.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004200.html">[eLua-dev] Help for coding: Read from console and put into a file
+</A></li>
+	<LI>Next message: <A HREF="004202.html">[eLua-dev] Help for coding:read from console and put into a file
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4201">[ date ]</a>
+              <a href="thread.html#4201">[ thread ]</a>
+              <a href="subject.html#4201">[ subject ]</a>
+              <a href="author.html#4201">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

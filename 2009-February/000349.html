@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Building GCC for Cortex
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20GCC%20for%20Cortex&In-Reply-To=%3Cc8284b5b0902041138g5fe0f305vce118695668b2817%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000340.html">
+   <LINK REL="Next"  HREF="000354.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Building GCC for Cortex</H1>
+    <B>Rob Emanuele</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20GCC%20for%20Cortex&In-Reply-To=%3Cc8284b5b0902041138g5fe0f305vce118695668b2817%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Building GCC for Cortex">poorarm at shoreis.com
+       </A><BR>
+    <I>Wed Feb  4 20:38:16 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000340.html">[eLua-dev] eLua and RTOS integration
+</A></li>
+        <LI>Next message: <A HREF="000354.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#349">[ date ]</a>
+              <a href="thread.html#349">[ thread ]</a>
+              <a href="subject.html#349">[ subject ]</a>
+              <a href="author.html#349">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Greetings,
+
+You've put together a nice page for building GCC for the Cortex
+processors.  I think I can simplify your build process.
+<A HREF="http://eluaproject.dreamhosters.com/en/Building_GCC_for_Cortex">http://eluaproject.dreamhosters.com/en/Building_GCC_for_Cortex</A>
+
+I recently was on a thread about how to build gcc and newlib for
+thumb2 (my case was the cortex-m3 processor).
+<A HREF="http://gcc.gnu.org/ml/gcc-help/2009-02/msg00000.html">http://gcc.gnu.org/ml/gcc-help/2009-02/msg00000.html</A>
+
+In the end, all that is needed is a simple configuration patch to gcc.
+<A HREF="http://gcc.gnu.org/ml/gcc-help/2009-02/msg00033.html">http://gcc.gnu.org/ml/gcc-help/2009-02/msg00033.html</A>
+
+This is using binutils 2.19, gcc 4.3.3, and newlib 1.17.0. (gdb-6.8
+too if you wish)
+
+A simple make script like so can be used from the parent directory
+containing these tools' source.  Set $(TARGET) to arm-eabi and
+$(PREFIX) to where you want it installed.
+
+-- Rob Emanuele
+
+--------- begin make -------------
+all: cross-binutils cross-gcc cross-g++ cross-newlib cross-gdb
+
+cross-binutils:
+	mkdir -p build/binutils &amp;&amp; cd build/binutils &amp;&amp; \
+	(./config.status || ../../binutils/configure --prefix=$(PREFIX)
+--target=$(TARGET)) &amp;&amp; \
+	$(MAKE) -j$(PROCS)&amp;&amp; \
+	$(MAKE) install
+
+cross-gcc: cross-binutils
+	mkdir -p build/gcc &amp;&amp; cd build/gcc &amp;&amp; \
+	(./config.status || ../../gcc/configure --prefix=$(PREFIX)
+--target=$(TARGET) --enable-languages=&quot;c&quot; --with-gnu-ld --with-gnu-as
+--with-newlib --disable-libssp) &amp;&amp; \
+	$(MAKE) &amp;&amp; \
+	$(MAKE) install
+
+cross-g++: cross-binutils cross-gcc cross-newlib
+	mkdir -p build/g++ &amp;&amp; cd build/g++ &amp;&amp; \
+	(./config.status || ../../gcc/configure --prefix=$(PREFIX)
+--target=$(TARGET) --enable-languages=&quot;c++&quot; --with-gnu-ld
+--with-gnu-as --with-newlib --disable-libssp) &amp;&amp; \
+	$(MAKE) &amp;&amp; \
+	$(MAKE) install
+
+cross-newlib: cross-binutils cross-gcc
+	mkdir -p build/newlib &amp;&amp; cd build/newlib &amp;&amp; \
+	(./config.status || ../../newlib/configure --prefix=$(PREFIX)
+--target=$(TARGET) --disable-newlib-supplied-syscalls) &amp;&amp; \
+	$(MAKE) -j$(PROCS) &amp;&amp; \
+	$(MAKE) install
+
+cross-gdb:
+	mkdir -p build/gdb &amp;&amp; cd build/gdb &amp;&amp; \
+	(./config.status || ../../gdb/configure --prefix=$(PREFIX)
+--target=$(TARGET) --disable-werror) &amp;&amp; \
+	$(MAKE) -j$(PROCS) &amp;&amp; \
+	$(MAKE) install
+
+------ end make -------
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000340.html">[eLua-dev] eLua and RTOS integration
+</A></li>
+	<LI>Next message: <A HREF="000354.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#349">[ date ]</a>
+              <a href="thread.html#349">[ thread ]</a>
+              <a href="subject.html#349">[ subject ]</a>
+              <a href="author.html#349">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

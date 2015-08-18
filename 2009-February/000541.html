@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A Few Models For Dealing With ADC Samples
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1HE9Nd464b09622dc6de6174f0c%2C%0A%09jbsnyder%40fanplastic.org%2C%201C2FA18C-D497-46AF-A69C-C76%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000528.html">
+   <LINK REL="Next"  HREF="000530.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A Few Models For Dealing With ADC Samples</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1HE9Nd464b09622dc6de6174f0c%2C%0A%09jbsnyder%40fanplastic.org%2C%201C2FA18C-D497-46AF-A69C-C76%3E"
+       TITLE="[eLua-dev] A Few Models For Dealing With ADC Samples">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 21:09:22 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000528.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+        <LI>Next message: <A HREF="000530.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#541">[ date ]</a>
+              <a href="thread.html#541">[ thread ]</a>
+              <a href="subject.html#541">[ subject ]</a>
+              <a href="author.html#541">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 18, 2009, at 8:28 AM, Andre Carregal wrote:
+
+&gt;<i> On Wed, Feb 18, 2009 at 1:08 AM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> One alternative that I've not mentioned here is that there be two  
+</I>&gt;&gt;<i> functional
+</I>&gt;&gt;<i> models for getting samples.  If one wants, one could have a simple
+</I>&gt;&gt;<i> getsamples method that follows model 1, and a second pair that  
+</I>&gt;&gt;<i> follows model
+</I>&gt;&gt;<i> 3. i.e.:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> channels = adc.channel(0, 3, 17, 21)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -- Style 1: Simple Blocking Model
+</I>&gt;&gt;<i> a = channels:getsamples(count)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -- Style 2: Separated Model
+</I>&gt;&gt;<i> channels:requestsamples(count, timer, frequency)
+</I>&gt;&gt;<i> channels:returnsamples(count)
+</I>&gt;<i>
+</I>&gt;<i> I'd go with this last suggestion, but let me check if I'm following  
+</I>&gt;<i> you.
+</I>&gt;<i>
+</I>&gt;<i> Apparently you need a way to define channels, samplers and consumers.
+</I>&gt;<i> A sampler collects data from a channel and may or not buffer it for
+</I>&gt;<i> future use. A consumer asks for samples from the sampler, possibly in
+</I>&gt;<i> an asynchronous mode.
+</I>
+Yes.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Assuming this terminology, the proposed API could be slightly changed
+</I>&gt;<i> so instead of having channels as the first order objects, we have
+</I>&gt;<i> samplers now. In this scenario channels are just numbers again.
+</I>&gt;<i>
+</I>&gt;<i> s1 = adc.sampler(1)
+</I>&gt;<i> others = adc.sampler(3, 4, 6) -- no channel 21 this time hehehe
+</I>
+I like this concept.  Especially because it somewhat mirrors how the  
+hardware is implemented on LM boards.
+
+I also like it because it makes for a nice conceptual way to think  
+about grouping channels.  Channels act as sources individual sources,  
+which pool into a given sampler.  The sampler then has additional  
+properties such as when samples are collected, how many, etc..
+
+This will make the backend somewhat more complicated, but it should  
+all be doable.
+
+&gt;<i>
+</I>&gt;<i> Your proposed style 1 could be used like this, where the sampler
+</I>&gt;<i> blocks, reads 10 samples at the rate of 1000/s and returns
+</I>&gt;<i>
+</I>&gt;<i> -- defines the sampler mode and do the one time initialization you  
+</I>&gt;<i> need
+</I>&gt;<i> s1:setmode{asyn = false, rate=100, buffer=10}
+</I>&gt;<i>
+</I>&gt;<i> while cond do
+</I>&gt;<i>   mybuffer = s1:read() -- only reads, no initialization
+</I>&gt;<i>   dosomething(mybuffer)
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> Note here that the buffer defined is in fact used to pre allocate
+</I>&gt;<i> space for each read. If you need to vary the number of samples read,
+</I>&gt;<i> just pass this number to s1:read(), but this may generate some timing
+</I>&gt;<i> issues.
+</I>
+OK, I like that.
+
+One modification is that we would have to pass a timer number to  
+setmode as well, because eLua doesn't have any resource management  
+system that abstracts this away.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Your proposed style 2 could be used as this, where the samplers don't
+</I>&gt;<i> block and you cand decide how much to pull from the buffers at any
+</I>&gt;<i> time:
+</I>&gt;<i>
+</I>&gt;<i> s1:setmode{rate = 300, buffer = 1000} -- asyn is true by default
+</I>&gt;<i>
+</I>&gt;<i> s1:start() -- starts background sampling
+</I>&gt;<i> ...
+</I>&gt;<i> while cond do
+</I>&gt;<i>   mybuffer = s1:read(5) -- pulls 5 samples from the buffer
+</I>&gt;<i>   dosomething(mybuffer)
+</I>&gt;<i> end
+</I>&gt;<i> ...
+</I>&gt;<i> s1:stop()
+</I>
+I like this too.
+
+One interesting thing here is what to do if a user calls start when  
+asyn=false. Under your model would you propose that it return an error?
+
+I suppose you could use the start method with asyn=false for a fixed- 
+length pre-collection of samples before read?  If this were done  
+though, perhaps the expectation would be that as soon as you had  
+cleared out samples, it would fill things up again?
+
+If asyn is false, does this mean:  Samples will only be collected when  
+read is called, and they will be returned via read?
+vs the following (asyn = true): Sampling is never initiated by read,  
+read can only pull out samples that are in the buffer or arriving in  
+the buffer?
+
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Apparently the differences between the second option and the third are
+</I>&gt;<i> mostly related to flexibility and buffer types.
+</I>&gt;<i>
+</I>&gt;<i> Buffer types could be defined in the setmode() function. For example
+</I>&gt;<i> we could use buffertype=&quot;circular&quot; (probably the default) or some
+</I>&gt;<i> other type.
+</I>
+Right, I think this relates to what I was saying above.  You could  
+have a circular buffer that wraps around when full, or one that fills  
+and then stops until more space is available.
+
+In this respect, you could describe a circular or linear buffer as  
+controlling whether or not once you start sampling it will stop at the  
+end of the buffer, or be free-running.
+
+Hmm...
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> In the same way, if you need to specify more sampler parameters, just
+</I>&gt;<i> add them to the sampler() constructor.
+</I>&gt;<i>
+</I>&gt;<i> You may want to consider adding a timeout parameter too, for the case
+</I>&gt;<i> where you want to read 10 samples but the buffer contains less than
+</I>&gt;<i> that.
+</I>
+This is a good idea.  At the moment there is no timeout, but I think  
+this might get complicated unless we say make a dedicated virtual  
+timer or something.
+
+The whole timer usage issue is one of the reasons why we have a simple  
+sample function, and then a burst function.  One needs a timer (burst,  
+for evenly spaced samples lower than running at the max rate), the  
+other just samples whenever called.
+
+One other thing is that it sounds as if this module will end up being  
+a mixture of a C interface, and some lua code to handle sampler  
+instances? If this is the case, then both the C interface and the end- 
+user interface might be rather different-looking...
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Andr&#233;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/3285c9d3/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/3285c9d3/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/3285c9d3/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/3285c9d3/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000528.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+	<LI>Next message: <A HREF="000530.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#541">[ date ]</a>
+              <a href="thread.html#541">[ thread ]</a>
+              <a href="subject.html#541">[ subject ]</a>
+              <a href="author.html#541">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

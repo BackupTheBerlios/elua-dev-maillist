@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Expo of adc sequencer?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Expo%20of%20adc%20sequencer%3F&In-Reply-To=%3CCAJ%3DY9Y1R%3DuDFtgcH6ZiepyD_GaJ6YazwBMRR2Dt_-gboASTjRQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002764.html">
+   <LINK REL="Next"  HREF="002767.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Expo of adc sequencer?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Expo%20of%20adc%20sequencer%3F&In-Reply-To=%3CCAJ%3DY9Y1R%3DuDFtgcH6ZiepyD_GaJ6YazwBMRR2Dt_-gboASTjRQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Expo of adc sequencer?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Oct  7 08:57:45 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002764.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+        <LI>Next message: <A HREF="002767.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2766">[ date ]</a>
+              <a href="thread.html#2766">[ thread ]</a>
+              <a href="subject.html#2766">[ subject ]</a>
+              <a href="author.html#2766">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Oct 6, 2011 at 12:05 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+&gt;<i> On Wed, Oct 5, 2011 at 8:08 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> On 5 October 2011 08:12, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> many thanks for writing
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> setting up sequencing/scanning of channels
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Sorry, can you help me understand what you mean by &quot;sequencing&quot; in this context?
+</I>&gt;&gt;<i> I understand &quot;scanning&quot; to mean &quot;go and see which ADCs have completed
+</I>&gt;&gt;<i> their conversions and go and collect the results&quot;, but am not sure
+</I>&gt;&gt;<i> what kind of sequence is suggested here. Maybe I'm being too finickity
+</I>&gt;&gt;<i> with the language?
+</I>&gt;<i>
+</I>&gt;<i> We're scanning through a sequence of channels that have requested
+</I>&gt;<i> samples. Depending on the hardware you can sometimes control the order
+</I>&gt;<i> of the sequence, but usually I'm just aiming to put them in order from
+</I>&gt;<i> low channel number to high channel number. &#160;A trigger initiates a
+</I>&gt;<i> scan, which runs through a sequence of channels that are multiplexed
+</I>&gt;<i> to the ADC.
+</I>&gt;<i>
+</I>&gt;<i> So, essentially what I mean by sequencer is hardware or software that
+</I>&gt;<i> controls the order of channel acquisition, which in almost every case
+</I>&gt;<i> I try to keep in numerical order low channel to high channel.
+</I>&gt;<i>
+</I>&gt;<i> Thanks for the added details below. &#160;I didn't get a chance to put
+</I>&gt;<i> together a full setup yesterday, but I'll try to test something either
+</I>&gt;<i> during the day with the 128k version I have on hand or tonight with
+</I>&gt;<i> the EVK. &#160;Given the symptoms you're describing it sounds like either
+</I>&gt;<i> the hardware is being a bit weird about when/where it's putting
+</I>&gt;<i> certain things or when I wrote the driver for this platform I made
+</I>&gt;<i> some assumptions about the hardware behavior that cause a breakdown
+</I>&gt;<i> between the software bookkeeping and the hardware state (I have some
+</I>&gt;<i> theories now that we've had some discussion). If the issue is on the
+</I>&gt;<i> latter side of things, it shouldn't be too hard to fix. &#160;If it's
+</I>&gt;<i> weirdness in hardware we might have to change the approach used in
+</I>&gt;<i> setting up the ADC maybe to not use the hardware sequencer and do it
+</I>&gt;<i> in software instead. &#160;This isn't too problematic if we have to do it,
+</I>&gt;<i> it just increases the number of times the interrupt will be called if
+</I>&gt;<i> one is sampling on multiple channels.
+</I>&gt;<i>
+</I>&gt;<i> Meanwhile, I'll take a look at getsamples as well since that
+</I>&gt;<i> _shoudn't_ have anything to do with the platform code, and I can't
+</I>&gt;<i> think of a good reason why that should have broken since I haven't
+</I>&gt;<i> touched the common code for that in quite some time.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks, your explanation makes sense, and corresponds with the code I've seen.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> If you can let me know under what conditions you're getting the errant
+</I>&gt;&gt;&gt;<i> samples, I can try looking into it.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'd heard a rumor that simultaneous acquisition from the AVR32 ADCs
+</I>&gt;&gt;<i> might be dodgy, so I have 8 trimmers on the 8 ADC channels and am
+</I>&gt;&gt;<i> trying that out. &#160;The code looks fine, but I am finding that some
+</I>&gt;&gt;<i> channels report the voltage supplied on different channels, sometimes
+</I>&gt;&gt;<i> consistently, sometimes sporadically. In the first tests, with the
+</I>&gt;&gt;<i> existing code, channel 0 responded to the pot connected to channel 1
+</I>&gt;&gt;<i> and channel 1 gave the same result as channel 7, responding to the pot
+</I>&gt;&gt;<i> on channel 7. &#160;The results for different combinations of channels were
+</I>&gt;&gt;<i> weird, see <A HREF="http://code.google.com/p/mizar32/issues/detail?id=42">http://code.google.com/p/mizar32/issues/detail?id=42</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Like you say, the code looks fine: all 8 channels are just 8 identical
+</I>&gt;&gt;<i> register sets in a straight line and 8-bit fields in various control
+</I>&gt;&gt;<i> registers. I found that it was running the ADC out of spec (7.5MHz
+</I>&gt;&gt;<i> instead of &lt;=5) but correcting this only changed things - what made a
+</I>&gt;&gt;<i> difference was fixing the sample-and-hold time, which should be 600ns
+</I>&gt;&gt;<i> but it only almost works when set to 1333ns. Sadly, making it longer
+</I>&gt;&gt;<i> than this, which should be more reliable, makes it much worse - most
+</I>&gt;&gt;<i> of the channels report the value from channel 7.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> However, a debugging printf reveals that the erroneous behaviour is
+</I>&gt;&gt;<i> always accompanied by one or more calls to adc_configure(), whereas
+</I>&gt;&gt;<i> while it is working (almost) smoothly, it does not repeatedly call
+</I>&gt;&gt;<i> this function... except once every 50 samplings or so, exactly
+</I>&gt;&gt;<i> coinciding with when it gets the wrong value on ADC0. &#160;That suggests a
+</I>&gt;&gt;<i> timing-dependent issue, something to do with which channels have
+</I>&gt;&gt;<i> completed conversion and which haven't when the interrupt routine
+</I>&gt;&gt;<i> fires.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &#160;If you're getting samples from
+</I>&gt;&gt;&gt;<i> the wrong channel inconsistently, it may be that somehow the internal
+</I>&gt;&gt;&gt;<i> bookkeeping for what channels are active vs what's going on in
+</I>&gt;&gt;&gt;<i> hardware.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> That's the symptom. I'll see if I can understand the bookkeeping stuff.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> but if you can recall the conditions that cause the problem (just
+</I>&gt;&gt;&gt;<i> sampling on 8 channels? &#160;or sampling different counts on these?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I haven't got getsample() to work at all, so I'm just asking for one
+</I>&gt;&gt;<i> sample from each channel, then getting them with adc.getsample() using
+</I>&gt;&gt;<i> variations on:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> while true do
+</I>&gt;&gt;<i> &#160;adc.sample({0,1,2,3,4,5,6,7},1)
+</I>&gt;&gt;<i> &#160;for id = 0,7 do
+</I>&gt;&gt;<i> &#160; &#160;io.write (id ..&quot;:&quot;..adc.getsample(id)..&quot; &quot;)
+</I>&gt;&gt;<i> &#160;end
+</I>&gt;&gt;<i> &#160;io.write(&quot;\n&quot;)
+</I>&gt;&gt;<i> end
+</I>
+Just tried it on the EVK1100 even without setting up all the pots.
+Yeah, something is definitely very weird there, and I can get strange
+behavior even with only 2 or 3 channels going at once.  With all 8, it
+looks like, for example channel 1 shows up at channel 0 most of the
+time.  With 2 channels 0,1 I think I was getting exactly the same
+output for both.
+
+What's odd is that, at least for me, something like adcscope seems to
+work better.  I'll have to try and narrow down the differences between
+cases.  Certainly timing would be different.  I also don't get the
+same sort of behavior (from quick checking of letting channels float
+then grounding them) with the same snippet as above (except with fewer
+channels) on LM3S.
+
+I'll track any further progress on the bug tracker.
+
+Also, I believe that getsamples should work now.
+
+&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I can try to reproduce it locally and then maybe
+</I>&gt;&gt;&gt;<i> also test it with some other similar hardware to try and help narrow
+</I>&gt;&gt;&gt;<i> down whether it might be in the platform code or in the common code.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You'll need to do some hardware hacking to be able to verify it, since
+</I>&gt;&gt;<i> the EVK1100 only has one pot and you really need to look at all 8 to
+</I>&gt;&gt;<i> see what's going on. If you have a Mizar32 and a protoboard, this is
+</I>&gt;&gt;<i> very easy :) see attachment
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Also, is this with the code currently in the repo or with modifications?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yes, I'm using the mainline git code and a Mizar32 with 256KB flash.
+</I>&gt;&gt;<i> I currently only maintain a set of patches for the 120K version of the
+</I>&gt;&gt;<i> firmware, visible in our google code repo, which disable a load of
+</I>&gt;&gt;<i> non-essential stuff to make space for all the eLua modules except net.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks again for the clues
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &#160; &#160;M
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002764.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+	<LI>Next message: <A HREF="002767.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2766">[ date ]</a>
+              <a href="thread.html#2766">[ thread ]</a>
+              <a href="subject.html#2766">[ subject ]</a>
+              <a href="author.html#2766">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

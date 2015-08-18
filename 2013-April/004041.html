@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] using elua for app extension
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20using%20elua%20for%20app%20extension&In-Reply-To=%3CCAJ%3DY9Y3-MoOXhx9wjYAbLAHTK_17Pp3DBvET3AU3smrtXNUyiA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004040.html">
+   <LINK REL="Next"  HREF="004044.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] using elua for app extension</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20using%20elua%20for%20app%20extension&In-Reply-To=%3CCAJ%3DY9Y3-MoOXhx9wjYAbLAHTK_17Pp3DBvET3AU3smrtXNUyiA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] using elua for app extension">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Apr 23 20:08:26 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004040.html">[eLua-dev] using elua for app extension
+</A></li>
+        <LI>Next message: <A HREF="004044.html">[eLua-dev] eLua network stack
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4041">[ date ]</a>
+              <a href="thread.html#4041">[ thread ]</a>
+              <a href="subject.html#4041">[ subject ]</a>
+              <a href="author.html#4041">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>You could work with the Lua sources directly if you like.  eLua also has
+some patches applied that make it more amenable to working on low memory
+devices like an emergency garbage collector, NaN packing for Lua's data
+types (both of these are available as broken-out patches) and read-only
+tables (there's not a broken-out patch of the most recent version of this)
+which store static data in flash keeping down SRAM requirements to around 5
+kB at startup.
+
+You could use the Lua sources within eLua as a starting point if you like,
+or you could also just replace the main entry point and start up whatever
+you want and instantiate a Lua state later.
+
+All that said, the way the project is put together isn't exactly designed
+to make it easy to drop it into a project and use eLua as an extension.
+
+
+On Mon, Apr 22, 2013 at 6:33 AM, Fran&#231;ois &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">fbeaulier at orange.fr</A>&gt; wrote:
+
+&gt;<i> Bjorn,
+</I>&gt;<i>
+</I>&gt;<i> Thank you for your answer.
+</I>&gt;<i> You are right and since i don't need that the Lua scripts have access to
+</I>&gt;<i> MCU internals, may be eLua is not what i need !
+</I>&gt;<i> I think now that i should look at the Lua C sources from lua.org. It is
+</I>&gt;<i> ANSI C so i should be able to cross-compile it.
+</I>&gt;<i> Under Linux, Lua compiles as a library liblua.a and then a main.c provides
+</I>&gt;<i> an exec that acts as a terminal for code input.
+</I>&gt;<i> This is not far from what i need, so i will investigate this way.
+</I>&gt;<i>
+</I>&gt;<i> Best regards
+</I>&gt;<i>
+</I>&gt;<i> Fran&#231;ois
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Le 22/04/2013 11:26, Bj&#246;rn Kalkbrenner a &#233;crit :
+</I>&gt;<i>
+</I>&gt;<i>  Hello Fran&#231;ois,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 22.04.2013 10:47, Fran&#231;ois wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  But in my case i have a core program written in c and i would like to
+</I>&gt;&gt;&gt;<i> enable extensions provided as Lua scripts files on a SD card.
+</I>&gt;&gt;&gt;<i> Can someone give me some hints on how to do that ?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> I am also a beginner of elua but as my understanding is correct, you
+</I>&gt;&gt;<i> can't do that. eLua is more like some sort of &quot;operating system&quot; which
+</I>&gt;&gt;<i> needs some task to be handled directly by elua (e.g. interrupt handling).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  How can i compile elua as a library i will add to my project?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> You can't, elua is not a library. It may be possible if you rewrite the
+</I>&gt;&gt;<i> src/main.c and other internals to put your code into your local elua
+</I>&gt;&gt;<i> branch and adding platform specific code to src/platform/&lt;yourplatform&gt;
+</I>&gt;&gt;<i> but i don't think that's what you are hoping to find.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You can find more information about the internals at
+</I>&gt;&gt;<i> <A HREF="http://www.eluaproject.net/**doc/v0.9/en_arch_overview.html&lt;http://www.eluaproject.net/doc/v0.9/en_arch_overview.html">http://www.eluaproject.net/**doc/v0.9/en_arch_overview.html&lt;http://www.eluaproject.net/doc/v0.9/en_arch_overview.html</A>&gt;
+</I>&gt;&gt;<i> <A HREF="http://www.eluaproject.net/**doc/v0.9/en_index.html&lt;http://www.eluaproject.net/doc/v0.9/en_index.html">http://www.eluaproject.net/**doc/v0.9/en_index.html&lt;http://www.eluaproject.net/doc/v0.9/en_index.html</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  How can i expose some of my C variables in ELua to allow the scripts to
+</I>&gt;&gt;&gt;<i> use them ?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> That's more a question of how lua modules are written in C but if you
+</I>&gt;&gt;<i> want to see real-life examples, take a look at the sourcecode of elua,
+</I>&gt;&gt;<i> especially in the src/platform/ section you can find several modules
+</I>&gt;&gt;<i> which exports their functionality to elua. One example:
+</I>&gt;&gt;<i> src/platform/stm32/lua_lcd.c
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Bye
+</I>&gt;&gt;<i> Bj&#246;rn
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ______________________________**_________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ______________________________**_________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev</A>&gt;
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130423/8cf2d26a/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130423/8cf2d26a/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004040.html">[eLua-dev] using elua for app extension
+</A></li>
+	<LI>Next message: <A HREF="004044.html">[eLua-dev] eLua network stack
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4041">[ date ]</a>
+              <a href="thread.html#4041">[ thread ]</a>
+              <a href="subject.html#4041">[ subject ]</a>
+              <a href="author.html#4041">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

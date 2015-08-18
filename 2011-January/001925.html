@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20GPIO%3A%20Use%20PX_00%20pin%20names%20instead%20of%20PD_%2A%20and%0A%09PE_%2A&In-Reply-To=%3CAANLkTin-Aam%2B9J%2BcnSJUQffcA49FFEnQxAu_t%3D%2B1MFK%3D%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001922.html">
+   <LINK REL="Next"  HREF="001864.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20GPIO%3A%20Use%20PX_00%20pin%20names%20instead%20of%20PD_%2A%20and%0A%09PE_%2A&In-Reply-To=%3CAANLkTin-Aam%2B9J%2BcnSJUQffcA49FFEnQxAu_t%3D%2B1MFK%3D%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Jan 26 17:36:59 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001922.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+        <LI>Next message: <A HREF="001864.html">[eLua-dev] Enable MMCFS by default on Mizar32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1925">[ date ]</a>
+              <a href="thread.html#1925">[ thread ]</a>
+              <a href="subject.html#1925">[ subject ]</a>
+              <a href="author.html#1925">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> The PX00-39 names have no correspondance in hardware. &#160;They are only
+</I>&gt;<i> names used by Atmel to refer to everything except PA PB and PC 0-5
+</I>&gt;<i> In reality, and in the code implementation, they are a bizzare
+</I>&gt;<i> sequence of inverted pin ranges on the 32-bit C and D ports, and these
+</I>&gt;<i> are the codes used internally in eLua so there is no extra
+</I>&gt;<i> implementaion stuff. &#160;They are just human-readable names.
+</I>&gt;<i> The PX00-39 names are only the names that human beings use for these
+</I>&gt;<i> extra pins, for some strange capriccio of Atmel.
+</I>
+I said it before and I'll say it again: I _really_ want to meet
+someone from Atmel who worked on the AVR32 and ask him what they're
+smoking there ...
+
+&gt;<i> So, what I did is make these names work for human beings in eLua
+</I>&gt;<i> pio.PX_* syntax, mapping them to the actual port/pin values.
+</I>&gt;<i> Internally, these are stored as port/pin pairs in a single integer: 5
+</I>&gt;<i> bits for the pin and the rest for the port number.
+</I>&gt;<i> By coincidence, this exactly coincides with Atmel's second alternative
+</I>&gt;<i> scheme for referring to the pins, their &quot;GPIO numbers&quot; 0-109.
+</I>
+Which is what makes your patch functional in the first place (in took
+me a while to figure this out): it maps directly to eLua's internal
+representation by coincidence :)
+
+&gt;<i> The only cause for concern is if these pins need to be turned back
+</I>&gt;<i> into human-readable form for printing, in which case the &quot;PX&quot; pins
+</I>&gt;<i> would be printed as &quot;PC&quot; and &quot;PD&quot; according to the real pin location
+</I>&gt;<i> in the hardware. If you can find somewhere in the eLua code where this
+</I>&gt;<i> is done, it may be worth the trouble to re-map these pins back to the
+</I>&gt;<i> &quot;PX&quot; names.
+</I>&gt;<i> I don't remember seeing anywhere where this is done.
+</I>
+This isn't done in the code.
+
+&gt;<i> The last thing is that the PORT name PX, used in some primitives to,
+</I>&gt;<i> e.g. read or set all 32 pins simultaneously, is useless.
+</I>&gt;<i> If you want to implement that, yes, you would need to change the
+</I>&gt;<i> internal representation to handle 40-pin ports. &#160;However it is a
+</I>&gt;<i> useless comcept on AVR32 because the usable GPIO pins are mixed up
+</I>&gt;<i> with all the peripherals' pins and SDRAM data lines, which occupy most
+</I>&gt;<i> of the actual port pins, leaving only 9 or 10 GPIO lines free in
+</I>&gt;<i> random positions.
+</I>
+I see. OK, I agree: port operations on PX will not be allowed since it
+is not a port at all.
+I'll try to make all this into a patch that touches the
+platform/common code rather than the PIO modue (much more elegant).
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001922.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+	<LI>Next message: <A HREF="001864.html">[eLua-dev] Enable MMCFS by default on Mizar32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1925">[ date ]</a>
+              <a href="thread.html#1925">[ thread ]</a>
+              <a href="subject.html#1925">[ subject ]</a>
+              <a href="author.html#1925">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

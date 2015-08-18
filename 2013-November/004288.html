@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] assembling commands for SPI
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20assembling%20commands%20for%20SPI&In-Reply-To=%3CCAMHCYBfYDz3OU81uWd09YQzeqpdyWi0sZTO02EjC4QfkAysnVw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004286.html">
+   <LINK REL="Next"  HREF="004290.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] assembling commands for SPI</H1>
+    <B>Thiago Naves</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20assembling%20commands%20for%20SPI&In-Reply-To=%3CCAMHCYBfYDz3OU81uWd09YQzeqpdyWi0sZTO02EjC4QfkAysnVw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] assembling commands for SPI">naves.thiago at gmail.com
+       </A><BR>
+    <I>Mon Nov 18 13:48:51 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004286.html">[eLua-dev] assembling commands for SPI
+</A></li>
+        <LI>Next message: <A HREF="004290.html">[eLua-dev] assembling commands for SPI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4288">[ date ]</a>
+              <a href="thread.html#4288">[ thread ]</a>
+              <a href="subject.html#4288">[ subject ]</a>
+              <a href="author.html#4288">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Richard,
+You can use the bit module to do the usual bit operations (or, and, xor,
+...):
+<A HREF="http://bitop.luajit.org/api.html">http://bitop.luajit.org/api.html</A>
+
+To assemble multiple bytes, you could do
+a = 3
+b = 5
+c = a..b
+and have c = &quot;35&quot;
+or spi.write(0, a, b)
+
+--
+Thiago
+
+
+On Mon, Nov 18, 2013 at 4:06 AM, Richard Graham &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>&gt; wrote:
+
+&gt;<i> Hi elua people,
+</I>&gt;<i>
+</I>&gt;<i> I am just getting started with elua. Looks pretty nice so far.
+</I>&gt;<i>
+</I>&gt;<i> I need to pack together data to make some commands for setting various
+</I>&gt;<i> registers on a device connected via SPI. I need to be able to set
+</I>&gt;<i> individual bits and also pack 8 and 16 bit numbers. This seems like it
+</I>&gt;<i> should be a common problem and I was wondering what the usual approach
+</I>&gt;<i> to this is.
+</I>&gt;<i>
+</I>&gt;<i> I see the 'pack' module, though it looks like it only supports packing
+</I>&gt;<i> whole bytes at a minimum. Packing and unpacking at the individual bit
+</I>&gt;<i> level is going to get messy.
+</I>&gt;<i>
+</I>&gt;<i> I have found lua-bitstring, which looks like it should be great for this
+</I>&gt;<i> purpose -- though I can hardly find any documentation or others using
+</I>&gt;<i> it. I was wondering if anyone has managed to use this in elua? Or is
+</I>&gt;<i> there something else I am missing?
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> --
+</I>&gt;<i> Richard
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20131118/06bda63f/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20131118/06bda63f/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004286.html">[eLua-dev] assembling commands for SPI
+</A></li>
+	<LI>Next message: <A HREF="004290.html">[eLua-dev] assembling commands for SPI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4288">[ date ]</a>
+              <a href="thread.html#4288">[ thread ]</a>
+              <a href="subject.html#4288">[ subject ]</a>
+              <a href="author.html#4288">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

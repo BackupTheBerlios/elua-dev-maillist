@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] IMPORTANT: eLua coding style
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20eLua%20coding%20style&In-Reply-To=%3C81fbe47d0811170314g14c606bag4f5f295ebd2d4364%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000089.html">
+   <LINK REL="Next"  HREF="000092.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] IMPORTANT: eLua coding style</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20eLua%20coding%20style&In-Reply-To=%3C81fbe47d0811170314g14c606bag4f5f295ebd2d4364%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] IMPORTANT: eLua coding style">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Nov 17 12:14:25 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000089.html">[eLua-dev] IMPORTANT: eLua coding style
+</A></li>
+        <LI>Next message: <A HREF="000092.html">[eLua-dev] IMPORTANT: eLua coding style
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#91">[ date ]</a>
+              <a href="thread.html#91">[ thread ]</a>
+              <a href="subject.html#91">[ subject ]</a>
+              <a href="author.html#91">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yes, thank you, I forgot about that :) Try to keep your code line under 80
+columns as much as possible.
+
+Also, other important ideas that I completely forgot about: *
+
+1. Identifier names*. I use a &quot;GNU-style&quot; here, with underlines and all
+lowercase:
+
+int simple;
+double another_identifier;
+char yes_this_is_OK_although_quite_stupid;
+
+As opposed to:
+
+int Simple1;
+double AnotherIdentifier;
+char DontEvenThinkAboutWritingSomethingLikeThis;
+
+*DO NOT USE HUNGARIAN NOTATION !!* (you know, things like iNumber, sString,
+fFloat ... if you don't know what that is, it's fine, as it means that we
+don't need to worry about it :) ). I know it's useful, it's not just what I
+like to see when reading code.
+
+*2. Constants in the code*: don't ever write something like this:
+
+if( key == 10 )
+  sys_ok();
+else if( key == 5 )
+  phone_dial( &quot;911&quot; );
+else if( key == 666 )
+{
+  while( user_is_evil() )
+    exorcize_user();
+}
+else if( key == 0 )
+  sys_retry();
+else
+  sys_error();
+
+Instead, define some constants (via enums or even #define) and write like
+this:
+
+if( key == KEY_CODE_OK )
+  sys_ok();
+else if( key == KEY_CODE_FATAL_ERROR )
+  phone_dial( &quot;911&quot; );
+else if( key == KEY_CODE_COMPLETELY_EVIL )
+{
+  while( user_is_evil() )
+    exorcize_user();
+}
+else if( key == KEY_CODE_NONE )
+  sys_retry();
+else
+  sys_error();
+
+In the code above you can also see an exception to the &quot;one statement on one
+line rule&quot;: it's OK to write &quot;else if(...)&quot; on the same line (to &quot;emulate&quot;
+Lua's &quot;elseif&quot; statement :) ).
+
+*3. Pseudo name-spaces*: since we don't have namespaces in &quot;C&quot;, I like to
+&quot;emulate&quot; them by prefixing anything (constants, variables, functions) in a
+file with something that identifies that file uniquely (its name, for
+example, but you can have exceptions). For example, a file called &quot;uart.c&quot;
+would look like this:
+
+int uart_tx_count, uart_rx_count;
+
+int uart_receive( unsigned limit )...
+unsigned uart_send( const char *buf, unsigned size )...
+
+Once we get more ideas like this I'll rewrite the whole &quot;document&quot; in one
+single piece.
+
+Best,
+Bogdan
+
+On Mon, Nov 17, 2008 at 12:54 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+
+&gt;<i> Thanks Bogdan,
+</I>&gt;<i>    Apart from opening the first { on the same line for blocks, all the rest
+</I>&gt;<i> is pretty much what I've always used :)
+</I>&gt;<i>    Also, I will only fail the &quot;space out everything&quot; when it is nice to
+</I>&gt;<i> keep the line under 80 columns.
+</I>&gt;<i>    I'll do my best to keep up with this eLua programming style :)
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Nov 17, 2008 at 8:43 AM, Bogdan Marinescu &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hello all,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is something I should've done quite some time ago: a coding style for
+</I>&gt;&gt;<i> all eLua contributors. Find it below, and please try to follow it as much as
+</I>&gt;&gt;<i> possible. Also, this is the first time I'm writing a &quot;coding style&quot;, so
+</I>&gt;&gt;<i> please let me know if something is missing from the picture.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> *1*. Everything should be spaced out properly. Examples (please note the
+</I>&gt;&gt;<i> spacing rules, which is basically &quot;space out everything for readability&quot;):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> i = 3 (not i=3)
+</I>&gt;&gt;<i> a = ( a + 5 ) / 3
+</I>&gt;&gt;<i> for( i = 0; i &lt; 10; i ++ ) ...
+</I>&gt;&gt;<i> if( ( i == 5 ) &amp;&amp; ( a == 10 ) ) ...
+</I>&gt;&gt;<i> unsigned i = ( unsigned )p;
+</I>&gt;&gt;<i> void func( int arg1, const char* arg2 ) ...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> *2*. Indentation: indent everything at 2 SPACES. Again, SPACES. *DO NOT
+</I>&gt;&gt;<i> USE TABS*; this is important (and fortunately pretty easy to remember :)
+</I>&gt;&gt;<i> ). I saw so many examples where tabs completely fucked up the readability of
+</I>&gt;&gt;<i> source code that I don't want to hear about them again. Most editors have an
+</I>&gt;&gt;<i> &quot;insert tabs instead of spaces&quot; option; use it, and set your &quot;tab size&quot; to
+</I>&gt;&gt;<i> 2.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also, indent &quot;{&quot; and &quot;}&quot; on their own lines:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> if( i == 2 )
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>   // some code here
+</I>&gt;&gt;<i> }
+</I>&gt;&gt;<i> else
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>   // some other code here
+</I>&gt;&gt;<i> }
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Or:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> void f( int i )
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>   // function code
+</I>&gt;&gt;<i> }
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Do not enclose single statements in {} when given a choice. For example,
+</I>&gt;&gt;<i> do this:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> if( i == 2 )
+</I>&gt;&gt;<i>   return;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> instead of this:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> if( i == 2 )
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>   return;
+</I>&gt;&gt;<i> }
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also, follow the &quot;one statement per line&quot; rule. In other words, don't do
+</I>&gt;&gt;<i> this:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> if( i == 2 ) return;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Do this instead:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> if( i == 2 )
+</I>&gt;&gt;<i>   return;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Note that I'm not using a space between the function name and its
+</I>&gt;&gt;<i> parameter list when calling/defining it (I saw that this happens in the Lua
+</I>&gt;&gt;<i> code, for example). So do this:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> void f( int i )
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>   // function code here
+</I>&gt;&gt;<i> }
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> f( 2 ); // function call
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> instead of this:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> void f ( int i )
+</I>&gt;&gt;<i>  {
+</I>&gt;&gt;<i>   // function code here
+</I>&gt;&gt;<i> }
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> f ( 2 ); // function call
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> *3*. Line terminators: *THIS IS IMPORTANT TOO!* Use UNIX style (LF) line
+</I>&gt;&gt;<i> terminators, not DOS (CR/LF) or old Mac (CR).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> *4*. Comments: I generally favour C++ style comments (//), but it's
+</I>&gt;&gt;<i> perfectly OK to use C style (/**/) comments. I don't like automatic
+</I>&gt;&gt;<i> documentation generators like Doxygen, since I think that they tend to make
+</I>&gt;&gt;<i> the programmer overdocument the code to the point where it becomes hard to
+</I>&gt;&gt;<i> read because of the documentation alone. I'm inclined to underdocument my
+</I>&gt;&gt;<i> code; don't follow my style here. Ideally, you'd neither overdocument, nor
+</I>&gt;&gt;<i> underdocument your code; just document it as much as you think it's needed,
+</I>&gt;&gt;<i> without getting into too much details, but also without omitting important
+</I>&gt;&gt;<i> information. In particular, DON'T do this:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> // This function returns the sum of two numbers
+</I>&gt;&gt;<i> // Input: n1 - first number
+</I>&gt;&gt;<i> // Input: n2 - the second number
+</I>&gt;&gt;<i> // Output: the sum of n1 and n2
+</I>&gt;&gt;<i> int sum( int n1, int n2 )
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>   return n1 + n2;
+</I>&gt;&gt;<i> }
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If you do this, I'll personally hunt you for the rest of your life, or at
+</I>&gt;&gt;<i> least until you give up programming completely :) When something is
+</I>&gt;&gt;<i> self-obvious, documenting it more is pointless and decreases readability.
+</I>&gt;&gt;<i> One more thing: we're not addressing to beginner programmers, but rather to
+</I>&gt;&gt;<i> experienced/senior programmers, which is another good reason not to try to
+</I>&gt;&gt;<i> overdocument your code.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also, if you're using 3rd party code (from a library/support package for
+</I>&gt;&gt;<i> example) making it follow the above rules is nice, but not mandatory. Focus
+</I>&gt;&gt;<i> on functionality and writing your own code properly, and come back to indent
+</I>&gt;&gt;<i> other people's code when you really don't have anything better to do with
+</I>&gt;&gt;<i> your time.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081117/d0e6f942/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081117/d0e6f942/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000089.html">[eLua-dev] IMPORTANT: eLua coding style
+</A></li>
+	<LI>Next message: <A HREF="000092.html">[eLua-dev] IMPORTANT: eLua coding style
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#91">[ date ]</a>
+              <a href="thread.html#91">[ thread ]</a>
+              <a href="subject.html#91">[ subject ]</a>
+              <a href="author.html#91">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

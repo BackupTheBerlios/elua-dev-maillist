@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Reducing code size of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTinpqECzqZeyy9XWyWetH0b-kBYgM1qh3AaHA3UF%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001739.html">
+   <LINK REL="Next"  HREF="001741.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Reducing code size of eLua</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTinpqECzqZeyy9XWyWetH0b-kBYgM1qh3AaHA3UF%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Reducing code size of eLua">martinwguy at gmail.com
+       </A><BR>
+    <I>Tue Nov 30 17:27:33 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001739.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+        <LI>Next message: <A HREF="001741.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1740">[ date ]</a>
+              <a href="thread.html#1740">[ thread ]</a>
+              <a href="subject.html#1740">[ subject ]</a>
+              <a href="author.html#1740">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>uOn Tue, Nov 30, 2010 at 3:52 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Tue, Nov 30, 2010 at 4:34 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> Hi
+</I>&gt;&gt;<i> &#160; I'm investigating how to reduce the size of the flash-rom image of
+</I>&gt;&gt;<i> eLua for a 128KB platform with 120KB available.
+</I>&gt;&gt;<i> ...
+</I>&gt;&gt;<i> My current list of hacks is:
+</I>&gt;&gt;<i> - configs: build lualong (no FP, saving 46KB!)
+</I>&gt;<i>
+</I>&gt;<i> Hmmm, only 46k? Is this coming from the absence of libm alone, or the
+</I>&gt;<i> compiler's floating point support is also not linked in the image? It
+</I>&gt;<i> shouldn't be, as I specifically tried not to use floats or doubles in
+</I>&gt;<i> the eLua source code. But it might be worth checking anyway, errors
+</I>&gt;<i> are always possible.
+</I>
+libm is absent, yes, and looking at the binary I don't see any
+floating point emulation library functions, so you seem to have
+succeeded.
+
+&gt;&gt;<i> - optram=0
+</I>&gt;<i>
+</I>&gt;<i> This is going to hurt you on the RAM side, big time.
+</I>That's ok, we have 32MB of RAM but only 120K flash.
+
+&gt;<i> Also many modules
+</I>&gt;<i> from the eLua distribution don't work at all in this mode. How much
+</I>&gt;<i> space are you saving with this setting anyway?
+</I>
+Thanks. Do you know which and why? The saving is 4096 bytes.
+
+&gt;&gt;<i> - reduce the huge number of strings in the Lua interpreter by
+</I>&gt;&gt;<i> simplifying some of the more verbose error messages (example: &quot;too
+</I>&gt;&gt;<i> many results to unpack&quot; and &quot;too many results to resume&quot; both become
+</I>&gt;&gt;<i> &quot;too many results&quot;, which generates a single copy of the string)
+</I>&gt;<i>
+</I>&gt;<i> Does the linker optimize this globally? I thought this happens only at
+</I>&gt;<i> file object level.
+</I>
+It does.
+
+&gt;&gt;<i> - disable things which seem only to be used when Lua is included in a
+</I>&gt;&gt;<i> larger C program as an embedded scripting language:
+</I>&gt;<i>
+</I>&gt;<i> Such as ? I'm curious.
+</I>
+The following points were a list of them. I'm wondering if there are others.
+
+&gt;&gt;<i> &#160;- parts of the debug interface (lua_{getupvalue,setupvalue,setlocal}
+</I>&gt;<i>
+</I>&gt;<i> You might want to remove registration for the &quot;debug&quot; module
+</I>&gt;<i> altogether, it might save even more space.
+</I>
+That's how I'm doing it, leaving the linker to optimise the unused
+functions and data out.
+
+&gt;&gt;<i> Lastly, are the &quot;bit&quot;, &quot;pack&quot; and &quot;term&quot; modules specific to eLua,
+</I>&gt;&gt;<i> hence unikely to be used in existing Lua applications?
+</I>&gt;<i>
+</I>&gt;<i> &quot;bit&quot; and &quot;pack&quot; are taken from lhf's page
+</I>&gt;<i> (<A HREF="http://www.tecgraf.puc-rio.br/~lhf/ftp/lua/">http://www.tecgraf.puc-rio.br/~lhf/ftp/lua/</A>) and chances are there
+</I>&gt;<i> are used in Lua applications, especially the &quot;bit&quot; module. &quot;term&quot; is
+</I>&gt;<i> 100% eLua specific.
+</I>
+Good. They are relatively small. bit:1024 pack:2048 term: 2076
+
+&gt;<i> Did you remove all the BUILD_xxxx stuff that you don't need from
+</I>&gt;<i> platform_conf.h? What about all the modules that you don't need?
+</I>Yes and yes.
+
+&gt;<i> In the end you can always restart what I tried to do a while ago and
+</I>&gt;<i> rewrite the C library, at least partially :) You don't even have to
+</I>&gt;<i> rewrite it. I was planning to include the Minix libc (you can find it
+</I>&gt;<i> in the Minix source tree) in eLua, as it is very small (and BSD
+</I>&gt;<i> licensed unlike other small libcs out there). It's perfectly doable, I
+</I>&gt;<i> just don't have the time to do it right now. Actually you started this
+</I>&gt;<i> yourself when rewriting strerror, so why not continue it? :)
+</I>&gt;<i> It always helps to have a size report on this. Try something like
+</I>&gt;<i> 'find . -name &quot;*.o&quot; | xargs avr32-size' and we can analyze that.
+</I>
+The libraries -lgcc and -lc add 25600 of text (tested by linking
+without -lc -lgcc and with -r).
+That's an interesting idea.
+
+It's difficult to analyse from the .o files because a lot of code is
+compiled into the .o's and then eliminated by the linker.
+
+&gt;<i> Also, are you doing this for Mizar32? If so, is executing code from
+</I>&gt;<i> RAM not an option for you?
+</I>
+Yes and yes; we are also working on a small bootloader to load the
+executable from SDcard instead of flash to allow full FP lua with all
+modules.
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001739.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+	<LI>Next message: <A HREF="001741.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1740">[ date ]</a>
+              <a href="thread.html#1740">[ thread ]</a>
+              <a href="subject.html#1740">[ subject ]</a>
+              <a href="author.html#1740">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

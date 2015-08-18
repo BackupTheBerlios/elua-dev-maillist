@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32F4Disco - easy overclocking
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4Disco%20-%20easy%20overclocking&In-Reply-To=%3C2d0d17e012aaa9602917ac04af9fe55b%40mail2.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003399.html">
+   <LINK REL="Next"  HREF="003407.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32F4Disco - easy overclocking</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4Disco%20-%20easy%20overclocking&In-Reply-To=%3C2d0d17e012aaa9602917ac04af9fe55b%40mail2.volny.cz%3E"
+       TITLE="[eLua-dev] STM32F4Disco - easy overclocking">pito at volna.cz
+       </A><BR>
+    <I>Sun Mar 25 12:25:03 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003399.html">[eLua-dev] The Go @ IDE &amp; STM32F4DISCOVERY
+</A></li>
+        <LI>Next message: <A HREF="003407.html">[eLua-dev] The Go @ IDE &amp; STM32F4DISCOVERY
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3400">[ date ]</a>
+              <a href="thread.html#3400">[ thread ]</a>
+              <a href="subject.html#3400">[ subject ]</a>
+              <a href="author.html#3400">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>For those who like to experiment (you do it at your onw risk)..
+In system_stm32f4xx.c you may make these small changes in order to
+set the cpu frequency easily. You have to experiment with WS's
+number when not stable at higher frequencies :). The frequencies are
+in mult of 24 (because of USB).
+
+In &quot;system_stm32f4xx.c&quot;:
+
+...
+
+/****** PLL Parameters *********************/
+/* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N */
+#define PLL_M      4
+
+// here you define the &quot;cpu clock frequency&quot;
+// ie. 264, 240, 216, 192, 168, 144, 120, 96, 72 MHz
+#define PLL_N      216   // MHz
+
+/* SYSCLK = PLL_VCO / PLL_P */
+#define PLL_P      2
+
+/* USB OTG FS, SDIO and RNG Clock =  PLL_VCO / PLLQ */
+#define PLL_Q      PLL_N / 24  
+
+/********************************************/
+...
+
+/** @addtogroup STM32F4xx_System_Private_Variables
+* @{
+*/
+
+uint32_t SystemCoreClock = PLL_N * 1000000;
+...
+
+/* Configure Flash prefetch, Instruction cache, Data cache and wait
+state */
+// for freq &gt; 192 you may use 6 or more WaitStates
+FLASH-&gt;ACR = FLASH_ACR_PRFTEN | FLASH_ACR_ICEN |FLASH_ACR_DCEN
+|<i>FLASH_ACR_LATENCY_7WS;
+</I>
+P.
+
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003399.html">[eLua-dev] The Go @ IDE &amp; STM32F4DISCOVERY
+</A></li>
+	<LI>Next message: <A HREF="003407.html">[eLua-dev] The Go @ IDE &amp; STM32F4DISCOVERY
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3400">[ date ]</a>
+              <a href="thread.html#3400">[ thread ]</a>
+              <a href="subject.html#3400">[ subject ]</a>
+              <a href="author.html#3400">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

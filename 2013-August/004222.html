@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] rpc module not loaded in luarpc
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20rpc%20module%20not%20loaded%20in%20luarpc&In-Reply-To=%3CCAJ%3DY9Y1sowSJvB4kemEEN%3D9%3DAehc0gz%3D9NasYYr0ijFdtcBp9A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004221.html">
+   <LINK REL="Next"  HREF="004223.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] rpc module not loaded in luarpc</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20rpc%20module%20not%20loaded%20in%20luarpc&In-Reply-To=%3CCAJ%3DY9Y1sowSJvB4kemEEN%3D9%3DAehc0gz%3D9NasYYr0ijFdtcBp9A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] rpc module not loaded in luarpc">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Aug 12 19:23:24 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004221.html">[eLua-dev] rpc module not loaded in luarpc
+</A></li>
+        <LI>Next message: <A HREF="004223.html">[eLua-dev] rpc module not loaded in luarpc
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4222">[ date ]</a>
+              <a href="thread.html#4222">[ thread ]</a>
+              <a href="subject.html#4222">[ subject ]</a>
+              <a href="author.html#4222">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for the report.  I'm seeing the same thing here.
+
+I believe that happened when we merged the newer build system which changed
+how modules were configured.  I've not yet had enough time to familiarize
+myself with it to put in a correct fix quickly.
+
+Bogdan, if you're around, what would be the simplest way to incorporate the
+defines from inc/desktop/platform_conf.h?
+
+If Bogdan isn't around I'll try looking into this.
+
+
+On Sun, Aug 11, 2013 at 7:26 AM, Richard M&#246;hn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard.moehn at fu-berlin.de</A>&gt;wrote:
+
+&gt;<i> Hi!
+</I>&gt;<i>
+</I>&gt;<i> I'm trying to use the LuaRPC facility and therefore built the executable
+</I>&gt;<i> for the desktop client/server with:
+</I>&gt;<i>
+</I>&gt;<i>     $ lua rpc-lua.lua
+</I>&gt;<i>
+</I>&gt;<i> After getting errors with the RPC example at
+</I>&gt;<i> <A HREF="http://wiki.eluaproject.net/LuaRPC%20in%20eLua,">http://wiki.eluaproject.net/LuaRPC%20in%20eLua,</A> I wrote this script:
+</I>&gt;<i>
+</I>&gt;<i>     for k, v in pairs(_G) do
+</I>&gt;<i>         print(k, v)
+</I>&gt;<i>     end
+</I>&gt;<i>
+</I>&gt;<i>     print(luarpc)
+</I>&gt;<i>
+</I>&gt;<i> Executing with
+</I>&gt;<i>
+</I>&gt;<i>     $ ./luarpc bla.lua
+</I>&gt;<i>
+</I>&gt;<i> gives:
+</I>&gt;<i>
+</I>&gt;<i>     print       function: 0x85b860
+</I>&gt;<i>     xpcall      function: 0x85c4d0
+</I>&gt;<i>     rawset      function: 0x85c790
+</I>&gt;<i>     load        function: 0x85c050
+</I>&gt;<i>     _G  table: 0x85b6d0
+</I>&gt;<i>     gcinfo      function: 0x85bee0
+</I>&gt;<i>     newproxy    function: 0x85cfb0
+</I>&gt;<i>     pairs       function: 0x85ce90
+</I>&gt;<i>     getmetatable        function: 0x85c1d0
+</I>&gt;<i>     ipairs      function: 0x85cdf0
+</I>&gt;<i>     unpack      function: 0x85c470
+</I>&gt;<i>     _VERSION    Lua 5.1
+</I>&gt;<i>     __index     function: 0x85cd30
+</I>&gt;<i>     pcall       function: 0x85c170
+</I>&gt;<i>     getfenv     function: 0x85bf40
+</I>&gt;<i>     tostring    function: 0x85c3b0
+</I>&gt;<i>     type        function: 0x85c410
+</I>&gt;<i>     setmetatable        function: 0x85c2f0
+</I>&gt;<i>     next        function: 0x85c110
+</I>&gt;<i>     select      function: 0x85b720
+</I>&gt;<i>     assert      function: 0x85be20
+</I>&gt;<i>     tonumber    function: 0x85c350
+</I>&gt;<i>     rawget      function: 0x85c730
+</I>&gt;<i>     loadstring  function: 0x85c0b0
+</I>&gt;<i>     setfenv     function: 0x85c290
+</I>&gt;<i>     rawequal    function: 0x85b8c0
+</I>&gt;<i>     dofile      function: 0x85bf90
+</I>&gt;<i>     collectgarbage      function: 0x85be80
+</I>&gt;<i>     arg table: 0x85d020
+</I>&gt;<i>     error       function: 0x85bff0
+</I>&gt;<i>     loadfile    function: 0x85c230
+</I>&gt;<i>     nil
+</I>&gt;<i>
+</I>&gt;<i> The less interesting thing is that there is no &quot;require&quot; function, which
+</I>&gt;<i> might be intended. The more interesting thing is that the &quot;rpc&quot; module,
+</I>&gt;<i> which was advertised to be loaded, isn't there.
+</I>&gt;<i>
+</I>&gt;<i> I also tried the old scons build script. In vain.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i>
+</I>&gt;<i> Richard
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130812/c0a4fe3e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130812/c0a4fe3e/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004221.html">[eLua-dev] rpc module not loaded in luarpc
+</A></li>
+	<LI>Next message: <A HREF="004223.html">[eLua-dev] rpc module not loaded in luarpc
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4222">[ date ]</a>
+              <a href="thread.html#4222">[ thread ]</a>
+              <a href="subject.html#4222">[ subject ]</a>
+              <a href="author.html#4222">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ADC module on STR912
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20module%20on%20STR912&In-Reply-To=%3CAANLkTim6Qhv-ysG6WaQQ6WcSxzc2MgE4VXpyXru40fBY%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001675.html">
+   <LINK REL="Next"  HREF="001677.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ADC module on STR912</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20module%20on%20STR912&In-Reply-To=%3CAANLkTim6Qhv-ysG6WaQQ6WcSxzc2MgE4VXpyXru40fBY%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] ADC module on STR912">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Oct 19 00:23:57 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001675.html">[eLua-dev] ADC module on STR912
+</A></li>
+        <LI>Next message: <A HREF="001677.html">[eLua-dev] ADC module on STR912
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1676">[ date ]</a>
+              <a href="thread.html#1676">[ thread ]</a>
+              <a href="subject.html#1676">[ subject ]</a>
+              <a href="author.html#1676">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Oct 18, 2010 at 3:47 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Mon, Oct 18, 2010 at 11:41 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> The STR-E912 has the FW part, not the FAW part. &#160;So, for an FAW, with
+</I>&gt;&gt;<i> some minor modification we could add support for using the timers.
+</I>&gt;<i>
+</I>&gt;<i> They have two of them actually, one with the FW and the other one with the FAW.
+</I>
+I'm not sure I understand what you're saying here.  I do understand
+that there are two revisions of ST parts for this, but I don't think
+there's an STR-E912 w/ an FAW part, unless I'm missing something:
+<A HREF="http://www.olimex.com/dev/str-e912.html">http://www.olimex.com/dev/str-e912.html</A>
+
+It would certainly be natural for them to replace the FW part with an
+FAW, especially if there's an equivalent FAW w/ the same footprint and
+pin configuration.
+
+&gt;<i>
+</I>&gt;&gt;<i> Really, even without timer triggering, we could use a timer interrupt
+</I>&gt;&gt;<i> to do this sort of thing for us, but we don't do that on other
+</I>&gt;&gt;<i> platforms so I didn't want to suck up another timer in this manner.
+</I>&gt;<i>
+</I>&gt;<i> I can implement a timer interrupt in Lua, but this will probably take a while.
+</I>
+With the eLua interrupt support?  Wouldn't this just be a matter of
+adding another interrupt slot for a timer in addition to the ones
+you've done before and having a handler that behaves similarly to the
+other existing handlers?   Or are you thinking of something more
+elaborate?
+
+&gt;<i>
+</I>&gt;&gt;<i> For now, one could use the eLua interrupt support, however I have in
+</I>&gt;&gt;<i> no way tested this :-) &#160;I'm planning to add to eLua interrupts to
+</I>&gt;&gt;<i> support C-side handlers for this sort of thing (that wouldn't need to
+</I>&gt;&gt;<i> wait on the interpreter), but I haven't yet done any implementation
+</I>&gt;&gt;<i> planning or experimentation.
+</I>&gt;<i>
+</I>&gt;<i> Completely agreed on the C-side handlers. Let's talk about this if you
+</I>&gt;<i> start planning, there are quite a few things to consider with all this
+</I>&gt;<i> interrupt support story.
+</I>
+Indeed.  I have to look at the implementation before making a detailed
+plan, but my thought is that the C side should have some way of
+checking if a registered handler is a Lua handler or a C handler, and
+that if there's a C-side handler, instead of enqueuing the need to
+call a Lua function, it just calls the C handler.  Perhaps there could
+also be some mechanism for it to tell Lua that a C-side hander was
+called, but I suspect that might not be needed.
+
+I don't mind if, for the moment, we don't even provide a Lua-side way
+to set such handlers (though Lua should be able to set/replace C side
+handlers with Lua ones if it wants). I just feel that if we're adding
+an interrupt system to eLua it'd be better to plug into it and write
+some generalized code that would allow any platform with timer
+interrupts and ADC to suddenly be able to use this type of
+timer-driven conversion with only having written software-initiated
+conversions.
+
+This will also give us a somewhat crude (latency-wise) way to trigger
+ADC conversions on digital input interrupts or any other interrupt
+which our system knows about.  If users had need specific platforms
+could implement the functionality using hardware triggers as needed.
+I rather like having the generic versions be available, since doing
+platform specific implementations for every platform of this sort of
+thing would require quite a bit of work and might only be useful to a
+small number of individuals.
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -jsnyder
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, Oct 18, 2010 at 3:21 PM, Bogdan Marinescu
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> Right.
+</I>&gt;&gt;&gt;&gt;<i> And this was done (by James Snyder) because some versions of the MCU chip do
+</I>&gt;&gt;&gt;&gt;<i> not generate the int on timer events. Apparently the newer ones do but he
+</I>&gt;&gt;&gt;&gt;<i> had to do it for stability purposes.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Ah, are you talking about the STR912FW44 versus the STR912FAW44? If
+</I>&gt;&gt;&gt;<i> so, you can probably use the timer feature (which I assume is
+</I>&gt;&gt;&gt;<i> available in the A version) safely, as the old (non-A version) was
+</I>&gt;&gt;&gt;<i> obsoleted by ST quite a while ago. I'm not even sure one can purchase
+</I>&gt;&gt;&gt;<i> non-A chips anymore, at least not from a large distributor. I know
+</I>&gt;&gt;&gt;<i> that one of your STR-E912 boards uses the non-A version, but that's a
+</I>&gt;&gt;&gt;<i> dinosaur already :)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Mauricio, I'm afraid you'll have to handle the conversion-on-timer you want,
+</I>&gt;&gt;&gt;&gt;<i> manually on the Lua ISR now available in eLua.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> If so, he needs support for timer interrupts. Mauricio, please let me
+</I>&gt;&gt;&gt;<i> know if this is the case.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> Phone: (847) 448-0386
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001675.html">[eLua-dev] ADC module on STR912
+</A></li>
+	<LI>Next message: <A HREF="001677.html">[eLua-dev] ADC module on STR912
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1676">[ date ]</a>
+              <a href="thread.html#1676">[ thread ]</a>
+              <a href="subject.html#1676">[ subject ]</a>
+              <a href="author.html#1676">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] new STM32 !
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20new%20STM32%20%21&In-Reply-To=%3C36dc677c0903041400t81912f5ia1c19f13a525399e%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000654.html">
+   <LINK REL="Next"  HREF="000656.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] new STM32 !</H1>
+    <B>Mike Panetta</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20new%20STM32%20%21&In-Reply-To=%3C36dc677c0903041400t81912f5ia1c19f13a525399e%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] new STM32 !">panetta.mike at gmail.com
+       </A><BR>
+    <I>Wed Mar  4 23:00:57 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000654.html">[eLua-dev] new STM32 !
+</A></li>
+        <LI>Next message: <A HREF="000656.html">[eLua-dev] new STM32 !
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#655">[ date ]</a>
+              <a href="thread.html#655">[ thread ]</a>
+              <a href="subject.html#655">[ subject ]</a>
+              <a href="author.html#655">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Mar 4, 2009 at 12:01 PM, Tony &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tony.elua at gmail.com</A>&gt; wrote:
+
+&gt;<i>  One big plus for me: you can finally use the CAN ports and USB ports at
+</I>&gt;<i> the same time.  (Previous STM32 parts had a shared buffer for CAN and USB).
+</I>&gt;<i> I also like the LQFP-64 package, and IEEE-1588 support.  No PHY is fine with
+</I>&gt;<i> me; there's a good chance if I design a STM32 board, it will have a 2-port
+</I>&gt;<i> Ethernet switch.  And ST doesn't require registration to see the datasheet
+</I>&gt;<i> (and yes, this can be a big deal - my brother, who has a number of ARM-based
+</I>&gt;<i> designs in production, won't consider Luminary because of their
+</I>&gt;<i> registration.  It discourages just checking chips out).  OTOH, the Stellaris
+</I>&gt;<i> 9B95 is a better eLua MCU.
+</I>&gt;<i>
+</I>
+Hmm, thats a good point.  I wonder if it would be possible to use one of the
+new STM32 parts as an IEEE-1588 grand master clock by attaching a multi-port
+switch to it instead of a simple PHY?
+
+I don't quite see how requiring registration discourages anything really.
+Its easy to do, and they do not spam you.  Its a hell of a lot better then
+what Marvell requires, which is a full NDA before you can see anything more
+then a simple 2 page glossy...
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> As far as flash memory goes, remember that:
+</I>&gt;<i> 1.  No one really has zero wait state flash at 100MHz -- that implies a
+</I>&gt;<i> 10nsec flash cycle time, and that simply does not exist.  Instead, companies
+</I>&gt;<i> do things like use a wider bus (e.g. 128-bits) and pre-fetch from the
+</I>&gt;<i> flash.  Now the flash runs at 25nsec, but the bandwidth is the same
+</I>&gt;<i> (400MB/sec).
+</I>&gt;<i> 2. Mixed technology chips are harder to do.  Flash-only chips use a highly
+</I>&gt;<i> optimized process (just for flash) and are typically in a much more advanced
+</I>&gt;<i> process (probably &lt;65nm) than MCUs (mostly &gt;90nm, often 130nm or 180nm).
+</I>&gt;<i> It's also a tough business; Spansion (#1 in NOR) just went into Chapter 11
+</I>&gt;<i> bankruptcy.
+</I>&gt;<i> 3. MCUs &gt;= 2MB flash either use a stacked die approach (STR9xx) or are
+</I>&gt;<i> prohibitively expensive (Freescale MPC5xxx)
+</I>&gt;<i>
+</I>
+While I agree that the thought of 10ns Flash is a bit preposterous, I can't
+find anywhere in the datasheet for the LM3S9B95 the mention of a prefetch
+buffer, nor a way to configure one as some other ARM chips have.  It also
+consistantly mentions that the flash is single cycle (0ws) everywhere the
+flash is mentioned.
+
+This is in stark contrast to the datasheets for the STM32 chips, which do
+mention wait states and prefetch buffer registers...
+
+If someone could explain this conflict to me I would love it!
+
+
+&gt;<i>
+</I>&gt;<i> It's even hard to do a lot of fast SRAM.  I was looking at the TI C28346
+</I>&gt;<i> datasheet, and noticed only some of the SRAM is 0 wait state; the majority
+</I>&gt;<i> is 1 ws.  Another example - L1 caches are always very small (typically
+</I>&gt;<i> 16-64KB); the huge caches are always L2 or L3.
+</I>&gt;<i>
+</I>
+Not to mention that SRAM cells are quite a bit larger then either Flash or
+SDRAM cells, so take up more die realistate.
+
+
+&gt;<i>
+</I>&gt;<i> --Tony
+</I>&gt;<i>
+</I>&gt;<i> Alex Babkin wrote:
+</I>&gt;<i>
+</I>&gt;<i> following luminary, ST comes through and unveils their new stuff:
+</I>&gt;<i> STM32f105/f107
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www.st.com/stonline/products/literature/ds/15274.pdf">http://www.st.com/stonline/products/literature/ds/15274.pdf</A>
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">listElua-dev at lists.berlios.dehttps</A>://lists.berlios.de/mailman/listinfo/elua-dev
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090304/7751c912/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090304/7751c912/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000654.html">[eLua-dev] new STM32 !
+</A></li>
+	<LI>Next message: <A HREF="000656.html">[eLua-dev] new STM32 !
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#655">[ date ]</a>
+              <a href="thread.html#655">[ thread ]</a>
+              <a href="subject.html#655">[ subject ]</a>
+              <a href="author.html#655">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

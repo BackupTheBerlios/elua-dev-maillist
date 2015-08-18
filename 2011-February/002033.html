@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] PIC32 port status?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PIC32%20port%20status%3F&In-Reply-To=%3CAANLkTin6%2BxHawSaEsbGJp38LsmE-%3DG%3Dgxugc-dNvYmQr%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002034.html">
+   <LINK REL="Next"  HREF="002035.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] PIC32 port status?</H1>
+    <B>Kevin Vermeer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PIC32%20port%20status%3F&In-Reply-To=%3CAANLkTin6%2BxHawSaEsbGJp38LsmE-%3DG%3Dgxugc-dNvYmQr%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] PIC32 port status?">reemrevnivek at gmail.com
+       </A><BR>
+    <I>Mon Feb 14 21:33:18 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002034.html">[eLua-dev] PIC32 port status?
+</A></li>
+        <LI>Next message: <A HREF="002035.html">[eLua-dev] PIC32 port status?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2033">[ date ]</a>
+              <a href="thread.html#2033">[ thread ]</a>
+              <a href="subject.html#2033">[ subject ]</a>
+              <a href="author.html#2033">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Feb 14, 2011 at 1:21 PM, Tim michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Is it acceptable to use MPLAB has the build tool and use Microchip
+</I>libraries?
+
+
+
+I think that this is really three questions:
+
+1. Is it acceptable to use the MPLAB IDE?
+It's windows only, but otherwise a very nice IDE.  I prefer command line
+development to most IDEs, and I would really like this to be cross
+platform.  I wouldn't object if an MPLAB project file showed up in source
+control, though.
+2. Is it acceptable to use the compiler tools available with MPLAB?
+The versions without time limits that support optimization beyond level 0
+are several thousands of dollars.  I have access to these versions through
+my employer, but I'm not sure about the legality of web builders or
+providing binaries on the website.
+I don't think we should use the High Tech C Compiler, as it's not only
+expensive but also proprietary and would likely not play nice with the GCC
+code in eLua.  Plus, I don't have it.
+3. Is it acceptable to us the Microchip libraries?
+This is the biggest sticking point.  Bringing in these libraries causes a
+64kB code size limitation unless you pay several thousand dollars.  We can't
+host these files in the source repository due to licensing.  Newlib (which
+eLua uses) is an option (there's no reason that these libraries need to be
+installed), and there have been several efforts with varying success to port
+Newlib to the PIC32.  I believe that the MSPGCC project has a version which
+is very close to what we want.
+
+The whole GCC/GPL debacle surrounding the PIC32 compiler is an interesting
+one.  Not only are there Microchip licensing problems, but you also have
+MIPS licensing to deal with, the optimizations, the GPL'ed compiler, the
+non-GPL optimizer, the alternative compiler, etc. etc. etc.   It's an
+interesting read.  Start at
+<A HREF="http://www.embeddedrelated.com/usenet/embedded/show/91196-1.php;">http://www.embeddedrelated.com/usenet/embedded/show/91196-1.php;</A> there are
+other pages and discussions. Note the dates when you're reading; a lot has
+changed since these parts came out.
+
+In my mind, a Newlib-based cross-platform environment which can be imported
+into MPLAB but requires no Microchip-hosted sources and license agreenments
+is best.
+--
+Kevin Vermeer
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110214/cf24cf59/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110214/cf24cf59/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002034.html">[eLua-dev] PIC32 port status?
+</A></li>
+	<LI>Next message: <A HREF="002035.html">[eLua-dev] PIC32 port status?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2033">[ date ]</a>
+              <a href="thread.html#2033">[ thread ]</a>
+              <a href="subject.html#2033">[ subject ]</a>
+              <a href="author.html#2033">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Extending MCU memory with SPI?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Extending%20MCU%20memory%20with%20SPI%3F&In-Reply-To=%3C023501cd43d1%24e4316280%24ac942780%24%40rowley.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003559.html">
+   <LINK REL="Next"  HREF="003564.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Extending MCU memory with SPI?</H1>
+    <B>Paul Curtis</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Extending%20MCU%20memory%20with%20SPI%3F&In-Reply-To=%3C023501cd43d1%24e4316280%24ac942780%24%40rowley.co.uk%3E"
+       TITLE="[eLua-dev] Extending MCU memory with SPI?">plc at rowley.co.uk
+       </A><BR>
+    <I>Wed Jun  6 12:48:21 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003559.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+        <LI>Next message: <A HREF="003564.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3562">[ date ]</a>
+              <a href="thread.html#3562">[ thread ]</a>
+              <a href="subject.html#3562">[ subject ]</a>
+              <a href="author.html#3562">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> On Wed, Jun 6, 2012 at 1:21 PM, pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt; It doesn't actually say that it executes from SPI flash. &#160;It states
+</I>&gt;<i> &gt;&gt; it runs a virtualized CPU with the emulator fetching virtual
+</I>&gt;<i> &gt;&gt; instructions from SPI flash.
+</I>&gt;<i> &gt; Paul, it is a common understanding here we do not plan or discuss to
+</I>&gt;<i> &gt; run a code directly out of SPI.
+</I>&gt;<i> 
+</I>&gt;<i> Why is that a common understanding? SPIFI allows you do to exactly this,
+</I>&gt;<i> if I understood correctly.
+</I>
+Indeed, that is exactly what SPIFI allows you to do.
+
+So, let's benchmark an LPC1800 at 180 MHz...  (CrossWorks+gcc4.6, Hitex
+LPC1850 board)
+
+&gt;<i>From internal SRAM:
+</I>
+Microseconds for one run through Dhrystone:    3.5 
+Dhrystones per Second:                      285714.3
+
+&gt;<i>From external NOR flash (16-bit interface; 14 wait states):
+</I>
+Microseconds for one run through Dhrystone:   71.0 
+Dhrystones per Second:                      14084.5 
+
+&gt;<i>From external SPIFI flash:
+</I>
+Microseconds for one run through Dhrystone:  101.0 
+Dhrystones per Second:                      9901.0
+
+We haven't configured to run a program from external RAM--I guess the wait
+states would come down and performance would go up...
+
+Regards,
+
+--
+Paul Curtis, Rowley Associates Ltd   <A HREF="http://www.rowley.co.uk">http://www.rowley.co.uk</A>
+SolderCore running Defender...       <A HREF="http://www.vimeo.com/25709426">http://www.vimeo.com/25709426</A> 
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003559.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+	<LI>Next message: <A HREF="003564.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3562">[ date ]</a>
+              <a href="thread.html#3562">[ thread ]</a>
+              <a href="subject.html#3562">[ subject ]</a>
+              <a href="author.html#3562">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

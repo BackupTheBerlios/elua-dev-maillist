@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Nolua project proposal, good idea?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3C201101250046.33595.bobby%40sharedrealm.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001907.html">
+   <LINK REL="Next"  HREF="001911.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Nolua project proposal, good idea?</H1>
+    <B>Robert G. Jakabosky</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3C201101250046.33595.bobby%40sharedrealm.com%3E"
+       TITLE="[eLua-dev] Nolua project proposal, good idea?">bobby at sharedrealm.com
+       </A><BR>
+    <I>Tue Jan 25 09:46:33 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001907.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+        <LI>Next message: <A HREF="001911.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1908">[ date ]</a>
+              <a href="thread.html#1908">[ thread ]</a>
+              <a href="subject.html#1908">[ subject ]</a>
+              <a href="author.html#1908">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Monday 24, James Snyder wrote:
+&gt;<i> Using something like LLVM as a static compiler was one thing I was
+</I>&gt;<i> thinking of when reading through Patrick's proposal.  I thought of
+</I>&gt;<i> mentioning llvm-lua, but from my understanding the ARM support for
+</I>&gt;<i> MCUs isn't necessarily usable at this stage, although I believe I saw
+</I>&gt;<i> some Thumb-2 support make it into LLVM during this last year.  I
+</I>&gt;<i> suspect that one might get the greatest speed benefit by being able to
+</I>&gt;<i> statically compile Lua into machine code, perhaps using LLVM as an
+</I>&gt;<i> intermediate to get some optimization benefits.
+</I>
+I don't know the state of LLVM's ARM backend support, but one big benefit of 
+sLua compared to llvm-lua is that it generates pure C code that is as 
+portable as the Lua VM core.  LLVM does have a backend for compiling it's IR 
+into C code but by the time the IR gets compiled to C there are 
+alignment/size issues, since the size of pointers/ints/longs and structure 
+member alignment gets baked into the LLVM IR before the C backend codegen 
+runs.  With some hacks I was able to fix the alignment issues and do a 
+cross-compile of a Lua script for the iPhone (with the help of someone with a 
+Mac &amp; iPhone).  But it was messy, which is one reason I started sLua.
+
+&gt;<i> One question about what you're describing though:
+</I>&gt;<i> &quot;compiles lua scripts/bytecode into C code that uses the same internal
+</I>&gt;<i> VM opcode instead of the Lua C API&quot;
+</I>&gt;<i>
+</I>&gt;<i> I'm not completely clear on what advantages this has vs just using
+</I>&gt;<i> luac to generate a loadable but pre-compiled Lua module?  I could see
+</I>&gt;<i> in the case of eLua that we could maybe use this as another way to use
+</I>&gt;<i> Lua code and keep things in flash rather than in RAM on the heap.  Are
+</I>&gt;<i> there other advantages that aren't occurring to me?  From the readme
+</I>&gt;<i> it also sounds like it can generate stand-alone executables, which I
+</I>&gt;<i> would presume would allow one to save some space?
+</I>
+The Lua bytecode will be more compact compared to the native code you get from 
+static compiling it.  But the native code can be faster for somethings like 
+loops.  The static compiler does a little bit of analysis (mostly detecting 
+integer vs floating point numbers) to help the C compiler remove type checks 
+and produce faster code.  sLua could do better at optimizing the code it 
+generates, but I haven't had the time to add more code analysis.
+
+The way llvm-lua &amp; sLua work is by compiling the Lua bytecodes for a Lua 
+script into one function call for each bytecode (control structures like 
+if/while/for/etc... require a bit more codegen work).  Using one function per 
+VM opcode (some opcodes have extra specialized functions) was the simplest 
+way to static compile Lua scripts.
+
+For example a simple hello world script has 4 opcodes:
+GETGLOBAL  0, -1 ; print
+LOADK           1, -2 ; &quot;hello, world&quot;
+CALL              0 2 1
+RETURN         0 1
+
+those opcodes basically get compiled to:
+  vm_OP_GETGLOBAL(L, constants_list, closure, 0, 0);
+  vm_OP_LOADK(L, constants_list, 1, 1);
+  retval1 = vm_OP_CALL(L, 0, 2, 1);
+  retval2 = vm_OP_RETURN(L, 0, 1);
+  return retval2;
+
+Those vm_OP_* functions are marked for inlining and they are included at the 
+top of the generated C file:
+#include &quot;lua_vm_ops.c&quot;
+
+A good C compiler should be able to inline atleast some of the similar opcode 
+functions and apply more optimizations based on the opcode's parameters.
+
+At the start of each compiled Lua function is some setup code to get the 
+current function's Lua closure for access to the functions UpValues &amp; 
+constants.
+
+Also it seems that I haven't finished implementing support for generating a 
+loadable modules.  It looks like I just forgot to add the command line option 
+to the compiler to have it generate the luaopen_&lt;mod_name&gt; function that is 
+needed for a module.  I might be able to finish that tonight.
+
+This method of static compiling Lua scripts might not be the best in terms of 
+optimizations possibilities, but it was the simplest since it reuses the C 
+code from the Lua VM code for those opcode functions.  Another way would be 
+to create a new Lua compiler that either directly generates C code or 
+compiles to a more high-level IR language that provide better information for 
+code analysis &amp; optimization.
+
+-- 
+Robert G. Jakabosky
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: hello.c
+Type: text/x-csrc
+Size: 834 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110125/60230be0/attachment.c">https://lists.berlios.de/pipermail/elua-dev/attachments/20110125/60230be0/attachment.c</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001907.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+	<LI>Next message: <A HREF="001911.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1908">[ date ]</a>
+              <a href="thread.html#1908">[ thread ]</a>
+              <a href="subject.html#1908">[ subject ]</a>
+              <a href="author.html#1908">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

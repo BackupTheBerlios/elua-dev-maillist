@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Timing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Timing&In-Reply-To=%3CEMEWEMEW2_DELIMl1HGrOf0183c57e55959dfcfa575%2C%0A%09jbsnyder%40fanplastic.org%2C%208EB84704-0BB7-4D68-8362-B90%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000557.html">
+   <LINK REL="Next"  HREF="000560.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Timing</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Timing&In-Reply-To=%3CEMEWEMEW2_DELIMl1HGrOf0183c57e55959dfcfa575%2C%0A%09jbsnyder%40fanplastic.org%2C%208EB84704-0BB7-4D68-8362-B90%3E"
+       TITLE="[eLua-dev] Timing">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 23:53:23 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000557.html">[eLua-dev] Timing
+</A></li>
+        <LI>Next message: <A HREF="000560.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#559">[ date ]</a>
+              <a href="thread.html#559">[ thread ]</a>
+              <a href="subject.html#559">[ subject ]</a>
+              <a href="author.html#559">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>That's true.  You would want to normalize the clock rates between  
+different platforms as well.
+
+Also, this is more just to get a sense for what the minimum timer  
+difference and whether that seems to vary between platforms.
+
+If you want to try a benchmark, I modified the version of the Seive of  
+Eratosthenes (finds primes) that appears on the Lua listserv from some  
+time ago (<A HREF="http://lua-users.org/lists/lua-l/1999-07/msg00087.html">http://lua-users.org/lists/lua-l/1999-07/msg00087.html</A>)  to  
+use timing on eLua, and to only search up to 2000 because otherwise  
+you run out of memory in 64k of SRAM:
+
+function sieve(n)
+   x = {}
+   iter = 0
+   repeat
+     x[1] = 0
+     i = 2
+     repeat
+       x[i] = 1
+       i = i + 1
+     until i &gt; n
+     p = 2
+     while(p * p &lt;= n) do
+       j = p
+       while(j &lt;= n) do
+         x[j] = 0
+         j = j + p
+       end
+       repeat
+         p = p + 1
+       until x[p] == 1
+     end
+     iter = iter + 1
+   until iter == 101
+end
+
+print(&quot;Sieve of Eratosthenes - Lua Benchmark test&quot;)
+print(&quot;Start testing .....&quot;)
+start = tmr.start(0)
+sieve(2000)
+stop = tmr.read(0)
+print(&quot;Done!&quot;)
+print(&quot;Total Time (sec):   &quot;..tmr.diff(0,start,stop)/1000000)
+print(&quot;System Clock (MHz): &quot;..cpu.clock()/1000000)
+print(&quot;System CPU:         &quot;..pd.cpu())
+
+
+If anyone else wants to try this game, I get the following:
+Total Time (sec):   17.395011
+System Clock (MHz): 50
+System CPU:         LM3S6965
+
+If I went any higher, it seemed to run out of memory for me :-)
+
+On Feb 18, 2009, at 4:04 PM, Bogdan Marinescu wrote:
+
+&gt;<i> This won't be as relevant, different platforms have different  
+</I>&gt;<i> initial clock speeds. The clock speed must first be set to its  
+</I>&gt;<i> maximum, then the script must be run, otherwise the results won't be  
+</I>&gt;<i> meaningful. It just happens that on LM3S the timer frequency is  
+</I>&gt;<i> equal to the clock speed.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Feb 18, 2009 at 11:46 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;  
+</I>&gt;<i> wrote:
+</I>&gt;<i> Fernando, could you run this simple script on the EK-1100 and report  
+</I>&gt;<i> AVR32 performance ?
+</I>&gt;<i>
+</I>&gt;<i> We have a MOD711, with an ST711 (ARM7) too but after strugling (and  
+</I>&gt;<i> achieving ! :) to make it work on Linux,  OpenOCD now refuses to  
+</I>&gt;<i> flash our kit :( :( :( :(
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Feb 18, 2009 at 17:15, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> OK. At least I know my compiler isn't messed up :-)
+</I>&gt;<i>
+</I>&gt;<i> I'm curious now though whether similarly clocked ARM7 vs AVR vs  
+</I>&gt;<i> Cortex-M3 (ARM Thumb2) vs etc.. do for these types of tests.
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i> On Feb 18, 2009, at 10:24 AM, Dado Sutter wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hello,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Feb 18, 2009 at 10:59, James Snyder  
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; On Wed, Feb 18, 2009 at 02:19, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> 
+</I>&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> So, one of the things I've been doing recently is tracking timing  
+</I>&gt;&gt;<i> data for adcscope.lua when running it.  I've found certain things  
+</I>&gt;&gt;<i> that increase or decrease the amount of time spent getting samples,  
+</I>&gt;&gt;<i> but I hadn't actually checked what the bare minimum time would be  
+</I>&gt;&gt;<i> for a dry loop like the following:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; term.clrscr()
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; while 1 do
+</I>&gt;&gt;<i> &gt;  t1 = tmr.start(0)
+</I>&gt;&gt;<i> &gt;  t2 = tmr.read(0)
+</I>&gt;&gt;<i> &gt;  dtime = tmr.diff(0,t2,t1)
+</I>&gt;&gt;<i> &gt;  term.gotoxy(1,1)
+</I>&gt;&gt;<i> &gt;  term.putstr(string.format(&quot;Time (us): %06d&quot;,dtime))
+</I>&gt;&gt;<i> &gt; end
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; For LM3S6965, I get 79 us.  Is this correct?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 79us exactly in my EK-LM3S8962 too.
+</I>&gt;&gt;<i> (And I've figured out that you have disabled XMODEM Xfer on your  
+</I>&gt;&gt;<i> build :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Abra&#231;osssssssssss
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 644-2322
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/009926b0/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/009926b0/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/009926b0/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/009926b0/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000557.html">[eLua-dev] Timing
+</A></li>
+	<LI>Next message: <A HREF="000560.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#559">[ date ]</a>
+              <a href="thread.html#559">[ thread ]</a>
+              <a href="subject.html#559">[ subject ]</a>
+              <a href="author.html#559">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

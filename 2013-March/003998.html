@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua network stack
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20network%20stack&In-Reply-To=%3C4DF7026E-01F3-45F1-AACE-F6D35938BBDF%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003995.html">
+   <LINK REL="Next"  HREF="003999.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua network stack</H1>
+    <B>Lukas Kacer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20network%20stack&In-Reply-To=%3C4DF7026E-01F3-45F1-AACE-F6D35938BBDF%40gmail.com%3E"
+       TITLE="[eLua-dev] eLua network stack">kacer.lukas at gmail.com
+       </A><BR>
+    <I>Thu Mar 21 23:37:20 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003995.html">[eLua-dev] eLua network stack
+</A></li>
+        <LI>Next message: <A HREF="003999.html">[eLua-dev] eLua network stack
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3998">[ date ]</a>
+              <a href="thread.html#3998">[ thread ]</a>
+              <a href="subject.html#3998">[ subject ]</a>
+              <a href="author.html#3998">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Gabriel, did you get that message with dropbox link and short description of the code I sent directly to your email address? 
+
+On Mar 20, 2013, at 20:00 PM, Gabriel Duarte wrote:
+
+&gt;<i> Please, do it :-)
+</I>&gt;<i> 
+</I>&gt;<i> Thank you very much!
+</I>&gt;<i> 
+</I>&gt;<i> 2013/3/19 Lukas Kacer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">kacer.lukas at gmail.com</A>&gt;
+</I>&gt;<i> I was thinking that I would upload  my project (with all the mess) to dropbox and 
+</I>&gt;<i> send link to all of you who are interested if you will promise that you will not publish 
+</I>&gt;<i> it new few months. 
+</I>&gt;<i> So anyone who wants it now can send me direct email. I will try to upload it this evening.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Mar 19, 2013, at 15:49 PM, Gabriel Duarte wrote:
+</I>&gt;<i> 
+</I>&gt;&gt;<i> You could at least show how to compile lwIP and connect it to eLua :)
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 2013/3/19 Lukas Kacer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">little.lduck at gmail.com</A>&gt;
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> On Mar 19, 2013, at 12:18 PM, martinwguy wrote:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> &gt; On 19 March 2013 03:03, Lukas Kacer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">kacer.lukas at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt; I was able to use LwIP raw tcp api and matrixSSL with eLua on at91sam7x512
+</I>&gt;&gt;<i> &gt;&gt; port.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; !
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; In my case, the TCP server is calling lua scripts to execute
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; !!
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; I implemented even the write to the network s blocking, so
+</I>&gt;&gt;<i> &gt;&gt; your script is halted until other site do not send ACK on your data.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; How do you inplement the extra interfaces at a Lua level? Extensions
+</I>&gt;&gt;<i> &gt; to the &quot;net&quot; module?
+</I>&gt;&gt;<i> &gt; Or do you just implement the existing &quot;net&quot; interface?
+</I>&gt;&gt;<i> I removed all net module code.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> The script execution is driven by events in the network. it's working like this:
+</I>&gt;&gt;<i> Bind to network port is done in different script (or C startup code)
+</I>&gt;&gt;<i> than the network read and write functions. The script with read/write functions
+</I>&gt;&gt;<i> is executed when new connection appears from callback function called from lwIP.
+</I>&gt;&gt;<i> the only problem with this is, that you need to exit that callback function and return
+</I>&gt;&gt;<i> to lwIP to read more data or make real write to network. you can call lwip tcp_send()
+</I>&gt;&gt;<i> but that data will be buffered and will leave tcp/ip stack after return from callback. To
+</I>&gt;&gt;<i> solve this I do setjmp(parent); setjmp(child); child[x] = malloc(stack_size) before executing
+</I>&gt;&gt;<i> script and from in module.write/read functions I do setjmp(child); longjmp(parrent).
+</I>&gt;&gt;<i> this &quot;pauses&quot; execution of script until you get ACK from client on sent data or you
+</I>&gt;&gt;<i> have new data to read.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> setjmp(child); child[x] = malloc(stack_size)  is creating new stack for lua script that
+</I>&gt;&gt;<i> will be executed. it's platform depended, but it is not something
+</I>&gt;&gt;<i> hard to do. you just net to find out where setjmp save register with stack address.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> it is a little bit more complicated I'm my code, as I have also matrixSSL between
+</I>&gt;&gt;<i> lwIP and lau script. And the lua script is in my case WSAPI, which I had to partially
+</I>&gt;&gt;<i> rewrite to C, because I was running out of memory.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; It is a
+</I>&gt;&gt;<i> &gt;&gt; little bit platform depended and probably not the best for client
+</I>&gt;&gt;<i> &gt;&gt; applications, but I think is perfect for servers.
+</I>&gt;&gt;<i> &gt;&gt; Do you need network server or client support? which platform are you using?
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Speaking from a developer point of view, that is not a problem to
+</I>&gt;&gt;<i> &gt; consider when designing a new network interface because people will
+</I>&gt;&gt;<i> &gt; want clients, servers, client-servers, and on all platforms. The
+</I>&gt;&gt;<i> &gt; interface must allow everything that people might want.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Speaking from a developer point of eLua yes. But I wanted to know if he wants network
+</I>&gt;&gt;<i> support for some specific project and if it's close to my one, I would be able to help him.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> I know that a lot of users would love to see clients, servers, client-servers support and
+</I>&gt;&gt;<i> the best to port apps to eLua is luasockets, but I not sure if socket API is the good one for eLua and
+</I>&gt;&gt;<i> would not be much easier and effective to create just some kind of wrappers for lwIP.
+</I>&gt;&gt;<i> From what I see, in actual eLua net module(which is socket based) is impossible to create server(s) unless
+</I>&gt;&gt;<i> you want to read with timeout in loop from all sockets that you opened. And in C code
+</I>&gt;&gt;<i> of net module you then do loop read until you read something or timeout expires if I
+</I>&gt;&gt;<i> remember it right. And as it is embedded system, we should care about that as
+</I>&gt;&gt;<i> it can be problem for some users/devices/applications.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; I plan to publish my project to open source community as soon as it will be
+</I>&gt;&gt;<i> &gt;&gt; published in school what could be in April or May.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I can't wait! If you can arrive earlier that is good, as it will maybe
+</I>&gt;&gt;<i> &gt; save us some time.
+</I>&gt;&gt;<i> not sure if you/anyone should wait for that. I think now that your goal is probably
+</I>&gt;&gt;<i> different from what my project does.  When I was choosing/creating the theme more
+</I>&gt;&gt;<i> than year ago, I wanted to create some real value to the community. But now I see
+</I>&gt;&gt;<i> it moved to totally different direction and I'm not sure if it is wort of something
+</I>&gt;&gt;<i> (besides one fixed bug in matrixSSL api) and all I want is finally publish it == finish school
+</I>&gt;&gt;<i> and get a real job.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Lukas
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;   M
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> -- 
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Gabriel Duarte
+</I>&gt;&gt;<i> Linux User #471185
+</I>&gt;&gt;<i> Rio de Janeiro / RJ
+</I>&gt;&gt;<i> <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> --
+</I>&gt;<i> Gabriel Duarte
+</I>&gt;<i> Linux User #471185
+</I>&gt;<i> Rio de Janeiro / RJ
+</I>&gt;<i> <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130321/d131fa87/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130321/d131fa87/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003995.html">[eLua-dev] eLua network stack
+</A></li>
+	<LI>Next message: <A HREF="003999.html">[eLua-dev] eLua network stack
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3998">[ date ]</a>
+              <a href="thread.html#3998">[ thread ]</a>
+              <a href="subject.html#3998">[ subject ]</a>
+              <a href="author.html#3998">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

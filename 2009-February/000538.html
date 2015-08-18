@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Keplerizing eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Keplerizing%20eLua&In-Reply-To=%3C92ab989c0902181158o5c2ebbb0la0cba63462fb905c%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000536.html">
+   <LINK REL="Next"  HREF="000537.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Keplerizing eLua</H1>
+    <B>Andre Carregal</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Keplerizing%20eLua&In-Reply-To=%3C92ab989c0902181158o5c2ebbb0la0cba63462fb905c%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Keplerizing eLua">carregal at pobox.com
+       </A><BR>
+    <I>Wed Feb 18 20:58:16 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000536.html">[eLua-dev] Keplerizing eLua
+</A></li>
+        <LI>Next message: <A HREF="000537.html">[eLua-dev] Keplerizing eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#538">[ date ]</a>
+              <a href="thread.html#538">[ thread ]</a>
+              <a href="subject.html#538">[ subject ]</a>
+              <a href="author.html#538">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Feb 18, 2009 at 4:36 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> I'm sorry people, but I'm really trying to release 0.6 before the end of
+</I>&gt;<i> this month, which means next week. Which means we won't be touching nothin
+</I>&gt;<i> on the networking side of 0.6 (as the time it's way too short and that
+</I>&gt;<i> module is very complex), but of course we can talk about the changes that we
+</I>&gt;<i> should implement later.
+</I>
+I agree completely, let's work on this for a later release, but I
+guess we can talk about the issues involved, right?
+
+&gt;<i> On Wed, Feb 18, 2009 at 9:31 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> What I would like to begin with, for v0.6 if possible, is a _much_ simpler
+</I>&gt;&gt;<i> task. I only need to review the net module syntax (maybe to hear some
+</I>&gt;&gt;<i> opinions on the semantics but we'll probably not have time to implement it
+</I>&gt;&gt;<i> to v0.6) and the template files, for their extensions (lua pages?, lua
+</I>&gt;&gt;<i> scripts?).
+</I>
+Is there any docs on the current net module API?
+
+&gt;&gt;<i> For a WASAPI bind, it seems that we would need a real net.select().
+</I>
+True, but we managed to go quite far with the first version of Xavante
+running on Symbian. No select() and no threads... :o)
+
+&gt;&gt;<i> Although we can simulate one with what we have today, this will probably
+</I>&gt;&gt;<i> be left for later, as Bogdan will replace our TCP/IP Stack (uIP) for another
+</I>&gt;&gt;<i> one, somewhere in the future.
+</I>
+If you don't mind polling, select() is a luxury.
+
+&gt;&gt;<i> Orbit and Sputnik seem very promissing for the embedded world too but not
+</I>&gt;&gt;<i> before we have 1MB+ RAM on our kits. This is already available on some with
+</I>&gt;&gt;<i> external memory controllers.
+</I>
+I agree that Orbit and Sputnik can wait, but I'm not sure they need
+that much memory.
+
+&gt;&gt;<i> The main idea of lhttpd.lua was to show that a web server can be
+</I>&gt;&gt;<i> completely written in Lua and still perform pretty well. The problems we've
+</I>&gt;&gt;<i> had with ours show to have come from uIP, not from lhttpd.lua.
+</I>
+No problem, let's focus on the net module then. I just think that once
+you have a webserver, adding WSAPI is very cost effective. Keep in
+mind that you can use Cosmo for the templates too, and Cosmo may even
+be useful for output processing (logs, display etc).
+
+&gt;&gt;<i> It seems to me (although I would like to hear more from you all) that for
+</I>&gt;&gt;<i> v0.6 we could:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - Change the opening block tag for Lua code in srvr scripts for &lt;% (as
+</I>&gt;&gt;<i> used in Kepler)
+</I>
+If you are willing to change the current syntax, I'd suggest trying
+one of the template processor that are available. We have Lua Pages,
+Cosmo Pages and Cosmo itself.
+
+&gt;&gt;<i> - .lp extension for html files with Lua web scripting code embedded (&lt;%
+</I>&gt;&gt;<i> Lua code %&gt;
+</I>
+That would be Lua Pages. See the lp.lua file in CGILua:
+<A HREF="http://luaforge.net/plugins/scmcvs/cvsweb.php/cgilua/src/cgilua/?cvsroot=cgilua">http://luaforge.net/plugins/scmcvs/cvsweb.php/cgilua/src/cgilua/?cvsroot=cgilua</A>
+
+&gt;&gt;<i> - Review the basic syntax of the net module (I'm sure this will trigger a
+</I>&gt;&gt;<i> loooong discussion on many other features :)
+</I>
+Feel free to hold the discussion until 0.6 is released if you prefer.
+
+Andr&#233;
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000536.html">[eLua-dev] Keplerizing eLua
+</A></li>
+	<LI>Next message: <A HREF="000537.html">[eLua-dev] Keplerizing eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#538">[ date ]</a>
+              <a href="thread.html#538">[ thread ]</a>
+              <a href="subject.html#538">[ subject ]</a>
+              <a href="author.html#538">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

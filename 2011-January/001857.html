@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BPATCH%5D%20Fix%20avr32%20MMCFS%20on%20EVK1100%20and%20MIZAR32&In-Reply-To=%3CAANLkTi%3DdH9hTDpeMMjCoE_xX8omxyhzBmHE676k2Hohr%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001844.html">
+   <LINK REL="Next"  HREF="001870.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BPATCH%5D%20Fix%20avr32%20MMCFS%20on%20EVK1100%20and%20MIZAR32&In-Reply-To=%3CAANLkTi%3DdH9hTDpeMMjCoE_xX8omxyhzBmHE676k2Hohr%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32">martinwguy at gmail.com
+       </A><BR>
+    <I>Sat Jan 15 16:15:42 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001844.html">[eLua-dev] [ANN] eLua Issue Tracker
+</A></li>
+        <LI>Next message: <A HREF="001870.html">[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1857">[ date ]</a>
+              <a href="thread.html#1857">[ thread ]</a>
+              <a href="subject.html#1857">[ subject ]</a>
+              <a href="author.html#1857">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 18 December 2010 18:55, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Dec 17, 2010 at 5:36 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> now only the tiny attached patch is needed to make MMCFS work on
+</I>&gt;&gt;<i> Mizar32 and EVK1100 (and EVK1101 if we can test it), defining
+</I>&gt;&gt;<i> MMCFS_CS_{PORT,PIN}.
+</I>&gt;<i>
+</I>&gt;<i> Your patch is now in trunk.
+</I>
+Thanks. That works fine now.
+It also works with the tiny patch that I forgot to attach, which is:
+
+--- elua-svn.orig/src/elua_mmc.c	2011-01-15 15:41:26.274154000 +0100
++++ elua-svn/src/elua_mmc.c	2011-01-15 15:42:06.974154016 +0100
+@@ -35,14 +35,14 @@
+ static
+ void SELECT (void)
+ {
+-    platform_pio_op( MMCFS_CS_PORT , ( ( u32 ) 1 &lt;&lt; MMCFS_CS_PIN ),
+PLATFORM_IO_PIN_CLEAR );
++    platform_spi_select( MMCFS_SPI_NUM, PLATFORM_SPI_SELECT_ON );
+ }
+
+ // de-asserts the CS pin to the card
+ static
+ void DESELECT (void)
+ {
+-    platform_pio_op( MMCFS_CS_PORT, ( ( u32 ) 1 &lt;&lt; MMCFS_CS_PIN ),
+PLATFORM_IO_PIN_SET );
++    platform_spi_select( MMCFS_SPI_NUM, PLATFORM_SPI_SELECT_OFF );
+ }
+
+
+Which seems more elegant, or is this the change that you say breaks
+MMCFS on other platforms?
+platform_spi_select() is present in the avr32, stm32 and lm3s ports.
+
+    M
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: elua-avr32-MMCFS-use-spi_select.patch
+Type: text/x-patch
+Size: 689 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110115/a90ee389/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20110115/a90ee389/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001844.html">[eLua-dev] [ANN] eLua Issue Tracker
+</A></li>
+	<LI>Next message: <A HREF="001870.html">[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1857">[ date ]</a>
+              <a href="thread.html#1857">[ thread ]</a>
+              <a href="subject.html#1857">[ subject ]</a>
+              <a href="author.html#1857">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

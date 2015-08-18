@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ADC platform interface proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20platform%20interface%20proposal&In-Reply-To=%3C831544177.354031232395567515.JavaMail.root%40mail-1.01.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000294.html">
+   <LINK REL="Next"  HREF="000296.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ADC platform interface proposal</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20platform%20interface%20proposal&In-Reply-To=%3C831544177.354031232395567515.JavaMail.root%40mail-1.01.com%3E"
+       TITLE="[eLua-dev] ADC platform interface proposal">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jan 19 21:06:07 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000294.html">[eLua-dev] disp.stringdraw
+</A></li>
+        <LI>Next message: <A HREF="000296.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#295">[ date ]</a>
+              <a href="thread.html#295">[ thread ]</a>
+              <a href="subject.html#295">[ subject ]</a>
+              <a href="author.html#295">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've got an initial attempt at the ADC module sketched out, and I'll check it in as soon as I make a few more modifications to clean things up and make sure I haven't broken builds for platforms that don't have ADC implementations written yet.  So far it will happily do single shot readings, and the voltages I'm putting in seem to correlate with what I'd expect.
+
+Currently I'm testing it by outputting text on the OLED, and I suppose I could turn it into a little oscilloscope demo.
+
+Some thoughts aside from the responses below:
+As things stand, I'm returning the raw integer value provided off of the ADC.  Should the ADC module know what range of voltage inputs is and attempt to convert to say, millivolts, when a sample is returned?  For lower bit depths, like 10 bits, having the result returned as u16 in millivolts wouldn't decimate the resolution of the result, however at higher resolutions converting a raw integer result to mV might result in loss of precision without floating point.  This is one of those &quot;level of abstraction&quot; questions that might be valuable to discuss.  I suppose, one way to handle things would be to have this functionality be optional, but which should be the default?
+
+Another item is:  If I do a single shot conversion, and then subsequently call the function to get a sample, should default behavior be to keep returning the last result?  I've found that at least with the Stellaris platform the results are stored in a FIFO, so the first time I get my result, and the second time I get a default value (presumably telling me that the FIFO is empty).  Any thoughts?
+
+
+----- &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> &gt; In a related vein, one thing that I've not used on micros that much,
+</I>&gt;<i> but
+</I>&gt;<i> &gt; have on dedicated ADC boards is the use of triggers for sampling. 
+</I>&gt;<i> This
+</I>&gt;<i> &gt; would be particularly useful for burst sampling.  Sometimes this is
+</I>&gt;<i> done
+</I>&gt;<i> &gt; based on the signal itself, but often with a digital trigger.  The
+</I>&gt;<i> digital
+</I>&gt;<i> &gt; trigger should be pretty easy to do by having the kickoff be
+</I>&gt;<i> interrupt
+</I>&gt;<i> &gt; driven.  If a board doesn't support external interrupts, you could
+</I>&gt;<i> always
+</I>&gt;<i> &gt; emulate it by polling, although it's not as good.
+</I>&gt;<i> 
+</I>&gt;<i> True, but I don't know much about the possible triggering sources on
+</I>&gt;<i> different platforms, so I don't know how to formulate this into a
+</I>&gt;<i> proper API.
+</I>
+Yeah, I don't know either.  It is present in the stellaris platform, I'd have to check on other platforms.  I can
+
+One somewhat generic way to configure them would be to use hardware when available, and set up ISRs tied to whatever would initiate the triggering.  So, in some cases you'd get the hardware benefit, and in other cases it would still work, but you'd lose more clock cycles.  I'll leave this on the back burner for the moment, and if I find that I need it for a project I could evaluate at that time what the other platforms do for this sort of thing and at that time think further about adding such features.  I think it may be a good idea to think about the API accommodating such additions gracefully.
+
+Previously I've used it for things like making sure that when I sample an oscillating signal (like output from a function generator), that I start my sampling at the same point in the phase of the signal.  This isn't such a big deal when you're something like an order of magnitude or more higher than the Nyquist rate, but it can be useful when you aren't, but have a TTL signal synced with whatever source you're using.
+
+&gt;<i> 
+</I>&gt;<i> &gt; I guess this brings up the question:  do we allow arbitrary pin
+</I>&gt;<i> selection
+</I>&gt;<i> &gt; regardless of whether it will generate interrupts?  I have less
+</I>&gt;<i> knowledge of
+</I>&gt;<i> &gt; how this is supported on various 32-bit platforms that eLua is
+</I>&gt;<i> running on.
+</I>&gt;<i> &gt;  IIRC, the LM3S boards can do interrupts on any pin.
+</I>&gt;<i> 
+</I>&gt;<i> Yes, but are any of them possible triggers for the ADC?
+</I>
+I'm not sure about arbitrary pins generating the right sort of interrupt, but certainly on Stellaris you can trigger ADC to start on GPIO, a comparator, timer, and also PWM.
+
+&gt;<i> 
+</I>&gt;<i> &gt; With this in mind, this is what I came up with:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; int platform_adc_exists( unsigned id ); // generic, it will be part
+</I>&gt;<i> of
+</I>&gt;<i> &gt; src/common.c
+</I>&gt;<i> &gt; u16 platform_adc_sample( unsigned id ); // sample the specified ADC
+</I>&gt;<i> channel
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; OK.  So this will return the latest sample collected?  Does it block
+</I>&gt;<i> waiting
+</I>&gt;<i> &gt; for completion if the latest one hasn't finished yet?
+</I>&gt;<i> 
+</I>&gt;<i> Yes on both questions.
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Also, should this behavior be different in continuous vs single
+</I>&gt;<i> shot? i.e.:
+</I>&gt;<i> &gt; Single Shot: wait for sample if not ready
+</I>&gt;<i> &gt; Continuous: take whatever the last completed sample was?  wait for
+</I>&gt;<i> next
+</I>&gt;<i> &gt; sample? (I think the former would make more sense as a reason to
+</I>&gt;<i> use
+</I>&gt;<i> &gt; continuous sampling).
+</I>&gt;<i> 
+</I>&gt;<i> Not sure yet. I think the difference should be in the
+</I>&gt;<i> &quot;platform_adc_sample&quot; function, which should know how to behave in
+</I>&gt;<i> both 'single' and 'continous' modes.
+</I>
+Right, I agree.  I think what I'll do here is take a look at at least one or two other hardware implementations and check on some of the assumptions made about data stored in the ADC result register.  If one can pretty easily read the register that contains the conversion result without worrying about weird states in between conversions, then it could be rather lightweight to read the last result.  If it's more complicated, we'll have to see.
+
+&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; void platform_adc_start( unsigned id ); // starts a conversion on
+</I>&gt;<i> the
+</I>&gt;<i> &gt; specified ADC channel and returns immediately
+</I>&gt;<i> &gt; int platform_adc_is_done( unsigned id ); // returns 1 if the
+</I>&gt;<i> conversion on
+</I>&gt;<i> &gt; the specified channel ended, 0 otherwise
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I wonder if in the case of using an interpreted language like Lua
+</I>&gt;<i> that one
+</I>&gt;<i> &gt; might be converting values fast enough that having some sort of loop
+</I>&gt;<i> waiting
+</I>&gt;<i> &gt; for the data to be done might not be fruitful, at least in single
+</I>&gt;<i> shot mode?
+</I>&gt;<i> 
+</I>&gt;<i> It might be, but as this is highly dependent on the platform we won't
+</I>&gt;<i> make this assumption, going to the more generic route instead.
+</I>
+I see your point, especially if the driver might handle something like an external ADC where results need to be shipped back over some sort of serial communication.  Or if one is using interrupt driven sampling, if that interrupt hasn't fired, you might not have a result either.
+
+&gt;<i> 
+</I>&gt;<i> &gt; void platform_adc_set_mode( unsigned id, int mode ); // sets the
+</I>&gt;<i> mode on the
+</I>&gt;<i> &gt; specified ADC channel to either &quot;single shot&quot; or &quot;continuous&quot;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Hmm.. what about adding a filtered/smoothed mode? By this I don't
+</I>&gt;<i> mean
+</I>&gt;<i> &gt; anything particularly intense, perhaps just a ring buffer of a set
+</I>&gt;<i> length
+</I>&gt;<i> &gt; that gets averaged whenever platform_adc_sample is called.  I find
+</I>&gt;<i> myself
+</I>&gt;<i> &gt; frequently doing things like this when sampling things that are
+</I>&gt;<i> noisier than
+</I>&gt;<i> &gt; the best resolution the ADC can deliver.  My only thought here would
+</I>&gt;<i> be that
+</I>&gt;<i> &gt; the C code might do this faster than doing the averaging in Lua.
+</I>&gt;<i> &gt; One way to handle this somewhat elegantly would be to not even add
+</I>&gt;<i> anything
+</I>&gt;<i> &gt; to the mode function, just have the default buffer be of length 1,
+</I>&gt;<i> and under
+</I>&gt;<i> &gt; this condition, no smoothing is done.  If you want it, use the
+</I>&gt;<i> following
+</I>&gt;<i> &gt; function to enable the rolling average:
+</I>&gt;<i> &gt; void platform_adc_set_smoothing( unsigned id, int length ); // sets
+</I>&gt;<i> window
+</I>&gt;<i> &gt; length/buffer size for moving average filter
+</I>&gt;<i> &gt; Does this seem too much to have in the library?
+</I>&gt;<i> 
+</I>&gt;<i> No, actually this is a very good idea. In all the apps I used so far
+</I>&gt;<i> I
+</I>&gt;<i> needed to implement a moving average filter in order to actually use
+</I>&gt;<i> the data I read from the ADC. Even more, some platforms (like LM3S)
+</I>&gt;<i> have hardware filters, which is even cooler. So yes, let's add this
+</I>&gt;<i> too.
+</I>
+OK, will do.  This is not yet implemented, but I'll look into doing a generic filter first, and then try and use the hardware support on the hardware averaging.
+
+&gt;<i> 
+</I>&gt;<i> &gt; void platform_adc_burst( unsigned id, u16* buf, unsigned count, u32
+</I>&gt;<i> &gt; frequency ); // burst conversion: read &quot;count&quot; samples from the ADC
+</I>&gt;<i> channel
+</I>&gt;<i> &gt; &quot;id&quot;, storing the results in &quot;buf&quot;. The samples are read at
+</I>&gt;<i> periodic
+</I>&gt;<i> &gt; intervals, the period is given by &quot;frequency&quot;.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I like this as well.
+</I>&gt;<i> &gt; One thing that might be interesting to provide as well, would be
+</I>&gt;<i> some method
+</I>&gt;<i> &gt; to do this type of recording directly to a binary file in the mini
+</I>&gt;<i> &gt; filesystem or onto an SD card or something similar.  This could be
+</I>&gt;<i> useful if
+</I>&gt;<i> &gt; one wants to capture more data than can be held in SRAM at once, but
+</I>&gt;<i> the
+</I>&gt;<i> &gt; sampling rate would have to drop down to much to record and transfer
+</I>&gt;<i> data a
+</I>&gt;<i> &gt; machine connected to the micro.
+</I>&gt;<i> 
+</I>&gt;<i> This is a logging application by itself :), and since it could be
+</I>&gt;<i> implemented directly from Lua, let's not do this in the ADC platform
+</I>&gt;<i> interface, it's beyond its purpose. One thing that we could do for
+</I>&gt;<i> this kind of applications is to make the platform_adc_burst function
+</I>&gt;<i> non-blocking, so one can use double buffering (or even better give it
+</I>&gt;<i> another argument to specifiy if it's blocking or not). Something like
+</I>&gt;<i> this:
+</I>&gt;<i> 
+</I>&gt;<i> local buf1, buf2
+</I>&gt;<i> local active = buf1
+</I>&gt;<i> adc.start_burst( active, ... , adc.NONBLOCKING )
+</I>&gt;<i> while true do
+</I>&gt;<i>   local newactive = active == buf1 and buf2 or buf1
+</I>&gt;<i>   while adc.burst_in_progress( active, ...) do end
+</I>&gt;<i>   adc.start_burst( newactive, ... adc.NONBLOCKING )
+</I>&gt;<i>   io.write( active )
+</I>&gt;<i>   active = newactive
+</I>&gt;<i> end
+</I>&gt;<i> 
+</I>&gt;<i> I have other ideas about this. Another mode I'm considering is having
+</I>&gt;<i> the ADC acquisition run continously &quot;in the background&quot; (using
+</I>&gt;<i> interrupt handlers) at a given frequency (with averaging if required)
+</I>&gt;<i> and running over a circular buffering mechanism that would provide
+</I>&gt;<i> functions like &quot;get_num_samples&quot;, or (when interrupts handlers in Lua
+</I>&gt;<i> are implemented) interrupt triggering at a specified buffer fill rate
+</I>&gt;<i> (in much the same way most UARTs with FIFOs can trigger an interrupt
+</I>&gt;<i> when the FIFO is filled up to a given ratio). It would be much easier
+</I>&gt;<i> to implement double buffering with something like this. But we're not
+</I>&gt;<i> there just yet :)
+</I>
+Right.  This is somewhat similar to what I'm thinking as well.  Some of this should be fairly easy with hardware support provided on LM3S, but the generic fallback that works on all platforms should be implemented first.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000294.html">[eLua-dev] disp.stringdraw
+</A></li>
+	<LI>Next message: <A HREF="000296.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#295">[ date ]</a>
+              <a href="thread.html#295">[ thread ]</a>
+              <a href="subject.html#295">[ subject ]</a>
+              <a href="author.html#295">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

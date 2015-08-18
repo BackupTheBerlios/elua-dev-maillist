@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] mbed RTC module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20mbed%20RTC%20module&In-Reply-To=%3CCAL4-wQqEi-nuH9_Jmd4n_o9xbX2JwHbGCKV5O3go_XCx3Hb54g%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003612.html">
+   <LINK REL="Next"  HREF="003614.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] mbed RTC module</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20mbed%20RTC%20module&In-Reply-To=%3CCAL4-wQqEi-nuH9_Jmd4n_o9xbX2JwHbGCKV5O3go_XCx3Hb54g%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] mbed RTC module">martinwguy at gmail.com
+       </A><BR>
+    <I>Sat Jun 23 05:00:31 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003612.html">[eLua-dev] mbed RTC module
+</A></li>
+        <LI>Next message: <A HREF="003614.html">[eLua-dev] mbed RTC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3613">[ date ]</a>
+              <a href="thread.html#3613">[ thread ]</a>
+              <a href="subject.html#3613">[ subject ]</a>
+              <a href="author.html#3613">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 23 June 2012 00:13, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+&gt;<i> a string formatted as dd/mm/yyyy hh:mm:ss
+</I>
+That still falls foul of meaning MM/DD/YYYY in the USA to people's eyes.
+
+&gt;<i> mbed.rtc.setalarm sets the alarm date and time ( same parameters as the set
+</I>&gt;<i> function )
+</I>&gt;<i> mbed.rtc.alarmed() returns true if the alarm was fired ( in case you're not
+</I>&gt;<i> using interrupts ) and clears the alarm flag
+</I>
+Thanks for this. I think some hardware can cause interrupts when the
+alarm fires.
+Do you have any ideas for that?
+
+&gt;<i> I intend to change the get function to be able to format the string ( as Lua
+</I>&gt;<i> does ).
+</I>
+I think there are already date-formatting routines in the Lua library which will
+format the same table as we are using. You go:
+
+print(os.date(&quot;%x&quot;, os.time(rtc.get()))
+
+however I agree that condensing that to rtc.get(&quot;%x&quot;), if they want
+mm/dd/yyyy or dd/mm/yyyy or whatever Lua gives by default.
+
+I have a nasty feeling though that the os.*() library is not present
+in eLua, so a custom hack may result in being smaller code.
+
+&gt;<i> I think the get() should return a string with a default format ( so we don't
+</I>&gt;<i> have locales. we could vote on which one )
+</I>
+the only unambiguous one is yyyy-mm-dd but it's a bit shocking to mortals :)
+
+   M
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003612.html">[eLua-dev] mbed RTC module
+</A></li>
+	<LI>Next message: <A HREF="003614.html">[eLua-dev] mbed RTC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3613">[ date ]</a>
+              <a href="thread.html#3613">[ thread ]</a>
+              <a href="subject.html#3613">[ subject ]</a>
+              <a href="author.html#3613">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

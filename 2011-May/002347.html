@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Panda Board status
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Panda%20Board%20status&In-Reply-To=%3CBANLkTimccNDQ9StUJgd6aRcTo6WsRvDRiA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002344.html">
+   <LINK REL="Next"  HREF="002348.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Panda Board status</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Panda%20Board%20status&In-Reply-To=%3CBANLkTimccNDQ9StUJgd6aRcTo6WsRvDRiA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Panda Board status">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed May  4 08:30:11 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002344.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+        <LI>Next message: <A HREF="002348.html">[eLua-dev] Panda Board status
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2347">[ date ]</a>
+              <a href="thread.html#2347">[ thread ]</a>
+              <a href="subject.html#2347">[ subject ]</a>
+              <a href="author.html#2347">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi (and sorry for the late reply),
+
+On Fri, Apr 29, 2011 at 8:08 AM, Tim Michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+
+&gt;<i> I've created a fork and have basic serial ports and USB CDC serial working.
+</I>&gt;<i> Now just getting the data from the USB virtual serial port to the eLua
+</I>&gt;<i> framework.
+</I>&gt;<i> For example, the virtual serial port=1 +the last physical serial port.  So
+</I>&gt;<i> all of the UART functions are still used with a switch or if statement to
+</I>&gt;<i> make the physical Serial port+1 to USB virtual Serial.  Thoughts?
+</I>&gt;<i>
+</I>&gt;<i> Also, where the headache is it may not be connected with the code is
+</I>&gt;<i> running
+</I>&gt;<i> IE USB is disconnected... But the virtual UART functions will return -1 in
+</I>&gt;<i> this case.
+</I>&gt;<i>
+</I>&gt;<i> The main issue is the USB CDC Serial can send a packet of data, more then
+</I>&gt;<i> one character.  So, looking at the code I was thinking of changing the
+</I>&gt;<i> common_uart.c
+</I>&gt;<i>
+</I>&gt;<i> static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+</I>&gt;<i> {
+</I>&gt;<i>  if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+</I>&gt;<i>    cmn_rx_handler( resnum, platform_s_uart_recv( resnum, 0 ) );
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> to
+</I>&gt;<i> static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+</I>&gt;<i> {
+</I>&gt;<i>  if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+</I>&gt;<i> {
+</I>&gt;<i>    u8 _data;
+</I>&gt;<i>    while (-1 != (_data = platform_s_uart_recv( resnum, 0 ))
+</I>&gt;<i>      cmn_rx_handler( resnum, _data );
+</I>&gt;<i>
+</I>&gt;<i> So this way it just gets all of the data and buffers it etc, if not using
+</I>&gt;<i> ISR it uses the standard UART functions.  Enabling Interrupts on USB Serial
+</I>&gt;<i> is just a stub.
+</I>&gt;<i>
+</I>&gt;<i> Thoughts? OR just way off base? --
+</I>&gt;<i>
+</I>
+Not way off base, but personally I think that the proper way to handle this
+would be to enable serial buffering (BUF_ENABLE_UART). This is exactly why
+we have buffers, they function as a &quot;bridge&quot; between two ends of a
+connection, one of which produces items and another consumes items,
+generally at different speeds. Please let me know if you need help with
+enabling the serial buffers.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110504/e17db787/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110504/e17db787/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002344.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+	<LI>Next message: <A HREF="002348.html">[eLua-dev] Panda Board status
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2347">[ date ]</a>
+              <a href="thread.html#2347">[ thread ]</a>
+              <a href="subject.html#2347">[ subject ]</a>
+              <a href="author.html#2347">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

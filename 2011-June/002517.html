@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTinL%2BMj_3EUcobrVgG0uvRDYioVEGw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002516.html">
+   <LINK REL="Next"  HREF="002519.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTinL%2BMj_3EUcobrVgG0uvRDYioVEGw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">martinwguy at gmail.com
+       </A><BR>
+    <I>Wed Jun 15 19:22:46 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002516.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002519.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2517">[ date ]</a>
+              <a href="thread.html#2517">[ thread ]</a>
+              <a href="subject.html#2517">[ subject ]</a>
+              <a href="author.html#2517">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 15 June 2011 18:36, Laurent Dufrechou &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">laurent.dufrechou at gmail.com</A>&gt; wrote:
+&gt;&gt;<i> On LM3S it should be:
+</I>&gt;&gt;<i> platform_i2c_start_and_send_address(0, address)
+</I>&gt;&gt;<i> platform_i2c_send_byte( 0, false, &amp;data, &#160; &#160; 20);
+</I>&gt;&gt;<i> platform_i2c_recv_byte( 0, true, &#160;&amp;data_rcv, 50); //true means stop.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You mean that i2c send can't be called 2 consecutive times on avr32?
+</I>
+&gt;&gt;<i>1) Redefine the eLua I2C APIs to express full I2C transfers as an
+</I>&gt;&gt;<i>arbitrary sequence of sends and receives.
+</I>&gt;<i>
+</I>&gt;<i> I follow you, it is too complex also from my point of view
+</I>
+&gt;&gt;<i>2) Leave the interface as it is and implement I2C on AVR32 as a
+</I>&gt;&gt;<i>bit-banging interface, completely forgetting their TWI hardware.
+</I>&gt;<i>
+</I>&gt;<i> Not efficient as you said.
+</I>
+In terms of execution speed it is about the same, since we must wait
+for the ACKs on sending, and must wait until the data arrives on
+receiving. I guess it uses more electrical power to do this with the
+CPU than with the hardware.
+My own problem with this is how disgusting it is to have to do it this way!
+
+&gt;<i> I prefer this approach but your restrain too much to your CPU way of doing.
+</I>
+Yes.  I see that you can implement more of I2C with your interface,
+but it doesn't express the possibility of different slave addresses
+between packets, which is needed for the synchronized data acquisition
+case.
+What do you think of just two functions:
+
+platform_i2c_master_send( id, address, &amp;data, 20, false );
+platform_i2c_master_recv( id, address, &amp;data_rcv, 50, true ); //true means stop.
+(hey, I moved the STOP flag to the end :)
+
+On AVR32, I need to know all the sending data and the receiving data
+at the same time, but I can do the one repeated-start case that it can
+perform by recognising the first part (send with 1-3 bytes and no
+stop), make a copy of the address and the 1-3 bytes, then use this
+data if the next call is a receive from the same address with stop.
+
+If you can't change the slave address between packets on LMS3/STR9,
+just check that it is the same?
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002516.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002519.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2517">[ date ]</a>
+              <a href="thread.html#2517">[ thread ]</a>
+              <a href="subject.html#2517">[ subject ]</a>
+              <a href="author.html#2517">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

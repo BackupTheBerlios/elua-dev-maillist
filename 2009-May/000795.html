@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Device Manager
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Device%20Manager&In-Reply-To=%3CEMEWEMEW2_DELIMl48Lr73a4ef0111e82d74483273a%2C%0A%09jbsnyder%40fanplastic.org%2C%20795742FD-5C1B-4951-805D-221%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000797.html">
+   <LINK REL="Next"  HREF="000801.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Device Manager</H1>
+    <B>jbsnyder at fanplastic.org</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Device%20Manager&In-Reply-To=%3CEMEWEMEW2_DELIMl48Lr73a4ef0111e82d74483273a%2C%0A%09jbsnyder%40fanplastic.org%2C%20795742FD-5C1B-4951-805D-221%3E"
+       TITLE="[eLua-dev] Device Manager">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sun May 10 04:53:07 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000797.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+        <LI>Next message: <A HREF="000801.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#795">[ date ]</a>
+              <a href="thread.html#795">[ thread ]</a>
+              <a href="subject.html#795">[ subject ]</a>
+              <a href="author.html#795">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+On May 9, 2009, at 2:57 PM, Bogdan Marinescu  
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Thu, May 7, 2009 at 9:00 PM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> I have a couple questions about the device manager and usage thereof:
+</I>&gt;<i>
+</I>&gt;<i> 1.
+</I>&gt;<i> In order to make LuaRPC fairly compatible with various transport  
+</I>&gt;<i> layers we might use, should I be making the transport layer use the  
+</I>&gt;<i> device manager?  I've not really delved into how all of that is set  
+</I>&gt;<i> up, but it looks like this may be a useful fundamental way to hook  
+</I>&gt;<i> into the transport layer?
+</I>&gt;<i>
+</I>&gt;<i> There isn't really a &quot;transport layer&quot; there, the device manager  
+</I>&gt;<i> only deals with files in the traditional sense at the moment, so you  
+</I>&gt;<i> can't have something like &quot;/dev/tty0&quot; (like in Linux) and treat it  
+</I>&gt;<i> just like another file. Well, you could, but the interface is just  
+</I>&gt;<i> too weak now I think. I actually give some thought to the idea of  
+</I>&gt;<i> having something like this in eLua, but came to the conclusion that  
+</I>&gt;<i> it isn't really worth the complexity of the implementation. What I'd  
+</I>&gt;<i> personally do is add another &quot;interface&quot; to the platform interface.
+</I>&gt;<i> I have to think about this more though. Not for the near future, but  
+</I>&gt;<i> for the long run. Having &quot;/dev/spix&quot; and &quot;/dev/uartx&quot; and &quot;talking&quot;  
+</I>&gt;<i> to them via read/write/ioctl like a regular file has a lot of  
+</I>&gt;<i> advantages, as well as some disadvantages. It sure seems tempting :)
+</I>
+OK. That's basically what I was wanting to know. On this front it  
+would be nice. I also thought about trying to support rpc or exposing  
+resources through plan 9's 9p. The Styx on a brick project (<A HREF="http://www.vitanuova.com/inferno/rcx_paper.html">http://www.vitanuova.com/inferno/rcx_paper.html</A> 
+) from a few years back implemented this resource sharing/filesystem  
+protocol on a lego mindstorms brick.  There's source for it on a  
+google code project (<A HREF="http://code.google.com/p/inferno-os/">http://code.google.com/p/inferno-os/</A>) but I'm not  
+sure if I'll get around to trying this or something similar. Part of  
+the idea in plan 9 was to expose pretty much every resource through  
+the filesystem, 9p is the protocol used.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Or should I have it work on a different level?  I think that the  
+</I>&gt;<i> device manager functions should over the bases for what the RPC  
+</I>&gt;<i> library needs (pretty much just sending and receiving bytes).  It  
+</I>&gt;<i> might be nice for it to &quot;automatically&quot; work if a new new transport  
+</I>&gt;<i> comes in so long as it conforms to an interface standard.
+</I>&gt;<i>
+</I>&gt;<i> Something like an automount daemon, if I got it right. eLua is  
+</I>&gt;<i> getting some file systems, so it should also get a &quot;mount&quot; command,  
+</I>&gt;<i> and maybe even an automount, but again, I'm not sure that the  
+</I>&gt;<i> current implementation allows for something more than just  
+</I>&gt;<i> operations on regular file. It might though. It definitely works on  
+</I>&gt;<i> consoles :), but a RPC transpor is probably too much for it. Even  
+</I>&gt;<i> with desktop systems we have to use very different functions when  
+</I>&gt;<i> writing to a console and writing to sockets, for example. That's why  
+</I>&gt;<i> I said that I'd rather have some specialized functions in the  
+</I>&gt;<i> platform interface for this, rather than making the device manager  
+</I>&gt;<i> (which is a pretentious name for a very simple piece of code) much  
+</I>&gt;<i> smarter than it is.
+</I>
+Not necessarily automount, I was more just thinking of a common  
+interface so that if one say added a new wireless stack and conformed  
+with the interface one could just use this transport layer for  
+console, rpc, etc without needing to do something custom for each  
+usage modality. I realize to some extent that this modality might beak  
+down somewhere but as with 9p one it seems like there should be a  
+possibility for a common filelike interface for not just files but  
+communication, direct control of non-file resources etc...
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2.
+</I>&gt;<i> Are the devman and stubs the main things that are newlib specific?
+</I>&gt;<i>
+</I>&gt;<i> Yes. And because of this it will change a lot when we give eLua its  
+</I>&gt;<i> own libc.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> If one were thinking about working on top of another libc, where  
+</I>&gt;<i> should one be focusing to need to find equivalent facilities in  
+</I>&gt;<i> another C library?
+</I>&gt;<i>
+</I>&gt;<i> There is already a branch in SVN on which I started to work on eLua  
+</I>&gt;<i> with its own libc, which is a modified (well, almost _unmodified_ at  
+</I>&gt;<i> this point) version of the Minix project's libc. Small, optimized  
+</I>&gt;<i> for size, quite easy to understand and released under BSD, that's  
+</I>&gt;<i> all we need :) There is _a lot_ of work to be done there, some  
+</I>&gt;<i> trivial, some not quite so (like deciding if we also use the math  
+</I>&gt;<i> emulation library from Minix (which I don't fully understand yet) ),  
+</I>&gt;<i> but I think we can go there. And once we do, the advantages are huge  
+</I>&gt;<i> IMO: complete portability, complete control over the library and how  
+</I>&gt;<i> it works (so we can implement our stubs however we wish), reduced  
+</I>&gt;<i> code size, (obviously) no more Newlib ... a dream come true :)
+</I>
+This would be nice to have. Have you read Ralph Hempel's article in  
+lua gems?  I juat got the book this week.  He doesn't provide all the  
+details but he does discuss some of the decisions he made about the c  
+library as well as some of the math library choices. In particular his  
+&quot;flong&quot; implementation, and I think he got his single precision math  
+library from sdcc (small device c compiler). I somewhat wish there  
+were more detail (or sources :) but he does provide some interesting  
+pointers.
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090509/9d4e5321/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090509/9d4e5321/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000797.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+	<LI>Next message: <A HREF="000801.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#795">[ date ]</a>
+              <a href="thread.html#795">[ thread ]</a>
+              <a href="subject.html#795">[ subject ]</a>
+              <a href="author.html#795">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

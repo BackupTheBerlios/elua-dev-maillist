@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Ram usage with byte resolution
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Ram%20usage%20with%20byte%20resolution&In-Reply-To=%3CCAL4-wQpPks_0bd-y%3DoeY9LGGfiNLUWewF%2B7CBAuSqS7CCVP8gA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003714.html">
+   <LINK REL="Next"  HREF="003716.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Ram usage with byte resolution</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Ram%20usage%20with%20byte%20resolution&In-Reply-To=%3CCAL4-wQpPks_0bd-y%3DoeY9LGGfiNLUWewF%2B7CBAuSqS7CCVP8gA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Ram usage with byte resolution">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Jul 19 14:51:53 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003714.html">[eLua-dev] Ram usage with byte resolution
+</A></li>
+        <LI>Next message: <A HREF="003716.html">[eLua-dev] Ram usage with byte resolution
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3715">[ date ]</a>
+              <a href="thread.html#3715">[ thread ]</a>
+              <a href="subject.html#3715">[ subject ]</a>
+              <a href="author.html#3715">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> is it possible to investigate the RAM usage of my lua program with byte
+</I>&gt;<i> resolution?
+</I>&gt;<i> Right now I found only collectgarbage(&quot;count&quot;) which gives me the usage in
+</I>&gt;<i> KB.
+</I>
+If you are using floating point eLua, the return value has fractional bits.
+
+&gt;<i> print (collectgarbage(&quot;count&quot;))
+</I>17.20703125
+&gt;<i> print (17.20703125 * 1024)
+</I>17620
+&gt;<i>
+</I>
+If you're using integer eLua you don't have this option.
+
+In Lua5.2, instead, it returns the KB and fraction of a KB as two
+results to address this problem. See
+<A HREF="http://www.lua.org/manual/5.2/manual.html#pdf-collectgarbage">http://www.lua.org/manual/5.2/manual.html#pdf-collectgarbage</A>
+so another option would be for you to build your eLua by porting
+Lua5.2 into it :)
+
+    M
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003714.html">[eLua-dev] Ram usage with byte resolution
+</A></li>
+	<LI>Next message: <A HREF="003716.html">[eLua-dev] Ram usage with byte resolution
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3715">[ date ]</a>
+              <a href="thread.html#3715">[ thread ]</a>
+              <a href="subject.html#3715">[ subject ]</a>
+              <a href="author.html#3715">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

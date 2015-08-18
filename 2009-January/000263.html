@@ -1,0 +1,220 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Platform specific modules proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Platform%20specific%20modules%20proposal&In-Reply-To=%3C81fbe47d0901091057k72863b86gcf303d758e02b49c%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000262.html">
+   <LINK REL="Next"  HREF="000264.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Platform specific modules proposal</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Platform%20specific%20modules%20proposal&In-Reply-To=%3C81fbe47d0901091057k72863b86gcf303d758e02b49c%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Platform specific modules proposal">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Jan  9 19:57:09 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000262.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+        <LI>Next message: <A HREF="000264.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#263">[ date ]</a>
+              <a href="thread.html#263">[ thread ]</a>
+              <a href="subject.html#263">[ subject ]</a>
+              <a href="author.html#263">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Glad to see things are moving in this area.
+
+On Fri, Jan 9, 2009 at 7:48 PM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt; wrote:
+
+&gt;<i> That sounds pretty good.  I had a slightly different approach in mind, but
+</I>&gt;<i> I am not sure how you would feel about it.  Basically the idea is we would
+</I>&gt;<i> turn the platform interface &quot;upside down&quot; from what it is now.  In other
+</I>&gt;<i> words, we would export only a (minimal compatible) Lua level interface,
+</I>&gt;<i> instead of the current way of exporting a generic (minimal) C interface.
+</I>&gt;<i> Each platform would be required to adhere to the minimal Lua interface (IE
+</I>&gt;<i> define the Lua module at the platform level), but at its discretion add
+</I>&gt;<i> additional functionality specific to that platform.
+</I>
+
+Having a generic C interface has advantages not related to Lua. For example,
+writing &quot;generic drivers&quot; for devices like serial ADCs/DACs, or SD/MMC cards
+in SPI mode. Each of these can fully benefit from the platform interface.
+
+
+&gt;<i> In this manner we could possibly give access to the various platform
+</I>&gt;<i> modules in terms of functionality, like tmr.has_a(16BIT_TIMER), and,
+</I>&gt;<i> tmr.tmr(TIMER1).capable_of(PULSE_CAPTURE). Since all timers at the top level
+</I>&gt;<i> basically provide the same kinds of functionality (but may not export it the
+</I>&gt;<i> same way) this very well could work.
+</I>
+
+Your interface seems to be &quot;more OOP&quot;, but IMO the code example above
+doesn't make it look more useful. For example, I'm actually trying to _hide_
+the fact that the platform has 8, 16 or 32 bit timers. As an eLua
+programmer, I shouldn't care about that too much, as I just want to use the
+timers for delays, or measuring elapsed time. Therefore, all I'd need (in an
+ideal world :) ) would be &quot;tmr.delay&quot; and &quot;tmr.gettimediff&quot;. Your approach
+does have the advantage of hiding some platform details from the user, in
+that he can actually ask the system to provide a timer that can do
+PULSE_CAPTURE without having to look through the datasheet trying to figure
+out which one does. This is something we should consider, but it would
+require a very good feature set (by &quot;feature&quot; I mean something like
+PULSE_CAPTURE) specified for all peripherals. Not an easy task.
+
+
+&gt;<i> An example usage might be something like:
+</I>&gt;<i>
+</I>&gt;<i> 16bit_timers = tmr.has_a(16BIT_TIMER) -- returns an array of static
+</I>&gt;<i> constant 'timer' objects
+</I>
+The above code would return 8 timer objects on the LM3S CPUs with 4 timer
+&gt;<i> modules, or 8 timer objects on an STM32F103ZE chip.
+</I>
+
+Please don't take this the wrong way, as it's not in anyway a critique, I'm
+just curious: am I right in presumimg that you're more accustomed to desktop
+programming than to embedded programming? I'm asking because you just
+allocated an array of objects that would steal a bit more of that oh so
+precious RAM :) You gave me an idea though: having a method called
+&quot;getcount&quot; or something similar for each module that would return the number
+of available resources of that kind could be useful.
+
+
+&gt;<i> 16bit_timers[1]:pair(twin) -- pairs a 16bit timer with its twin. The 2
+</I>&gt;<i> timers (and the associated 32bit pair) must be in the 'unlocked' state.
+</I>&gt;<i> Returns the static const 32bit timer object associated with the pair, or nil
+</I>&gt;<i> if an error occured.
+</I>
+
+Another interesting problem here. 16bit_timers:pair is a very specific
+method (from all the platforms I tried, LM3S is the only one able to
+&quot;concatenate&quot; two 16-bit timer channels into a single 32-bit channel). So in
+your view, the timer object would get together all the capabilities from all
+the platforms inside it, thus letting any platform add any capability (which
+was the original ideea, I know :) ). This has some drawbacks in my oppinion:
+
+- potential confusion. If some on (say) AT91SAM tries to do &quot;pair&quot; and gets
+a nil, it might not understand why at first.
+- documentation issues: having to specify for each function on what platform
+it works/doesn't work can be both hard to write and hard to read.
+- false sense of portability: if someone sees a code that says
+&quot;16bit_timers[1]:pair(twin)&quot; he might think something between the lines of
+&quot;cool, eLua can do pair, so I can get any board I want and enjoy this&quot;
+(let's face it: given a situation like this most people aren't going to RTFM
+until it's too late :) ). But when you say:
+
+lm3s.tmr.pair(0)
+tmr.delay(0,delay)
+
+it's a very strong hint that this code might not work on anything else than
+LM3S.
+
+16bit_timers[1]:lock() -- Marks a timer as used, so other processes (or
+&gt;<i> coding errors) do not interrupt a timers config.
+</I>&gt;<i> 16bit_timers[1]:unlock() -- Marks a timer as free to be reconfigured for
+</I>&gt;<i> other purposes.
+</I>
+
+This, on the other hand, is a very interesting idea. Locking/unlocking
+resources is gold, since you'll always know what resource you can or cannot
+use. Especially important in larger applications, where it's easier to loose
+track of resources. Of course, it also introduces a problem: if you call
+lock(), you must remember to call unlock(). C++ coders know that this is a
+problem, since they frequently forget to deallocate resources in their class
+destructors (I should know :) ). Or course, in Lua you could let the garbage
+collector help you, and even if you don't it's much easier to track down the
+problem, so this is something to keep in minde.
+
+Best,
+Bogdan
+
+
+&gt;<i> On Thu, Jan 8, 2009 at 4:16 PM, Bogdan Marinescu &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi again,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> As most of you know by now, our platform interface is generic enough to be
+</I>&gt;&gt;<i> implemented by any eLua target. The unfortunate side effect of this is that
+</I>&gt;&gt;<i> all the (potentially cool) specific features of each platform/board are left
+</I>&gt;&gt;<i> forgotten, and there's no way to access them directly. As some (probably
+</I>&gt;&gt;<i> most) people would gladly sacrifice portability over the possibility of
+</I>&gt;&gt;<i> taking full advantage of their CPUs, we need to find a way to address this
+</I>&gt;&gt;<i> need.
+</I>&gt;&gt;<i> This is my proposal:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - every platform will have a module which name is the same as the platform
+</I>&gt;&gt;<i> name (&quot;lm3s&quot; for LM3S, &quot;stm32&quot; for STM32, you got the picture :) )
+</I>&gt;&gt;<i> - this module will have two types of &quot;submodules&quot; (for want a better term;
+</I>&gt;&gt;<i> what I mean is that each module will be able to embed other modules inside
+</I>&gt;&gt;<i> it):
+</I>&gt;&gt;<i>   1. submodules with the same name as the &quot;standard&quot; modules. For example:
+</I>&gt;&gt;<i> lm3s.uart, lm3s.tmr, lm3s.pio and so on. These will add to the functionality
+</I>&gt;&gt;<i> of the &quot;standard&quot; modules by providing platform-specific functions.
+</I>&gt;&gt;<i>   2. submodules that implement features found only on that platform/board.
+</I>&gt;&gt;<i> Dado's &quot;disp&quot; module is a very good example of this. By having a module
+</I>&gt;&gt;<i> &quot;lm3s.disp&quot; we know for sure that we're reffering to a display that can be
+</I>&gt;&gt;<i> found on the LM3S board. This is a temporary solution, as a generic display
+</I>&gt;&gt;<i> architecture would be a much better choice, but it's still good enough for
+</I>&gt;&gt;<i> our needs IMO.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> What say you?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090109/297fbeef/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090109/297fbeef/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000262.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+	<LI>Next message: <A HREF="000264.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#263">[ date ]</a>
+              <a href="thread.html#263">[ thread ]</a>
+              <a href="subject.html#263">[ subject ]</a>
+              <a href="author.html#263">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

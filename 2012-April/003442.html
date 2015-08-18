@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Add C++ module or driver to eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Add%20C%2B%2B%20module%20or%20driver%20to%20eLua&In-Reply-To=%3C1333456839164-7432741.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003441.html">
+   <LINK REL="Next"  HREF="003443.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Add C++ module or driver to eLua</H1>
+    <B>agostain</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Add%20C%2B%2B%20module%20or%20driver%20to%20eLua&In-Reply-To=%3C1333456839164-7432741.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] Add C++ module or driver to eLua">agostino.difiglia at gmail.com
+       </A><BR>
+    <I>Tue Apr  3 14:40:39 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003441.html">[eLua-dev] Add C++ module or driver to eLua
+</A></li>
+        <LI>Next message: <A HREF="003443.html">[eLua-dev] Add C++ module or driver to eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3442">[ date ]</a>
+              <a href="thread.html#3442">[ thread ]</a>
+              <a href="subject.html#3442">[ subject ]</a>
+              <a href="author.html#3442">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I m trying to compile eLua using the codesourcery toolchain and using the c++
+compiler.
+
+I have no experience with scons files..
+
+I have changed the SConstruct file:
+
+'codesourcery' : { 
+    #'compile' : 'arm-none-eabi-gcc', 
+    'compile' : 'arm-none-eabi-c++', 
+    'link' : 'arm-none-eabi-ld', 
+    'asm' : 'arm-none-eabi-as', 
+    'bin' : 'arm-none-eabi-objcopy', 
+    'size' : 'arm-none-eabi-size',
+    'cross_cpumode' : 'little',
+    'cross_lua' : 'float 64',
+    'cross_lualong' : 'int 32'
+  },
+
+how do I have to change the conf.py file in the platform folder in order to
+use the same compiler; right now it uses the g++ compiler and it therefore
+complains about unrecognized flags:
+
+g++: warning: &#8216;-mcpu=&#8217; is deprecated; use &#8216;-mtune=&#8217; or &#8216;-march=&#8217; instead
+cc1plus: error: unrecognized command line option &#8216;-mthumb&#8217;
+cc1plus: error: unrecognized command line option &#8216;-mlittle-endian&#8217;
+src/main.cpp:1:0: error: bad value (cortex-m3) for -mtune= switch
+scons: *** [src/main.o] Error 1
+
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/Add-C-module-or-driver-to-eLua-tp7432113p7432741.html">http://elua-development.2368040.n2.nabble.com/Add-C-module-or-driver-to-eLua-tp7432113p7432741.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003441.html">[eLua-dev] Add C++ module or driver to eLua
+</A></li>
+	<LI>Next message: <A HREF="003443.html">[eLua-dev] Add C++ module or driver to eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3442">[ date ]</a>
+              <a href="thread.html#3442">[ thread ]</a>
+              <a href="subject.html#3442">[ subject ]</a>
+              <a href="author.html#3442">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,242 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] interested in stm32 port
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20interested%20in%20stm32%20port&In-Reply-To=%3C81fbe47d0901020532s44e56f6dqfc7ee5bef6f4a330%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000218.html">
+   <LINK REL="Next"  HREF="000226.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] interested in stm32 port</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20interested%20in%20stm32%20port&In-Reply-To=%3C81fbe47d0901020532s44e56f6dqfc7ee5bef6f4a330%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] interested in stm32 port">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Jan  2 14:32:03 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000218.html">[eLua-dev] introduction
+</A></li>
+        <LI>Next message: <A HREF="000226.html">[eLua-dev] Added a link for visibility
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#224">[ date ]</a>
+              <a href="thread.html#224">[ thread ]</a>
+              <a href="subject.html#224">[ subject ]</a>
+              <a href="author.html#224">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Dec 30, 2008 at 11:19 PM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;wrote:
+
+&gt;<i> Now that sounds like fun. :)  Does it integrate with newlib at all?
+</I>&gt;<i>
+</I>&gt;<i> The main issue I had with the .fini junk is apparently there is more then
+</I>&gt;<i> one way to interface to newlib, and its a mess...  I did eventually fix it
+</I>&gt;<i> by defining/overriding the correct function.  I wonder if there would be a
+</I>&gt;<i> use for a libgloss port or a generic stubs lib for newlib and stm32?
+</I>
+
+I don't know of any libgloss for stm32, but FYI, the way I'm going with this
+is to give eLua its very own libc. It will be derived from Minix's libc, and
+will be kept as small as possible, without sacrifing functionality. I
+already started working on this on a separate branch, but it will be quite a
+while until I manage to complete it.
+
+Best,
+Bogdan
+
+
+&gt;<i> On Tue, Dec 30, 2008 at 4:13 PM, Alex Babkin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ababkin at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi Mike
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks for chiming in.
+</I>&gt;&gt;<i> Yea factoring out stuff - i was just throwing knee-jerk ideas around. Just
+</I>&gt;&gt;<i> because i wanted to try both toolchains on the stm32 port and was yukked out
+</I>&gt;&gt;<i> that i had to make same edit several times.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Mike, i saw your post on codesourcery's forum about .fini section error. I
+</I>&gt;&gt;<i> found it as i was researching same error.
+</I>&gt;&gt;<i> Not sure if you're aware of the stm32 forum (on ST website) but that forum
+</I>&gt;&gt;<i> is pretty good and people like Lanchon are extremely helpful.
+</I>&gt;&gt;<i> Using his framework with modified linker scripts and such i've gotten
+</I>&gt;&gt;<i> infrastructure to work that supports printf/sprintf/fprintf (and similarly
+</I>&gt;&gt;<i> *scanf's) where fio functions use ChaN's tiny fat filesystem written for
+</I>&gt;&gt;<i> stm32.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Alex
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Dec 30, 2008 at 3:55 PM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You could remove the LCD module, that might trim some down I think.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> After reading this whole conversation, I am still not convinced of any
+</I>&gt;&gt;&gt;<i> benefits of factoring out the toolchain prefix.  I had thought about it
+</I>&gt;&gt;&gt;<i> myself at one point for *all* the platforms, but decided against that one
+</I>&gt;&gt;&gt;<i> too.  Generally a single platform will always use the same compiler,
+</I>&gt;&gt;&gt;<i> especially given a tested and proven compiler-platform combination, so
+</I>&gt;&gt;&gt;<i> again, I do not clearly see the advantage.  Maybe I need some enlightenment?
+</I>&gt;&gt;&gt;<i> :)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Mike
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Sat, Dec 27, 2008 at 1:03 AM, Alex Babkin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ababkin at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> OK i've made some progress (for those curious or stuck, like myself)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> the size results look discouraging for my 128kb flash'ed chips:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> the binaries are 269kb for lualong and 308kb for lua targets (i used the
+</I>&gt;&gt;&gt;&gt;<i> way to use objcopy to generate binaries from the stm32 example conf.py). And
+</I>&gt;&gt;&gt;&gt;<i> that's with all the newest source, about 50k larger using arm-none-eabi-
+</I>&gt;&gt;&gt;&gt;<i> binary toolchain off of CS's site.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> is there still a chance to shove it into 128kb/20k chip?
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> EDIT: i've tried excluding the options like terminal and romfs and got
+</I>&gt;&gt;&gt;&gt;<i> the size down to 233k for lualong
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> some things to fix: (not complaining but pointing out potential
+</I>&gt;&gt;&gt;&gt;<i> improvements ;-)  )
+</I>&gt;&gt;&gt;&gt;<i> 1.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> this piece of code in src/newlib/stubs.c
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> #if ELUA_PLATFORM == AVR32
+</I>&gt;&gt;&gt;&gt;<i> int _gettimeofday_r( struct _reent *r, struct timeval *tp, struct
+</I>&gt;&gt;&gt;&gt;<i> timezone *tzp )
+</I>&gt;&gt;&gt;&gt;<i> #else
+</I>&gt;&gt;&gt;&gt;<i> int _gettimeofday_r( struct _reent *r, struct timeval *tv, void *tz )
+</I>&gt;&gt;&gt;&gt;<i> #endif
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> on my system, this #if check doesn't work properly and ends up going
+</I>&gt;&gt;&gt;&gt;<i> through the first branch (i.e as if it's for AVR32 target) while i am using
+</I>&gt;&gt;&gt;&gt;<i> the stm32 target.
+</I>&gt;&gt;&gt;&gt;<i> this was causing my initial problem (my last post), and commenting out
+</I>&gt;&gt;&gt;&gt;<i> all of the above lines except for the second branch (i.e int
+</I>&gt;&gt;&gt;&gt;<i> _gettimeofday_r( struct _reent *r, struct timeval *tv, void *tz )) made it
+</I>&gt;&gt;&gt;&gt;<i> build.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> 2. scons -c doesn't work, but scons -c &lt;all the required parameters for
+</I>&gt;&gt;&gt;&gt;<i> build&gt; works. I think just scons -c should work and clean everything up
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> 3. factor out the toolchain prefix (like arm-elf- or arm-none-eabi-)
+</I>&gt;&gt;&gt;&gt;<i> into a separate variable as opposed to hardcoding it in the platform py file
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Cheers
+</I>&gt;&gt;&gt;&gt;<i> Alex
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Fri, Dec 26, 2008 at 11:39 PM, Alex Babkin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ababkin at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Hi there
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> I am an stm32 platform enthusiast and would love to make an easily
+</I>&gt;&gt;&gt;&gt;&gt;<i> script-able platform out of it. eLua seems to fit the bill except that i
+</I>&gt;&gt;&gt;&gt;&gt;<i> really hope that 128kb of flash and 20kb of ram (that the stm32 chips i am
+</I>&gt;&gt;&gt;&gt;&gt;<i> using have) would be enough (even if barely) to be able to run lua scripts,
+</I>&gt;&gt;&gt;&gt;&gt;<i> even pre-compiled if needed, off an SD card.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> I had followed the toolchain building tutorial and built those
+</I>&gt;&gt;&gt;&gt;&gt;<i> successfully. But it seems to me that scons for the stm32 target uses
+</I>&gt;&gt;&gt;&gt;&gt;<i> arm-none-eabi prefix for toolchain. I suspect that the CodeSourcery's
+</I>&gt;&gt;&gt;&gt;&gt;<i> toolchain was used for this target.
+</I>&gt;&gt;&gt;&gt;&gt;<i> I have tried to build the elua for the stm32f103ze target and it breaks
+</I>&gt;&gt;&gt;&gt;&gt;<i> on the following step:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mlittle-endian -Os
+</I>&gt;&gt;&gt;&gt;&gt;<i> -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules
+</I>&gt;&gt;&gt;&gt;&gt;<i> -Isrc/platform/stm32 -Isrc/uip -Isrc/platform/stm32/FWLib/library/inc
+</I>&gt;&gt;&gt;&gt;&gt;<i> -ffunction-sections -fdata-sections -fno-strict-aliasing
+</I>&gt;&gt;&gt;&gt;&gt;<i> -DELUA_CPU=STM32F103ZE -DELUA_BOARD=STM3210E-EVAL -DELUA_PLATFORM=STM32
+</I>&gt;&gt;&gt;&gt;&gt;<i> -D__BUFSIZ__=128 -DLUA_NUMBER_INTEGRAL -Dgcc -Wall -c src/newlib/stubs.c -o
+</I>&gt;&gt;&gt;&gt;&gt;<i> src/newlib/stubs.o
+</I>&gt;&gt;&gt;&gt;&gt;<i> src/newlib/stubs.c:311: error: conflicting types for '_gettimeofday_r'
+</I>&gt;&gt;&gt;&gt;&gt;<i> /usr/bin/../lib/gcc/arm-none-eabi/4.3.2/../../../../arm-none-eabi/include/reent.h:84:
+</I>&gt;&gt;&gt;&gt;&gt;<i> error: previous declaration of '_gettimeofday_r' was here
+</I>&gt;&gt;&gt;&gt;&gt;<i> scons: *** [src/newlib/stubs.o] Error 1
+</I>&gt;&gt;&gt;&gt;&gt;<i> scons: building terminated because of errors.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> from the way it looks, something is wrong with newlib. Are there any
+</I>&gt;&gt;&gt;&gt;&gt;<i> suggestions as to how i go about fixing it? Is this happening because libnew
+</I>&gt;&gt;&gt;&gt;&gt;<i> wasn't compiled in a specific way that elua prescribes?
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> would it be possible to just stick to the toolchain built as per
+</I>&gt;&gt;&gt;&gt;&gt;<i> instructions on elua site? or CS's toolchain is really necessary for stm32?
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> btw, i am normally using CS's toolchain (binaries) for all my stm32
+</I>&gt;&gt;&gt;&gt;&gt;<i> projects
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Thanks
+</I>&gt;&gt;&gt;&gt;&gt;<i> Alex
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090102/b199eaf6/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090102/b199eaf6/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000218.html">[eLua-dev] introduction
+</A></li>
+	<LI>Next message: <A HREF="000226.html">[eLua-dev] Added a link for visibility
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#224">[ date ]</a>
+              <a href="thread.html#224">[ thread ]</a>
+              <a href="subject.html#224">[ subject ]</a>
+              <a href="author.html#224">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

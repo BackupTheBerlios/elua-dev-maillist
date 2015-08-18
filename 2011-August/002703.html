@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LTR compatible wrappers with SWIG for eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LTR%20compatible%20wrappers%20with%20SWIG%20for%20eLua&In-Reply-To=%3CCAJ%3DY9Y1%2B-CmKPk6b42RWF4Z0DuNPsq%2B2qmGTts%2BduWrZ10aVrw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002702.html">
+   <LINK REL="Next"  HREF="002706.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LTR compatible wrappers with SWIG for eLua</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LTR%20compatible%20wrappers%20with%20SWIG%20for%20eLua&In-Reply-To=%3CCAJ%3DY9Y1%2B-CmKPk6b42RWF4Z0DuNPsq%2B2qmGTts%2BduWrZ10aVrw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] LTR compatible wrappers with SWIG for eLua">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Aug  5 06:09:41 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002702.html">[eLua-dev] LTR compatible wrappers with SWIG for eLua
+</A></li>
+        <LI>Next message: <A HREF="002706.html">[eLua-dev] LTR compatible wrappers with SWIG for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2703">[ date ]</a>
+              <a href="thread.html#2703">[ thread ]</a>
+              <a href="subject.html#2703">[ subject ]</a>
+              <a href="author.html#2703">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Aug 4, 2011 at 8:31 AM, raman &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I heard from the SWIG community. They are slightly uncomfortable with the
+</I>&gt;<i> inclusion of support for eLua as a separate language module. They however
+</I>&gt;<i> don't mind the integration of the eLua language module with regular SWIG
+</I>&gt;<i> Lua. This is certainly possible but it would result in a highly monolithic
+</I>&gt;<i> code structure with conditional compilation and eLua specific macros in
+</I>&gt;<i> regular SWIG Lua.
+</I>&gt;<i>
+</I>&gt;<i> This might still work but the time delta between each SWIG release is not
+</I>&gt;<i> fixed. One solution could be to support eLua wrapper generation independent
+</I>&gt;<i> of SWIG by creating a separate tool with constant support and maintenance.
+</I>&gt;<i>
+</I>&gt;<i> What is preferred ?  How can we proceed ?
+</I>&gt;<i>
+</I>
+I guess one question is, how monolithic is SWIG and its language modules?  I
+presume they don't just work like plugins and that with the current
+implementation you'd end up having to maintain a patch against SWIG unless
+it gets integrated?
+
+Is there any way with SWIG to make some of the interface generation
+optional? I.e.: to kindof make the Lua support &quot;flavors&quot; of Lua? Or, does it
+pretty much have to generate code that would be compatible with both from a
+given interface file?  If SWIG doesn't have this as a feature, I wonder
+whether this might be useful for them?  We are getting into an age where
+languages have multiple implementations (Python, Ruby, Lua among others..),
+sometimes these implementations will have differing native C APIs I think as
+well?
+
+I'm not sure how much of your work might translate to other tools since I've
+not implemented a language with SWIG before or delved into its inner
+workings.  There are some other Lua binding generators out there, like tolua
+(<A HREF="http://www.tecgraf.puc-rio.br/~celes/tolua/">http://www.tecgraf.puc-rio.br/~celes/tolua/</A>) which appears to be written in
+C and have similar functionality to what SWIG does.  There's also
+LuaNativeObjects (<A HREF="https://github.com/Neopallium/LuaNativeObjects">https://github.com/Neopallium/LuaNativeObjects</A>) which is
+written in Lua.
+
+On the one hand it might be nice to be able to use something like SWIG which
+is a mature, well maintained project, but on the other hand.. if we're
+adding dependencies to our build system, it's also nice if we can implement
+it in pure Lua so that we don't actually have to add an external dependency.
+ We also _do_ have a newer build system that Bogdan has worked on
+implemented in Lua that potentially something like this could be integrated
+into, since part of what we'd like to do there is auto-generate the
+platform_conf.h and move some of what we have in C preprocessor into Lua.
+
+
+(P.S.: Sometimes Dave Beazley comes to the Python user group meetings where
+I am so if you need me to bug him about anything in person... :-) )
+
+
+
+&gt;<i> Awaiting your response.
+</I>&gt;<i>
+</I>&gt;<i> Raman
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context:
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6652705.html">http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6652705.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110804/6809c1c7/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110804/6809c1c7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002702.html">[eLua-dev] LTR compatible wrappers with SWIG for eLua
+</A></li>
+	<LI>Next message: <A HREF="002706.html">[eLua-dev] LTR compatible wrappers with SWIG for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2703">[ date ]</a>
+              <a href="thread.html#2703">[ thread ]</a>
+              <a href="subject.html#2703">[ subject ]</a>
+              <a href="author.html#2703">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

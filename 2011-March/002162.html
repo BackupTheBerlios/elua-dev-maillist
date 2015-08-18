@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Patch for EMBLOD boot loader for AVR32 platform
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Patch%20for%20EMBLOD%20boot%20loader%20for%20AVR32%20platform&In-Reply-To=%3CAANLkTiknwBASTD39GBsVtrHXtxCxSq2p5sdzMZzR0Y%3De%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002145.html">
+   <LINK REL="Next"  HREF="002163.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Patch for EMBLOD boot loader for AVR32 platform</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Patch%20for%20EMBLOD%20boot%20loader%20for%20AVR32%20platform&In-Reply-To=%3CAANLkTiknwBASTD39GBsVtrHXtxCxSq2p5sdzMZzR0Y%3De%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Patch for EMBLOD boot loader for AVR32 platform">martinwguy at gmail.com
+       </A><BR>
+    <I>Sat Mar 12 21:34:58 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002145.html">[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+</A></li>
+        <LI>Next message: <A HREF="002163.html">[eLua-dev] a new github project:	https://github.com/nuccioraciti/eLuaWebServer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2162">[ date ]</a>
+              <a href="thread.html#2162">[ thread ]</a>
+              <a href="subject.html#2162">[ subject ]</a>
+              <a href="author.html#2162">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+  emBLOD is Marcus Jansson's second-stage boot loader for AVR32UC3A
+parts as used in the EVK1100 and Mizar32 boards, designed to allow
+firmware images larger than the on-chip flash memory by loading the
+eLua binary from SD card into SDRAM and executing it there.
+
+The source for the emBLOD loader is here <A HREF="https://github.com/cmp1084/emBLOD">https://github.com/cmp1084/emBLOD</A>
+
+The attached patch is for eLua svn r975 (current) for eLua.  When
+compilation option  bootloader=emblod is given to scons, a special
+version is compiled that
+- locates the program at the start of SDRAM
+- doesn't initialize the system clocks and SDRAM controller, as these
+are already set up by emBLOD.
+
+If the bootloader= option is not given, eLua is compiled exactly as before.
+
+The changes I've made to Marcus' originally posted patches are to put
+DATA and BSS in internal static RAM, the same as before, since in the
+best case (memcpy) the SDRAM is three times slower than access to
+static RAM
+<A HREF="http://www.avrfreaks.net/index.php?name=PNphpBB2&amp;file=viewtopic&amp;t=80657">http://www.avrfreaks.net/index.php?name=PNphpBB2&amp;file=viewtopic&amp;t=80657</A>
+
+This also has an impact on code speed: the interpreter runs 9 times
+slower in external SDRAM than it does in internal flash.
+
+Tested and working on Mizar32
+
+     M
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: elua-emblod-support.patch
+Type: text/x-patch
+Size: 7139 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110312/b41b3c8c/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20110312/b41b3c8c/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002145.html">[eLua-dev] ET-STM32 program via TTL (or suggest me a USB to serial converter cable)
+</A></li>
+	<LI>Next message: <A HREF="002163.html">[eLua-dev] a new github project:	https://github.com/nuccioraciti/eLuaWebServer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2162">[ date ]</a>
+              <a href="thread.html#2162">[ thread ]</a>
+              <a href="subject.html#2162">[ subject ]</a>
+              <a href="author.html#2162">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

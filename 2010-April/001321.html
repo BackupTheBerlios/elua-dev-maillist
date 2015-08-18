@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Remote Communication Question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Remote%20Communication%20Question&In-Reply-To=%3Cj2w81fbe47d1004060235kaa9638faz3adb01248f8944b4%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001320.html">
+   <LINK REL="Next"  HREF="001325.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Remote Communication Question</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Remote%20Communication%20Question&In-Reply-To=%3Cj2w81fbe47d1004060235kaa9638faz3adb01248f8944b4%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Remote Communication Question">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Apr  6 11:35:16 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001320.html">[eLua-dev] Remote Communication Question
+</A></li>
+        <LI>Next message: <A HREF="001325.html">[eLua-dev] Remote Communication Question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1321">[ date ]</a>
+              <a href="thread.html#1321">[ thread ]</a>
+              <a href="subject.html#1321">[ subject ]</a>
+              <a href="author.html#1321">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Hi all
+</I>&gt;<i>
+</I>&gt;<i> I am new to eLua, but have quite some, possibly somewhat rusty, Lua
+</I>&gt;<i> knowledge. I intend to dive into eLua with a LM3S6965 Kit, which I didn't
+</I>&gt;<i> order as of now, so I cannot test things. However, I am doing some upfront
+</I>&gt;<i> thinking :-), and have the following question, which I hope is not too
+</I>&gt;<i> obvious.
+</I>&gt;<i>
+</I>&gt;<i> I think I understand how to flash eLua to the board using Windows, and that
+</I>&gt;<i> I'll then have a serial line emulated via the USB connection to the host
+</I>&gt;<i> computer, both to download the eLua programs to the board and to control the
+</I>&gt;<i> latter via a terminal. As host computer I'd like to use a Mac OS X box in
+</I>&gt;<i> order to program the Lua application on the target board, once I have
+</I>&gt;<i> flashed over eLua.
+</I>&gt;<i>
+</I>
+You're doing great so far :)
+
+
+&gt;<i> If I understand the on-line docs, I can use the UART eLua generic module to
+</I>&gt;<i> read and write to that serial-over-USB connection from Lua. I hope that's
+</I>&gt;<i> correct.
+</I>
+
+It is. With one addition: you can use the UART module to communicate with
+any serial port. One port might not be enough, but you can add another RS232
+interface to your LM3S6965 board with a bit of soldering :), plug another
+USB to serial adapter in your Mac, and use this as a separate line,
+completely independent of the console UART. We also have a software UART
+multiplexer in the works, but it's not checked in yet, and I'm not sure how
+well it works on OS X (it should work just fine though).
+
+
+&gt;<i> What I don't see yet is how to talk to that connection from Lua on my Mac
+</I>&gt;<i> OS X system in order to implement a system with the remote part running on
+</I>&gt;<i> the target board and the host part on my Mac, to realize some simple
+</I>&gt;<i> communication between these parts. Think of something like a remote
+</I>&gt;<i> debugger, with a remote probe and a console on the host. Is there some Lua
+</I>&gt;<i> module for the host side of the serial? Or should I use the network
+</I>&gt;<i> connection and use the Lua socket module?
+</I>&gt;<i>
+</I>
+It pretty much depends on what you're trying to do. There are more options
+here:
+
+- if you want to have Lua running on OS X and &quot;talk&quot; directly to the Lua
+instance on the eLua board, the way to go is RPC :
+<A HREF="http://www.eluaproject.net/en_using.html#rpc">http://www.eluaproject.net/en_using.html#rpc</A>
+- if you just want to use the serial connection of your OS X directly from
+the Lua interpreter running on OS X, I'm afraid I can't be of much help
+here. From what I could gather (mostly from some discussions on the Lua
+list), there isn't any official serial module for desktop Lua, although some
+implementations exist. We might write a serial module at some point if
+enough people show interest in this.
+- you can of course use sockets to exchange data with the eLua board, but
+I'd recommend you stick with serial, at least at the beginning. The
+networking core still needs some work in eLua.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100406/7ea477fb/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100406/7ea477fb/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001320.html">[eLua-dev] Remote Communication Question
+</A></li>
+	<LI>Next message: <A HREF="001325.html">[eLua-dev] Remote Communication Question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1321">[ date ]</a>
+              <a href="thread.html#1321">[ thread ]</a>
+              <a href="subject.html#1321">[ subject ]</a>
+              <a href="author.html#1321">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4DSCY - 32bit timers available?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3Fstm32f4DSCY_-_32bit_timers_available%3D3F%3F%3D&In-Reply-To=%3Ce212fcf07be1c740062da4a34e82065b%40mail1.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002923.html">
+   <LINK REL="Next"  HREF="002922.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4DSCY - 32bit timers available?</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3Fstm32f4DSCY_-_32bit_timers_available%3D3F%3F%3D&In-Reply-To=%3Ce212fcf07be1c740062da4a34e82065b%40mail1.volny.cz%3E"
+       TITLE="[eLua-dev] stm32f4DSCY - 32bit timers available?">pito at volna.cz
+       </A><BR>
+    <I>Sun Nov 13 10:56:05 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002923.html">[eLua-dev] building elua.
+</A></li>
+        <LI>Next message: <A HREF="002922.html">[eLua-dev] stm32f4DSCY - 32bit timers available?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2921">[ date ]</a>
+              <a href="thread.html#2921">[ thread ]</a>
+              <a href="subject.html#2921">[ subject ]</a>
+              <a href="author.html#2921">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi, trying to measure time diff with ie:
+-- measure time diff
+function bench()
+local stime, etime, dtime, clock	
+clock = tmr.setclock( 1000, 2 )	
+print (&quot;START\r\n&quot;)	
+stime = tmr.start(2) -- start timer 2
+while uart.getchar( 0, 0 ) == &quot;&quot; do
+stime = stime 
+end	
+etime = tmr.read(2) -- get end time	
+print (&quot;STOP\r\n&quot;)		
+dtime = etime - stime	
+print ( dtime )
+term.print(string.format(&quot;Elapsed: %f (secs)\n&quot;,dtime/clock))
+end
+bench()
+
+but it seems to me all the timers are 16 bit, so they overrun fast
+unless clock is set to small values (ie 1kHz). Are there any 32bit
+timers (or better 64bit) available? Or can we chain them somehow?
+Thanks!
+(bikeNomad distro, stm32f4disco kit).
+
+
+-- 
+Videokurzy MS Office zdarma! Port&#225;l VOLN&#221;.cz p&#345;in&#225;&#353;&#237; online v&#253;ukov&#225;
+videa, kter&#225; v&#225;s rychle, n&#225;zorn&#283; a z&#225;bavnou formou nau&#269;&#237; ovl&#225;dat
+programy Excel, Word a PowerPoint. Seri&#225;l najdete na
+<A HREF="http://web.volny.cz/data/click.php?id=1293">http://web.volny.cz/data/click.php?id=1293</A>
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002923.html">[eLua-dev] building elua.
+</A></li>
+	<LI>Next message: <A HREF="002922.html">[eLua-dev] stm32f4DSCY - 32bit timers available?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2921">[ date ]</a>
+              <a href="thread.html#2921">[ thread ]</a>
+              <a href="subject.html#2921">[ subject ]</a>
+              <a href="author.html#2921">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

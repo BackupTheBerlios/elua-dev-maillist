@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] I2C Platform interface suggestion.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20I2C%20Platform%20interface%20suggestion.&In-Reply-To=%3C36dc677c0811170725r775d48d2k8486d8c3a9a92ddf%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000090.html">
+   <LINK REL="Next"  HREF="000098.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] I2C Platform interface suggestion.</H1>
+    <B>Mike Panetta</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20I2C%20Platform%20interface%20suggestion.&In-Reply-To=%3C36dc677c0811170725r775d48d2k8486d8c3a9a92ddf%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] I2C Platform interface suggestion.">panetta.mike at gmail.com
+       </A><BR>
+    <I>Mon Nov 17 16:25:20 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000090.html">[eLua-dev] Deprecated function
+</A></li>
+        <LI>Next message: <A HREF="000098.html">[eLua-dev] I2C Platform interface suggestion.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#97">[ date ]</a>
+              <a href="thread.html#97">[ thread ]</a>
+              <a href="subject.html#97">[ subject ]</a>
+              <a href="author.html#97">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>My suggestion would be to have a simple interface as follows:
+
+platform_i2c_init( int dev ); // Initialize an i2c interface
+platform_i2c_deinit( int dev ); // de-initialize (shutdown) an i2c interface
+platform_i2c_master_xfer( int dev, platform_i2c_xfer_t * xfer_info ); //
+Perform an I2C master transfer
+
+struct platform_i2c_xfer {
+  u16 addr  :7;    // Slave address, 10bit addressing not supported
+  u16 _RES:1;
+  u16 flags  :8;   // I2C flags, such as transfer speed (400KHz or 100KHz),
+or if this is just a probe transfer (no data)
+  u16 wdatalen; // Length of data to write
+  u8 * wdata;     // Pointer to data to write
+  u16 rdatalen;
+  u8 * rdata;
+} platform_i2c_xfer_t;
+
+The reason we want to have both read and write data in the transfer struct
+is quite a few I2C devices require a control byte (or bytes) write before a
+meaningfull read can be done, as an atomic I2C transfer if possible by doing
+a Start, Write, Repeated Start, Read, to a particular address.
+
+This particular method obviously only allows a single tranfer per call to a
+particular address, a simple modification can be done to address that issue,
+which would be to place the transfer data pointers and lengths in a data
+struct.
+
+It would look something like:
+struct platform_i2c_data {
+  u8 rdnwr :1; // 1 for read, 0 for write
+  u8 flags  :7; // TBD, will contain transfer status flags such as transfer
+failed, etc
+  u8 len;        // xfer len for this data block, set by user to the total
+length of the storage area pointed to below, set by I2C code to actual
+amount read or written after transfer complete.  If a transfer error occurs
+on this data block a flag will be set above and this will be set to the
+amount of data sent/recieved before the error occured.
+  u8 * data;   // pointer to data storage for this block
+} platform_i2c_data_t;
+
+If a data block generates a transfer error all further datablock tranfers
+will be aborted and the function will return an error.
+
+I hope all this makes sense.  Maybe I should just write the code, as code
+sometimes speaks louder then words! :)
+
+Mike
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081117/c9bc055f/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081117/c9bc055f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000090.html">[eLua-dev] Deprecated function
+</A></li>
+	<LI>Next message: <A HREF="000098.html">[eLua-dev] I2C Platform interface suggestion.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#97">[ date ]</a>
+              <a href="thread.html#97">[ thread ]</a>
+              <a href="subject.html#97">[ subject ]</a>
+              <a href="author.html#97">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

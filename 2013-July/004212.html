@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How can I use eLua as embedded interpreter in my	firmware ?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20can%20I%20use%20eLua%20as%20embedded%20interpreter%20in%20my%0A%09firmware%20%3F&In-Reply-To=%3C1375243958636-7578106.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004211.html">
+   <LINK REL="Next"  HREF="004213.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How can I use eLua as embedded interpreter in my	firmware ?</H1>
+    <B>raman</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20can%20I%20use%20eLua%20as%20embedded%20interpreter%20in%20my%0A%09firmware%20%3F&In-Reply-To=%3C1375243958636-7578106.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] How can I use eLua as embedded interpreter in my	firmware ?">ramangopalan at gmail.com
+       </A><BR>
+    <I>Wed Jul 31 06:12:38 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004211.html">[eLua-dev] How can I use eLua as embedded interpreter in my	firmware ?
+</A></li>
+        <LI>Next message: <A HREF="004213.html">[eLua-dev] How can I use eLua as embedded interpreter in my firmware ?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4212">[ date ]</a>
+              <a href="thread.html#4212">[ thread ]</a>
+              <a href="subject.html#4212">[ subject ]</a>
+              <a href="author.html#4212">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Dear Alexander,
+
+&gt;<i> Hello. I have a Texas Instruments lm3s5r31 microcontroller with a
+</I>
+I just had a quick look at the current (dev) state of the eLua code
+base. eLua currently doesn't support your device. So it cannot be
+compiled for your board right away. It requires a port but this should
+be fairly easy because eLua already runs on other Cortex M3 clones
+(including a few M3 clones from Texas Instruments).
+
+&gt;<i> Cortex-M3 core. I already have the firmware (written in C) which runs
+</I>&gt;<i> on it. I want to use lua for embedded scripting as a part of my
+</I>
+To access your C program from eLua, you'll have to write an eLua
+module. Please check link [1] for some information on this. You can
+also read this page [2] to understand the details of the Lua tiny RAM
+(LTR) patch for eLua modules.
+
+If you're looking for a quick solution for building an eLua module, you
+can try the eLua mode for SWIG [3]. It can be instructed to generate
+LTR compatible wrappers for your module.
+
+&gt;<i> firmware. I don't need support for filesystem, shell, input-output and
+</I>&gt;<i> controller peripheral from scripts but I need to execute some firmware
+</I>&gt;<i> functions from scripts.
+</I>
+Once you have a port, this is an easy thing. You can configure the
+eLua image for your MCU according to your needs by modifying Lua
+scripts (which you'll have to write if you're doing a port for your
+target). Please check this file [4] for an example.
+
+Please note: If you're using elua0.9 (the current stable release),
+you have a different approach for configuring your eLua build. You
+must modify a file called platform_conf.h which can be found in
+this path: elua/src/platform/&lt;platform name&gt;/platform_conf.h
+So, unless you have a target/board which eLua already supports
+this approach will not be of much use to you.
+
+&gt;<i> How can I configure eLua for this purpose ?
+</I>
+You can read about configuring the eLua image in the eLua doc.
+If you're using elua0.9 please check the old configuration
+method [5]. Else, you can check on how the configuration is
+done with Lua scripts [6].
+
+&gt;<i> What does my firmware need to support eLua ?
+</I>
+I'm not sure I understand this question well but if you're talking
+about compiling your program with eLua, then the answer is
+simple. If you're using gcc (or one of the C99 compliant toolchains
+that eLua uses and supports - like the codesourcery toolchain
+for ARM Cortex targets), you shouldn't have any problem using
+your C program with eLua.
+
+Have a lot fun with your board.
+
+Best,
+Raman
+
+Links:
+
+[1]: <A HREF="http://wiki.eluaproject.net/Tutorials/cmodules">http://wiki.eluaproject.net/Tutorials/cmodules</A>
+[2]: <A HREF="http://www.eluaproject.net/doc/v0.9/en_arch_ltr.html">http://www.eluaproject.net/doc/v0.9/en_arch_ltr.html</A>
+[3]: <A HREF="http://www.swig.org/Doc2.0/Lua.html">http://www.swig.org/Doc2.0/Lua.html</A>
+[4]: <A HREF="https://github.com/elua/elua/blob/master/boards/known/ek-lm3s8962.lua">https://github.com/elua/elua/blob/master/boards/known/ek-lm3s8962.lua</A>
+[5]: <A HREF="http://www.eluaproject.net/doc/v0.8/en_building.html">http://www.eluaproject.net/doc/v0.8/en_building.html</A>
+[6]: <A HREF="http://www.eluaproject.net/doc/master/en_configurator.html">http://www.eluaproject.net/doc/master/en_configurator.html</A>
+
+
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/How-can-I-use-eLua-as-embedded-interpreter-in-my-firmware-tp7578105p7578106.html">http://elua-development.2368040.n2.nabble.com/How-can-I-use-eLua-as-embedded-interpreter-in-my-firmware-tp7578105p7578106.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004211.html">[eLua-dev] How can I use eLua as embedded interpreter in my	firmware ?
+</A></li>
+	<LI>Next message: <A HREF="004213.html">[eLua-dev] How can I use eLua as embedded interpreter in my firmware ?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4212">[ date ]</a>
+              <a href="thread.html#4212">[ thread ]</a>
+              <a href="subject.html#4212">[ subject ]</a>
+              <a href="author.html#4212">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

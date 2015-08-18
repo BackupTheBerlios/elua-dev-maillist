@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua and yielding with lua_yield() function
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl39Hdf0619908ac3d5d81b5d57de%2C%0A%09jbsnyder%40fanplastic.org%2C%20D6809E39-2921-4015-90B4-B28%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000767.html">
+   <LINK REL="Next"  HREF="000769.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua and yielding with lua_yield() function</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl39Hdf0619908ac3d5d81b5d57de%2C%0A%09jbsnyder%40fanplastic.org%2C%20D6809E39-2921-4015-90B4-B28%3E"
+       TITLE="[eLua-dev] eLua and yielding with lua_yield() function">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sat Apr 11 00:39:41 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000767.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+        <LI>Next message: <A HREF="000769.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#768">[ date ]</a>
+              <a href="thread.html#768">[ thread ]</a>
+              <a href="subject.html#768">[ subject ]</a>
+              <a href="author.html#768">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Apr 10, 2009, at 2:40 AM, Bogdan Marinescu wrote:
+
+&gt;<i> Hmmm. We don't really have signals, at least not POSIX signals, so  
+</I>&gt;<i> I'm not sure that we should worry about _setjmp/_longjmp. This is  
+</I>&gt;<i> only a hunch though, I didn't actually check this.
+</I>
+Right, and it looks like it doesn't actually need the signal stuff,  
+just the stack/context switching.  I think I may be close to a working  
+patch.  I'm trying to figure out what order stuff is stored in the jmp  
+buffer since Coco wants to explicitly modify those.  I'll commit it on  
+a branch if it works at all :-)
+
+Also, in line with the discussion we had some time ago about Duff's  
+device, someone has used a similar mechanism to do C coroutines (not  
+sure if this would ever be useful for anything we're doing but it's  
+interesting):
+<A HREF="http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html">http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html</A>
+
+
+&gt;<i> About the JIT: I looked at that, and porting it to ARM is definitely  
+</I>&gt;<i> not an easy task. Maybe the next version of LuaJIT will make things  
+</I>&gt;<i> easier in this area, we have to wait and see.
+</I>
+Isn't LuaJIT x86 specific?
+
+&gt;<i> My approach to interrupts was however much simpler that what you're  
+</I>&gt;<i> suggesting here: keep a queue of interrupts, and set a Lua hook as  
+</I>&gt;<i> long as this queue is not empty. The hook will then jump to the  
+</I>&gt;<i> corresponding Lua interrupt handler. Just like lua.c does in order  
+</I>&gt;<i> to handle CTRL+C (SIGINT).
+</I>
+I guess the main difference here is that the multitasking is explicit  
+with the coroutine method vs debug hooks.  The debug hooks could also  
+be used to do some sort of threading I think too.
+
+Hmm.. I see no harm in trying both and seeing how well they work for  
+different approaches in a branch.
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Apr 10, 2009 at 8:40 AM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> Applying the patch was mostly clean, it took me about a minute to  
+</I>&gt;<i> fix the hunks that didn't apply.
+</I>&gt;<i>
+</I>&gt;<i> 1. I didn't bother with the Makefile patch, that didn't apply  
+</I>&gt;<i> cleanly at all, but I don't think it's needed for normal builds  
+</I>&gt;<i> using scons.
+</I>&gt;<i> 2. the layout of files is different from standard lua, so you'll  
+</I>&gt;<i> likely have to point patch to the right files.
+</I>&gt;<i> 3. You'll need  to add lcoco.c to lua_files in SConstruct.
+</I>&gt;<i>
+</I>&gt;<i> The main modifications will presumably be needed in lcoco.c.
+</I>&gt;<i>
+</I>&gt;<i> Here's a bit of info on the associated _setjmp/_longjmp functions/ 
+</I>&gt;<i> macros:
+</I>&gt;<i> <A HREF="http://opengroup.org/onlinepubs/007908799/xsh/_longjmp.html">http://opengroup.org/onlinepubs/007908799/xsh/_longjmp.html</A>
+</I>&gt;<i> <A HREF="http://developer.apple.com/documentation/Darwin/Reference/ManPages/man3/_setjmp.3.html">http://developer.apple.com/documentation/Darwin/Reference/ManPages/man3/_setjmp.3.html</A>
+</I>&gt;<i>
+</I>&gt;<i> The differences there in definition suggest to me why platform  
+</I>&gt;<i> specific implementations are needed :-)  I assume, however that  
+</I>&gt;<i> those, in conjunction with the auto-configuration done in lcoco.c  
+</I>&gt;<i> should help in teasing out what's needed for the implementation.
+</I>&gt;<i>
+</I>&gt;<i> I suppose we could also ping Mike Pall for suggestions.
+</I>&gt;<i>
+</I>&gt;<i> Best.
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i> ----- &quot;Mike Thompson&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpthompson at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; On Thu, Apr 9, 2009 at 5:34 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> &gt; &gt; Being curious, I've already taken the coco patch and applied it  
+</I>&gt;<i> to a
+</I>&gt;<i> &gt; branch
+</I>&gt;<i> &gt; &gt; of eLua :-)
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; It basically looks like _setjmp and _longjmp which save signals
+</I>&gt;<i> &gt; needs to be
+</I>&gt;<i> &gt; &gt; set up or appropriately implemented.  I'm not sure if this would  
+</I>&gt;<i> be
+</I>&gt;<i> &gt; &gt; something that could be implemented with a small amount of code,  
+</I>&gt;<i> or
+</I>&gt;<i> &gt; if some
+</I>&gt;<i> &gt; &gt; sort of threading/ c-side coroutine library would be needed to  
+</I>&gt;<i> make
+</I>&gt;<i> &gt; this
+</I>&gt;<i> &gt; &gt; work.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Out of curiosity, how close is the source code in '/src/lua' to the
+</I>&gt;<i> &gt; standard 5.1.4 distribution.  I've think I've seen it said that very
+</I>&gt;<i> &gt; few changes were made to the standard Lua source code for eLua.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'll try to take a look at this over the weekend.  It certainly  
+</I>&gt;<i> seems
+</I>&gt;<i> &gt; that Coco is worthy of some examination to see what is involved.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Mike
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; Elua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090410/8572210e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090410/8572210e/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090410/8572210e/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090410/8572210e/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000767.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+	<LI>Next message: <A HREF="000769.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#768">[ date ]</a>
+              <a href="thread.html#768">[ thread ]</a>
+              <a href="subject.html#768">[ subject ]</a>
+              <a href="author.html#768">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

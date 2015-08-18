@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] thoughts on Lua 5.2 for eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20thoughts%20on%20Lua%205.2%20for%20eLua&In-Reply-To=%3CAANLkTiktM%3DsV2ezqdqT253GjTefnP9b4cyVZFRG7ii24%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001997.html">
+   <LINK REL="Next"  HREF="001999.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] thoughts on Lua 5.2 for eLua</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20thoughts%20on%20Lua%205.2%20for%20eLua&In-Reply-To=%3CAANLkTiktM%3DsV2ezqdqT253GjTefnP9b4cyVZFRG7ii24%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] thoughts on Lua 5.2 for eLua">dadosutter at gmail.com
+       </A><BR>
+    <I>Tue Feb  8 19:45:56 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001997.html">[eLua-dev] thoughts on Lua 5.2 for eLua
+</A></li>
+        <LI>Next message: <A HREF="001999.html">[eLua-dev] thoughts on Lua 5.2 for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1998">[ date ]</a>
+              <a href="thread.html#1998">[ thread ]</a>
+              <a href="subject.html#1998">[ subject ]</a>
+              <a href="author.html#1998">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Feb 8, 2011 at 16:23, King, Mike &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">MKing at klmicrowave.com</A>&gt; wrote:
+
+&gt;<i> Are there any plans on using Lua 5.2 at some point?
+</I>
+
+Yes, sometime in the future (and not before Lua 5.2 itself is launched :)
+
+
+&gt;<i>  The following changes look interesting for eLua.
+</I>&gt;<i>
+</I>&gt;<i> - yieldable pcall and metamethods
+</I>&gt;<i> - new library for bitwise operations
+</I>&gt;<i>
+</I>
+Yes. We've added a bit lib but last weekend I missed some features too. Lua
+5.2 will have it natively but I'm afraid we'll have to extend it again for
+embedded-specific uses. But this is where the Lua fun is ! :)
+
+- light C functions
+&gt;<i>
+</I>
+You mean without meta-tables or romable functions (that we already have) ?
+
+
+&gt;<i> - emergency garbage collector
+</I>&gt;<i>
+</I>
+eLua has this since v0.7
+
+
+&gt;<i> - no more verification of opcode consistency
+</I>&gt;<i>
+</I>
+To gain speed or space (or both) ?
+Lua is very robust and opcode consistency check is one of the reasons. It's
+a self-contained language, in that all the errors are explained by Lua
+itself. I'm not sure if the footprint gain or even the performance would
+justify loosing it. But yes, it is worth checking, for sure.
+
+- simpler implementation for string buffers
+&gt;<i>
+</I>
+I thought that Lua's implementation was one of the simplests possibles. What
+would we gain here ?
+
+
+&gt;<i> - parser uses much less C-stack space (no more auto arrays)
+</I>
+- generational mode for garbage collection (experimental)
+&gt;<i>
+</I>
+Nice (==it sounds hard to me but brains here know how to do it :)
+
+We will have a public roadmap one of these days and it will be nice to
+refine it with this kind of collaboration. Thanks !!!
+
+Best
+Dado
+
+
+
+
+
+
+
+&gt;<i> CONFIDENTIALITY NOTICE: This e-mail message, including any attachments, is
+</I>&gt;<i> for the sole use of the intended recipient(s) and may contain information
+</I>&gt;<i> that is confidential or proprietary to K&amp;L Microwave, Inc. Any unauthorized
+</I>&gt;<i> review, use, disclosure or distribution is prohibited.
+</I>&gt;<i> If this communication has been transmitted from a U.S. location it may also
+</I>&gt;<i> contain data subject to the International Traffic in Arms Regulations or
+</I>&gt;<i> U.S. Export Administration Regulations and, if so, cannot be disseminated,
+</I>&gt;<i> distributed or copied to foreign nationals, residing in the U.S. or abroad,
+</I>&gt;<i> without the prior approval of the U.S. Department of State or appropriate
+</I>&gt;<i> export licensing authority. If you have received this communication in
+</I>&gt;<i> error, please notify the sender by reply e-mail and delete or destroy all
+</I>&gt;<i> copies of this e-mail message and/or any file attachment(s).
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110208/a59ae980/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110208/a59ae980/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001997.html">[eLua-dev] thoughts on Lua 5.2 for eLua
+</A></li>
+	<LI>Next message: <A HREF="001999.html">[eLua-dev] thoughts on Lua 5.2 for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1998">[ date ]</a>
+              <a href="thread.html#1998">[ thread ]</a>
+              <a href="subject.html#1998">[ subject ]</a>
+              <a href="author.html#1998">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

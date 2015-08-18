@@ -1,0 +1,741 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] [SPAM] Re: [SPAM] Re: [SPAM] Re: ARM9 Embedded PLC
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BSPAM%5D%20Re%3A%20%5BSPAM%5D%20Re%3A%20%5BSPAM%5D%20Re%3A%20ARM9%20Embedded%20PLC&In-Reply-To=%3CCAG6%2B4Seb10WUmGhLgerWWH36e49%2B8S8KS_e_krz6E2X2%2BeGBWw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003897.html">
+   <LINK REL="Next"  HREF="003915.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] [SPAM] Re: [SPAM] Re: [SPAM] Re: ARM9 Embedded PLC</H1>
+    <B>Tony</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BSPAM%5D%20Re%3A%20%5BSPAM%5D%20Re%3A%20%5BSPAM%5D%20Re%3A%20ARM9%20Embedded%20PLC&In-Reply-To=%3CCAG6%2B4Seb10WUmGhLgerWWH36e49%2B8S8KS_e_krz6E2X2%2BeGBWw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] [SPAM] Re: [SPAM] Re: [SPAM] Re: ARM9 Embedded PLC">tony.elua at gmail.com
+       </A><BR>
+    <I>Sat Jan 12 02:03:47 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003897.html">[eLua-dev] [SPAM] Re: [SPAM] Re: [SPAM] Re: ARM9 Embedded PLC
+</A></li>
+        <LI>Next message: <A HREF="003915.html">[eLua-dev] [SPAM] Re: [SPAM] Re: [SPAM] Re: ARM9 Embedded PLC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3911">[ date ]</a>
+              <a href="thread.html#3911">[ thread ]</a>
+              <a href="subject.html#3911">[ subject ]</a>
+              <a href="author.html#3911">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>More off-topic comments below; it's always fun to learn about different
+areas (my experience is mostly on high precision machines with servo
+motors).
+
+To get sort-of back on topic, I do think Lua/eLua would make an excellent
+language for industrial automation.  I don't think we could convert many
+PLC users, but I do like the idea of an &quot;eLua PLC&quot; (eLua running on a
+platform with PLC-style I/O, e.g. 24V isolated inputs and outputs, not 5V
+or 3.3V).
+
+Many industrial controllers (including robot controllers) already use the
+combination of interpreted higher level language that calls low level
+routines.  For the bulk of my code, ladder logic simply wouldn't work, but
+Lua would be fine (I've used Python in the past), but for political reasons
+I have to use .NET.
+
+On Sat, Jan 5, 2013 at 3:52 AM, Quentin Barry &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">admin at promethius.info</A>&gt; wrote:
+
+&gt;<i> If I may add my two cents here...
+</I>&gt;<i>
+</I>&gt;<i> Before the advent of the Z80, 8051, 8085 families and other CPUs similar
+</I>&gt;<i> from various vendors, most machinery was controlled with relays, contactors
+</I>&gt;<i> and timers. A good example would be the classic star-delta starter circuit
+</I>&gt;<i> with hardwired interlocks. The first computer bug found was a moth stuck
+</I>&gt;<i> between relay contacts.
+</I>&gt;<i>
+</I>&gt;<i> Ladder is easy to use and easy to read, as long as each element is
+</I>&gt;<i> labeled. PLCs were originally designed to be deterministic. The original
+</I>&gt;<i> concept did not involve multi-tasking. In fact if one wants to control a
+</I>&gt;<i> servo motor for example, a dedicated card with an application specific CPU
+</I>&gt;<i> is fitted. This allows the card to track the encoder without missing any
+</I>&gt;<i> pulses and to exercise precise control over the servo motor. All the main
+</I>&gt;<i> PLC CPU program does is to supply the Servo card with positioning data.
+</I>&gt;<i>
+</I>
+Ladder is easy to use and read as long as your problem easily fits into
+combinatorial logic.  If you start needing data manipulation, to interface
+with serial barcode reader protocols, or a lot of other areas it sucks.  If
+you want to do servo motion control, a motion controller is often a better
+approach (we've done PLC motion control and it wasn't pretty; PLCOpen looks
+better but I haven't used it).
+
+&gt;<i>
+</I>&gt;<i> Another factor to consider is deterministic control - i.e. to set up a
+</I>&gt;<i> fixed scan cycle allows one to control PID loops easily. The Telemecanique
+</I>&gt;<i> and Mitsubishi PLCs are some of the models that I have worked on that have
+</I>&gt;<i> this facility. For example if all your code executes in 87 mS then you can
+</I>&gt;<i> set the scan cycle to 100 mS. So for 13 mS it is idle after a scan and then
+</I>&gt;<i> it will process all the input signals - analogue and digital. It will run
+</I>&gt;<i> through the ladder logic, and PID loops, update the outputs and process the
+</I>&gt;<i> communication layers. It will then &quot;rest&quot; again for 13 mS. Instead of
+</I>&gt;<i> wasting the idle time, one can insert a self test algorithm here, that
+</I>&gt;<i> executes for 13 mS and then yields control over to the main tasks. At the
+</I>&gt;<i> end of the next scan the self test can resume where it left off and so the
+</I>&gt;<i> cycle repeats.
+</I>&gt;<i>
+</I>
+Fixed cycle time is pretty common; even my low end Panasonics can do that.
+However, I'm not sure how necessary it is now; I'm pretty sure many PLCs
+have built-in PID instructions.  If you need high speed PID loops without
+writing your own code, use a motion controller (1-&gt;20Khz is pretty common;
+I've seen one rated at 200KHz).
+
+
+&gt;<i> Historically there has been much debate about the use of Ethernet in
+</I>&gt;<i> Industrial control systems. That's why there are so many different
+</I>&gt;<i> protocols out there. Some people feel that Ethernet is not deterministic.
+</I>&gt;<i> The PLC vendors - i.e. Mitsubishi use Melsec Net - which is deterministic.
+</I>&gt;<i> This is especially important if you have one PLC controlling the head motor
+</I>&gt;<i> or VSD of a 6 Km conveyor belt and another controlling the tail motor or
+</I>&gt;<i> VSD of the same conveyor belt. Synchronisation of data is critical and both
+</I>&gt;<i> VSDs must run at the same speed and accelerate and decelerate at the same
+</I>&gt;<i> time. If this was not the case, at the minimum the conveyor belt will snap,
+</I>&gt;<i> at the worst the system can oscillate, and if the oscillation happens to be
+</I>&gt;<i> at the &quot;right&quot; harmonic it just gets amplified and amplified until the
+</I>&gt;<i> structure collapses - every metal structure has a harmonic which it is
+</I>&gt;<i> susceptible to.
+</I>&gt;<i>
+</I>
+We used Mitsubishi a long time ago, and back then they were well known for
+crappy software and bad documentation (I found several errors without even
+trying) - hopefully it's better now.  Standard Ethernet with TCP/IP and
+normal switches is not deterministic, although lightly loaded systems might
+work well.  BTW, Mitsubishi's CC-Link IE uses Gigabit Ethernet physical
+layer, but it is not standard (e.g. uses token passing).
+
+&gt;<i>
+</I>&gt;<i> With the advent if IEC 61131 it allows the software developer to create
+</I>&gt;<i> function blocks with pre-defined inputs and outputs. The control logic
+</I>&gt;<i> resides in the function block. One can thus create a generic all purpose
+</I>&gt;<i> motor drive function block for example. This would include inputs for
+</I>&gt;<i> interlocking purposes, fail safe purposes, and it would also check the
+</I>&gt;<i> health of the motor. It is the function of the software developer to test
+</I>&gt;<i> this algorithm vigorously. This same function block can then be used to
+</I>&gt;<i> start pumps, motors etc. and to turn the motor off if some other device in
+</I>&gt;<i> the field fails. For example, motor 1 may need motor 2 to run before it can
+</I>&gt;<i> turn on. If this condition is met then motor 1 will start - however if
+</I>&gt;<i> motor 2 fails at any instant, motor 1 must also turn off.
+</I>&gt;<i>
+</I>
+IEC61131 functions and function calls are still bad compared to a normal
+language, even C.  I've dealt with hard-wired (relay) circuits for such
+things as standby pump control and reactor rod insertion interlocks.
+There's still a place for them (I don't fully trust software).  If your
+logic is mainly as you describe, then ladder logic sounds like a decent
+match.
+
+
+&gt;<i>
+</I>&gt;<i> In my experience I have found that by creating function blocks (call them
+</I>&gt;<i> sub-routines to which you pass and receive parameters) one can enable the
+</I>&gt;<i> Electricians to develop their own code using standardised modules. This
+</I>&gt;<i> allows them to debug the system in real time. For example, one mine in
+</I>&gt;<i> South Africa is 2 miles deep. Plugging into the system on the surface
+</I>&gt;<i> allows them to fault find the system and save time. They soon get an idea
+</I>&gt;<i> of what has failed and they then know which components to take with them
+</I>&gt;<i> underground to repair the system.
+</I>&gt;<i>
+</I>
+&gt;<i> As to connecting to a SCADA system, Ethernet as a backbone is ample. Using
+</I>&gt;<i> Melsec Net I have made online real time changes to the Slave PLCs which are
+</I>&gt;<i> located kilometers away. Granted we made use of fibre optic cable, but we
+</I>&gt;<i> could still achieve this. Or else I could &quot;look&quot; into the field PLCs and
+</I>&gt;<i> see what was preventing the system from starting. Faulty limit switches,
+</I>&gt;<i> Pull Switches etc.
+</I>&gt;<i>
+</I>
+We don't use SCADA; we use a PC for HMI, and our customers don't allow
+outside access.
+
+
+&gt;<i>
+</I>&gt;<i> On a parting note, PLCs are extremely robust animals. All the field
+</I>&gt;<i> signals are isolated from each other and from the PLC electronics. So if
+</I>&gt;<i> some monkey connects 380 V to a 4 - 20 mA analog input channel, only the
+</I>&gt;<i> analogue card will need replacing. I have personally witnessed an
+</I>&gt;<i> electrician connect 380 VAC to a Mitsubishi PLC power supply. He mixed up
+</I>&gt;<i> the neutral wire with another phase. All that happened is that the circuit
+</I>&gt;<i> breaker tripped. He rectified his mistake, and to my amazement the PSU
+</I>&gt;<i> still functioned.
+</I>&gt;<i>
+</I>
+Typically, modules are isolated but the individual I/O lines aren't
+isolated from each other.  I'll agree that PLC's are pretty robust; I've
+only had 1 fail, and I've shorted Panasonic PLC's more than once (24V power
+to ground).
+
+
+&gt;<i> On the downside, IEC 61131 compilers are expensive. It's fine purchasing
+</I>&gt;<i> one for a particular brand of PLC, but if you suddenly land a job  which
+</I>&gt;<i> has a Siemens PLC then you have to purchase that compiler too. PLCs are
+</I>&gt;<i> also expensive, but they are robust industrial specified devices which run
+</I>&gt;<i> for many years. A PC can never replace a PLC. They just do not have the
+</I>&gt;<i> MTBF of a PLC, and down time means a loss in revenue. I would like to see
+</I>&gt;<i> how long a PC lasts in a coal mine before it either fails or causes a fire.
+</I>&gt;<i>
+</I>
+PLC software costs depend more on the vendor than on IEC611 compliance,
+e.g. Allen Bradley is very expensive.  However, Panasonic's FPWinPro is
+reasonable, and there's a free, code-size limited version.  PLC prices
+range from &lt;$100 (Automation Direct) to $3K or more.
+
+Yes, an industrial PC (e.g. Kontron, Wago, Phoenix, Beckhoff, etc DIN rail
+mounted with no cooling fan or a x86-equipped PAC from Omron) can replace a
+PLC, although a lot of times they're still running ladder logic -- and
+they're a lot more expensive than a Dell.
+
+
+&gt;<i> Regards
+</I>&gt;<i>
+</I>&gt;<i> Quentin
+</I>&gt;<i>
+</I>&gt;<i> As an automation software developer, I'll add a few more off-topic
+</I>&gt;<i> comments:
+</I>&gt;<i> -- Yes, ladder logic is still widely used.  The better vendors support
+</I>&gt;<i> IEC61131, which includes classic ladder, structured text (ST; Pascal/Basic
+</I>&gt;<i> style syntax), plus 3 other choices.
+</I>&gt;<i> -- Yes, ladder logic is still awful.  Even in ST, calling functions is
+</I>&gt;<i> painful, and, on the Panasonic FP0-R's I normally use, calling functions
+</I>&gt;<i> doesn't save code space; instead, the compiler treats them as macros.
+</I>&gt;<i> -- However, IEC61131 with ST is much better than many other industrial
+</I>&gt;<i> automation languages I've had to use, such as Allmotion, Schneider/IMS
+</I>&gt;<i> MDrive, Moog/Animatics SmartMotors, Galil, and a whole bunch of others.
+</I>&gt;<i> -- PLC's are very much real time; the code is executed as a cyclical loop,
+</I>&gt;<i> with inputs read at the start, then all the code is executed in order, at
+</I>&gt;<i> the end the outputs are set and then communications are handled before
+</I>&gt;<i> starting the next loop.
+</I>&gt;<i> -- The only decent book on real world PLC programming is Gary Kirckof's
+</I>&gt;<i> Cascading Logic, which is small but pricey.  Also, check out the Automation
+</I>&gt;<i> Primer site ( <A HREF="http://www.automationprimer.com">http://www.automationprimer.com</A> ) for an idea of real world
+</I>&gt;<i> automation.
+</I>&gt;<i> -- There can be political reasons, too; for example, I've heard at many
+</I>&gt;<i> union companies, the electricians can only use ladder logic, but not a
+</I>&gt;<i> higher level language such as C (because of union rules).
+</I>&gt;<i> -- I'm happy I can do most of my development in .NET (VB.NET and C# - I'm
+</I>&gt;<i> tempted to use F#).  Ladder logic can be done well, but it's easy to create
+</I>&gt;<i> spaghetti code.  A hard real time high level scripting language would be
+</I>&gt;<i> wonderful....
+</I>&gt;<i>
+</I>&gt;<i> --Tony
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Jan 4, 2013 at 9:10 AM, Mike King &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mkwired at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> I'm glad to hear that &quot;real&quot; programmers are using PLCs because I have a
+</I>&gt;<i> PLC based project on my to-do list.  I have read a book on the topic and it
+</I>&gt;<i> was so painful.  The concepts are so simple but their explanations are so
+</I>&gt;<i> complex.  I can understand from a historical perceptive how ladder logic
+</I>&gt;<i> came about, but in modern times, I cannot understand why people try to
+</I>&gt;<i> explain the programming primitives in terms of coils and switches.  I feel
+</I>&gt;<i> like I'm missing something basic.  I think I remember reading that ladder
+</I>&gt;<i> logic is a &quot;hard&quot; real-time programming language.  I know there are other
+</I>&gt;<i> languages for PLCs but ladder logic seems to be the dominant one.  Do
+</I>&gt;<i> &quot;real&quot; programmers use ladder logic?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sun, Dec 30, 2012 at 12:47 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sat, Dec 29, 2012 at 11:59 PM, Quentin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">admin at promethius.info</A>&gt; wrote:
+</I>&gt;<i>   I have to clean up the code first before I release it into the public
+</I>&gt;<i> domain.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Cool!
+</I>&gt;<i> No hurry.
+</I>&gt;<i> Thanksssssss
+</I>&gt;<i>
+</I>&gt;<i>  I also have to complete the manual as there are many new features that
+</I>&gt;<i> have been added. The standard Modbus functions work as per the
+</I>&gt;<i> specification, however I added more message types to allow one to use this
+</I>&gt;<i> over a GPRS/3G modem.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Sounds nice! I've never used Modbus over the air.
+</I>&gt;<i>
+</I>&gt;<i> For example, reporting on exception. This saves on bandwidth and the
+</I>&gt;<i> master does not have to poll all the units in the field continuously.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Very cool. Thanks for sharing. It seems like it deserves to become a
+</I>&gt;<i> specific optional module for eLua apps in the future.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  Quentin
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best wishes
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  On 2012/12/30 02:27 AM, Dado Sutter wrote: Hi,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sun, Dec 2, 2012 at 1:55 PM, Quentin Barry &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">admin at promethius.info</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;<i> Hello Tim
+</I>&gt;<i>
+</I>&gt;<i> Very interesting - the Classic Ladder bit.
+</I>&gt;<i>
+</I>&gt;<i> I have a substantial implementation of the Modbus RTU protocol on my ARM9
+</I>&gt;<i> board.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Is your Modbus code open source and available on an online repo?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thanks for the link.
+</I>&gt;<i>
+</I>&gt;<i> Quentin
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thanksssssssss
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Here is a low cost board...
+</I>&gt;<i> JeroenDS made amazing PLC project with iMX233-OLinuXino:
+</I>&gt;<i> <A HREF="http://leachy.homeip.net/olinuxino/">http://leachy.homeip.net/olinuxino/</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://www.olimex.com/Products/OLinuXino/">https://www.olimex.com/Products/OLinuXino/</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  * From:* Quentin Barry &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">admin at promethius.info</A>&gt;
+</I>&gt;<i> *To:* eLua Users and Development List (www.eluaproject.net) &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> *Sent:* Sunday, December 2, 2012 9:50 AM
+</I>&gt;<i> *Subject:* [eLua-dev] ARM9 Embedded PLC
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hi Tom
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I was thinking of using the LM3S6965. I think that it has ample resources
+</I>&gt;<i> to suit my requirements.
+</I>&gt;<i> It comes with 64 KB of bit-banded SRAM and 256 KB of flash memory. It has
+</I>&gt;<i> the MAC and PHY built into the IC. All that one requires is the RJ45
+</I>&gt;<i> connector. I think that this device was targeted for Ethernet to Serial
+</I>&gt;<i> bridges. There are detailed design and application notes on their website.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Without a doubt one cannot deny that ST has the lion's share of the Cortex
+</I>&gt;<i> market. I do use their devices regularly too. However there are certain
+</I>&gt;<i> niche markets that other vendors target.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Stellaris with their LM3S6965 for Ethernet
+</I>&gt;<i> NXP and Energy Micro for Graphics Displays - EmWin is a free download for
+</I>&gt;<i> these devices.
+</I>&gt;<i> Si-Labs have a highly configurable patented dual crossbar technology to
+</I>&gt;<i> define pinouts.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I guess it all boils down to what the end application is.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Regards
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Quentin
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> That's OK, Quentin.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> A new look at an existing product line is always welcomed.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Being that you are a hardware person, take a look at the W7200 in the
+</I>&gt;<i> Wiznet site.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Notice that it uses STM32 IP with 128K Flash and 20K RAM. If you can come
+</I>&gt;<i> up with the equivalent using Stellaris IP with  512 K Flash (or better) and
+</I>&gt;<i> 64K RAM (or better), I can use that.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sun, Dec 2, 2012 at 1:26 AM, Quentin Barry &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">admin at promethius.info</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thanks for the link.
+</I>&gt;<i>
+</I>&gt;<i> The issue here is that I am a hardware / embedded engineer. I don't want
+</I>&gt;<i> to buy someone else's solution - but want to design my own. You may call it
+</I>&gt;<i> re-inventing the wheel, but that is OK. I am planning on using one of the
+</I>&gt;<i> Luminary Micro / Stellaris Cortex M3 devices to implement the Ethernet to
+</I>&gt;<i> Serial bridge. I could simply have used a Tibbo module if I was so inclined.
+</I>&gt;<i>
+</I>&gt;<i> I have taken a look at the Microchip offerings but then you are tied in to
+</I>&gt;<i> their compiler and development environment. With the Stellaris solution
+</I>&gt;<i> everything is open source. One also has the flexibility to change and add
+</I>&gt;<i> things as well. For example I could add a CC1125 to the Cortex as well and
+</I>&gt;<i> then I would have an Ethernet and an ISM band device in one.
+</I>&gt;<i>
+</I>&gt;<i> Quentin
+</I>&gt;<i>
+</I>&gt;<i> Take a look at:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www.wiznet.co.kr/Sub_Modules/en/">http://www.wiznet.co.kr/Sub_Modules/en/</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Nov 29, 2012 at 7:53 AM, Quentin Barry &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">admin at promethius.info</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> That would be great. I also have quite a hectic schedule for approximately
+</I>&gt;<i> the next 2 weeks and then I will be free. Being your own boss can kill you
+</I>&gt;<i> sometimes.
+</I>&gt;<i>
+</I>&gt;<i> I have all the PDF files for the PLC - where can I deposit them? If people
+</I>&gt;<i> are happy with what they see then I will upload all the Gerber files a bit
+</I>&gt;<i> later. All I need is a bit of guidance here on where to deposit the files
+</I>&gt;<i> without creating confusion. I guess a bit of moderator support is required
+</I>&gt;<i> at this junction.
+</I>&gt;<i>
+</I>&gt;<i> Quentin.
+</I>&gt;<i>
+</I>&gt;<i> I would be interested and willing to help you get eLua running on your PLC
+</I>&gt;<i> board. I am unlikely to have much time for the next two weeks due to a work
+</I>&gt;<i> project deliverable. After that I could spend some time on getting eLua
+</I>&gt;<i> running and working on some modules to interface to the various hardware
+</I>&gt;<i> peripherals.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I also may be interested in your Ethernet gateway board, as I have a few
+</I>&gt;<i> projects where I plan on using eLua and will need Ethernet.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> -djd
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Nov 28, 2012, at 11:58 PM, Quentin Barry wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hello All
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> If I was to design an Ethernet to serial gateway would there be any
+</I>&gt;<i> interest? Basically it would accept 10/100 Mb Ethernet and convert it to
+</I>&gt;<i> serial or SPI and vica-versa.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I would make all the gerber files available. I think that a modular method
+</I>&gt;<i> is perhaps the best route to follow as main processor is then not burdened
+</I>&gt;<i> with these other tasks. All it has to do is to capture packets on the
+</I>&gt;<i> Serial or SPI layer, process them and reply if necessary.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I also have a complete design for a small PLC using the STR912FAW47. It
+</I>&gt;<i> has:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>    1. 2 x 12 bit D/A converters on it, the outputs filtered and buffered
+</I>&gt;<i>    0- 5V,
+</I>&gt;<i>    2. 4 x 12 bit A/D channels
+</I>&gt;<i>    3. 2 x I2C channels for user expansion
+</I>&gt;<i>    4. 512K x 16 Static RAM
+</I>&gt;<i>    5. 32K x 8 FRAM or more depending on which IC you select
+</I>&gt;<i>    6. 1 x RS232 channel
+</I>&gt;<i>    7. 1 x RS485 channel
+</I>&gt;<i>    8. 1 x SPI port for user expansion
+</I>&gt;<i>    9. 1 x SIM900 GSM module
+</I>&gt;<i>    10. 4 x Optically isolated interrupt coupled digital inputs
+</I>&gt;<i>    11. 4 x Relay outputs
+</I>&gt;<i>    12. 1 x USB port
+</I>&gt;<i>    13. 1 x Onboard PSU which generates all the required voltage rails.
+</I>&gt;<i>
+</I>&gt;<i> Most of the low level drivers are written in C and have been battled
+</I>&gt;<i> tested. This is revision 2 of the board, so there are a few hardware
+</I>&gt;<i> changes and some of the drivers have to change, or still have to be
+</I>&gt;<i> written. Everything is interrupt driven.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I have not yet had the time to implement eLua on it, but there is a port
+</I>&gt;<i> available for this CPU.
+</I>&gt;<i> Is anyone interested in working with me to get this up and going with eLua?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Quentin_______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Douglas Davenport
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  --
+</I>&gt;<i>  Tom Freund
+</I>&gt;<i>
+</I>&gt;<i> Dig.y.SoL (TM)
+</I>&gt;<i>
+</I>&gt;<i> &quot;Systems overseeing
+</I>&gt;<i> public and private
+</I>&gt;<i> infrastructure&quot;
+</I>&gt;<i>
+</I>&gt;<i>  Voice - 860-232-1614
+</I>&gt;<i> Skype ID - digysol
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  --
+</I>&gt;<i>  Tom Freund
+</I>&gt;<i>
+</I>&gt;<i> Dig.y.SoL (TM)
+</I>&gt;<i>
+</I>&gt;<i> &quot;Systems overseeing
+</I>&gt;<i> public and private
+</I>&gt;<i> infrastructure&quot;
+</I>&gt;<i>
+</I>&gt;<i>  Voice - 860-232-1614
+</I>&gt;<i> Skype ID - digysol
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  _______________________________________________ eLua-dev mailing <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">listeLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130111/a619d5c0/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130111/a619d5c0/attachment-0001.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003897.html">[eLua-dev] [SPAM] Re: [SPAM] Re: [SPAM] Re: ARM9 Embedded PLC
+</A></li>
+	<LI>Next message: <A HREF="003915.html">[eLua-dev] [SPAM] Re: [SPAM] Re: [SPAM] Re: ARM9 Embedded PLC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3911">[ date ]</a>
+              <a href="thread.html#3911">[ thread ]</a>
+              <a href="subject.html#3911">[ subject ]</a>
+              <a href="author.html#3911">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,456 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] sermux doesn't work!
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20sermux%20doesn%27t%20work%21&In-Reply-To=%3CCANKDJfYp8%2B%2BAxFgUx_W3cZU1LKftT3MEGP3USZudq-t9%2B7to6w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003078.html">
+   <LINK REL="Next"  HREF="003084.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] sermux doesn't work!</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20sermux%20doesn%27t%20work%21&In-Reply-To=%3CCANKDJfYp8%2B%2BAxFgUx_W3cZU1LKftT3MEGP3USZudq-t9%2B7to6w%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] sermux doesn't work!">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Dec  6 23:03:11 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003078.html">[eLua-dev] sermux doesn't work!
+</A></li>
+        <LI>Next message: <A HREF="003084.html">[eLua-dev] sermux doesn't work!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3081">[ date ]</a>
+              <a href="thread.html#3081">[ thread ]</a>
+              <a href="subject.html#3081">[ subject ]</a>
+              <a href="author.html#3081">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Interesting. Could you also please try the 'rfsmux' mode and let me know if
+that works?
+
+Thanks,
+Bogdan
+
+On Tue, Dec 6, 2011 at 9:34 PM, mrNickname &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">steff_bau at yahoo.de</A>&gt; wrote:
+
+&gt;<i> I think you can see it best, when i post the whole file:
+</I>&gt;<i>
+</I>&gt;<i> // eLua platform configuration
+</I>&gt;<i>
+</I>&gt;<i> #ifndef __PLATFORM_CONF_H__
+</I>&gt;<i> #define __PLATFORM_CONF_H__
+</I>&gt;<i>
+</I>&gt;<i> #include &quot;auxmods.h&quot;
+</I>&gt;<i> #include &quot;hw_memmap.h&quot;
+</I>&gt;<i> #include &quot;hw_types.h&quot;
+</I>&gt;<i> #include &quot;stacks.h&quot;
+</I>&gt;<i> #include &quot;sysctl.h&quot;
+</I>&gt;<i> #include &quot;elua_int.h&quot;
+</I>&gt;<i>
+</I>&gt;<i> //*******
+</I>&gt;<i> #include &quot;sermux.h&quot;                                             // for
+</I>&gt;<i> virtual uart IDs
+</I>&gt;<i> #include &quot;buf.h&quot;                                                // for
+</I>&gt;<i> buffer sizes
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> //
+</I>&gt;<i>
+</I>&gt;<i> *****************************************************************************
+</I>&gt;<i> // Define here what components you want for this platform
+</I>&gt;<i>
+</I>&gt;<i> #define BUILD_XMODEM
+</I>&gt;<i> #define BUILD_SHELL
+</I>&gt;<i> #define BUILD_ROMFS
+</I>&gt;<i> #define BUILD_MMCFS
+</I>&gt;<i> #define BUILD_TERM
+</I>&gt;<i> #ifndef FORLM3S1968
+</I>&gt;<i>  #define BUILD_UIP
+</I>&gt;<i> //#define BUILD_DHCPC
+</I>&gt;<i>  #define BUILD_DNS
+</I>&gt;<i> #endif
+</I>&gt;<i> #define BUILD_CON_GENERIC
+</I>&gt;<i> #define BUILD_ADC
+</I>&gt;<i> #define BUILD_RPC
+</I>&gt;<i> //#define BUILD_CON_TCP
+</I>&gt;<i> #define BUILD_C_INT_HANDLERS
+</I>&gt;<i>
+</I>&gt;<i> //*******
+</I>&gt;<i> #define BUILD_LINENOISE
+</I>&gt;<i> #define BUILD_SERMUX
+</I>&gt;<i> #define BUILD_RFS
+</I>&gt;<i> #define BUILD_LUA_INT_HANDLERS
+</I>&gt;<i> #define PLATFORM_INT_QUEUE_LOG_SIZE 8
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> //
+</I>&gt;<i>
+</I>&gt;<i> *****************************************************************************
+</I>&gt;<i> // UART/Timer IDs configuration data (used in main.c)
+</I>&gt;<i>
+</I>&gt;<i> //#define CON_UART_ID           0
+</I>&gt;<i> //#define CON_UART_SPEED        115200
+</I>&gt;<i> #define CON_TIMER_ID          0
+</I>&gt;<i> #define TERM_LINES            25
+</I>&gt;<i> #define TERM_COLS             80
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> // *****************************************
+</I>&gt;<i> // SERMUX and RFS
+</I>&gt;<i>
+</I>&gt;<i> #define CON_UART_ID         ( SERMUX_SERVICE_ID_FIRST + 1 )
+</I>&gt;<i> #define CON_BUF_SIZE        BUF_SIZE_128
+</I>&gt;<i> #define RFS_UART_ID         ( SERMUX_SERVICE_ID_FIRST )
+</I>&gt;<i> #define RFS_BUFFER_SIZE     BUF_SIZE_512
+</I>&gt;<i>
+</I>&gt;<i> // Serial multiplexer data
+</I>&gt;<i> #define SERMUX_PHYS_ID      0
+</I>&gt;<i> #define SERMUX_PHYS_SPEED   115200
+</I>&gt;<i> #define SERMUX_NUM_VUART    2
+</I>&gt;<i> #define SERMUX_BUFFER_SIZES { RFS_BUFFER_SIZE, CON_BUF_SIZE }
+</I>&gt;<i> //#define SERMUX_FLOW_TYPE      PLATFORM_UART_FLOW_RTS |
+</I>&gt;<i> PLATFORM_UART_FLOW_CTS
+</I>&gt;<i>
+</I>&gt;<i> // *****************************************
+</I>&gt;<i> // RFS
+</I>&gt;<i>
+</I>&gt;<i> #define RFS_TIMER_ID          1
+</I>&gt;<i> //#define RFS_FLOW_TYPE                 PLATFORM_UART_FLOW_RTS |
+</I>&gt;<i> PLATFORM_UART_FLOW_CTS
+</I>&gt;<i> #define RFS_TIMEOUT           100000
+</I>&gt;<i> #define RFS_UART_SPEED        115200
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> // *****************************************
+</I>&gt;<i> // Linenoise
+</I>&gt;<i>
+</I>&gt;<i> #define LINENOISE_HISTORY_SIZE_LUA          10
+</I>&gt;<i> #define LINENOISE_HISTORY_SIZE_SHELL        10
+</I>&gt;<i> #define LINENOISE_AUTOSAVE_FNAME                &quot;linenoise&quot;
+</I>&gt;<i>
+</I>&gt;<i> //
+</I>&gt;<i>
+</I>&gt;<i> *****************************************************************************
+</I>&gt;<i> // Auxiliary libraries that will be compiled for this platform
+</I>&gt;<i>
+</I>&gt;<i> // The name of the platform specific libs table
+</I>&gt;<i> // FIXME: should handle partial or no inclusion of platform specific
+</I>&gt;<i> modules
+</I>&gt;<i> per conf.py
+</I>&gt;<i> #ifdef ENABLE_DISP
+</I>&gt;<i> #define PS_LIB_TABLE_NAME   &quot;lm3s&quot;
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> #if defined( FORLM3S8962 ) || defined( FORLM3S9B92 )
+</I>&gt;<i> #define CANLINE  _ROM( AUXLIB_CAN, luaopen_can, can_map )
+</I>&gt;<i> #define BUILD_CAN
+</I>&gt;<i> #else
+</I>&gt;<i> #define CANLINE
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> #ifdef FORLM3S6918
+</I>&gt;<i> #define PWMLINE
+</I>&gt;<i> #else
+</I>&gt;<i> #define PWMLINE  _ROM( AUXLIB_PWM, luaopen_pwm, pwm_map )
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> #ifdef BUILD_UIP
+</I>&gt;<i> #define NETLINE  _ROM( AUXLIB_NET, luaopen_net, net_map )
+</I>&gt;<i> #else
+</I>&gt;<i> #define NETLINE
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> #ifdef BUILD_ADC
+</I>&gt;<i> #define ADCLINE _ROM( AUXLIB_ADC, luaopen_adc, adc_map )
+</I>&gt;<i> #else
+</I>&gt;<i> #define ADCLINE
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> #if defined( ELUA_BOOT_RPC ) &amp;&amp; !defined( BUILD_RPC )
+</I>&gt;<i> #define BUILD_RPC
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> #if defined( BUILD_RPC )
+</I>&gt;<i> #define RPCLINE _ROM( AUXLIB_RPC, luaopen_rpc, rpc_map )
+</I>&gt;<i> #else
+</I>&gt;<i> #define RPCLINE
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> #ifdef PS_LIB_TABLE_NAME
+</I>&gt;<i> #define PLATLINE _ROM( PS_LIB_TABLE_NAME, luaopen_platform, platform_map )
+</I>&gt;<i> #else
+</I>&gt;<i> #define PLATLINE
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> #define LUA_PLATFORM_LIBS_ROM\
+</I>&gt;<i>  _ROM( AUXLIB_PIO, luaopen_pio, pio_map )\
+</I>&gt;<i>  _ROM( AUXLIB_SPI, luaopen_spi, spi_map )\
+</I>&gt;<i>  _ROM( AUXLIB_TMR, luaopen_tmr, tmr_map )\
+</I>&gt;<i>  _ROM( AUXLIB_PD, luaopen_pd, pd_map )\
+</I>&gt;<i>  _ROM( AUXLIB_UART, luaopen_uart, uart_map )\
+</I>&gt;<i>  PWMLINE\
+</I>&gt;<i>  _ROM( AUXLIB_TERM, luaopen_term, term_map )\
+</I>&gt;<i>  _ROM( AUXLIB_PACK, luaopen_pack, pack_map )\
+</I>&gt;<i>  _ROM( AUXLIB_BIT, luaopen_bit, bit_map )\
+</I>&gt;<i>  _ROM( AUXLIB_BITARRAY, luaopen_bitarray, bitarray_map )\
+</I>&gt;<i>  NETLINE\
+</I>&gt;<i>  _ROM( AUXLIB_CPU, luaopen_cpu, cpu_map )\
+</I>&gt;<i>  _ROM( AUXLIB_ELUA, luaopen_elua, elua_map )\
+</I>&gt;<i>  ADCLINE\
+</I>&gt;<i>  CANLINE\
+</I>&gt;<i>  RPCLINE\
+</I>&gt;<i>  _ROM( LUA_MATHLIBNAME, luaopen_math, math_map )\
+</I>&gt;<i>  PLATLINE
+</I>&gt;<i>
+</I>&gt;<i> //
+</I>&gt;<i>
+</I>&gt;<i> *****************************************************************************
+</I>&gt;<i> // Configuration data
+</I>&gt;<i>
+</I>&gt;<i> // Static TCP/IP configuration
+</I>&gt;<i> #define ELUA_CONF_IPADDR0     192
+</I>&gt;<i> #define ELUA_CONF_IPADDR1     168
+</I>&gt;<i> #define ELUA_CONF_IPADDR2     100
+</I>&gt;<i> #define ELUA_CONF_IPADDR3     90
+</I>&gt;<i>
+</I>&gt;<i> #define ELUA_CONF_NETMASK0    255
+</I>&gt;<i> #define ELUA_CONF_NETMASK1    255
+</I>&gt;<i> #define ELUA_CONF_NETMASK2    255
+</I>&gt;<i> #define ELUA_CONF_NETMASK3    0
+</I>&gt;<i>
+</I>&gt;<i> #define ELUA_CONF_DEFGW0      192
+</I>&gt;<i> #define ELUA_CONF_DEFGW1      168
+</I>&gt;<i> #define ELUA_CONF_DEFGW2      100
+</I>&gt;<i> #define ELUA_CONF_DEFGW3      20
+</I>&gt;<i>
+</I>&gt;<i> #define ELUA_CONF_DNS0        192
+</I>&gt;<i> #define ELUA_CONF_DNS1        168
+</I>&gt;<i> #define ELUA_CONF_DNS2        100
+</I>&gt;<i> #define ELUA_CONF_DNS3        20
+</I>&gt;<i>
+</I>&gt;<i> //
+</I>&gt;<i>
+</I>&gt;<i> *****************************************************************************
+</I>&gt;<i> // Configuration data
+</I>&gt;<i>
+</I>&gt;<i> // Virtual timers (0 if not used)
+</I>&gt;<i> #define VTMR_NUM_TIMERS       4
+</I>&gt;<i> #define VTMR_FREQ_HZ          4
+</I>&gt;<i>
+</I>&gt;<i> // Number of resources (0 if not available/not implemented)
+</I>&gt;<i> #if defined(FORLM3S1968)
+</I>&gt;<i>  #define NUM_PIO             8
+</I>&gt;<i> #elif defined(FORLM3S9B92)
+</I>&gt;<i>  #define NUM_PIO             7
+</I>&gt;<i> #else
+</I>&gt;<i>  #define NUM_PIO             7
+</I>&gt;<i> #endif
+</I>&gt;<i> #define NUM_SPI               1
+</I>&gt;<i> #ifdef FORLM3S6965
+</I>&gt;<i>  #define NUM_UART            3
+</I>&gt;<i> #elif FORLM3S9B92
+</I>&gt;<i>  #define NUM_UART            3
+</I>&gt;<i> #else
+</I>&gt;<i>  #define NUM_UART            2
+</I>&gt;<i> #endif
+</I>&gt;<i> #define NUM_TIMER             4
+</I>&gt;<i> #ifndef FORLM3S6918
+</I>&gt;<i>  #define NUM_PWM             6
+</I>&gt;<i> #else
+</I>&gt;<i>  #define NUM_PWM             0
+</I>&gt;<i> #endif
+</I>&gt;<i> #define NUM_ADC               4
+</I>&gt;<i> #define NUM_CAN               1
+</I>&gt;<i>
+</I>&gt;<i> // Enable RX buffering on UART
+</I>&gt;<i> #define BUF_ENABLE_UART
+</I>&gt;<i> #define CON_BUF_SIZE          BUF_SIZE_128
+</I>&gt;<i>
+</I>&gt;<i> // ADC Configuration Params
+</I>&gt;<i> #define ADC_BIT_RESOLUTION    10
+</I>&gt;<i> #define BUF_ENABLE_ADC
+</I>&gt;<i> #define ADC_BUF_SIZE          BUF_SIZE_2
+</I>&gt;<i>
+</I>&gt;<i> // These should be adjusted to support multiple ADC devices
+</I>&gt;<i> #define ADC_TIMER_FIRST_ID    0
+</I>&gt;<i> #define ADC_NUM_TIMERS        NUM_TIMER
+</I>&gt;<i>
+</I>&gt;<i> // RPC boot options
+</I>&gt;<i> #define RPC_UART_ID           CON_UART_ID
+</I>&gt;<i> #define RPC_TIMER_ID          CON_TIMER_ID
+</I>&gt;<i> #define RPC_UART_SPEED        CON_UART_SPEED
+</I>&gt;<i>
+</I>&gt;<i> // SD/MMC Filesystem Setup
+</I>&gt;<i> #define MMCFS_TICK_HZ     4
+</I>&gt;<i> #define MMCFS_TICK_MS     ( 1000 / MMCFS_TICK_HZ )
+</I>&gt;<i>
+</I>&gt;<i> #if defined( ELUA_BOARD_EKLM3S6965 )
+</I>&gt;<i>  // EK-LM3S6965
+</I>&gt;<i>  #define MMCFS_CS_PORT                3
+</I>&gt;<i>  #define MMCFS_CS_PIN                 0
+</I>&gt;<i>  #define MMCFS_SPI_NUM                0
+</I>&gt;<i> #elif defined( ELUA_BOARD_EKLM3S8962 )
+</I>&gt;<i>  // EK-LM3S8962
+</I>&gt;<i>  #define MMCFS_CS_PORT                6
+</I>&gt;<i>  #define MMCFS_CS_PIN                 0
+</I>&gt;<i>  #define MMCFS_SPI_NUM                0
+</I>&gt;<i> #elif defined( ELUA_BOARD_EAGLE100 )
+</I>&gt;<i>  // Eagle-100
+</I>&gt;<i>  #define MMCFS_CS_PORT                6
+</I>&gt;<i>  #define MMCFS_CS_PIN                 1
+</I>&gt;<i>  #define MMCFS_SPI_NUM                0
+</I>&gt;<i> #elif defined( BUILD_MMCFS ) &amp;&amp; !defined( MMCFS_SPI_NUM )
+</I>&gt;<i>  #warning &quot;MMCFS was enabled, but required SPI &amp; CS data are undefined,
+</I>&gt;<i> disabling MMCFS&quot;
+</I>&gt;<i>  #undef BUILD_MMCFS
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> // CPU frequency (needed by the CPU module, 0 if not used)
+</I>&gt;<i> #define CPU_FREQUENCY         SysCtlClockGet()
+</I>&gt;<i>
+</I>&gt;<i> // PIO prefix ('0' for P0, P1, ... or 'A' for PA, PB, ...)
+</I>&gt;<i> #define PIO_PREFIX            'A'
+</I>&gt;<i> // Pins per port configuration:
+</I>&gt;<i> // #define PIO_PINS_PER_PORT (n) if each port has the same number of pins,
+</I>&gt;<i> or
+</I>&gt;<i> // #define PIO_PIN_ARRAY { n1, n2, ... } to define pins per port in an
+</I>&gt;<i> array
+</I>&gt;<i> // Use #define PIO_PINS_PER_PORT 0 if this isn't needed
+</I>&gt;<i> #if defined(FORLM3S1968)
+</I>&gt;<i>  #define PIO_PIN_ARRAY         { 8, 8, 8, 4, 4, 8, 8, 4}
+</I>&gt;<i> #elif defined(FORLM3S9B92)
+</I>&gt;<i>  #define PIO_PIN_ARRAY         { 8, 8, 8, 8, 8, 6, 8, 8, 8 }
+</I>&gt;<i> #else
+</I>&gt;<i>  #define PIO_PIN_ARRAY         { 8, 8, 8, 8, 4, 4, 2 }
+</I>&gt;<i> #endif
+</I>&gt;<i> //                                A, B, C, D, E, F, G, H, J
+</I>&gt;<i>
+</I>&gt;<i> #ifdef FORLM3S9B92
+</I>&gt;<i>  #define SRAM_SIZE ( 0x18000 )
+</I>&gt;<i> #else
+</I>&gt;<i>  #define SRAM_SIZE ( 0x10000 )
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> // Allocator data: define your free memory zones here in two arrays
+</I>&gt;<i> // (start address and end address)
+</I>&gt;<i> #define MEM_START_ADDRESS     { ( void* )end }
+</I>&gt;<i> #define MEM_END_ADDRESS       { ( void* )( SRAM_BASE + SRAM_SIZE -
+</I>&gt;<i> STACK_SIZE_TOTAL - 1 ) }
+</I>&gt;<i>
+</I>&gt;<i> // Interrupt list
+</I>&gt;<i> #define INT_TMR_MATCH         ELUA_INT_FIRST_ID
+</I>&gt;<i> //modified
+</I>&gt;<i> #define INT_UART_RX           ( ELUA_INT_FIRST_ID + 1 )
+</I>&gt;<i> #define INT_ELUA_LAST         INT_UART_RX
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> //
+</I>&gt;<i>
+</I>&gt;<i> *****************************************************************************
+</I>&gt;<i> // CPU constants that should be exposed to the eLua &quot;cpu&quot; module
+</I>&gt;<i>
+</I>&gt;<i> #include &quot;hw_ints.h&quot;
+</I>&gt;<i>
+</I>&gt;<i> #define PLATFORM_CPU_CONSTANTS\
+</I>&gt;<i>  _C( INT_GPIOA ),\
+</I>&gt;<i>  _C( INT_GPIOB ),\
+</I>&gt;<i>  _C( INT_GPIOC ),\
+</I>&gt;<i>  _C( INT_GPIOD ),\
+</I>&gt;<i>  _C( INT_GPIOE ),\
+</I>&gt;<i>  _C( INT_UART0 ),\
+</I>&gt;<i>  _C( INT_UART1 ),\
+</I>&gt;<i>  _C( INT_SSI0 ),\
+</I>&gt;<i>  _C( INT_I2C0 ),\
+</I>&gt;<i>  _C( INT_PWM_FAULT ),\
+</I>&gt;<i>  _C( INT_PWM0 ),\
+</I>&gt;<i>  _C( INT_PWM1 ),\
+</I>&gt;<i>  _C( INT_PWM2 ),\
+</I>&gt;<i>  _C( INT_QEI0 ),\
+</I>&gt;<i>  _C( INT_ADC0 ),\
+</I>&gt;<i>  _C( INT_ADC1 ),\
+</I>&gt;<i>  _C( INT_ADC2 ),\
+</I>&gt;<i>  _C( INT_ADC3 ),\
+</I>&gt;<i>  _C( INT_WATCHDOG ),\
+</I>&gt;<i>  _C( INT_TIMER0A ),\
+</I>&gt;<i>  _C( INT_TIMER0B ),\
+</I>&gt;<i>  _C( INT_TIMER1A ),\
+</I>&gt;<i>  _C( INT_TIMER1B ),\
+</I>&gt;<i>  _C( INT_TIMER2A ),\
+</I>&gt;<i>  _C( INT_TIMER2B ),\
+</I>&gt;<i>  _C( INT_COMP0 ),\
+</I>&gt;<i>  _C( INT_COMP1 ),\
+</I>&gt;<i>  _C( INT_COMP2 ),\
+</I>&gt;<i>  _C( INT_SYSCTL ),\
+</I>&gt;<i>  _C( INT_FLASH ),\
+</I>&gt;<i>  _C( INT_GPIOF ),\
+</I>&gt;<i>  _C( INT_GPIOG ),\
+</I>&gt;<i>  _C( INT_GPIOH ),\
+</I>&gt;<i>  _C( INT_UART2 ),\
+</I>&gt;<i>  _C( INT_SSI1 ),\
+</I>&gt;<i>  _C( INT_TIMER3A ),\
+</I>&gt;<i>  _C( INT_TIMER3B ),\
+</I>&gt;<i>  _C( INT_I2C1 ),\
+</I>&gt;<i>  _C( INT_QEI1 ),\
+</I>&gt;<i>  _C( INT_CAN0 ),\
+</I>&gt;<i>  _C( INT_CAN1 ),\
+</I>&gt;<i>  _C( INT_CAN2 ),\
+</I>&gt;<i>  _C( INT_ETH ),\
+</I>&gt;<i>  _C( INT_HIBERNATE ),\
+</I>&gt;<i>  _C( INT_USB0 ),\
+</I>&gt;<i>  _C( INT_PWM3 ),\
+</I>&gt;<i>  _C( INT_UDMA ),\
+</I>&gt;<i>  _C( INT_UDMAERR ),\
+</I>&gt;<i>  _C( INT_UART_RX ),\
+</I>&gt;<i>  _C( INT_TMR_MATCH )            //for tmr interrupt
+</I>&gt;<i>
+</I>&gt;<i> #endif // #ifndef __PLATFORM_CONF_H__
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context:
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/sermux-doesn-t-work-tp7066758p7068095.html">http://elua-development.2368040.n2.nabble.com/sermux-doesn-t-work-tp7066758p7068095.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111207/b7c1f32e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111207/b7c1f32e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003078.html">[eLua-dev] sermux doesn't work!
+</A></li>
+	<LI>Next message: <A HREF="003084.html">[eLua-dev] sermux doesn't work!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3081">[ date ]</a>
+              <a href="thread.html#3081">[ thread ]</a>
+              <a href="subject.html#3081">[ subject ]</a>
+              <a href="author.html#3081">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

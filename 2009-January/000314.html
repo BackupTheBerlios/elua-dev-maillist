@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua API Question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20API%20Question&In-Reply-To=%3C62D6307C-6D8E-4224-A357-A9EDBA9CFEB9%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000305.html">
+   <LINK REL="Next"  HREF="000316.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua API Question</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20API%20Question&In-Reply-To=%3C62D6307C-6D8E-4224-A357-A9EDBA9CFEB9%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Lua API Question">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Jan 28 02:16:03 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000305.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+        <LI>Next message: <A HREF="000316.html">[eLua-dev] Lua API Question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#314">[ date ]</a>
+              <a href="thread.html#314">[ thread ]</a>
+              <a href="subject.html#314">[ subject ]</a>
+              <a href="author.html#314">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi -
+
+I've implemented smoothing functionality, which seems to work for me  
+on the Stellaris platform.  I'm sure there are a few bugs in there,  
+and cases I haven't covered, so I'm not quite done with it.  I'm open  
+to suggestions if I've done anything particularly ugly or  
+problematic :-)   I also plan to move the code around a little so that  
+as much as possible is common to all platforms.  I tried to limit  
+platform-specific functionality at this go around, so simlar code with  
+platform specific driver calls changed should work on all platforms, I  
+think.
+
+One thing I haven't implemented yet is the burst sampling function.  I  
+haven't done this yet because I haven't decided how I want to return  
+the results to Lua.  I was originally thinking that I wanted to return  
+some sort of array or table, so that one could do, for example:
+
+res = adc.burst(id, timer_id, freq)
+
+and have res be a table containing the returned samples, however, I  
+don't see a method to push such a thing onto the stack used to  
+transfer between Lua and C.
+
+I suppose the table could be created first in lua, pass that to  
+adc.burst and use the api functions to manipulate the table:
+
+res_table = {}
+adc.burst(id,res_table,timer_id,freq)
+
+Of course this option makes returning results in a non-blocking manner  
+a little easier since I assume I can have my interrupt stick values  
+into the table at a later point.  The main thing I don't like about it  
+is that if I accept a table, I don't really know what I'm going to  
+get.  Will it be empty? Do I replace key-&gt;value pairs or only add them?
+
+I suppose another option could be that I accept not a table, but a  
+name for one, and then create that using the API and slot values into  
+it.
+
+Any thoughts on what approach would be the most reasonable?
+
+Thanks!
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090127/d74f6474/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090127/d74f6474/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090127/d74f6474/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090127/d74f6474/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000305.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+	<LI>Next message: <A HREF="000316.html">[eLua-dev] Lua API Question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#314">[ date ]</a>
+              <a href="thread.html#314">[ thread ]</a>
+              <a href="subject.html#314">[ subject ]</a>
+              <a href="author.html#314">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

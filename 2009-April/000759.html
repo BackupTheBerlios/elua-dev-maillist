@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua and yielding with lua_yield() function
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3C49DE257B.6090707%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000758.html">
+   <LINK REL="Next"  HREF="000762.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua and yielding with lua_yield() function</H1>
+    <B>Mike Thompson</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3C49DE257B.6090707%40gmail.com%3E"
+       TITLE="[eLua-dev] eLua and yielding with lua_yield() function">mpthompson at gmail.com
+       </A><BR>
+    <I>Thu Apr  9 18:42:35 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000758.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+        <LI>Next message: <A HREF="000762.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#759">[ date ]</a>
+              <a href="thread.html#759">[ thread ]</a>
+              <a href="subject.html#759">[ subject ]</a>
+              <a href="author.html#759">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>James Snyder wrote:
+&gt;<i> I suppose this again brings up the whole lua interrupt concept, but I'm wondering how this currently could work with hundreds of events.
+</I>&gt;<i> 
+</I>&gt;<i> I assume that you still need some kind of dispatcher like the following: <A HREF="http://www.lua.org/pil/9.4.html">http://www.lua.org/pil/9.4.html</A>
+</I>&gt;<i> 
+</I>&gt;<i> Is the advantage one might get from something like coco a reduction in overhead and bookkeeping, since you can resume something on the C side rather than resuming something on the Lua side that calls something in C?
+</I>&gt;<i> 
+</I>&gt;<i> I suppose you could replace the Lua dispatcher with some sort of event coroutine that runs on the C side, and gives you an event type or message if something has happened that is registered to be reported.  I can see that sort of thing being fairly useful with a few other bits to handle what to do with the messages in lua.
+</I>&gt;<i> 
+</I>&gt;<i> Am I off-track here?
+</I>
+You're not off track at all.  I'm not yet familiar enough with Lua to 
+understand what exactly is practical, but my thinking is creating a 
+central scheduler/dispatcher written in C for efficiency and compactness 
+of implementation.  I'll then have a Lua component that initializes and 
+registers two pieces of code for each event handler within the application.
+
+The first piece is a Lua/C function that defines a condition for when an 
+event should be handled.  Examples of event conditions could be a button 
+press, the distance sensor indicating an object at a specific distance, 
+the light sensor detecting light or dark, a timer going off, a packet of 
+data received over the USB port or virtual events generated from other 
+pieces of code.  Certain conditions can be handled entirely within C 
+such as system level events and timers while other will need the 
+snippets of Lua code to handle more complex conditions such those 
+involving math expressions being processed.
+
+The second piece is the the actual event handler which is really just a 
+coroutine within Lua.  Once a condition for an event is detected (i.e. 
+the code above returns non-nil) the scheduler then schedules the 
+co-routine to run.  I'll make provisions so that loops created within 
+the code will yield appropriately so as not to drown out all other event 
+handling if a long loop is created.
+
+The scheduler is in a loop waiting for event handling code to yield and 
+then serially checking the conditions to see if other event handlers are 
+ready to be resumed.
+
+My ultimate goal is to create a children's programming IDE for Lego 
+robotics (and other robots) that is very much inspired by Scratch which 
+is created by the Life Long Kindergarten group at MIT.  Kids graphically 
+assemble their programs in the IDE (so they are really never exposed 
+directly to the underlying Lua language) and then the IDE converts the 
+GUI elements to Lua algorithmically, compiles it to bytecode and then 
+downloads the code to the robot for execution.  I'm fairly certain that 
+with some care and imagination, I can create something much more 
+friendly for kids than Lego's own NXT-G environment.  To achieve this I 
+need a bytecode interpreter running on the NXT and so far Lua seems to 
+fit the bill nicely.  My alternative is Java bytecode which seems 
+bloated compared to my experience so far with the lightness of Lua.
+
+My challenge is preserving Scratch-like programming semantics as much as 
+possible (i.e. keeping it highly event driven) yet still produce code 
+that will execute well on a very low power Arm processor.
+
+Because the kids aren't programming directly in Lua I'll have control 
+over the resulting code such as making sure that looping constructs 
+appropriately call yield operations to allow other code to run.  Some 
+aspects of this might be a challenge, but I have a feeling Lua's 
+cooperative threading will be MUCH easier to deal with than if I had 
+actual preemptive threads to deal with.
+
+As much fun as I'm having with embedded Lua, it's really just a piece of 
+the overall application I'm hoping to create.
+
+Mike
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000758.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+	<LI>Next message: <A HREF="000762.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#759">[ date ]</a>
+              <a href="thread.html#759">[ thread ]</a>
+              <a href="subject.html#759">[ subject ]</a>
+              <a href="author.html#759">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

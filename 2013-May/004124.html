@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] DS18B20 with eLua + Mizar32
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20DS18B20%20with%20eLua%20%2B%20Mizar32&In-Reply-To=%3C519BD03E.6040503%40att.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004123.html">
+   <LINK REL="Next"  HREF="004127.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] DS18B20 with eLua + Mizar32</H1>
+    <B>Howard Hansen</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20DS18B20%20with%20eLua%20%2B%20Mizar32&In-Reply-To=%3C519BD03E.6040503%40att.net%3E"
+       TITLE="[eLua-dev] DS18B20 with eLua + Mizar32">hrhan at att.net
+       </A><BR>
+    <I>Tue May 21 21:51:26 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004123.html">[eLua-dev] DS18B20 with eLua + Mizar32
+</A></li>
+        <LI>Next message: <A HREF="004127.html">[eLua-dev] hi all
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4124">[ date ]</a>
+              <a href="thread.html#4124">[ thread ]</a>
+              <a href="subject.html#4124">[ subject ]</a>
+              <a href="author.html#4124">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 5/21/2013 1:05 PM, Gabriel Duarte wrote:
+&gt;<i> Hi!
+</I>&gt;<i>
+</I>&gt;<i> The question is just how to send and get data, , what interface I have 
+</I>&gt;<i> to use to send and receive data from the sensor. The rest, like 
+</I>&gt;<i> decoding data, CRC, I'll implement myself.
+</I>&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i>
+</I>
+Most people use a GPIO pin to connect to a One Wire device.
+An alternate approach is to use a RS232 interface as shown in the 
+following link to connect to One Wire devices.
+&lt;<A HREF="http://www.instructables.com/id/1-wire-communication-interface/">http://www.instructables.com/id/1-wire-communication-interface/</A>&gt;
+
+Here is a One Wire overview.
+&lt;<A HREF="http://www.maximintegrated.com/app-notes/index.mvp/id/1796">http://www.maximintegrated.com/app-notes/index.mvp/id/1796</A>&gt;
+I strongly recommend you read the first two paragraphs.
+
+Howard
+
+
+
+&gt;<i>
+</I>&gt;<i> 2013/5/21 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A> 
+</I>&gt;<i> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;&gt;
+</I>&gt;<i>
+</I>&gt;<i>     Hi,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>     On Tue, May 21, 2013 at 8:52 PM, Gabriel Duarte
+</I>&gt;<i>     &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A>&gt;&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i>         Hello,
+</I>&gt;<i>
+</I>&gt;<i>         I recently bought a DS18B20 temperature sensor, but I got no
+</I>&gt;<i>         idea how to connect it to Mizar32 and grab data from eLua.
+</I>&gt;<i>         This is the datasheet:
+</I>&gt;<i>
+</I>&gt;<i>         <A HREF="http://datasheets.maximintegrated.com/en/ds/DS18B20.pdf">http://datasheets.maximintegrated.com/en/ds/DS18B20.pdf</A>
+</I>&gt;<i>
+</I>&gt;<i>         Which interface I have to use, UART, some PWM pin??
+</I>&gt;<i>
+</I>&gt;<i>         Any help is appreciated ;)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>     Neither, you'd have to use 1-Wire
+</I>&gt;<i>     (<A HREF="https://en.wikipedia.org/wiki/1-Wire">https://en.wikipedia.org/wiki/1-Wire</A>). We don't have support in
+</I>&gt;<i>     eLua  for that yet, although it should be relatively easy to
+</I>&gt;<i>     implement.
+</I>&gt;<i>
+</I>&gt;<i>     Best,
+</I>&gt;<i>     Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>         Cheers
+</I>&gt;<i>
+</I>&gt;<i>         -- 
+</I>&gt;<i>         Gabriel Duarte
+</I>&gt;<i>         Linux User #471185
+</I>&gt;<i>         Rio de Janeiro / RJ
+</I>&gt;<i>         <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;<i>         -- 
+</I>&gt;<i>         You received this message because you are subscribed to the
+</I>&gt;<i>         Google Groups &quot;Mizar32&quot; group.
+</I>&gt;<i>         To unsubscribe from this group and stop receiving emails from
+</I>&gt;<i>         it, send an email to <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mizar32+unsubscribe at googlegroups.com</A>
+</I>&gt;<i>         &lt;mailto:mizar32%<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">2Bunsubscribe at googlegroups.com</A>&gt;.
+</I>&gt;<i>         For more options, visit <A HREF="https://groups.google.com/groups/opt_out.">https://groups.google.com/groups/opt_out.</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>     -- 
+</I>&gt;<i>     You received this message because you are subscribed to the Google
+</I>&gt;<i>     Groups &quot;Mizar32&quot; group.
+</I>&gt;<i>     To unsubscribe from this group and stop receiving emails from it,
+</I>&gt;<i>     send an email to <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mizar32+unsubscribe at googlegroups.com</A>
+</I>&gt;<i>     &lt;mailto:mizar32%<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">2Bunsubscribe at googlegroups.com</A>&gt;.
+</I>&gt;<i>     For more options, visit <A HREF="https://groups.google.com/groups/opt_out.">https://groups.google.com/groups/opt_out.</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Gabriel Duarte
+</I>&gt;<i> Linux User #471185
+</I>&gt;<i> Rio de Janeiro / RJ
+</I>&gt;<i> <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130521/f7a59ddb/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130521/f7a59ddb/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004123.html">[eLua-dev] DS18B20 with eLua + Mizar32
+</A></li>
+	<LI>Next message: <A HREF="004127.html">[eLua-dev] hi all
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4124">[ date ]</a>
+              <a href="thread.html#4124">[ thread ]</a>
+              <a href="subject.html#4124">[ subject ]</a>
+              <a href="author.html#4124">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

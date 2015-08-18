@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RFS not stable
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RFS%20not%20stable&In-Reply-To=%3C87d3boopxd.fsf%40ws-sw06.ottronic.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003145.html">
+   <LINK REL="Next"  HREF="003148.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RFS not stable</H1>
+    <B>Markus Korber</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RFS%20not%20stable&In-Reply-To=%3C87d3boopxd.fsf%40ws-sw06.ottronic.com%3E"
+       TITLE="[eLua-dev] RFS not stable">korbse at ymail.com
+       </A><BR>
+    <I>Fri Dec 16 09:56:30 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003145.html">[eLua-dev] RFS not stable
+</A></li>
+        <LI>Next message: <A HREF="003148.html">[eLua-dev] RFS not stable
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3147">[ date ]</a>
+              <a href="thread.html#3147">[ thread ]</a>
+              <a href="subject.html#3147">[ subject ]</a>
+              <a href="author.html#3147">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thus spake Bogdan Marinescu:
+
+&gt;<i> The fix is now on master, please try it and let me know if it works for you.
+</I>
+Directory listings now work like a charm.  Thanks.
+
+However, running a script now either always works or never works.  In
+case of an error the server logs read:
+,----
+|<i> server_execute_request: got request with ID 1
+</I>|<i> server_open: request handler starting
+</I>|<i> server_open: unable to read request
+</I>|<i> send_response_packet: sending response packet of 47 bytes
+</I>`----
+
+Further debugging revealed a very obscure behaviour: The error only
+occurs for filenames which are exactely 8.3.  All other files work.  The
+problem is that the &#181;C transmits a 'pointer length' of 0xD
+('\004\003\r') for these files but the rfs_server always receives a 0xA
+('\004\003\n') instead and therefore fails to parse the protocol
+subsequently.  Very strange.
+
+Until I found that:
+<A HREF="http://stackoverflow.com/questions/2589371/lf-cr-issue-with-rs232-in-linux">http://stackoverflow.com/questions/2589371/lf-cr-issue-with-rs232-in-linux</A>
+
+Et voil&#224;: Everything works as expected.  Thanks a lot, Bogdan.
+
+Regards,
+Markus Korber
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003145.html">[eLua-dev] RFS not stable
+</A></li>
+	<LI>Next message: <A HREF="003148.html">[eLua-dev] RFS not stable
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3147">[ date ]</a>
+              <a href="thread.html#3147">[ thread ]</a>
+              <a href="subject.html#3147">[ subject ]</a>
+              <a href="author.html#3147">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

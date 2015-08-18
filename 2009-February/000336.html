@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RTOS and ISRs (was  eLua and RTOS integration)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3CD67F806C-EF44-449F-A9C9-41A5A980584B%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000343.html">
+   <LINK REL="Next"  HREF="000337.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RTOS and ISRs (was  eLua and RTOS integration)</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3CD67F806C-EF44-449F-A9C9-41A5A980584B%40fanplastic.org%3E"
+       TITLE="[eLua-dev] RTOS and ISRs (was  eLua and RTOS integration)">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Feb  3 20:57:34 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000343.html">[eLua-dev] eLua and RTOS integration
+</A></li>
+        <LI>Next message: <A HREF="000337.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#336">[ date ]</a>
+              <a href="thread.html#336">[ thread ]</a>
+              <a href="subject.html#336">[ subject ]</a>
+              <a href="author.html#336">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I would generally agree with this as well.  Generally, I think the  
+only main advantage one might get from something like this is not the  
+RT portion of RTOS, but just to have preemptive or cooperative  
+multitasking that is outside of eLua.
+
+That said, between coroutines and interrupts, one could probably get  
+functionality that covers many of these advantages without wrapping  
+everything in an RTOS.
+
+Regarding ISRs and eLua:  Has anyone given any thought to how Lua ISRs  
+could be done?  With Cortex-M3's NVIC it should be pretty easy to  
+reconfigure interrupts to call Lua functions, but things could get  
+fairly complicated for other platforms where I think you'd have to  
+have the default handler check through all the interrupt flags to  
+figure out which interrupt fired, or an ISR for each and every  
+interrupt whose action could be adjusted through Lua?
+
+-jsnyder
+
+On Feb 3, 2009, at 12:41 PM, Dean Hall wrote:
+
+&gt;<i> I've used both PyMite (a small Python interpreter) and AvrX RTOS on an
+</I>&gt;<i> AVR; which might be comparable to running eLua with an RTOS. My belief
+</I>&gt;<i> is that the two software systems solve two very different problems.
+</I>&gt;<i> If you *need* an RTOS, you probably shouldn't be running an
+</I>&gt;<i> interpreted language.  Conversely, if you are programming in a high
+</I>&gt;<i> level language, you probably don't care as much about what's going on
+</I>&gt;<i> at the silicon level as long as it does what you want it to.  Sure
+</I>&gt;<i> there are exceptions, but I'm talking generalities here.
+</I>&gt;<i>
+</I>&gt;<i> I believe it would be easier to use eLua as the application and write
+</I>&gt;<i> any time-critical code in C in an interrupt service routine than it
+</I>&gt;<i> would be to try to integrate with an RTOS.  In embedded systems
+</I>&gt;<i> (especially real-time systems) simplicity is everything.
+</I>&gt;<i>
+</I>&gt;<i> !!Dean
+</I>&gt;<i>
+</I>&gt;<i> On Feb 3, 2009, at 12:18 , Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Integrating eLua with a RTOS is not on my list of &quot;TODO for eLua&quot;,
+</I>&gt;&gt;<i> so I'm waiting for the oppions of other people :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Feb 3, 2009 at 8:16 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> Hello Guys,,
+</I>&gt;&gt;<i>  On the Lua Programming Gems, there are at least two articles
+</I>&gt;&gt;<i> discussing nice multithreading models for Lua.
+</I>&gt;&gt;<i>  It will be nice to read about them here too.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Feb 3, 2009 at 16:05, Alex Babkin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ababkin at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> Hi all
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This may be a silly and not thought out question, but i'll throw it
+</I>&gt;&gt;<i> out there anyway: Has anyone tried to integrate the eLua codebase
+</I>&gt;&gt;<i> with something like FreeRTOS? I.e have eLua running as a low
+</I>&gt;&gt;<i> priority process while having some other higher-priority time
+</I>&gt;&gt;<i> critical processes doing their time-critical stuff and chugging
+</I>&gt;&gt;<i> along-side with eLua.
+</I>&gt;&gt;<i> I'd imagine there is a lot of merit for doing this kind of thing for
+</I>&gt;&gt;<i> many projects.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Alex
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090203/f45feb85/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090203/f45feb85/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090203/f45feb85/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090203/f45feb85/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000343.html">[eLua-dev] eLua and RTOS integration
+</A></li>
+	<LI>Next message: <A HREF="000337.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#336">[ date ]</a>
+              <a href="thread.html#336">[ thread ]</a>
+              <a href="subject.html#336">[ subject ]</a>
+              <a href="author.html#336">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

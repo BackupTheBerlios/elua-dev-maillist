@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Xmodem transfer - issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Xmodem%20transfer%20-%20issue&In-Reply-To=%3CCANKDJfZmwq4DUv8U5Da3442BjYHOhHzx_zqASYH2dZXqbykmpw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003655.html">
+   <LINK REL="Next"  HREF="003657.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Xmodem transfer - issue</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Xmodem%20transfer%20-%20issue&In-Reply-To=%3CCANKDJfZmwq4DUv8U5Da3442BjYHOhHzx_zqASYH2dZXqbykmpw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Xmodem transfer - issue">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat Jun 30 13:53:05 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003655.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+        <LI>Next message: <A HREF="003657.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3656">[ date ]</a>
+              <a href="thread.html#3656">[ thread ]</a>
+              <a href="subject.html#3656">[ subject ]</a>
+              <a href="author.html#3656">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Jun 30, 2012 at 1:55 PM, pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+&gt;&gt;<i> I tend to believe that too ... Currently, XMODEM
+</I>&gt;&gt;<i> reads everything in a
+</I>&gt;&gt;<i> buffer and saves the buffer on disk at the end.
+</I>&gt;&gt;<i> Pito, does your board have more than 64k of free
+</I>&gt;&gt;<i> memory when you do 'recv' ?
+</I>&gt;<i> My stm32f4disco board has 192kB internal sram available for eLua
+</I>&gt;<i> (two segments in allocator - 128kB and 64kB) so hopefully it has got
+</I>&gt;<i> 64kB free. I do not know how the Xmodem implementation works, but
+</I>&gt;<i> the information it receives data in a buffer and when done it stores
+</I>&gt;<i> it somewhere is of course shocking to me :).
+</I>
+Initially, 'recv' was not designed to store anything. It would just
+get some data via XMODEM and call the Lua interpreter to execute this
+data. In this mode, all the data must be in a contiguous area of
+memory, otherwise Lua wouldn't be able to execute it. When the option
+to save the data received via XMODEM was added, the only modification
+was made to the shell code (to actually write the data to a file), but
+the data is still read as a single big chunk. Of course, we can modify
+this so that XMODEM saves every block that it receives (or every N
+blocks) in &quot;save to file&quot; mode.
+
+&gt;<i> That could be reason
+</I>&gt;<i> for the ~60-70kB limit.
+</I>
+It definitely could. It's still strange though, you should have
+received an &quot;out of memory&quot; error. How exactly does the transfer stop?
+Does it give an error or simply hang?
+
+&gt;<i> I am doing the recv immediately after the reset, maybe there garbage
+</I>&gt;<i> collector does not work correctly at that stage.
+</I>
+Nope, it should work exactly the same at every stage.
+
+Best,
+Bogdan
+
+&gt;<i> When running ie.
+</I>&gt;<i> life(65,50) the GC shows ~150kB, so the memory is there and
+</I>&gt;<i> allocated for eLua.
+</I>&gt;<i> P.
+</I>&gt;<i>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003655.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+	<LI>Next message: <A HREF="003657.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3656">[ date ]</a>
+              <a href="thread.html#3656">[ thread ]</a>
+              <a href="subject.html#3656">[ subject ]</a>
+              <a href="author.html#3656">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Xmodem transfer - issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Xmodem%20transfer%20-%20issue&In-Reply-To=%3CCANKDJfbZBk8jbQrYqcpyOsc_dL9mTcu%2BvrWRALovqbbbeyRZCw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003665.html">
+   <LINK REL="Next"  HREF="003667.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Xmodem transfer - issue</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Xmodem%20transfer%20-%20issue&In-Reply-To=%3CCANKDJfbZBk8jbQrYqcpyOsc_dL9mTcu%2BvrWRALovqbbbeyRZCw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Xmodem transfer - issue">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat Jun 30 17:15:30 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003665.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+        <LI>Next message: <A HREF="003667.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3666">[ date ]</a>
+              <a href="thread.html#3666">[ thread ]</a>
+              <a href="subject.html#3666">[ subject ]</a>
+              <a href="author.html#3666">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Jun 30, 2012 at 6:04 PM, pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+&gt;&gt;<i> That also looks right. The problem is somewhere
+</I>&gt;&gt;<i> else, but I don't know
+</I>&gt;&gt;<i> where. More debugging is needed ...
+</I>&gt;<i>
+</I>&gt;<i> enclosed find the picture from life(65,50) where you may see the
+</I>&gt;<i> memory used..
+</I>&gt;<i>
+</I>&gt;<i> 1. does the realloc() know where to allocate?? (in SRAM or in CCM ?)
+</I>&gt;<i> - first issue
+</I>
+The allocator should take care of this automatically, yes
+(src/newlib/stubs.c:elua_sbrk). However, this was never fully tested
+AFAIK.
+
+&gt;<i> 2. it hangs when returning via that outofmem return... - second
+</I>&gt;<i> issue
+</I>
+I don't understand ... does it hang, or does it return? Or both? Try
+adding some printfs (maybe also near the &quot;realloc&quot; call) to pinpoint
+the exact circumstances of this problem.
+
+Best,
+Bogdan
+
+&gt;<i> 3. when the transfered file size is small (ie 40k) it works fine
+</I>&gt;<i> (because there is none issue N.1 and none issue N.2)..
+</I>&gt;<i> p.
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003665.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+	<LI>Next message: <A HREF="003667.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3666">[ date ]</a>
+              <a href="thread.html#3666">[ thread ]</a>
+              <a href="subject.html#3666">[ subject ]</a>
+              <a href="author.html#3666">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

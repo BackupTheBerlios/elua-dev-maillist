@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua-dev Digest, Vol 35, Issue 41
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua-dev%20Digest%2C%20Vol%2035%2C%20Issue%2041&In-Reply-To=%3CBANLkTinb58%3DFTj45HNvKnq%2BREsO_amy5aA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002538.html">
+   <LINK REL="Next"  HREF="002540.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua-dev Digest, Vol 35, Issue 41</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua-dev%20Digest%2C%20Vol%2035%2C%20Issue%2041&In-Reply-To=%3CBANLkTinb58%3DFTj45HNvKnq%2BREsO_amy5aA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua-dev Digest, Vol 35, Issue 41">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jun 17 19:49:33 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002538.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 41
+</A></li>
+        <LI>Next message: <A HREF="002540.html">[eLua-dev] Zigbee
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2539">[ date ]</a>
+              <a href="thread.html#2539">[ thread ]</a>
+              <a href="subject.html#2539">[ subject ]</a>
+              <a href="author.html#2539">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yeah, if anyone has any notes on LM3S + LuaRPC with recent sources
+that would be helpful.
+
+I'll do some further testing today including doing some
+double-checking on Linux.
+
+As noted before, I can see the MCU _reply_ with a similar looking LRPC
+header to what it was sent, I believe around 70 uS after it receives
+it.  Is there a mandatory minimum delay between ending rx and
+beginning tx with these chips?  I can't seem to find an indication of
+whether they should be running in full or half duplex, though I would
+figure half is sufficient in this case.  I don't understand why the
+data is getting lost and I'm not sure if there's an easy way to
+instrument the Windows drivers to look at exactly what the FTDI
+chip+drivers think of this transmission (i.e.: is it ignored, is the
+something wrong with timing, etc..).
+
+At this point after fiddling with the Windows implementation a bit,
+I'm a little lost.  If I can get it to do the same thing on Linux,
+that might help narrow things down.  I might also start trying to add
+some artificial time delays between data transmissions, but that seems
+like a kluge working around something broken if that works as a
+solution.
+
+On Fri, Jun 17, 2011 at 10:50 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+&gt;<i> Hello,
+</I>&gt;<i> &#160;&#160; Thiago, can you add to this thread with the results of your work on
+</I>&gt;<i> testing/fixing/enhancing rpc for the ESC event demos ?
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Jun 17, 2011 at 11:40, Raman Gopalan &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Fri, Jun 17, 2011 at 12:00 PM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-request at lists.berlios.de</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Send eLua-dev mailing list submissions to
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> To subscribe or unsubscribe via the World Wide Web, visit
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> or, via email, send a message with subject or body 'help' to
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-request at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You can reach the person managing the list at
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-owner at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> When replying, please edit your Subject line so it is more specific
+</I>&gt;&gt;&gt;<i> than &quot;Re: Contents of eLua-dev digest...&quot;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Today's Topics:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &#160; 1. Re: eLua-dev Digest, Vol 35, Issue 34 (James Snyder)
+</I>&gt;&gt;&gt;<i> &#160; 2. Re: Redefining the I2C Lua interface (was: I2C for LM3S
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160;devices) (Martin Guy)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ----------------------------------------------------------------------
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Message: 1
+</I>&gt;&gt;&gt;<i> Date: Thu, 16 Jun 2011 16:06:57 -0500
+</I>&gt;&gt;&gt;<i> From: James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;&gt;&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;&gt;<i> Subject: Re: [eLua-dev] eLua-dev Digest, Vol 35, Issue 34
+</I>&gt;&gt;&gt;<i> Message-ID: &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">BANLkTim6e-PpT1ayjMhXUe+f7MzoXJcA3A at mail.gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> Content-Type: text/plain; charset=ISO-8859-1
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Wed, Jun 15, 2011 at 5:32 AM, Raman Gopalan &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i> &gt; Thanks for your reply. Now that I know for sure that the bug has
+</I>&gt;&gt;&gt;<i> &gt; nothing
+</I>&gt;&gt;&gt;<i> &gt; to do with my platform setup, I will try to build up test cases to
+</I>&gt;&gt;&gt;<i> &gt; corner
+</I>&gt;&gt;&gt;<i> &gt; the
+</I>&gt;&gt;&gt;<i> &gt; bug. I will keep the posix vs win serial implementation in mind. If I
+</I>&gt;&gt;&gt;<i> &gt; stumble
+</I>&gt;&gt;&gt;<i> &gt; upon something interesting, I will certainly keep the community posted.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Awaiting your update.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Raman
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hello,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> What's odd here is that I did hook up a scope to both Rx and Tx lines
+</I>&gt;&gt;&gt;<i> and at least at the MCU it appears to be sending back the initial
+</I>&gt;&gt;&gt;<i> handshake reply.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Sure, I too was able to confirm this with stub code.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> What I can't figure out is why it never appears in
+</I>&gt;&gt;&gt;<i> the buffer in Windows. &#160;There's plenty of buffer space allocated
+</I>&gt;&gt;&gt;<i> beforehand. &#160;One difference I notice in timing between POSIX and
+</I>&gt;&gt;&gt;<i> Windows is that it seems to send the connection request byte and
+</I>&gt;&gt;&gt;<i> header as one &quot;packet&quot; whereas with windows there is a couple
+</I>&gt;&gt;&gt;<i> millisecond delay between the sending of the connection request byte
+</I>&gt;&gt;&gt;<i> and the 8 header bytes. &#160;Additionally, there appears to be a longer
+</I>&gt;&gt;&gt;<i> delay in responding to the single 9 byte POSIX send vs the separated
+</I>&gt;&gt;&gt;<i> Windows 1 + 2ms + 8 byte send. &#160;I haven't looked at timing on an STM32
+</I>&gt;&gt;&gt;<i> platform yet to see how it differs if at all but I wonder if this
+</I>&gt;&gt;&gt;<i> might be related to timing?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Certainly, there is a very good possibility of the problem emanating from
+</I>&gt;&gt;<i> the
+</I>&gt;&gt;<i> delta delay. I have also obtained &quot;MY ERROR: header exchange failed&quot; in
+</I>&gt;&gt;<i> addition to the &quot;no data received when attempting to read&quot; error.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I have also tried building on Gnu/Linux. The response is identical. The
+</I>&gt;&gt;<i> ./luarpc
+</I>&gt;&gt;<i> instance, while executing rpc.connect(&quot;/dev/ttyUSB0&quot;) takes me to an
+</I>&gt;&gt;<i> infinite
+</I>&gt;&gt;<i> waiting state. (Despite its posix compliance, which was tested
+</I>&gt;&gt;<i> successfully on mac ?)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Have you encountered this before ?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> It has definitely worked in the past on this platform. &#160;I may start
+</I>&gt;&gt;&gt;<i> trying to find the last working version and then use git bisect to
+</I>&gt;&gt;&gt;<i> find what change caused the current problem.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Awaiting your response.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ------------------------------
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Message: 2
+</I>&gt;&gt;&gt;<i> Date: Fri, 17 Jun 2011 02:40:32 +0200
+</I>&gt;&gt;&gt;<i> From: Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> To: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> Cc: &quot;eLua Users and Development List \(www.eluaproject.net\)&quot;
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;&gt;<i> Subject: Re: [eLua-dev] Redefining the I2C Lua interface (was: I2C for
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;LM3S &#160; &#160;devices)
+</I>&gt;&gt;&gt;<i> Message-ID: &lt;BANLkTi=<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">zJgtXNc1B5L+eiQw8_N116YX1Lg at mail.gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> Content-Type: text/plain; charset=ISO-8859-1
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On 16 June 2011 19:20, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i> &gt; In one of my applications I actually read the
+</I>&gt;&gt;&gt;<i> &gt; whole content of a serial EEPROM (32KB (not Kb)) into a file in the
+</I>&gt;&gt;&gt;<i> &gt; filesystem. Reading the whole data and writing it in one step is simply
+</I>&gt;&gt;&gt;<i> &gt; not
+</I>&gt;&gt;&gt;<i> &gt; good enough because I'd need too much memory for the operation, so
+</I>&gt;&gt;&gt;<i> &gt; instead
+</I>&gt;&gt;&gt;<i> &gt; I'm reading it in chunks of 256 bytes.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks. &#160;Yes, you would need to do the reading of the blocks at Lua
+</I>&gt;&gt;&gt;<i> level as separate I2C transactions as you describe.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; I just feel that the I2C
+</I>&gt;&gt;&gt;<i> &gt; interface introduces limitations that shouldn't be there ...
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The advantage of making the eLua APIs match the I2C protocol
+</I>&gt;&gt;&gt;<i> definition is that you can be sure to implement the API on any
+</I>&gt;&gt;&gt;<i> hardware, can be sure to drive any device, and be sure that users can
+</I>&gt;&gt;&gt;<i> only talk valid I2C language, however they call it.
+</I>&gt;&gt;&gt;<i> It's also a way of teaching learners exactly what valid I2C protocol
+</I>&gt;&gt;&gt;<i> means.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'm working on the assumption that modelling the eLua APIs on the I2C
+</I>&gt;&gt;&gt;<i> specification is the best way to guarantee that we will be able to
+</I>&gt;&gt;&gt;<i> drive all master interfaces and talk to all slave devices, including
+</I>&gt;&gt;&gt;<i> those we do not know, or that have not been produced yet.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On one hand, the spec does say that I2C does not impose a limit on the
+</I>&gt;&gt;&gt;<i> amount of data present in one transfer.
+</I>&gt;&gt;&gt;<i> On the other, ir doesn't say that it's mandatory for a master to be
+</I>&gt;&gt;&gt;<i> able to handle infinite length transfers.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; Absolutely. I'm not using EEPROM as an example because I want to model
+</I>&gt;&gt;&gt;<i> &gt; our
+</I>&gt;&gt;&gt;<i> &gt; I2C platform interface after it, it's just an use case I'm quite
+</I>&gt;&gt;&gt;<i> &gt; familiar
+</I>&gt;&gt;&gt;<i> &gt; with in practice and I can use it to detect limitations in our
+</I>&gt;&gt;&gt;<i> &gt; interface. So
+</I>&gt;&gt;&gt;<i> &gt; far it's doing a pretty good job :)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I confess that starting a 32-megabyte transfer in one function call,
+</I>&gt;&gt;&gt;<i> then reading the data of one packet in 256-bytes chunks with separate
+</I>&gt;&gt;&gt;<i> function calls is not a usage scenario that I had thought of.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Here's another nightmare for you. I just found a device that eats
+</I>&gt;&gt;&gt;<i> infinite-length data packets for lunch.
+</I>&gt;&gt;&gt;<i> It's an 8-bit ADC/DAC device
+</I>&gt;&gt;&gt;<i> <A HREF="http://www.nxp.com/documents/data_sheet/PCF8591.pdf">http://www.nxp.com/documents/data_sheet/PCF8591.pdf</A>
+</I>&gt;&gt;&gt;<i> that can perform both analog-to-digital or digital-to-analog
+</I>&gt;&gt;&gt;<i> conversion in the same time it takes to transmit or receive one byte
+</I>&gt;&gt;&gt;<i> and it can send you an infinite amount of data, or you can send *it*
+</I>&gt;&gt;&gt;<i> an infinite amount of data in one I2C read or write packet, assuming
+</I>&gt;&gt;&gt;<i> that you can consume or generate it fast enough: one sample every
+</I>&gt;&gt;&gt;<i> 90us, i.e. every nine 100kHz bus clocks == 11,111 samples per second.
+</I>&gt;&gt;&gt;<i> To do audio, you'd have to be able to make a Lua-to-C-to-Lua
+</I>&gt;&gt;&gt;<i> transition in 90 us so as not have glitches in the output or miss
+</I>&gt;&gt;&gt;<i> samples on input. At 100 MHz CPU clock and 4 cycles per instruction,
+</I>&gt;&gt;&gt;<i> that's something like 250 instructions, which sounds possible in
+</I>&gt;&gt;&gt;<i> assembler. Could you make a round trip from the Lua interpreter to C
+</I>&gt;&gt;&gt;<i> and back in that sort of time and do something useful with the data?
+</I>&gt;&gt;&gt;<i> Would you want to? :)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt;&gt; My own problem with i2c.probe(id, address) is that AVR32 cannot send
+</I>&gt;&gt;&gt;<i> &gt;&gt; empty data packets.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; This is getting ridiculous. At this point I wish they kept the I2C
+</I>&gt;&gt;&gt;<i> &gt; engine
+</I>&gt;&gt;&gt;<i> &gt; from their 8 bit AVR MCU line. Besides not being able to to DMA
+</I>&gt;&gt;&gt;<i> &gt; transfers
+</I>&gt;&gt;&gt;<i> &gt; (although I'm not sure if this is still true for XMEGAs) it was much
+</I>&gt;&gt;&gt;<i> &gt; better
+</I>&gt;&gt;&gt;<i> &gt; than what they offer in the AVR32 IMO.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> It gets worse. A different ADC instead
+</I>&gt;&gt;&gt;<i> <A HREF="http://www.ti.com/lit/gpn/ads7823">http://www.ti.com/lit/gpn/ads7823</A>
+</I>&gt;&gt;&gt;<i> when you just send it a single zero data byte, that means &quot;power up
+</I>&gt;&gt;&gt;<i> and convert 4 samples from analog to digital&quot;. &#160;I suppose, as it's a
+</I>&gt;&gt;&gt;<i> slave device, that one case is harmess, but what might other devices
+</I>&gt;&gt;&gt;<i> do? &#160;Anyway, there's nothing I can do about that.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The only difference the AVR32 limitation makes to us is that it
+</I>&gt;&gt;&gt;<i> suggests adding i2c_master_probe( id, slave_address ) to the C
+</I>&gt;&gt;&gt;<i> platform interface, so that AVR32 can do it's brain-damaged thing
+</I>&gt;&gt;&gt;<i> sending a 0 byte, while allowing other platform can do something more
+</I>&gt;&gt;&gt;<i> healthy. &#160;If that were implemented at a higher level as send(id,
+</I>&gt;&gt;&gt;<i> address, NULL, 0, true), the AVR32 would have to either fail that
+</I>&gt;&gt;&gt;<i> always because it can't do it (making probe() unusable) or send a
+</I>&gt;&gt;&gt;<i> single zero data byte when the user asked for none. I'm not sure which
+</I>&gt;&gt;&gt;<i> is worse.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I guess that's why they call it TWI, not I2C. &#160;Unfortunately, I have
+</I>&gt;&gt;&gt;<i> this to work with :(
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Is it too much to limit the data transfer size to the RAM you want to
+</I>&gt;&gt;&gt;<i> dedicate to one message?
+</I>&gt;&gt;&gt;<i> Implementing a multi-function stop-and-go interface frightens me.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &#160; M
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ------------------------------
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> End of eLua-dev Digest, Vol 35, Issue 41
+</I>&gt;&gt;&gt;<i> ****************************************
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002538.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 41
+</A></li>
+	<LI>Next message: <A HREF="002540.html">[eLua-dev] Zigbee
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2539">[ date ]</a>
+              <a href="thread.html#2539">[ thread ]</a>
+              <a href="subject.html#2539">[ subject ]</a>
+              <a href="author.html#2539">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Error trying to build eLua for Lm3s8962
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Error%20trying%20to%20build%20eLua%20for%20Lm3s8962&In-Reply-To=%3C81fbe47d0904030103p2d6de61ahe31779acf6401663%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000735.html">
+   <LINK REL="Next"  HREF="000742.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Error trying to build eLua for Lm3s8962</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Error%20trying%20to%20build%20eLua%20for%20Lm3s8962&In-Reply-To=%3C81fbe47d0904030103p2d6de61ahe31779acf6401663%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Error trying to build eLua for Lm3s8962">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Apr  3 10:03:35 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000735.html">[eLua-dev] Error trying to build eLua for Lm3s8962
+</A></li>
+        <LI>Next message: <A HREF="000742.html">[eLua-dev] Error trying to build eLua for Lm3s8962
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#741">[ date ]</a>
+              <a href="thread.html#741">[ thread ]</a>
+              <a href="subject.html#741">[ subject ]</a>
+              <a href="author.html#741">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+What version of binutils are you using? In other words, what's the output of
+this command:
+
+$ arm-elf-ld --version
+
+Best,
+Bogdan
+
+On Thu, Apr 2, 2009 at 11:48 PM, C&#233;sar Ra&#250;l Mamani Choquehuanca &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesarmamani82 at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hello all !
+</I>&gt;<i>    I'm trying to build eLua for LM3S8962 but i have error, the all result
+</I>&gt;<i> is this:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:~/elua/trunk$ scons board=EK-LM3S8962 prog
+</I>&gt;<i> scons: Reading SConscript files ...
+</I>&gt;<i>
+</I>&gt;<i> *********************************
+</I>&gt;<i> Compiling eLua ...
+</I>&gt;<i> CPU:          LM3S8962
+</I>&gt;<i> Board:        EK-LM3S8962
+</I>&gt;<i> Platform:     lm3s
+</I>&gt;<i> Allocator:    newlib
+</I>&gt;<i> Target:       fplua
+</I>&gt;<i> Toolchain:    arm-gcc
+</I>&gt;<i> *********************************
+</I>&gt;<i>
+</I>&gt;<i> Building filesystem...
+</I>&gt;<i> Encoded file bisect.lua (646 bytes)
+</I>&gt;<i> Encoded file hangman.lua (3750 bytes)
+</I>&gt;<i> Encoded file index.pht (1654 bytes)
+</I>&gt;<i> Encoded file lhttpd.lua (3911 bytes)
+</I>&gt;<i> Encoded file test.lua (137 bytes)
+</I>&gt;<i> Encoded file pong.lua (2605 bytes)
+</I>&gt;<i> Encoded file LM3S.lua (357 bytes)
+</I>&gt;<i> Encoded file led.lua (997 bytes)
+</I>&gt;<i> Encoded file piano.lua (2948 bytes)
+</I>&gt;<i> Encoded file pwmled.lua (634 bytes)
+</I>&gt;<i> Encoded file tvbgone.lua (1739 bytes)
+</I>&gt;<i> Encoded file codes.bin (7780 bytes)
+</I>&gt;<i> Encoded file hello.lua (23 bytes)
+</I>&gt;<i> Encoded file info.lua (134 bytes)
+</I>&gt;<i> Encoded file morse.lua (3449 bytes)
+</I>&gt;<i> Encoded file adcscope.lua (1308 bytes)
+</I>&gt;<i> Encoded file adcpoll.lua (1090 bytes)
+</I>&gt;<i> Done, total size is 33373 bytes
+</I>&gt;<i>
+</I>&gt;<i> scons: done reading SConscript files.
+</I>&gt;<i> scons: Building targets ...
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/main.c -o src/main.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/romfs.c -o src/romfs.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/xmodem.c -o src/xmodem.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/shell.c -o src/shell.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/term.c -o src/term.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/common.c -o src/common.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c src/buf.c
+</I>&gt;<i> -o src/buf.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/elua_adc.c -o src/elua_adc.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/dlmalloc.c -o src/dlmalloc.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/salloc.c -o src/salloc.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/startup_gcc.c -o src/platform/lm3s/startup_gcc.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/platform.c -o src/platform/lm3s/platform.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/usart.c -o src/platform/lm3s/usart.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/sysctl.c -o src/platform/lm3s/sysctl.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/gpio.c -o src/platform/lm3s/gpio.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/ssi.c -o src/platform/lm3s/ssi.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/timer.c -o src/platform/lm3s/timer.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/pwm.c -o src/platform/lm3s/pwm.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/ethernet.c -o src/platform/lm3s/ethernet.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/systick.c -o src/platform/lm3s/systick.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/flash.c -o src/platform/lm3s/flash.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/interrupt.c -o src/platform/lm3s/interrupt.o
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc
+</I>&gt;<i> -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip
+</I>&gt;<i> -ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962
+</I>&gt;<i> -DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128
+</I>&gt;<i> -DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c
+</I>&gt;<i> src/platform/lm3s/cpu.c -o src/platform/lm3s/cpu.o
+</I>&gt;<i> /tmp/ccFk0R3v.s: Assembler messages:
+</I>&gt;<i> /tmp/ccFk0R3v.s:15: Error: syntax error -- `mrs r0,PRIMASK'
+</I>&gt;<i> /tmp/ccFk0R3v.s:33: Error: syntax error -- `mrs r0,PRIMASK'
+</I>&gt;<i> scons: *** [src/platform/lm3s/cpu.o] Error 1
+</I>&gt;<i> scons: building terminated because of errors.
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:~/elua/trunk$
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Can u help me? plz
+</I>&gt;<i>
+</I>&gt;<i> Best regards
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;<i> Estudante da Mestrado
+</I>&gt;<i> Pontificia Universidade Catolica
+</I>&gt;<i> Rio da Janeiro - Gavea
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090403/0b26b388/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090403/0b26b388/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000735.html">[eLua-dev] Error trying to build eLua for Lm3s8962
+</A></li>
+	<LI>Next message: <A HREF="000742.html">[eLua-dev] Error trying to build eLua for Lm3s8962
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#741">[ date ]</a>
+              <a href="thread.html#741">[ thread ]</a>
+              <a href="subject.html#741">[ subject ]</a>
+              <a href="author.html#741">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

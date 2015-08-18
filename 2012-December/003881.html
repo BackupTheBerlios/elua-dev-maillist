@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32F4-DISCOVERY
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4-DISCOVERY&In-Reply-To=%3CBLU0-SMTP174711E0CD6CA96F0380187F74E0%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003880.html">
+   <LINK REL="Next"  HREF="003882.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32F4-DISCOVERY</H1>
+    <B>foad awad</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4-DISCOVERY&In-Reply-To=%3CBLU0-SMTP174711E0CD6CA96F0380187F74E0%40phx.gbl%3E"
+       TITLE="[eLua-dev] STM32F4-DISCOVERY">foad545 at hotmail.com
+       </A><BR>
+    <I>Thu Dec 13 14:44:00 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003880.html">[eLua-dev] STM32F4-DISCOVERY
+</A></li>
+        <LI>Next message: <A HREF="003882.html">[eLua-dev] eLua for the TI Stellaris Launchpad?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3881">[ date ]</a>
+              <a href="thread.html#3881">[ thread ]</a>
+              <a href="subject.html#3881">[ subject ]</a>
+              <a href="author.html#3881">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+thanks for the quick responses.  that was helpful for me.
+I have one more question. I created the binary file on the operating system Windows 7 and Mac os x 10.7.5 Lion. (I instaled Windows on my Mac laptop).
+and now if I flash the file on the board with the STM32 ST-LINK utility (on Windows operating system) of st.com (<A HREF="http://www.st.com/internet/evalboard/product/251168.jsp">http://www.st.com/internet/evalboard/product/251168.jsp</A>) that works fine and I can communicate with the board through uart. But when I try to do that ( I have the same source code on both operating systems Mac and Windows ) on Mac with stlink.git from Github (<A HREF="https://github.com/texane/stlink">https://github.com/texane/stlink</A>), I always get the error [Hard fault handler] as seen here:
+
+// st-util
+z4a6f:stlink.git fuadawad$ ./st-util 
+2012-12-13T14:39:01 INFO src/stlink-usb.c: -- exit_dfu_mode
+2012-12-13T14:39:01 INFO src/stlink-common.c: Loading device parameters....
+2012-12-13T14:39:01 INFO src/stlink-common.c: Device connected is: F4 device, id 0x10016413
+2012-12-13T14:39:01 INFO src/stlink-common.c: SRAM size: 0x30000 bytes (192 KiB), Flash: 0x100000 bytes (1024 KiB) in pages of 16384 bytes
+Chip ID is 00000413, Core ID is  2ba01477.
+KARL - should read back as 0x03, not 60 02 00 00
+init watchpoints
+Listening at *:4242...
+
+......
+
+2012-12-13T14:40:17 INFO src/stlink-common.c: Starting verification of write complete
+2012-12-13T14:40:20 INFO src/stlink-common.c: Flash written and verified! jolly good!
+send: OK
+recv: p19
+send: 00000001
+
+// arm-none-eabi-gdb
+z4a6f:elua-master-1 fuadawad$ arm-none-eabi-gdb
+GNU gdb (32-bit ARM EABI Toolchain JBS-2012.03-56-v2011.09-69-18-gd53ce5a) 7.2.50.20100908-cvs
+Copyright (C) 2010 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later &lt;<A HREF="http://gnu.org/licenses/gpl.html">http://gnu.org/licenses/gpl.html</A>&gt;
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type &quot;show copying&quot;
+and &quot;show warranty&quot; for details.
+This GDB was configured as &quot;--host=x86_64-apple-darwin11.4.2 --target=arm-none-eabi&quot;.
+For bug reporting instructions, please see:
+&lt;<A HREF="https://github.com/jsnyder/arm-eabi-toolchain">https://github.com/jsnyder/arm-eabi-toolchain</A>&gt;.
+(gdb) target extended-remote localhost:4242
+Remote debugging using localhost:4242
+0x08004ec0 in ?? ()
+(gdb) load elua_lua_stm32f407vg.elf 
+Loading section .text, size 0x33f80 lma 0x8000000
+Loading section .data, size 0x50c lma 0x8033f80
+Loading section .ARM.extab, size 0xb4 lma 0x803448c
+Loading section .ARM.exidx, size 0xf8 lma 0x8034540
+Start address 0x8004ec0, load size 214584
+Transfer rate: 13 KB/sec, 10218 bytes/write.
+(gdb) 
+
+
+// elua shell
+eLua v0.8  Copyright (C) 2007-2011 www.eluaproject.net
+eLua# help[Hard fault handler]
+R0 = 6de9cf
+R1 = 0
+R2 = a8
+R3 = 0
+R12 = 801ad81
+LR = 8001be7
+PC = 8001c0c
+PSR = 61000000
+BFAR = e000ed38
+CFSR = 10000
+HFSR = 40000000
+DFSR = 0
+AFSR = 0
+
+have you an idea where the error can be
+Thanks in advance and sorry for my bad English.
+
+Awad.
+
+
+
+
+
+Am 12.12.2012 um 21:05 schrieb cbayona:
+
+&gt;<i> &lt; &lt;<A HREF="file:///C:/Users/ef552/AppData/Local/Temp/(http://wiki.eluaproject.net/Projects">file:///C:/Users/ef552/AppData/Local/Temp/(http://wiki.eluaproject.net/Projects</A>&gt;wiki.eluaproject.net/Projects
+</I>&gt;<i>  &gt;
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> At 01:39 PM 12/12/2012, you wrote:
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> I think the stm32f4 port is still experimental, so that's probably why there's not much info...
+</I>&gt;&gt;<i> About the modules, you can check the user projects page on the wiki (wiki.eluaproject.net/Projects).
+</I>&gt;&gt;<i> Also on the eLua github page (&lt;<A HREF="http://github.com/elua">http://github.com/elua</A>&gt;github.com/elua) you can find some more code thar might be usefull.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Thiago
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> On Wed, Dec 12, 2012 at 2:08 PM, foad awad &lt;&lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">foad545 at hotmail.com</A>&gt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">foad545 at hotmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> Hello
+</I>&gt;&gt;<i> I am writing my thesis about elua. As a Board, I got the STM32F4Discovery board. I have already build the image file(.bin) of elua0.8 and installed on the Board, I've tried a few examples like led.lua and everything was fine.I was able to communicate with the board over uart.
+</I>&gt;&gt;<i> and now my question is, which devices (Peripherals) can I connect to this Board or what modules interface are available for this Board. on the homepage of &lt;<A HREF="http://eluaproject.net">http://eluaproject.net</A>&gt;eluaproject.net there is not much about stm32f4discovery.
+</I>&gt;&gt;<i> can I connect a wireless chip (transceiver) with the Board? is it supported?
+</I>&gt;&gt;<i> every reply is welcome
+</I>&gt;&gt;<i> Thanks in advance and
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Awad
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Cecil - k5nwa
+</I>&gt;<i> <A HREF="http://www.softrockradio.org/">http://www.softrockradio.org/</A>  <A HREF="http://thepartsplace.k5nwa.com/">http://thepartsplace.k5nwa.com/</A>
+</I>&gt;<i> 
+</I>&gt;<i> Never take life seriously. Nobody gets out alive anyway. 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003880.html">[eLua-dev] STM32F4-DISCOVERY
+</A></li>
+	<LI>Next message: <A HREF="003882.html">[eLua-dev] eLua for the TI Stellaris Launchpad?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3881">[ date ]</a>
+              <a href="thread.html#3881">[ thread ]</a>
+              <a href="subject.html#3881">[ subject ]</a>
+              <a href="author.html#3881">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

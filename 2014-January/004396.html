@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Driver I2C 100% Lua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2014-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Driver%20I2C%20100%25%20Lua&In-Reply-To=%3C52D8D763.5060807%401100f.fr%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004395.html">
+   <LINK REL="Next"  HREF="004397.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Driver I2C 100% Lua</H1>
+    <B>Albert FERNANDES</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Driver%20I2C%20100%25%20Lua&In-Reply-To=%3C52D8D763.5060807%401100f.fr%3E"
+       TITLE="[eLua-dev] Driver I2C 100% Lua">albert.fernandes at 1100f.fr
+       </A><BR>
+    <I>Fri Jan 17 08:10:27 CET 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004395.html">[eLua-dev] Driver I2C 100% Lua
+</A></li>
+        <LI>Next message: <A HREF="004397.html">[eLua-dev] Drivers 100% Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4396">[ date ]</a>
+              <a href="thread.html#4396">[ thread ]</a>
+              <a href="subject.html#4396">[ subject ]</a>
+              <a href="author.html#4396">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Martin,
+
+Thank you for your comments and suggestions!
+The driver i2c we wrote (my brother and me) to a PCF8574 and PCF8583 on 
+STM32F103 because the i2c module is not currently supported by elua for 
+our platform. We did not care for respect speed : we even removed all 
+delays : it's going as fast as possible on a microcontroller with 72Mhz 
+! Can be slow by inserting delays , especially for faster 
+microcontrollers as STM32F407 Discovery ( 168MHz! ) . We planned to test 
+this code for F407 and F429 Discovery in February.
+We do not have either intended to manage the non-response of the slave ( 
+just a configurable retry for acknowledgment) . Normally, this Lua code 
+should run on all platforms until the i2c module is implemented . This 
+is why we chose native i2c pins ...
+I had already carries i2c parallel port on PC in 2002, with visual basic 
+. See : <A HREF="http://1100f.free.fr/tout_sur_le_bus_i2c.htm">http://1100f.free.fr/tout_sur_le_bus_i2c.htm</A> . In french only !
+
+PS: I do not understand anything in C, but i like Lua !
+
+Best'
+
+Albert
+
+Le 17/01/2014 02:57, Martin Guy a &#233;crit :
+&gt;<i> On 16/01/2014, Albert FERNANDES &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">albert.fernandes at 1100f.fr</A>&gt; wrote:
+</I>&gt;&gt;<i> follow <A HREF="https://github.com/AlbertFERNANDES/elua-i2c">https://github.com/AlbertFERNANDES/elua-i2c</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Is a driver I2C with basics functions.
+</I>&gt;<i> Nice. Giving us dozens of I2C interfaces on all platforms with GPIOs!
+</I>&gt;<i>
+</I>&gt;<i> If you are interested in improving it, I have some suggestions:
+</I>&gt;<i> - I2C frequency setting? Some devices have a maximum speed that they
+</I>&gt;<i> can respond to, whereas this just runs as fast as possible.  However,
+</I>&gt;<i> that's probably not important in practice.  It's be interesting to
+</I>&gt;<i> know what frequency it runs at, how many bits per second it transmits
+</I>&gt;<i> on your platform,which you can probably calculate by sending 100kb of
+</I>&gt;<i> data at full speed and timing it in seconds.
+</I>&gt;<i> - There's another part of I2C, &quot;clock stretching&quot;, also for slow
+</I>&gt;<i> devices. A slave can pause the master's clock while it processes data
+</I>&gt;<i> and gets ready for the next bit by holding the clock low, so the
+</I>&gt;<i> master should check that the clock really is high before driving it
+</I>&gt;<i> low. See the example of &quot;i2c bit banging&quot; in wikipedia for the exact
+</I>&gt;<i> algorithm.
+</I>&gt;<i> - Is your Lua-fu strong enough to redefine i2c.*() so that it
+</I>&gt;<i> implements the same interface as eLua's I2C module? That would make
+</I>&gt;<i> all existing eLua I2C code be able to use your i2c interface
+</I>&gt;<i> immediately without modification, and would avoid people having to
+</I>&gt;<i> write every program twice, once for eLua 12c.*() and once for your
+</I>&gt;<i> interface.  I guess you'd need a specialised setup function (or have 2
+</I>&gt;<i> extra optional parameters in your version) to specify the two pio pins
+</I>&gt;<i> to be used by the new I2C ID that i2c.setup() would create when it is
+</I>&gt;<i> called.
+</I>&gt;<i>
+</I>&gt;<i> Thanks!
+</I>&gt;<i>
+</I>&gt;<i>      M
+</I>&gt;<i>
+</I>&gt;<i> ---
+</I>&gt;<i> Ce courrier &#233;lectronique ne contient aucun virus ou logiciel malveillant parce que la protection avast! Antivirus est active.
+</I>&gt;<i> <A HREF="http://www.avast.com">http://www.avast.com</A>
+</I>&gt;<i>
+</I>
+-- 
+
+
+---
+Ce courrier &#233;lectronique ne contient aucun virus ou logiciel malveillant parce que la protection avast! Antivirus est active.
+<A HREF="http://www.avast.com">http://www.avast.com</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20140117/ca59f391/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20140117/ca59f391/attachment-0001.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: carte de visite signature albert.PNG
+Type: image/png
+Size: 32254 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20140117/ca59f391/attachment-0001.png">https://lists.berlios.de/pipermail/elua-dev/attachments/20140117/ca59f391/attachment-0001.png</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004395.html">[eLua-dev] Driver I2C 100% Lua
+</A></li>
+	<LI>Next message: <A HREF="004397.html">[eLua-dev] Drivers 100% Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4396">[ date ]</a>
+              <a href="thread.html#4396">[ thread ]</a>
+              <a href="subject.html#4396">[ subject ]</a>
+              <a href="author.html#4396">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

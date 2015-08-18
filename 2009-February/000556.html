@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A Few Models For Dealing With ADC Samples
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1HG0e8b04fa341cd35864153de7%2C%0A%09jbsnyder%40fanplastic.org%2C%205C747C5B-B2FE-4424-9036-217%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000547.html">
+   <LINK REL="Next"  HREF="000548.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A Few Models For Dealing With ADC Samples</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1HG0e8b04fa341cd35864153de7%2C%0A%09jbsnyder%40fanplastic.org%2C%205C747C5B-B2FE-4424-9036-217%3E"
+       TITLE="[eLua-dev] A Few Models For Dealing With ADC Samples">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 23:00:38 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000547.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+        <LI>Next message: <A HREF="000548.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#556">[ date ]</a>
+              <a href="thread.html#556">[ thread ]</a>
+              <a href="subject.html#556">[ subject ]</a>
+              <a href="author.html#556">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 18, 2009, at 3:03 PM, Andre Carregal wrote:
+
+&gt;<i> On Wed, Feb 18, 2009 at 5:09 PM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> One modification is that we would have to pass a timer number to  
+</I>&gt;&gt;<i> setmode as
+</I>&gt;&gt;<i> well, because eLua doesn't have any resource management system that
+</I>&gt;&gt;<i> abstracts this away.
+</I>&gt;<i>
+</I>&gt;<i> No problem.
+</I>&gt;<i>
+</I>&gt;&gt;<i> One interesting thing here is what to do if a user calls start when
+</I>&gt;&gt;<i> asyn=false. Under your model would you propose that it return an  
+</I>&gt;&gt;<i> error?
+</I>&gt;<i>
+</I>&gt;<i> I wouldn't mind having both start() and stop() being equivalent to NOP
+</I>&gt;<i> when asyn=false, but that depends on how user friendly you want to be
+</I>&gt;<i> to programmers... :o)
+</I>&gt;<i>
+</I>&gt;&gt;<i> I suppose you could use the start method with asyn=false for a  
+</I>&gt;&gt;<i> fixed-length
+</I>&gt;&gt;<i> pre-collection of samples before read?  If this were done though,  
+</I>&gt;&gt;<i> perhaps
+</I>&gt;&gt;<i> the expectation would be that as soon as you had cleared out  
+</I>&gt;&gt;<i> samples, it
+</I>&gt;&gt;<i> would fill things up again?
+</I>&gt;<i>
+</I>&gt;<i> I'm afraid this could be confusing. The proposed start() and stop()
+</I>&gt;<i> just do that. From the programmer point of view, all the reading
+</I>&gt;<i> happens on the read() part.
+</I>
+OK, fair enough.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> If asyn is false, does this mean:  Samples will only be collected  
+</I>&gt;&gt;<i> when read
+</I>&gt;&gt;<i> is called, and they will be returned via read?
+</I>&gt;<i>
+</I>&gt;<i> Well, that seems reasonable for me since we are talking about a
+</I>&gt;<i> synchronous read. But I may be missing some timing details here.
+</I>&gt;<i>
+</I>&gt;&gt;<i> vs the following (asyn = true): Sampling is never initiated by  
+</I>&gt;&gt;<i> read, read
+</I>&gt;&gt;<i> can only pull out samples that are in the buffer or arriving in the  
+</I>&gt;&gt;<i> buffer?
+</I>&gt;<i>
+</I>&gt;<i> Exactly. Iniatilization and termination would be delegated to start()
+</I>&gt;<i> and stop(), no matter the asyn mode.
+</I>&gt;<i>
+</I>&gt;<i> Again, let me know if this violate some timing requirement.
+</I>
+No violations, I just wanted to make sure that I was understanding the  
+intent correctly :-)
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Right, I think this relates to what I was saying above.  You could  
+</I>&gt;&gt;<i> have a
+</I>&gt;&gt;<i> circular buffer that wraps around when full, or one that fills and  
+</I>&gt;&gt;<i> then
+</I>&gt;&gt;<i> stops until more space is available.
+</I>&gt;<i>
+</I>&gt;<i> Exactly.
+</I>&gt;<i>
+</I>&gt;&gt;<i> In this respect, you could describe a circular or linear buffer as
+</I>&gt;&gt;<i> controlling whether or not once you start sampling it will stop at  
+</I>&gt;&gt;<i> the end
+</I>&gt;&gt;<i> of the buffer, or be free-running.
+</I>&gt;&gt;<i> Hmm...
+</I>&gt;<i>
+</I>&gt;<i> Call me naive, but I'm not seeing the problem with this approach.
+</I>&gt;<i> Would you mind giving more details?
+</I>
+I didn't mean to imply that there was a problem with this part of the  
+approach.  I think this would be useful for situations where you know  
+you want to collect samples about an event, but you're not sure if  
+you'd necessarily pick up the results before a ring implementation  
+might result in samples being overwritten.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> This is a good idea.  At the moment there is no timeout, but I  
+</I>&gt;&gt;<i> think this
+</I>&gt;&gt;<i> might get complicated unless we say make a dedicated virtual timer or
+</I>&gt;&gt;<i> something.
+</I>&gt;<i>
+</I>&gt;<i> Timeout can be left for future versions, the point was that the
+</I>&gt;<i> constructor uses named parameters, which facilitates extensions.
+</I>
+Right.  I'm not exactly sure what the best route is for this now.  The  
+approach I'm inclined to take for now is to return nil values or  
+something similar if there are no pending operations which could  
+provide the requested set of samples.  This should be fairly robust  
+for built-in ADCs, but might have some ugly situations if you had an  
+external ADC that just got unplugged :-)
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> The whole timer usage issue is one of the reasons why we have a  
+</I>&gt;&gt;<i> simple
+</I>&gt;&gt;<i> sample function, and then a burst function.  One needs a timer  
+</I>&gt;&gt;<i> (burst, for
+</I>&gt;&gt;<i> evenly spaced samples lower than running at the max rate), the  
+</I>&gt;&gt;<i> other just
+</I>&gt;&gt;<i> samples whenever called.
+</I>&gt;<i>
+</I>&gt;<i> Here a few use cases would help determining what way to go. I think it
+</I>&gt;<i> may be possible to set timer types (and behaviors) on the constructor,
+</I>&gt;<i> but I'd need to understand better your needs.
+</I>
+I think this is one of the critical things here.  I know ways in which  
+I would use this personally, and have built in a fair amount of  
+infrastructure for that.  The problem is that I can think of  
+innumerable features that _could_ be useful in hypothetical  
+situations :-)  It would be nice to have a rundown of common usage  
+scenarios and see how well whatever implementation is chosen fulfills  
+that range.  This would allow us to draw the line on features.  I'm  
+certainly not aiming to reproduce MATLAB's data acquisition toolbox or  
+anything :-)
+
+&gt;<i>
+</I>&gt;&gt;<i> One other thing is that it sounds as if this module will end up  
+</I>&gt;&gt;<i> being a
+</I>&gt;&gt;<i> mixture of a C interface, and some lua code to handle sampler  
+</I>&gt;&gt;<i> instances? If
+</I>&gt;&gt;<i> this is the case, then both the C interface and the end-user  
+</I>&gt;&gt;<i> interface might
+</I>&gt;&gt;<i> be rather different-looking...
+</I>&gt;<i>
+</I>&gt;<i> Well, once you have the API defined, you can call it from both sides.
+</I>&gt;<i> It would depend more on which you would prefer.
+</I>
+Sorry, what I meant here was that the implementation of the API itself  
+might be a mixture of Lua and C.  Looking a bit at some things in PIL  
+though, suggest to me that you could still do the module  
+implementation on the C side.
+
+OT: Speaking of which I should just break down and get a copy of PIL  
+2, I'm mainly using the online version of the first edition :-)  Is  
+there any way to get an electronic version of the second edition or is  
+there just the paper version?
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/81afc19a/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/81afc19a/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/81afc19a/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/81afc19a/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000547.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+	<LI>Next message: <A HREF="000548.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#556">[ date ]</a>
+              <a href="thread.html#556">[ thread ]</a>
+              <a href="subject.html#556">[ subject ]</a>
+              <a href="author.html#556">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New to eLua and STM32F4xx
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20to%20eLua%20and%20STM32F4xx&In-Reply-To=%3CCAJ%3DY9Y3JJbwHsD3sgNUrO6n%2BuZqeWoy1ouScboK1H%3DaUOwUOjw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004149.html">
+   <LINK REL="Next"  HREF="004147.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New to eLua and STM32F4xx</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20to%20eLua%20and%20STM32F4xx&In-Reply-To=%3CCAJ%3DY9Y3JJbwHsD3sgNUrO6n%2BuZqeWoy1ouScboK1H%3DaUOwUOjw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] New to eLua and STM32F4xx">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jun  3 19:28:04 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004149.html">[eLua-dev] New to eLua and STM32F4xx
+</A></li>
+        <LI>Next message: <A HREF="004147.html">[eLua-dev] New to eLua and STM32F4xx
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4146">[ date ]</a>
+              <a href="thread.html#4146">[ thread ]</a>
+              <a href="subject.html#4146">[ subject ]</a>
+              <a href="author.html#4146">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jun 3, 2013 at 2:03 AM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+&gt;<i> wrote:
+</I>
+&gt;<i>
+</I>&gt;<i> On Mon, Jun 3, 2013 at 4:49 AM, Graham Henstridge &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">graham at capgo.com</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I have been following eLua for a while with the aim of deploying it on a
+</I>&gt;&gt;<i> custom STM32F4xx project. I have successfully built the STM32F407_Discovery
+</I>&gt;&gt;<i> image with the now obsolete &quot;scons&quot; based builder, but have not yet been
+</I>&gt;&gt;<i> successful with the new &quot;lake&quot; builder. I am not too worried about that at
+</I>&gt;&gt;<i> the moment as I have not spent much time on it. But I do have some basic
+</I>&gt;&gt;<i> questions to get a feel for where eLua is going:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 1. Lua 5.1 is specified for eLua. Using Lua 5.2 may be the cause of my
+</I>&gt;&gt;<i> present problems. Is Lua 5.2 supported and if not is it intended to do so
+</I>&gt;&gt;<i> soon? Moving to a total Lua build system makes sense, but staying at Lua
+</I>&gt;&gt;<i> 5.1 does not!
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Lua 5.1 is far from being obsolete and a lot of projects centered around
+</I>&gt;<i> Lua still use Lua 5.1. There are plans to move eLua to 5.2 at some point,
+</I>&gt;<i> but nothing very clear at the moment.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2. The STM32F4xx branch has been around for a while (although not on main
+</I>&gt;&gt;<i> git until very recently) and has not been merged with Master yet. Can
+</I>&gt;&gt;<i> anyone comment on its status?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Check the new 'stm32f4' branch on github, this is where the STM32F4
+</I>&gt;<i> development is currently happening. After some testing, it will be merged
+</I>&gt;<i> to master.
+</I>&gt;<i>
+</I>
+On this front if you're using the discovery board you might need to use the
+bikeNomad-master branch or have one of us commit a fix to put the UART back
+on PB6/7 for that board (
+<A HREF="https://github.com/jsnyder/elua/tree/bikeNomad-master">https://github.com/jsnyder/elua/tree/bikeNomad-master</A>).  I'll try and put
+this fix in the 'stm32f4' branch and test it (on the board, PA9 is
+connected to VBUS for USB and an LED, not sure if it it can be used as a
+UART.
+
+Another thing might be if you switch to the stm32f4 branch it will try to
+build with hardware floating point, depending on your toolchain you might
+run into linking errors about VFP, depending on the toolchain you're using
+and if it includes the right libraries or multilibs. If you're using my
+Makefile (arm-eabi-toolchain), I have a version that seems to be working in
+a branch, but I haven't pushed it to master yet.
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 3. My working platform is a Mac. Are there any known issues in building
+</I>&gt;&gt;<i> eLua on a Mac? So far I have not discovered any.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> None that I know of, but personally I never tried to build eLua on a Mac.
+</I>&gt;<i>
+</I>
+It should be fine on Mac OS X.  That's what I use for development.
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 4. Present issue is with require&quot;lfs&quot; not accepting lfs.so. Paths are ok.
+</I>&gt;&gt;<i> Suspecting Lua versions. Comments anyone?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> This is quite strange. How are you installing lfs on your machine? What is
+</I>&gt;<i> the value of your LUA_PATH environment variable?
+</I>&gt;<i>
+</I>
+You'll want to use 5.1 on your machine for building I think (as Bjorn was
+discussing what might happen with 5.2).  I don't know that any of us have
+tested the build system with 5.2.
+
+I believe on my system I've got lua and luarocks installed out of Homebrew
+(which defaults to 5.1.x, <A HREF="https://github.com/mxcl/homebrew/">https://github.com/mxcl/homebrew/</A>) and then used
+luarocks to install the needed modules like lfs.  You can certainly install
+your own versions of lua/luarocks or use another method if you like.
+
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Obviously much good work has gone into eLua by Bogdan and others for
+</I>&gt;&gt;<i> which I am grateful and hope to return some value in the coming months.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Graham
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130603/384d4e75/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130603/384d4e75/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004149.html">[eLua-dev] New to eLua and STM32F4xx
+</A></li>
+	<LI>Next message: <A HREF="004147.html">[eLua-dev] New to eLua and STM32F4xx
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4146">[ date ]</a>
+              <a href="thread.html#4146">[ thread ]</a>
+              <a href="subject.html#4146">[ subject ]</a>
+              <a href="author.html#4146">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

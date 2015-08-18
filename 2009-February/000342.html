@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3CF3EFD0E6-D0ED-4C49-A8E1-E237C73641D8%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000338.html">
+   <LINK REL="Next"  HREF="000345.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3CF3EFD0E6-D0ED-4C49-A8E1-E237C73641D8%40fanplastic.org%3E"
+       TITLE="[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb  4 01:13:55 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000338.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+        <LI>Next message: <A HREF="000345.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#342">[ date ]</a>
+              <a href="thread.html#342">[ thread ]</a>
+              <a href="subject.html#342">[ subject ]</a>
+              <a href="author.html#342">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+On Feb 3, 2009, at 4:17 PM, Mike Panetta wrote:
+
+&gt;<i> This biggest issue would be is lua capable of doing the work  
+</I>&gt;<i> required in a typical ISR fast enough?  If I was writing an ISR for  
+</I>&gt;<i> a space vector modulation scheme, the ISR would be running at the  
+</I>&gt;<i> same rate as the PWM frequency (or 2x that in case of symetric  
+</I>&gt;<i> SVM).  That can be pretty fast (tens of KHz, 50us between interrupts  
+</I>&gt;<i> at 20KHz) and a scripted ISR surly could not be called at such a rate.
+</I>
+Right.  I'd agree.  That said, there would be a rate up to which it  
+would be useful.
+
+&gt;<i> The advantage to integrating with an RTOS would be that you could  
+</I>&gt;<i> have a lua thread (coroutine, whatever) sleep on a queue or  
+</I>&gt;<i> semaphore and the ISR (written in C) could wake it when its done  
+</I>&gt;<i> doing whatever it has to do in a time critical maner.
+</I>
+Yeah, that would pretty much take care of the same functionality I'd  
+be after.  I was thinking about that more in the sense of, if there  
+weren't an RTOS there, using ISRs would be one way to trigger behavior  
+without just endlessly polling.
+
+NuttX looks fairly nice, including the license.  If I'm reading  
+correctly it does add a fairly decent amount of flash usage, but it  
+also has a graphics library and a few other nice facilities.
+
+ChibiOS is only 2.11 KB with a decent set of APIs configured.
+
+One question is:  do we specifically need something that is fully  
+POSIX compliant if we use an RTOS?  What are the advantages of this,  
+aside from maybe that they could be applied back to mainline Lua or  
+would make porting between different RTOSs easier?
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090203/99690850/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090203/99690850/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090203/99690850/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090203/99690850/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000338.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+	<LI>Next message: <A HREF="000345.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#342">[ date ]</a>
+              <a href="thread.html#342">[ thread ]</a>
+              <a href="subject.html#342">[ subject ]</a>
+              <a href="author.html#342">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,343 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y3ce9kuf3XvGUr5swj-t9egRm7q39xTbw6Rby3GzS1xUA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002674.html">
+   <LINK REL="Next"  HREF="002685.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y3ce9kuf3XvGUr5swj-t9egRm7q39xTbw6Rby3GzS1xUA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jul 25 20:17:18 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002674.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002685.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2682">[ date ]</a>
+              <a href="thread.html#2682">[ thread ]</a>
+              <a href="subject.html#2682">[ subject ]</a>
+              <a href="author.html#2682">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Jul 20, 2011 at 5:38 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jul 20, 2011 at 15:14, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Jul 20, 2011 at 3:45 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; We seem to be talking about four separate questions here:
+</I>&gt;&gt;<i> &gt; - turning the _op primitives into separate functions
+</I>&gt;&gt;<i> &gt; - allowing more precise low sampling frequencies, like Etna's
+</I>&gt;&gt;<i> &gt; seismographs at 27.27Hz, for ADC (and I guess PWM).
+</I>&gt;&gt;<i> &gt; - getting higher precision for duty cycles
+</I>&gt;&gt;<i> &gt; - use of floating point
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yep, sorry for complicating things a bit. &#160;As far as the PWM stuff
+</I>&gt;&gt;<i> goes, I was just using that as a reference point. &#160;Discussion of
+</I>&gt;&gt;<i> modifying that should go under another thread (resurrecting an earlier
+</I>&gt;&gt;<i> discussion or tracker issue).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; in order:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; - turning the _op primitives into separate functions
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; The _op primitives seem to be imitating the ioctl() system call.
+</I>&gt;&gt;<i> &gt; However, the ioctl system call, with hundreds of &quot;operations&quot; and a
+</I>&gt;&gt;<i> &gt; single pointer parameter, was designed to collect hundreds of
+</I>&gt;&gt;<i> &gt; different device-specific functions without having to have hundreds of
+</I>&gt;&gt;<i> &gt; new system calls, and to allow the addition of new operations for new
+</I>&gt;&gt;<i> &gt; hardware devices without having to change the system call interface
+</I>&gt;&gt;<i> &gt; each time. In some Unix platforms the number of system calls is
+</I>&gt;&gt;<i> &gt; limited by the hardware/instruction set, so they were forced to put
+</I>&gt;&gt;<i> &gt; hundreds of different functions through a single hole.
+</I>&gt;&gt;<i> &gt; eLua doesn't have that limitation, since functions are cheap and not
+</I>&gt;&gt;<i> &gt; limited in number. Having one C function per operation also makes the
+</I>&gt;&gt;<i> &gt; documentation clearer, since each operation has its own paragraph
+</I>&gt;&gt;<i> &gt; instead of trying to document 6 different things mixed together.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I assume there's no objection to turning these into separate functions
+</I>&gt;&gt;<i> &gt; where possible.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Bogdan may or may not object to doing that in other places. I think
+</I>&gt;&gt;<i> the reasons you have laid out, especially for ADC are pretty
+</I>&gt;&gt;<i> compelling.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; - allowing more precise low sampling frequencies like Etna's
+</I>&gt;&gt;<i> &gt; seismographs at 27.27Hz, for ADC (and I guess PWM).
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I agree with not making floating point mandatory because one of eLua's
+</I>&gt;&gt;<i> &gt; design objectives is to run on embedded platforms where code size can
+</I>&gt;&gt;<i> &gt; be critical, and the floating point emulator adds 50K to the code
+</I>&gt;&gt;<i> &gt; size.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> At the end of the day, I think this is mainly what needs to remain
+</I>&gt;&gt;<i> consistent.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; On 19 July 2011 01:35, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt; Indeed. &#160;My only point here is that so far we've intentionally kept
+</I>&gt;&gt;<i> &gt;&gt; types that are defined by Lua out of the platform layer so that they
+</I>&gt;&gt;<i> &gt;&gt; don't depend on Lua itself.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Is that so that the C platform layer can be more easily re-used, say
+</I>&gt;&gt;<i> &gt; as the platform-driver layer for a different language, or in custom
+</I>&gt;&gt;<i> &gt; applications?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm not sure what Dado and Bogdan might have to say on the matter, but
+</I>&gt;&gt;<i> given the way it is designed, it is structurally not horribly
+</I>&gt;&gt;<i> complicated to simply jump into a different main function on start and
+</I>&gt;&gt;<i> instead of starting Lua start something else and use the platform API.
+</I>&gt;&gt;<i> &#160;At certain points I've wanted to investigate the work that might be
+</I>&gt;&gt;<i> involved in separating out the lower level API and maybe build system
+</I>&gt;&gt;<i> as a multiplatform hardware abstraction layer that would make it easy
+</I>&gt;&gt;<i> to build C applications or use other VMs on top of the platform
+</I>&gt;&gt;<i> interface (like PyMite/Python-on-a-Chip) for example. &#160;Even if one
+</I>&gt;&gt;<i> isn't interested in Lua per-se the project does provide working
+</I>&gt;&gt;<i> examples of how to build with open toolchains across a variety of
+</I>&gt;&gt;<i> platforms. &#160;I'd like it if we can keep this flexibility.
+</I>&gt;<i>
+</I>&gt;<i> Yes. Personally I would prefer to have an independent, generic and as
+</I>&gt;<i> portable as possible platform layer. Marcelo Politzer and Thiago Naves
+</I>&gt;<i> (@LedLab) have been experimenting with this concept and extending
+</I>&gt;<i> implementations to other targets but some implementation details have been
+</I>&gt;<i> making it harder.
+</I>&gt;<i> It would be nice to hear them here for some more details, in a different
+</I>&gt;<i> thread.
+</I>&gt;<i> I would love to be able to use the platform layer for C-only applications.
+</I>&gt;<i> It is certainly possible to do it today but not in an easy way IMHO.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; There are two ways I can think of that could remain exclusively
+</I>&gt;&gt;<i> &gt;&gt; integer:
+</I>&gt;&gt;<i> &gt;&gt; 1) Passing optional divisors. &#160;For PWM, at one point, I suggested that
+</I>&gt;&gt;<i> &gt;&gt; we could allow finer resolution duty cyles by allowing other fractions
+</I>&gt;&gt;<i> &gt;&gt; than per cent such as /1000 (per mil) or 10000 (per basis point).
+</I>&gt;&gt;<i> &gt;&gt; Clock frequencies could have this as well, either fixed or arbitrary
+</I>&gt;&gt;<i> &gt;&gt; divisors passed as a parameter.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I sort of like this idea - using an optional extra parameter in Lua
+</I>&gt;&gt;<i> &gt; which by default would be 100 (for percent) for duty cycles.
+</I>&gt;&gt;<i> &gt; The PWM setup function is currently:
+</I>&gt;&gt;<i> &gt; frequency = pwm.setup(id, frequency, duty_cycle)
+</I>&gt;&gt;<i> &gt; and, as far as duty cycle goes, this is OK, since it is the last
+</I>&gt;&gt;<i> &gt; parameter, but it does nothing for frequencies unless we add two
+</I>&gt;&gt;<i> &gt; optional parameters as divisors with default values of 100 and 1. Or 1
+</I>&gt;&gt;<i> &gt; and 100.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It would need some adaptation for frequencies, since the values one is
+</I>&gt;&gt;<i> using are generally greater than 1 Hz, so the divisors would likely be
+</I>&gt;&gt;<i> smaller (or arbitrary). &#160;I haven't thought through an implementation
+</I>&gt;&gt;<i> to decide which would be easier.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> When you say two optional parameters are you meaning two different
+</I>&gt;&gt;<i> values that could be placed in a divisor parameter, or multiple
+</I>&gt;&gt;<i> additional parameters? &#160;I would be thinking of essentially having two
+</I>&gt;&gt;<i> parameters, the first being the numerator, the latter being the
+</I>&gt;&gt;<i> divisor with a default value of 1 if not passed. &#160;If the user passes a
+</I>&gt;&gt;<i> divisor then the platform will attempt to match the fractional
+</I>&gt;&gt;<i> frequency as closely as hardware allows.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; 2) Something similar to POSIX's timer API
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; POSIX is not a manual of good interface design. It was born as an
+</I>&gt;&gt;<i> &gt; attempt to unite the different ways that manufacturers had extended
+</I>&gt;&gt;<i> &gt; the original Unix kernel interfaces. All the new stuff since then
+</I>&gt;&gt;<i> &gt; comes from design-by-committee, which usually produces awful
+</I>&gt;&gt;<i> &gt; interfaces. Google POSIX timer API.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Well, I don't mean to actually _implement_ the posix timer API, merely
+</I>&gt;&gt;<i> borrow the concept of second sized ticks, and mircosecond sized ticks
+</I>&gt;&gt;<i> as a compound value/structure or multiple parameters that could be
+</I>&gt;&gt;<i> passed.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> There's some horrible stuff in the POSIX API due to munging of various
+</I>&gt;&gt;<i> implementations together that you mention plus some things were
+</I>&gt;&gt;<i> clearly meant for different purposes in a different time, like POSIX
+</I>&gt;&gt;<i> RS-323 support, but I've come to appreciate it over dealing with some
+</I>&gt;&gt;<i> Win32 API stuff that just feels baroque by comparison.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; which allows specification
+</I>&gt;&gt;<i> &gt;&gt; of a low and higher resolution component. &#160;i.e.: integer Hz + integer
+</I>&gt;&gt;<i> &gt;&gt; &#181;Hz or nHz. &#160;This came up a while ago, and wasn't for setting clock
+</I>&gt;&gt;<i> &gt;&gt; frequencies, more for timer intervals, but one could use it for clock
+</I>&gt;&gt;<i> &gt;&gt; frequencies as well. &#160;So that you would define that you wanted 27 Hz +
+</I>&gt;&gt;<i> &gt;&gt; 270000 &#181;Hz or something similar
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; Just a few thoughts. &#160;In some ways the gymnastics necessary for the
+</I>&gt;&gt;<i> &gt;&gt; user, interface implementer, and backend implementer start making the
+</I>&gt;&gt;<i> &gt;&gt; floating point version sound appealing :-)
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Not if floating point becomes necessary, since that goes against the
+</I>&gt;&gt;<i> &gt; &quot;embedded&quot; objective of eLua.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm definitely not suggesting tossing integer eLua :-) &#160;While most of
+</I>&gt;&gt;<i> the builds I use may be floating point ones, none of the platforms I'm
+</I>&gt;&gt;<i> using even have hardware FP, and there's a steep cost in code size.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I only suggested that for when FP is already enabled in Lua.
+</I>&gt;&gt;<i> &gt; If it isn't, the user has no way to express a floating point value
+</I>&gt;&gt;<i> &gt; from Lua anyway, or to receive an FP value back.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Right. &#160;Essentially the function for setting frequency would take a
+</I>&gt;&gt;<i> lua_Number (or something like it) and the code on the backend would be
+</I>&gt;&gt;<i> carefully written to work with both floating point and integer builds.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; What's the lesser of these evils:
+</I>&gt;&gt;<i> &gt; - no way to express low frequencies with precision, limited PWM duty
+</I>&gt;&gt;<i> &gt; cycle resolution (current situation)
+</I>&gt;&gt;<i> &gt; - higher precision in the FP version of Lua, lower precision in the
+</I>&gt;&gt;<i> &gt; integer one, for duty cycles and low frequencies
+</I>&gt;&gt;<i> &gt; - interfaces in Lua and C that express floating point values as some
+</I>&gt;&gt;<i> &gt; combination of integers
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is the tough question. Generally I would be trying to minimize
+</I>&gt;&gt;<i> pain for implementation and ugliness in the interface I think.
+</I>&gt;<i>
+</I>&gt;<i> +1
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &#160;The
+</I>&gt;&gt;<i> divisor/fraction stuff doesn't actually sound too bad to me,
+</I>&gt;&gt;<i> especially if it's done as an optional parameter with a default that's
+</I>&gt;&gt;<i> the same as current behavior. &#160;This way users can blithely ignore the
+</I>&gt;&gt;<i> functionality, and current code continues to work, but even the
+</I>&gt;&gt;<i> integer port can define non-integer frequencies.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It does have one other complication, which is what do we return as the
+</I>&gt;&gt;<i> actual frequency acquired, especially on the integer port. &#160;I suppose
+</I>&gt;&gt;<i> it should be in the form passed, with two returned values, the first
+</I>&gt;&gt;<i> being the numerator and the second being the denominator. &#160;This
+</I>&gt;&gt;<i> wouldn't break existing code, and those who just receive one value
+</I>&gt;&gt;<i> would get just the numerator, plus we can still tell them, with
+</I>&gt;&gt;<i> reasonable accuracy, what frequency they got.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Anyone else have opinions here?
+</I>&gt;<i>
+</I>&gt;<i> I can't say now if this is the best final solution, in the sense that it
+</I>&gt;<i> should be adopted for similar needs in the future too. But it sounds like an
+</I>&gt;<i> elegant and simple solution, although the return-value issue will seem
+</I>&gt;<i> pretty strange on the higher level. But I can't think of anything better
+</I>&gt;<i> now, without forcing some major refactoring on the platform layer.
+</I>
+The fundamental issue there is returning a potentially non-integer
+frequency through integer values, since they've been requested using
+integer numerator and denominator.  The are some possible restrictions
+that could be placed on the values returned:
+1) for cases where the divisor is 1 or not provided, the returned
+divisor will always be 1 (to preserve existing behavior, even if the
+returned frequency can't precisely be represented as an integer value)
+
+For all other cases there are two options:
+2) Always use the same divisor as passed in.  In some ways this sounds
+a bit stupid to return the divisor in this case, but I think I prefer
+the idea that the units of the return value can be interpreted without
+having to refer to the passed values.  The biggest downside to this is
+that there's a potential loss of precision if the divisor doesn't
+match up well with the actual clock frequency.
+
+3) The divisor returned is determined by the low-level code in order
+to provide best accuracy in conveying the frequency selected given the
+available variable size for storing the values. Optionally, the low
+level implementor can use the same divisor originally passed.  This
+would potentially allow providing the highest fidelity in conveying
+the frequency selected, and it might also be the easiest way to make
+this work given that you could probably just base the values directly
+on the main system clock, divisors applied to that, and the timer
+reload value and you provide the precise fraction for the clock
+frequency.
+
+As a potential additional option, 1) could be revised such that if no
+divisor is passed, return divisor is always 1, but if a 1 is passed
+than the divisor is allowed to float as in 3) above.  This would
+provide consistency with current behavior and maximum potential return
+value accuracy.
+
+With either of these, determination of the clock frequency on a
+floating point MCU is one division operation away.  On integer units,
+some more complex math would need to be employed to ensure the
+fraction is within desired tolerances.
+
+
+As far as rethinking the API is concerned, I think either way we come
+back to an issue of fractional frequencies with integer expressions
+problem, unless the integer builds are to have different functionality
+than the floating point builds.
+
+-jsnyder
+
+&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160; M
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002674.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002685.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2682">[ date ]</a>
+              <a href="thread.html#2682">[ thread ]</a>
+              <a href="subject.html#2682">[ subject ]</a>
+              <a href="author.html#2682">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

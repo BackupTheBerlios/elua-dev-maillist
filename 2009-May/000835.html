@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua STM32 support and general questions
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20STM32%20support%20and%20general%20questions&In-Reply-To=%3C81fbe47d0905290203l55164a18g7c083ffb9c5f541f%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000834.html">
+   <LINK REL="Next"  HREF="000836.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua STM32 support and general questions</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20STM32%20support%20and%20general%20questions&In-Reply-To=%3C81fbe47d0905290203l55164a18g7c083ffb9c5f541f%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua STM32 support and general questions">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri May 29 11:03:19 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000834.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+        <LI>Next message: <A HREF="000836.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#835">[ date ]</a>
+              <a href="thread.html#835">[ thread ]</a>
+              <a href="subject.html#835">[ subject ]</a>
+              <a href="author.html#835">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I don't speak German at all, so I don't really understand what that error
+means, but something got screwed up in your gcc's &quot;configure&quot; step, since
+it's trying to use regular &quot;gcc&quot; instead of &quot;arm-elf-gcc&quot; as it should. I
+don't know the cause of this error, unfortunately, as I never tried to
+compile the toolchain on Windows.
+May I suggest downloading a precompiled toolchain (like CodeSourcery's
+freeware ARM toolchain) and working with that? eLua has support for using
+this toolchain, details here:
+
+<A HREF="http://elua.berlios.de/beta/en/building.html">http://elua.berlios.de/beta/en/building.html</A>
+
+Best,
+Bogdan
+
+On Fri, May 29, 2009 at 11:57 AM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">lua at wienand.net</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> I have tried to build eLau in my Windows Crossworks environment.
+</I>&gt;<i> After some trouble I tried to use the &quot;standard&quot; way described in your doc.
+</I>&gt;<i>
+</I>&gt;<i> The last step (&quot;Step4: full GCC&quot;) leads into the following error message:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jars at jars-desktop</A>:/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build$ make
+</I>&gt;<i> CFLAGS=&quot;-mcpu=cortex-m3 -mthumb&quot; CXXFLAGS=&quot;-mcpu=cortex-m3 -mthumb&quot;
+</I>&gt;<i> LIBCXXFLAGS=&quot;-mcpu=cortex-m3 -mthumb&quot; all
+</I>&gt;<i> make[1]: Betrete Verzeichnis
+</I>&gt;<i> '/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build'
+</I>&gt;<i> make[2]: Betrete Verzeichnis
+</I>&gt;<i> '/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build/libiberty'
+</I>&gt;<i> if [ x&quot;&quot; != x ]; then \
+</I>&gt;<i>  gcc -c -DHAVE_CONFIG_H -mcpu=cortex-m3 -mthumb -I.
+</I>&gt;<i> -I../../libiberty/../include -W -Wall -Wwrite-strings -Wc++-compat
+</I>&gt;<i> -Wstrict-prototypes -pedantic ../../libiberty/regex.c -o pic/regex.o;
+</I>&gt;<i> \
+</I>&gt;<i>  else true; fi
+</I>&gt;<i> gcc -c -DHAVE_CONFIG_H -mcpu=cortex-m3 -mthumb -I.
+</I>&gt;<i> -I../../libiberty/../include -W -Wall -Wwrite-strings -Wc++-compat
+</I>&gt;<i> -Wstrict-prototypes -pedantic ../../libiberty/regex.c -o regex.o
+</I>&gt;<i> `-mcpu=' is deprecated. Use `-mtune=' or '-march=' instead.
+</I>&gt;<i> cc1: Fehler: nicht erkannte Kommandozeilenoption &#187;-mthumb&#171;
+</I>&gt;<i> ../../libiberty/regex.c:1: Fehler: Falscher Wert (cortex-m3) f&#252;r
+</I>&gt;<i> Schalter -mtune=
+</I>&gt;<i> make[2]: *** [regex.o] Fehler 1
+</I>&gt;<i> make[2]: Verlasse Verzeichnis
+</I>&gt;<i> '/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build/libiberty'
+</I>&gt;<i> make[1]: *** [all-libiberty] Fehler 2
+</I>&gt;<i> make[1]: Verlasse Verzeichnis
+</I>&gt;<i> '/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build'
+</I>&gt;<i> make: *** [all] Fehler 2
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jars at jars-desktop</A>:/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build$
+</I>&gt;<i>
+</I>&gt;<i> It sounds like there's a problem with parameter -mcpu and -mthumb.
+</I>&gt;<i>
+</I>&gt;<i> I use the same version as your doc describes.
+</I>&gt;<i> binutils-2.19.50
+</I>&gt;<i> gcc-4.3.3
+</I>&gt;<i> newlib-1.17.0
+</I>&gt;<i>
+</I>&gt;<i> Any idea?
+</I>&gt;<i>
+</I>&gt;<i> Best Regards
+</I>&gt;<i> Joerg
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> First idea was to write a small script language on my own, but after some
+</I>&gt;&gt;<i> research,
+</I>&gt;&gt;<i> I decided to try Lua - even if it is much more powerful than my needs. I
+</I>&gt;&gt;<i> tried to
+</I>&gt;&gt;<i> get Lua 5.1.4 running, but it was not that easy as I thought. Main problem
+</I>&gt;&gt;<i> was the
+</I>&gt;&gt;<i> need for a filesystem, which is not avaialble.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> It should be possible to make Lua run without a file system, although I
+</I>&gt;<i> didn't try this myself (you can try searching for this on the Lua list).
+</I>&gt;<i> It's true though that you should modify the code, or at least provide a
+</I>&gt;<i> &quot;dummy&quot; buffered I/O library tailored to your needs.
+</I>&gt;<i>
+</I>&gt;<i> eLua seems to solve my problem, and even more I got a filesystem, terminal
+</I>&gt;&gt;<i> mode,
+</I>&gt;&gt;<i> and more. I haven't checked eLua until now, because I'm not sure if this
+</I>&gt;&gt;<i> is the
+</I>&gt;&gt;<i> right direction. I get more than I need, which have to be paid with ROM.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> eLua is highly configurable, in most cases you can specify what you want to
+</I>&gt;<i> be built into your image and what you don't. eLua without terminal mode, for
+</I>&gt;<i> example, is as easy as not defining BUILD_TERM in your platform's
+</I>&gt;<i> platform_conf.h file. Other components are equally easy to remove.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Do you think Lua | eLua is the right thing to put a small script language
+</I>&gt;&gt;<i> to a limited
+</I>&gt;&gt;<i> device?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> eLua is quite OK for this configuration, as it was built with this kind of
+</I>&gt;<i> requirements in mind. You might also try some variant of Forth (which is a
+</I>&gt;<i> completely different language though) or PyMite (
+</I>&gt;<i> <A HREF="http://pymite.python-hosting.com/">http://pymite.python-hosting.com/</A>).
+</I>&gt;<i>  Lua is also probably good enough for you, as long as you can figure your
+</I>&gt;<i> filesystem dependency problem. Compared to Lua though, eLua is optimized for
+</I>&gt;<i> usage on small devices, including (important) memory allocation tunings and
+</I>&gt;<i> a patch called LTR (Lua Tiny RAM) that can have an important impact on your
+</I>&gt;<i> RAM usage.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Do I have to use eLua (which is under GPL/BSD license)? Or should it be
+</I>&gt;&gt;<i> even
+</I>&gt;&gt;<i> possible to use &quot;plain&quot; Lua (which offers more flexible MIT license)?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> eLua is MIT at this point, although this isn't specified in the license
+</I>&gt;<i> file. We are planning to make the official announcement to MIT starting with
+</I>&gt;<i> the next release, but you can use the code as you want even now. If you need
+</I>&gt;<i> it, I'll change the LICENSE file right away.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> As I wrote, I neither need a FS, GUI nor a terminal mode. Lua scripts are
+</I>&gt;&gt;<i> written to
+</I>&gt;&gt;<i> the device with a proprietary mechanism. Maximum length of Lua script is
+</I>&gt;&gt;<i> ~250 lines.
+</I>&gt;&gt;<i> At the end each LOC is stored in one separate string.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The upcoming documentation for 0.6, although not 100% complete, contains a
+</I>&gt;<i> lot of information about eLua in general and about how to configure its
+</I>&gt;<i> components at compile time it in particular. It also contains information
+</I>&gt;<i> about the LTR patch and other important parts of eLua. I'll upload it to a
+</I>&gt;<i> temporary location today when I have some time and then come back to the
+</I>&gt;<i> list with the link, maybe this will be help.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090529/a07299a2/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090529/a07299a2/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000834.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+	<LI>Next message: <A HREF="000836.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#835">[ date ]</a>
+              <a href="thread.html#835">[ thread ]</a>
+              <a href="subject.html#835">[ subject ]</a>
+              <a href="author.html#835">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

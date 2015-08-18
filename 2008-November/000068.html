@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Checked in latest changes, new module loader added.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Checked%20in%20latest%20changes%2C%20new%20module%20loader%20added.&In-Reply-To=%3C36dc677c0811120432v18c02889n9011dfe5f80aa4c0%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000067.html">
+   <LINK REL="Next"  HREF="000070.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Checked in latest changes, new module loader added.</H1>
+    <B>Mike Panetta</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Checked%20in%20latest%20changes%2C%20new%20module%20loader%20added.&In-Reply-To=%3C36dc677c0811120432v18c02889n9011dfe5f80aa4c0%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Checked in latest changes, new module loader added.">panetta.mike at gmail.com
+       </A><BR>
+    <I>Wed Nov 12 13:32:09 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000067.html">[eLua-dev] Checked in latest changes, new module loader added.
+</A></li>
+        <LI>Next message: <A HREF="000070.html">[eLua-dev] Checked in latest changes, new module loader added.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#68">[ date ]</a>
+              <a href="thread.html#68">[ thread ]</a>
+              <a href="subject.html#68">[ subject ]</a>
+              <a href="author.html#68">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks. :)
+
+These cortex-m3 parts have been very impressive so far!  Congrats on the
+Luminary OLED driver!
+
+My first choice for a port was going to be an AVR32, but based on chip
+prices and potential power savings I decided to go with the STM32 part.  The
+AVR32 is definitely an impressive chip however, and I look forward to the
+port.
+
+One day I hope to see lua replace basic for all the medium range 'stamp'
+like applications out there!  In fact, when I get a chance I think I am
+going to try and write me a PID control routine in lua and see how well it
+performs.
+
+Mike
+
+On Wed, Nov 12, 2008 at 4:39 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hello eLua rockers :)
+</I>&gt;<i>    Dear Mike, I'm pleased to meet you ! :)
+</I>&gt;<i>    Thank you very much for the port and welcome to the eLua dev list.
+</I>&gt;<i>    I'm also proud to announce that our RIT128x96x4 OLED driver for the
+</I>&gt;<i> LuminaMicro ARM Cortex M3 board, worked fine yesterday (!!!).
+</I>&gt;<i>    I'll commit it right after discussing one or two points here on the
+</I>&gt;<i> list.
+</I>&gt;<i>    Also, we bought two ATVEVK1100 boards&lt;<A HREF="http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4114">http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4114</A>&gt;,
+</I>&gt;<i> one for Bogdan and one for us, to add Atmel to our list of supported MCUs.
+</I>&gt;<i>    I won't get mine before december 3rd but hopefully Bogdan will get his
+</I>&gt;<i> some two weeks from now.
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Nov 12, 2008 at 7:02 AM, Bogdan Marinescu &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> A few observations about your code:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - I'm not sure I fully understand what the code in modcommon.c/luaopen_mod
+</I>&gt;&gt;<i> does. Is this some sort of &quot;lazy initialization&quot;, in that a module is only
+</I>&gt;&gt;<i> initialized when first needed? Could you give an example of using that?
+</I>&gt;&gt;<i> - I understand what you're trying to do with
+</I>&gt;&gt;<i> modcommon.c/elua_resigter_const, but I'm afraid that it might do more bad
+</I>&gt;&gt;<i> than good at times. Simply because you're creating a new table, an operation
+</I>&gt;&gt;<i> that eats a lot of memory (at least that's what I got from my tests). You
+</I>&gt;&gt;<i> might want to do some testing and find a &quot;point an equilibrium&quot;, i.e. find
+</I>&gt;&gt;<i> an approximation of what's the minimum number of constants you need to
+</I>&gt;&gt;<i> register with your method to make your idea save memory instead of waste
+</I>&gt;&gt;<i> memory.
+</I>&gt;&gt;<i> - This is completely my fault, but your coding style is completely
+</I>&gt;&gt;<i> different from mine. Sorry, I should've released an &quot;eLua coding style
+</I>&gt;&gt;<i> guide&quot; quite a while ago, but I completely forgot. I'll try to do this as
+</I>&gt;&gt;<i> soon as possible.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> All in all, excellent work, and I can only hope you'll keep it up! :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Nov 12, 2008 at 10:27 AM, Bogdan Marinescu &lt;
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Forwarding to the list. Mike, let's use the list for further development
+</I>&gt;&gt;&gt;<i> discussions, I just added you to the list.
+</I>&gt;&gt;&gt;<i> I'll take a look at your loader, it sure sounds interesting. I'm actually
+</I>&gt;&gt;&gt;<i> preparing a patch (for Lua) to make it use WAY less RAM, but if that doesn't
+</I>&gt;&gt;&gt;<i> work properly, your solution would be perfect.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ---------- Forwarded message ----------
+</I>&gt;&gt;&gt;<i> From: Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> Date: Wed, Nov 12, 2008 at 7:06 AM
+</I>&gt;&gt;&gt;<i> Subject: Checked in latest changes, new module loader added.
+</I>&gt;&gt;&gt;<i> To: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I just checked in my latest changes.  The major additions are a platform
+</I>&gt;&gt;&gt;<i> (even board) specific lcd driver/lua module and a new lua module 'rom
+</I>&gt;&gt;&gt;<i> loader'.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The object of the rom loader is to reduce the ram footprint of lua by not
+</I>&gt;&gt;&gt;<i> loading the module tables of unused modules.  I hope you like it and decide
+</I>&gt;&gt;&gt;<i> to change over the generic modules to use it.  I also added a small
+</I>&gt;&gt;&gt;<i> enhancement to registering constants.  Instead of everyone registering their
+</I>&gt;&gt;&gt;<i> own functions to do the lookup I have a generic one in modcommon.c that can
+</I>&gt;&gt;&gt;<i> be used to do it.  The only overhead is the addition of a lightuserdata type
+</I>&gt;&gt;&gt;<i> to the module table that is used to do the lookups.  See modcommon.c and
+</I>&gt;&gt;&gt;<i> modcommon.h for all the details.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> All the code has been tested on my STM3210E-EVAL and works. (Lua is
+</I>&gt;&gt;&gt;<i> suprisingly fast on these cortex processors BTW!)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> None of the changes should have affected any other platform. If they did,
+</I>&gt;&gt;&gt;<i> then I did something wrong, please tell me so I can fix it.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Soon I may set my LM3S8962 kit up so I can test and port some of these
+</I>&gt;&gt;&gt;<i> enhancements over to that platform as well if you want/need me to due to
+</I>&gt;&gt;&gt;<i> time constraints.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> If you don't like the way I did something or if you have any questions
+</I>&gt;&gt;&gt;<i> about what I did please feel free to shoot me an email. :)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks,
+</I>&gt;&gt;&gt;<i> Mike
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081112/d2a24984/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081112/d2a24984/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000067.html">[eLua-dev] Checked in latest changes, new module loader added.
+</A></li>
+	<LI>Next message: <A HREF="000070.html">[eLua-dev] Checked in latest changes, new module loader added.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#68">[ date ]</a>
+              <a href="thread.html#68">[ thread ]</a>
+              <a href="subject.html#68">[ subject ]</a>
+              <a href="author.html#68">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C3ca7f90c0906221717w78461a12gc038d7d9f72568fe%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000871.html">
+   <LINK REL="Next"  HREF="000881.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>Tony</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C3ca7f90c0906221717w78461a12gc038d7d9f72568fe%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">tony.elua at gmail.com
+       </A><BR>
+    <I>Tue Jun 23 02:17:19 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000871.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="000881.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#872">[ date ]</a>
+              <a href="thread.html#872">[ thread ]</a>
+              <a href="subject.html#872">[ subject ]</a>
+              <a href="author.html#872">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>If you're looking for a PC-level ARM development board, there are at least
+four interesting choices:
+1. BeagleBoard: $150 600MHz OMAP3530 Cortex A8, VLIW DSP, graphics, 256M
+flash, 128M DRAM, HS USB 2.0, no Ethernet.
+2. Gumstick Overo (OMAP35xx board) and Verdex (PXA270), starts at $129
+3. Leopard board: $99, 210MHz 320DM355, camera, Ethernet, USB, 256M flash,
+128M DRAM
+4. Marvell Sheeva Plug, 1.2GHz Marvel Sheeva, 512M flash, 512M DRAM, Gigabit
+Ethernet, USB
+
+All of these are smaller than a nettop, and don't require any cooling fans.
+With the x86 PC, you still have to add any interesting peripherals (ADC,
+DAC, PWM, encoder, etc) via USB or similar.  BTW, USB interfaces using HID
+will be very limited in speed.  And I think the simplicity of the eLua
+approach is a major attraction; Linux is still Linux, even on a reduced-fat
+system.
+
+There have been plenty of exciting ARM announcements recently, ranging from
+low end (Cortex-M3 such as the TI/Luminary 9B and STM32 Connectivity) up to
+Gigahertz Cortex-A8 systems (TI, Freescale, etc).
+
+It costs a significant amount of money to put a new MCU into production,
+including design, verification, mask costs, and verification.  If you look
+at all the functions the high-end MCUs support (e.g. Stellaris 9Bx), you'll
+see that even 100 pins isn't very many.  Also, with the new chip-scale
+packages (such as QFN and BGA), larger packages are smaller than lower pin
+count old packages such as DIP and SOIC.  IIRC, Microchip and ST have some
+models with very flexible I/O assignments, but there may be reasons why this
+isn't widespread.  AFAIK, only Microchip is actively making new products in
+hobbyist-friendly DIP packages; e.g. one of the smallest ARM MCUs, a 36-pin
+STM32, is only available in QFN.  But Microchip doesn't have large memory
+MCUs.  And, in summary, I doubt the demand is there for large memory, low
+pin count MCUs.
+
+Besides, I think it's better to use a Stamp format anyway (like the ET-STM32
+Stamp) -- then you put all the required voltage regulators and clock stuff
+up on the Stamp, and just have a reduced pin count, DIP-style interface to
+your prototype board.
+
+BTW, the AT32UC3A3256 has a couple other nice features Asko didn't mention:
+high speed USB 2.0 (still not common in QFP), external SDRAM, and external
+NAND support.  But there's no Ethernet.  Mouser pricing is $12.86 (1), $8.56
+(100).
+
+If you are looking for &gt;=64K SRAM, &gt;=256K flash, there are many choices.
+Even at &gt;=96K SRAM, &gt;=512K flash, there are quite a few choices.  I'd say
+the most interesting candidates for an eLua stamp right now are the UC3
+(since it has 128K SRAM, external memory interfaces,  and HS USB) or the
+Stellaris 9B (if it's available soon -- the $99 dev kits are in stock --
+since it has 96K SRAM, Ethernet, USB, external memory interfaces, and cool
+peripherals like PWM and quadrature encoders).
+
+--Tony
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090622/7befc517/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090622/7befc517/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000871.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="000881.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#872">[ date ]</a>
+              <a href="thread.html#872">[ thread ]</a>
+              <a href="subject.html#872">[ subject ]</a>
+              <a href="author.html#872">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

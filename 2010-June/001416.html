@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Loadable C modules
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Loadable%20C%20modules&In-Reply-To=%3CAANLkTim9JUK-5yi8gyg2PD_nGETVvgO4YmRDnopc57gf%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001415.html">
+   <LINK REL="Next"  HREF="001448.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Loadable C modules</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Loadable%20C%20modules&In-Reply-To=%3CAANLkTim9JUK-5yi8gyg2PD_nGETVvgO4YmRDnopc57gf%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Loadable C modules">dadosutter at gmail.com
+       </A><BR>
+    <I>Wed Jun  9 18:52:59 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001415.html">[eLua-dev] Loadable C modules
+</A></li>
+        <LI>Next message: <A HREF="001448.html">[eLua-dev] Loadable C modules
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1416">[ date ]</a>
+              <a href="thread.html#1416">[ thread ]</a>
+              <a href="subject.html#1416">[ subject ]</a>
+              <a href="author.html#1416">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thank you for the links Tim !
+
+Meanwhile, I was able to find the message I mentioned and it was indeed Mike
+Panetta who have implemented it.
+His original message is here below:
+
+--------------------------------
+We also have loadable modules, at least on STM32.  Take a look at
+modcommon.c in the modules dir, function luaopen_mod, and the lua_lcd.c file
+in platform/stm32/ for an example of how its used.
+
+At the end of the file I create a luaL_reg struct with a single entry that
+gets placed in a special location in memory via the linker script and the
+section attribute. luaopen_mod uses the package.preload table entry to push
+a handler to call the luaopen_lcd init function when someone does a require
+'stm3210lcd'.
+
+So while the FLASH space is always used for the module, the RAM space
+required for the module table and etc are not loaded until someone calls
+require.
+
+Comments on this methodology are very welcome!
+
+Mike
+----------------------------------
+
+Best
+Dado
+
+
+
+On Wed, Jun 9, 2010 at 11:07, Tim michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+
+&gt;<i> Several interesting links
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www.analog.com/static/imported-files/application_notes/EE_323_Rev_1.pdf">http://www.analog.com/static/imported-files/application_notes/EE_323_Rev_1.pdf</A>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www.ecoscentric.com/ecospro/doc.cgi/html/ecospro-ref/services-objloader-objloader.html">http://www.ecoscentric.com/ecospro/doc.cgi/html/ecospro-ref/services-objloader-objloader.html</A>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www-group.slac.stanford.edu/cdsoft/presentations/MThSlides/epics_build.pdf">http://www-group.slac.stanford.edu/cdsoft/presentations/MThSlides/epics_build.pdf</A>
+</I>&gt;<i> RTEMS has dynamic loading, using Object files...
+</I>&gt;<i> <A HREF="http://www.rtems.org/wiki/index.php/Dynamic_Object_File_Loading">http://www.rtems.org/wiki/index.php/Dynamic_Object_File_Loading</A>
+</I>&gt;<i>
+</I>&gt;<i> Some code
+</I>&gt;<i> <A HREF="http://www.geonius.com/software/ots/dympl_util.html">http://www.geonius.com/software/ots/dympl_util.html</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i> *From:* Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+</I>&gt;<i> *To:* eLua Users and Development List &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> *Sent:* Wed, June 9, 2010 5:24:13 AM
+</I>&gt;<i> *Subject:* [eLua-dev] Loadable C modules
+</I>&gt;<i>
+</I>&gt;<i> Hello folks,
+</I>&gt;<i>    I'm back in Rio, the trip to the Old World was nice and we've planted
+</I>&gt;<i> some nice eLua seeds up there too.
+</I>&gt;<i>    A while ago, we discussed some ideas on Loadable C Modules for eLua here
+</I>&gt;<i> on the list and someone told me that we already had an example implemented
+</I>&gt;<i> in one of the ports. I think it was Mike Panetta but I'm not sure and I
+</I>&gt;<i> couldn't find it now.
+</I>&gt;<i>    One of my students (Marcelo Politzer) is willing to play with some ideas
+</I>&gt;<i> and it would be nice to have something to base on to start with.
+</I>&gt;<i>    It would definetely be a nice feature to have and some of our projects
+</I>&gt;<i> call for it already.
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100609/7db9b062/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100609/7db9b062/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001415.html">[eLua-dev] Loadable C modules
+</A></li>
+	<LI>Next message: <A HREF="001448.html">[eLua-dev] Loadable C modules
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1416">[ date ]</a>
+              <a href="thread.html#1416">[ thread ]</a>
+              <a href="subject.html#1416">[ subject ]</a>
+              <a href="author.html#1416">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

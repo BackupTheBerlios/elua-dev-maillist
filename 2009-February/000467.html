@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] autorun
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20autorun&In-Reply-To=%3C002701c9909f%24d82ac050%24888040f0%24%40com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000468.html">
+   <LINK REL="Next"  HREF="000474.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] autorun</H1>
+    <B>Jesus Alvarez</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20autorun&In-Reply-To=%3C002701c9909f%24d82ac050%24888040f0%24%40com%3E"
+       TITLE="[eLua-dev] autorun">jalvarez at micromint.com
+       </A><BR>
+    <I>Tue Feb 17 02:34:08 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000468.html">[eLua-dev] autorun
+</A></li>
+        <LI>Next message: <A HREF="000474.html">[eLua-dev] autorun
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#467">[ date ]</a>
+              <a href="thread.html#467">[ thread ]</a>
+              <a href="subject.html#467">[ subject ]</a>
+              <a href="author.html#467">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Is there any limit on the SD Card size or speed ?
+</I>
+The changes are based on the FatFs code which supports FAT32 and (in theory;
+I have not tested it with large cards) should allow &gt;4 GB SD cards. Its
+f_lseek() allows a DWORD offset so individual files are limited to 32-bit
+offsets (4 GB) on the ARM.
+
+FatFs uses 8.3 file names. Long file names are not supported and converted
+to 8.3 names similar to MS DOS.
+
+I would suggest looking at the FatFs page for fairly good documentation on
+the implementation:
+
+<A HREF="http://elm-chan.org/fsw/ff/00index_e.html">http://elm-chan.org/fsw/ff/00index_e.html</A>
+
+There are some speed benchmarks on the resources area of the FatFs web page.
+Besides the FatFs options, the card itself and the SPI clock can
+significantly affect I/O performance. For example, SD cards generally
+perform better than MMC cards. Compact flash cards are generally faster than
+SD cards.
+
+Please keep in mind that the MMC/SD changes to eLua have very limited
+testing. Modifications will likely be required before production use.
+
+Regards,
+Jesus Alvarez
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000468.html">[eLua-dev] autorun
+</A></li>
+	<LI>Next message: <A HREF="000474.html">[eLua-dev] autorun
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#467">[ date ]</a>
+              <a href="thread.html#467">[ thread ]</a>
+              <a href="subject.html#467">[ subject ]</a>
+              <a href="author.html#467">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

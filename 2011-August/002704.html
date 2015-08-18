@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAL4-wQq%2B5d_3rdSa1%3DMLdmOA9AmVDNSLpdWMaf7FbnU%2BrMz3LA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002696.html">
+   <LINK REL="Next"  HREF="002705.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAL4-wQq%2B5d_3rdSa1%3DMLdmOA9AmVDNSLpdWMaf7FbnU%2BrMz3LA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">martinwguy at gmail.com
+       </A><BR>
+    <I>Fri Aug  5 08:25:29 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002696.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002705.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2704">[ date ]</a>
+              <a href="thread.html#2704">[ thread ]</a>
+              <a href="subject.html#2704">[ subject ]</a>
+              <a href="author.html#2704">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'll send this, cos it's been sitting in my outbox for 4 days and my
+brain is elsewhere at present.
+
+On 1 August 2011 22:40, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+
+&gt;&gt;<i> I'm in favour of adding optional extra parameter after duty cycles to
+</I>&gt;&gt;<i> get higher precision (indeed, hardware precision if you pick the right
+</I>&gt;&gt;<i> radix)
+</I>&gt;<i>
+</I>&gt;<i> OK. &#160;So something like:
+</I>&gt;<i>
+</I>&gt;<i> duty, radix = pwm.setduty(id, duty, [radix=100])
+</I>&gt;<i>
+</I>&gt;<i> Radix is free-form, but integer?
+</I>
+Integer, sure. A floating point radix is an interesting idea... :)
+
+I'm not sure the radix needs to be returned from the functions, since
+it will always be either 100 or what the user specified, so its value
+is 100% predictable and so contains no information. It also simplifies
+the documentation, so a beginner isn't immediately worried about
+&quot;what's this extra radix thing that it might return&quot; and only power
+users need to deal with funny radices.
+
+&gt;&gt;<i> I'm ambivalent about adding radix to frequencies for higher-precision
+</I>&gt;&gt;<i> low frequencies. It would be nice.
+</I>&gt;<i>
+</I>&gt;<i> Does one need the christmas lights to flash at 0.43 Hz? &#160;I dunno. &#160;PWM
+</I>&gt;<i> can be used for triggering other things like, for example an external
+</I>&gt;<i> ADC where that might be useful?
+</I>&gt;<i>
+</I>&gt;<i> freq, radix = pwm.setfreq(id, freq, [radix=1])
+</I>
+OK. apart from returning radix again
+
+&gt;<i> For setting the clocking frequency, I don't think there's a good
+</I>&gt;<i> reason (pwm.setclock).
+</I>&gt;<i>
+</I>&gt;<i> Question: do we leave setup for now? &#160;Do we provide radix functionality with it?
+</I>
+OK, let's think about this. If we split into setfreq() and setduty():
+- what does it do when they have set a frequency but not set a duty cycle yet?
+- What does it do if they set a duty cycle but haven't set a frequency yet?
+The platform code I have seen for the current pwm.setup() always goes:
+{
+   set pwm period in the hardware, calculated from the requested
+frequency and clock rate;
+   set duty cycle as a period in clock ticks calculated from the pwm period;
+}
+Maybe for this reason it is handy always to have the frequency and
+duty cycle on hand at the same time. However, from the platform code
+I've seen, when setting the duty cycle separately, you can fish the
+period (that you need for the calculation) back out of the hardware
+register.
+That's enough to be able to vary the duty cycle while keeping the
+frequency the same.
+
+However, if they decide to vary the frequency without changing the
+duty cycle, we would need to remember the duty cycle for each channel
+in a tiny array duty[NUM_PWM] and presumably radix[NUM_PWM] to be able
+to recalculate the duty cycle as a fraction of the PWM period when the
+frequency alone is changed. That doesn't seem too hard or costly if it
+gives a better Lua interface to the PWM module, and only needs to
+happen in src/modules/pwm.c, not in every platform.  I hate to say it,
+but that suggests keeping the C platform interface as it is, with freq
+and duty always passed as a pair, otherwise we'll have the same code
+to cache the duty cycle and radix in a dozen different places.  In the
+case of AVR32, with its inability to set both at once, I already check
+to see if the frequency (period) is the same as before and only update
+the duty cycle in that case.
+
+Question: do PWM applications change the frequency without changing
+the duty cycle? Well, I can think of an organ-like instrument where
+the duty cycle gives a tone timbre and the frequency the note. For
+that, the highest possible precision of the frequency setting is
+critical: a hundredth of a percent of the frequency in use is the
+target for musical pitches, so the more frequency precision the better
+in that application.
+
+That suggests in the Lua interface:
+pwm.setduty( id, duty[, radix=100] )
+pwm.setfreq( id, freq[, radix=1] )
+and keeping the C platform interface the same as it is now, modulo
+adding an extra duty/radix parameter.
+
+It would be good to add in the documentation recommended usage
+sequences.  For instance, what happens if I call pwm.start() before
+setting the frequency and duty cycle for a channel?
+Is a call to pwm.setup() necessary to enable the pin as an output,
+even if we move the frequency and duty cycle stuff, that can happen
+during the program run, elsewhere?
+
+&gt;&gt;<i> James, have you been able to test on an ARm platform that patch to
+</I>&gt;&gt;<i> split platform_adc_op()
+</I>&gt;<i>
+</I>&gt;<i> I suppose I can take a look at the assembler generated for the at91
+</I>&gt;<i> platform and try to see if it has optimized out that section you had
+</I>&gt;<i> concerns about.
+</I>
+Ah! I hadn't thought of that. Thanks. Yes, it is dutifully reading it
+(and storing it in the dummy variable that is immediately forgotten,
+der). Thanks.
+
+&gt;<i> I add random numbers on the interval -0.5 -&gt;
+</I>&gt;<i> 0.5 to dither PWM duty cycles to get more precise output, and I'd like
+</I>&gt;<i> to _not_ have to do that.)
+</I>
+Urk! It's a sign that something is wrong with the interface if you
+have to do such gymnastics.
+
+&gt;<i> We could also do this in stages on a testing branch if we can't get
+</I>&gt;<i> all platforms tested and implemented quickly and only merge it once
+</I>&gt;<i> all platforms perform in a satisfactory manner.
+</I>
+When it means non-trivial reimplementation of platform code on a dozen
+platforms, which may or may not work, that sounds wise.
+
+When evolving the Lua interfaces, should we keep the current Lua
+interfaces also, for example under
+#ifdef ELUA_0_8_COMPAT
+to allow existing Lua code to continue working, or do we just change
+things to keep the code simpler and more manageable?
+
+&gt;<i> &#160;I would suggest that we start
+</I>&gt;<i> maybe with PWM _or_ ADC for this and not try to do both in the same
+</I>&gt;<i> set of patches at the same time
+</I>
+Agreed. Let's hit PWM first
+
+&gt;<i> Let me know what portions of this you would like to implement, if any.
+</I>
+Implementing the optional radix in the current pwm.setup() interface
+seems like the smallest self-contained step we can take in this
+direction, and the least disruptive.
+
+&gt;<i>&#160;Timers, for example,
+</I>&gt;<i> could do well to support the radix notation, and all of these should
+</I>&gt;<i> have common code within given platforms so that once we've done one
+</I>&gt;<i> the others should be easier on both platform implementation and common
+</I>&gt;<i> code sides.
+</I>
+They could. But if you mean for time delays, that has as a
+prerequisite getting rid of the C platform_timer_op primitives, and
+this is the second most difficult example of this to refactor, after
+pio. Furthermore, they are already radix 1,000,000 (microseconds)
+which may already be precise enough for delays. I'm not in favour of
+implementing things just for a sense of symmetry, but only if the
+upheaval brings a practical advantage.
+ If you mean the frequency of free-running interrupts, tmr already
+expresses that in microseconds, not Hz, so you already have high
+precision at low frequencies.
+But that also bring low precision at high frequencies :( so maybe this
+is useful, to be able to express free-running interrupt periods (or
+ADC conversion frequencies) at the precision of the underlying timer
+clock (tmr.getclock()) to be able to get the best out of the hardware,
+which may be clocking the timer at 200MHz.
+
+I'm not sure that having ADC sampling rates explicitly use a timers at
+the interface level is ideal.
+On the one hand, hardware that is able to sample at a given rate will
+needlessly occupy a timer just because you have to say so in the Lua
+interface.  On the other, if there is no other way to implement it on
+a given platform it is better for it be explicit than hidden.
+With the ADCs that I've seen on these platforms, you just kick them,
+they convert as fast as they can and you the read the result back -
+very different from the audio ADCs I'm used to.  That suggests,
+instead of hijackng a timer, making the *user* do the stuff with
+timers for periodic conversions, probably by an explicit periodic
+timer interrupt that calls a kick-the-ADC routine, and limit the ADC
+eLua interface to start-a-conversion, is-it-finished and
+read-the-value, eliminating the buffering and the smoothing parts.
+
+Already the DHCP server in UIP, and the serial console quietly hijack
+a timer each to do timeouts, and between them they occupy both of the
+usable timers on AVR32, leaving the user with only the virtual ones
+with 1/10th second granularity. DHCP can easily be changed to use the
+system tick while for the serial console it's only used to try and
+detect LFCR sequences that can never occur.
+
+Actually, it's a bit odd that free-running timer interrupts are the
+only frequency in eLua that is expressed as a period. In fact, on the
+subect of free-running timer interrupts, I think the
+tmr.set_match_int( id, period, type )
+(where type = tmr.INT_ONESHOT or tmr.INT_CYCLIC for a single
+interrupts after a delay or to set free-running interrupts or
+free-running ADC conversions) could be rethought.
+The &quot;type&quot; parameter is surely always a constant in the user code, so
+we could turn this into two functions. That would let us express an
+interrupt after a delay as the usual time in microseconds, and the
+frequency of free-running interrupts as a frequency with optional
+radix, the same as all the other output-frequency operations.
+  But let's see if that is a practical problem for anyone first.
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002696.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002705.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2704">[ date ]</a>
+              <a href="thread.html#2704">[ thread ]</a>
+              <a href="subject.html#2704">[ subject ]</a>
+              <a href="author.html#2704">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

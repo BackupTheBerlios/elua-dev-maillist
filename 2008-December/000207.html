@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] HREFs in Sputnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20HREFs%20in%20Sputnik&In-Reply-To=%3Cd3b6d880812291248y5baaeb22v8bb67d535323416e%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000206.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] HREFs in Sputnik</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20HREFs%20in%20Sputnik&In-Reply-To=%3Cd3b6d880812291248y5baaeb22v8bb67d535323416e%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] HREFs in Sputnik">dado at pobox.com
+       </A><BR>
+    <I>Mon Dec 29 21:48:43 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000206.html">[eLua-dev] HREFs in Sputnik
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#207">[ date ]</a>
+              <a href="thread.html#207">[ thread ]</a>
+              <a href="subject.html#207">[ subject ]</a>
+              <a href="author.html#207">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thank you for the short, long and quick answer Yuri !!!
+
+Greetingsssssss
+Dado
+
+
+
+On Mon, Dec 29, 2008 at 18:44, Yuri Takhteyev &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">yuri at sims.berkeley.edu</A>&gt;wrote:
+
+&gt;<i> The short answer is: use &quot;href&quot; instead of &quot;HREF&quot;. I changed it on the
+</I>&gt;<i> page and it works now.
+</I>&gt;<i>
+</I>&gt;<i> The long answer:
+</I>&gt;<i>
+</I>&gt;<i> Sputnik uses an XSS filter module to protect your visitors from XSS
+</I>&gt;<i> (cross-site scripting). For this reason, it does not allow you to put
+</I>&gt;<i> arbitrary HTML into the pages. The rationale is the following: it's
+</I>&gt;<i> one thing if someone comes and loads your wiki with span - you can
+</I>&gt;<i> always clean it up later. However, it's another thing if someone will
+</I>&gt;<i> edit your pages in such a way as to install viruses on your visitors'
+</I>&gt;<i> computers. This wouldn't be fun. So, all HTML gets filtered by
+</I>&gt;<i> default.
+</I>&gt;<i>
+</I>&gt;<i> Our approach to filtering is white-listing. That is, instead of trying
+</I>&gt;<i> to catch every possible kind of &quot;bad&quot; HTML, we simply filter out
+</I>&gt;<i> everything that isn't good HTML. Good HTML means:
+</I>&gt;<i>
+</I>&gt;<i> 1. It must be well-formed XHTML (this means the tags must be balanced
+</I>&gt;<i> among other things).
+</I>&gt;<i> 2. It can only use &quot;safe&quot; tags with &quot;safe&quot; attributes.  E.g., you
+</I>&gt;<i> cannot put &lt;script&gt; into the page.
+</I>&gt;<i> 3. Values for some of the attributes must fit into certain patterns.
+</I>&gt;<i> In particular, href must start with &quot;<A HREF="http://">http://</A>&quot;, &quot;<A HREF="https://">https://</A>&quot;, &quot;<A HREF="ftp://">ftp://</A>&quot;,
+</I>&gt;<i> &quot;/&quot; or &quot;#&quot;.
+</I>&gt;<i>
+</I>&gt;<i> XHTML is supposed to only use lowercase tags and attribute names. So,
+</I>&gt;<i> it should be &quot;href&quot; rather than &quot;HREF&quot;.
+</I>&gt;<i>
+</I>&gt;<i>  - yuri
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Dec 29, 2008 at 6:11 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; Hello Guys,
+</I>&gt;<i> &gt;    I'm trying to enhance a bit the look of our Download Binaries Page at
+</I>&gt;<i> &gt; <A HREF="http://www.eluaproject.net/en/Binaries">http://www.eluaproject.net/en/Binaries</A>
+</I>&gt;<i> &gt;    The idea is to replace the single list of binary file names (that is
+</I>&gt;<i> &gt; still there) by a table with some more info, like the one that I began to
+</I>&gt;<i> &gt; include there.
+</I>&gt;<i> &gt;    Beeing a complete HTML analphabet, I asked for some help to include
+</I>&gt;<i> the
+</I>&gt;<i> &gt; HREF tags in the table but for some reason, the last column is not
+</I>&gt;<i> showing
+</I>&gt;<i> &gt; them as &quot;normal&quot; URL links (blue and underlined).
+</I>&gt;<i> &gt;    Could anybody check to see what is wrong with my HREF table entries ?
+</I>&gt;<i> &gt;    Do we need to use it differently in Sputnik ?
+</I>&gt;<i> &gt;    I'd also appreciate a table content revision and/or info suggestions
+</I>&gt;<i> to
+</I>&gt;<i> &gt; include in the table.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanksssssss
+</I>&gt;<i> &gt; Dado
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; Elua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> <A HREF="http://sputnik.freewisdom.org/">http://sputnik.freewisdom.org/</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081229/71345366/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081229/71345366/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000206.html">[eLua-dev] HREFs in Sputnik
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#207">[ date ]</a>
+              <a href="thread.html#207">[ thread ]</a>
+              <a href="subject.html#207">[ subject ]</a>
+              <a href="author.html#207">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

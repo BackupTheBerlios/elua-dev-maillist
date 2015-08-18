@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20on%20LM3S%20Connection%20Issue%20%28was%20Re%3A%20eLua-dev%0A%20Digest%2C%20Vol%2035%2C%20Issue%2041%29&In-Reply-To=%3CBANLkTin0aQO1vzPKgCKPwYXEeS71%3Dom64A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002558.html">
+   <LINK REL="Next"  HREF="002561.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20on%20LM3S%20Connection%20Issue%20%28was%20Re%3A%20eLua-dev%0A%20Digest%2C%20Vol%2035%2C%20Issue%2041%29&In-Reply-To=%3CBANLkTin0aQO1vzPKgCKPwYXEeS71%3Dom64A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Jun 21 08:44:08 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002558.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+        <LI>Next message: <A HREF="002561.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2559">[ date ]</a>
+              <a href="thread.html#2559">[ thread ]</a>
+              <a href="subject.html#2559">[ subject ]</a>
+              <a href="author.html#2559">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Tue, Jun 21, 2011 at 7:13 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> On Mon, Jun 20, 2011 at 7:00 AM, raman &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Hello,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I tried building on Gnu/Linux Ubuntu, 10.10.
+</I>&gt;<i> &gt; 2.6.35-22-generic #33-Ubuntu SMP i686 GNU/Linux
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I only made a small change in the rpc-lua.py file to
+</I>&gt;<i> &gt; link with the ncurses library. There is no change in
+</I>&gt;<i> &gt; response. ./luarpc does not return the handle. Here
+</I>&gt;<i> &gt; too, it just waits on the console infinitely.
+</I>&gt;<i>
+</I>&gt;<i> Are you having to link in ncurses in order to get it to work?  I
+</I>&gt;<i> believe that for most modern unix platforms just linking against
+</I>&gt;<i> readline should work if a recent version is installed. On my Ubuntu
+</I>&gt;<i> box I installed libreadline5-dev I believe and linked against that for
+</I>&gt;<i> a readline library.
+</I>&gt;<i>
+</I>&gt;<i> I also just checked in a version that uses linenoise instead to
+</I>&gt;<i> eliminate those dependencies. This should work fine for Linux &amp; OS X.
+</I>&gt;<i> There's not a full port of that library for Windows yet.
+</I>&gt;<i>
+</I>&gt;<i> All that said, I'm not sure if this would have any effect on the issue
+</I>&gt;<i> being encountered, but perhaps something strange is going on here.  I
+</I>&gt;<i> believe I have had occasions at least on Windows where the timeouts
+</I>&gt;<i> don't seem to work correctly unless I have something within luarpc.c
+</I>&gt;<i> or one of the lower level layers print something like a debug
+</I>&gt;<i> statement.
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Am I overlooking any additional configuration that
+</I>&gt;<i> &gt; is mandatory for the lrpc on my Linux box ?
+</I>&gt;<i>
+</I>&gt;<i> I don't believe so, but maybe something in the above might be relevant.
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Awaiting your response.
+</I>&gt;<i>
+</I>&gt;<i> On the windows side, I did find an issue that was preventing it from
+</I>&gt;<i> reading data, at least on my machine.  I'm not sure why I've only
+</I>&gt;<i> experienced this with LM3S, perhaps it has to do with which FTDI chip
+</I>&gt;<i> is onboard?  In any case by not setting the DTR control to disabled,
+</I>&gt;<i> and just leaving it in its default state (whatever that might be) it
+</I>&gt;<i> now works for me on Windows XP 32-bit:
+</I>&gt;<i>
+</I>&gt;<i> C:\elua&gt;luarpc test\test-rpc.lua
+</I>&gt;<i> Platform: LM3S
+</I>&gt;<i> CPU: LM3S6965
+</I>&gt;<i> Board: EK-LM3S6965
+</I>&gt;<i> CPU Clock: 50 MHz
+</I>&gt;<i> Memory Used: 10.009765625 kB
+</I>&gt;<i>
+</I>&gt;<i> I finally narrowed it down by a simple test program in C that just
+</I>&gt;<i> sent the 9 byte opening sequence and then tried to read the 8 byte
+</I>&gt;<i> header back.  Since I found this worked, I then started removing
+</I>&gt;<i> things that weren't in this test setup from serial_win32 until I found
+</I>&gt;<i> that applying this one setting ( dcb.fDtrControl =
+</I>&gt;<i> DTR_CONTROL_DISABLE; ) would even prevent the test program from
+</I>&gt;<i> successfully running until I had unplugged/replugged the USB
+</I>&gt;<i> interface.  I'm guessing that for some reason, even though the DTR
+</I>&gt;<i> line wouldn't even be used in this case, changing its state is messing
+</I>&gt;<i> something up or maybe it's having the opposite effect of disabling
+</I>&gt;<i> DTR?  Some more investigation is warranted.
+</I>&gt;<i>
+</I>&gt;<i> This leads me to another question for others on the list: has anyone
+</I>&gt;<i> been using either luarpc, mux or rfs with LM3S boards successfully
+</I>&gt;<i> prior to this fix?  Bogdan, have you tried RFS or mux with an LM3S
+</I>&gt;<i> eval kit using the onboard FTDI JTAG/UART for a serial interface?
+</I>&gt;<i>
+</I>
+Nope, never. This is very weird though, DTR_CONTROL_DISABLE always worked
+for me in the RFS server (I can't remember if I tested it with LM3S under
+Windows though). This might have something to do with the combined JTAG/UART
+interface that you're talking about, I have no idea how that is implemented
+internally. Glad it works, although I'm not sure that letting fDtrControl
+have whatever value it gets from the system is a good idea. Not that I have
+a better one :)
+
+
+&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Raman
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> &gt; A dmsg gave me the following information.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; usb 8-1: Detected FT2232C
+</I>&gt;<i> &gt; usb 8-1: Number of endpoints 2
+</I>&gt;<i> &gt; usb 8-1: Endpoint 1 MaxPacketSize 64
+</I>&gt;<i> &gt; usb 8-1: Endpoint 2 MaxPacketSize 64
+</I>&gt;<i> &gt; usb 8-1: Setting MaxPacketSize 64
+</I>&gt;<i> &gt; usb 8-1: FTDI USB Serial Device converter now attached to ttyUSB0
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; This was on Ubuntu, 10.10, i686, Kernel: 2.6.35-xx
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; This was not displayed. So, ftdi_sio was not registered.
+</I>&gt;<i> &gt; [10211.358498] usbcore: registered new interface driver ftdi_sio
+</I>&gt;<i> &gt; [10211.358500] ftdi_sio: v1.6.0:USB FTDI Serial Converters Driver
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I am not sure why this is not happening, but is there a conclusion we can
+</I>&gt;<i> &gt; draw ?
+</I>&gt;<i>
+</I>&gt;<i> It may be that it's just not printing the same information to the logs
+</I>&gt;<i> with the version of Ubuntu you're running.    I can't imagine it's not
+</I>&gt;<i> running that driver since I think that provides the virtual UART
+</I>&gt;<i> functionality.
+</I>&gt;<i>
+</I>
+Exactly. Since it's printing &quot;FTDI USB Serial Device converter now attached
+to ttyUSB0&quot; you can be sure that the driver is there.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110621/48886c0d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110621/48886c0d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002558.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+	<LI>Next message: <A HREF="002561.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2559">[ date ]</a>
+              <a href="thread.html#2559">[ thread ]</a>
+              <a href="subject.html#2559">[ subject ]</a>
+              <a href="author.html#2559">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

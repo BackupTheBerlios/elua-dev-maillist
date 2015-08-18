@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] beginners question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20beginners%20question&In-Reply-To=%3C20131202114343.GC3052%40%28none%29%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004323.html">
+   <LINK REL="Next"  HREF="004325.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] beginners question</H1>
+    <B>Richard M&#246;hn</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20beginners%20question&In-Reply-To=%3C20131202114343.GC3052%40%28none%29%3E"
+       TITLE="[eLua-dev] beginners question">richard.moehn at fu-berlin.de
+       </A><BR>
+    <I>Mon Dec  2 12:43:43 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004323.html">[eLua-dev] beginners question
+</A></li>
+        <LI>Next message: <A HREF="004325.html">[eLua-dev] beginners question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4324">[ date ]</a>
+              <a href="thread.html#4324">[ thread ]</a>
+              <a href="subject.html#4324">[ subject ]</a>
+              <a href="author.html#4324">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Dec 02, 2013 at 10:43:24AM +0000, Justin Cormack wrote:
+&gt;<i> Ok, I am just using the default board file which has that uart
+</I>&gt;<i> setting, building with
+</I>&gt;<i> ./build_elua.lua board=stm32f4discovery  (codesourcery toolchain)
+</I>&gt;<i> then flashing with
+</I>&gt;<i> dfu-util -d 0483:df11 -c 1 -i 0 -a 0 -s 0x08000000 -D
+</I>&gt;<i> elua_lua_stm32f4discovery.elf
+</I>&gt;<i> (based on the wiki instructions; it does complain that this is not a
+</I>&gt;<i> dfu file though)
+</I>&gt;<i> Then removing the jumpers that put it into dfu mode and restarting.
+</I>&gt;<i> 
+</I>&gt;<i> So maybe eLua isn't booting? Or the above is not correct?
+</I>
+
+I haven't got any experience with DFU since I always flashed the board
+via ST-LINK. On my Debian system [1] works quite well for that. To find
+out whether eLua ist booting at all, you could turn on an LED by adding
+this at the end of platform_init() in src/platform/stm32f4/platform.c:
+
+    GPIO_InitTypeDef led;
+    led.GPIO_Pin   = GPIO_Pin_12;
+    led.GPIO_Mode  = GPIO_Mode_OUT;
+    led.GPIO_Speed = GPIO_Speed_25MHz;
+    led.GPIO_OType = GPIO_OType_PP;
+    led.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    
+    GPIO_Init(GPIOD, &amp;led);
+
+    GPIO_SetBits(GPIOD, GPIO_Pin_12);
+
+If eLua boots, the green LED (LD4) should be turned on, if not, not.
+
+Best,
+
+Richard
+
+
+[1] <A HREF="https://github.com/texane/stlink">https://github.com/texane/stlink</A>
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004323.html">[eLua-dev] beginners question
+</A></li>
+	<LI>Next message: <A HREF="004325.html">[eLua-dev] beginners question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4324">[ date ]</a>
+              <a href="thread.html#4324">[ thread ]</a>
+              <a href="subject.html#4324">[ subject ]</a>
+              <a href="author.html#4324">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

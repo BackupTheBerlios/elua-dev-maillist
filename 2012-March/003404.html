@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LuaRPC hangs if module name passed in the RPC call is incorrect
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20hangs%20if%20module%20name%20passed%20in%20the%20RPC%20call%0A%20is%20incorrect&In-Reply-To=%3C983555CAD9C54852ADAA934E26CC8AE4%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003403.html">
+   <LINK REL="Next"  HREF="003411.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LuaRPC hangs if module name passed in the RPC call is incorrect</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20hangs%20if%20module%20name%20passed%20in%20the%20RPC%20call%0A%20is%20incorrect&In-Reply-To=%3C983555CAD9C54852ADAA934E26CC8AE4%40fanplastic.org%3E"
+       TITLE="[eLua-dev] LuaRPC hangs if module name passed in the RPC call is incorrect">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Mar 26 17:29:07 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003403.html">[eLua-dev] LuaRPC hangs if module name passed in the RPC call is	incorrect
+</A></li>
+        <LI>Next message: <A HREF="003411.html">[eLua-dev] LuaRPC hangs if module name passed in the RPC call	is incorrect
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3404">[ date ]</a>
+              <a href="thread.html#3404">[ thread ]</a>
+              <a href="subject.html#3404">[ subject ]</a>
+              <a href="author.html#3404">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This is definitely a bug, but I think it should be pretty simple to fix in the remote indexing code. My first run approach would be to check that each indexing step goes as expected and returns the first error. I believe right now it might only return, or try to handle the error on the calling.  
+
+I'm just getting back into town today and I can try a fix.  
+
+-- 
+James Snyder
+
+
+On Monday, March 26, 2012 at 9:09, Ivan - Omnima wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> I'm in the process of testing the LuaRPC functions - all is working well apart from one edge case.
+</I>&gt;<i> 
+</I>&gt;<i> This happens if a function in an unknown/unregistered module is called. In this case eLua would hang. 
+</I>&gt;<i> 
+</I>&gt;<i> Under normal operation this should not happen but a user could by mistake enter an incorrect name.
+</I>&gt;<i> 
+</I>&gt;<i> For example:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; #Successful call to a known function - ok
+</I>&gt;<i> &gt; #Call executes and returns ok - as it's a function implemented in the registered 'ox' module
+</I>&gt;<i> &gt; slave.ox.enable_zwave(true) 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; #Call to a non-existent function within a module - returns ok
+</I>&gt;<i> &gt; #Correctly returns an error (indicates: stdin:1: undefined function)
+</I>&gt;<i> &gt; slave.ox.newfunction1234() 
+</I>&gt;<i> But calling a function in an undefined module hangs in the call to lua_getfield(L,-1,token) in read_cmd_call(..) within luarpc.c:
+</I>&gt;<i> &gt; slave.oxnew.newfunction1234() #This would hang on the server side of LuaRPC as oxnew is not known - is not implemented in eLua.
+</I>&gt;<i> Any suggestions on how we can lookup whether a module is registered - to prevent the hang?
+</I>&gt;<i> Regards, Ivan Omnima Limited Ivan Ignjatic 176 Kennington Road Oxford OX1 5PG Tel. 0845 8692601 Fax. 01865 326421 Web: www.omnima.co.uk (<A HREF="http://www.omnima.co.uk">http://www.omnima.co.uk</A>) Skype: omnimaautomation 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120326/28d6d7db/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120326/28d6d7db/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003403.html">[eLua-dev] LuaRPC hangs if module name passed in the RPC call is	incorrect
+</A></li>
+	<LI>Next message: <A HREF="003411.html">[eLua-dev] LuaRPC hangs if module name passed in the RPC call	is incorrect
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3404">[ date ]</a>
+              <a href="thread.html#3404">[ thread ]</a>
+              <a href="subject.html#3404">[ subject ]</a>
+              <a href="author.html#3404">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

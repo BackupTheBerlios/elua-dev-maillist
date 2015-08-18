@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] elua serial console CRLF strange behaviour
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20elua%20serial%20console%20CRLF%20strange%20behaviour&In-Reply-To=%3CAANLkTik2d7CQwY54Qo0whA15-jbF34K59cMHE-OsW-a5%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001638.html">
+   <LINK REL="Next"  HREF="001646.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] elua serial console CRLF strange behaviour</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20elua%20serial%20console%20CRLF%20strange%20behaviour&In-Reply-To=%3CAANLkTik2d7CQwY54Qo0whA15-jbF34K59cMHE-OsW-a5%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] elua serial console CRLF strange behaviour">martinwguy at gmail.com
+       </A><BR>
+    <I>Fri Sep  3 16:56:20 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001638.html">[eLua-dev] elua serial console CRLF strange behaviour
+</A></li>
+        <LI>Next message: <A HREF="001646.html">[eLua-dev] [OT] 2^5
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1639">[ date ]</a>
+              <a href="thread.html#1639">[ thread ]</a>
+              <a href="subject.html#1639">[ subject ]</a>
+              <a href="author.html#1639">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 9/3/10, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i>  On Fri, Sep 3, 2010 at 5:18 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;<i>  &gt; Hi
+</I>&gt;<i>  &gt;   I've been getting weird behaviour from elua when using the serial
+</I>&gt;<i>  &gt; console (shell) with minicom.  If I ended a line with the 'Enter' key,
+</I>&gt;<i>  &gt; I had to hit it twice to get one end-of-line. If instead I used line
+</I>&gt;<i>  &gt; feed (control-J), I har to hit it twice, but got two line feeds each
+</I>&gt;<i>  &gt; time, in pairs.
+</I>&gt;<i>
+</I>&gt;<i> Do you have timers working on your platform? The idea was to have the
+</I>&gt;<i>  code in genstd.c handle all possible situations (CR+LF, LF+CR, only
+</I>&gt;<i>  CR, only LF) automatically. So, when a CR or LF is received, the code
+</I>&gt;<i>  tries to read the complementary char (LF or CR respectively) with a
+</I>&gt;<i>  small enough timeout (STD_INTER_CHAR_TIMEOUT).
+</I>
+Thanks, yes, my lack-of-32kHz-timer patch had not been activated.
+Seems to work ok without the patch now. Many thanks.
+
+&gt;<i>  &gt;   I note in the web instructions that it recommends setting the
+</I>&gt;<i>  &gt; terminal emulator to send CRLF when you press Enter - but I've never
+</I>&gt;<i>  &gt; seen a physical serial terminal that does this, nor a terminal
+</I>&gt;<i>  &gt; emulator that does this.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Unfortunately there are some, this is why your patch will not work
+</I>&gt;<i>  properly. I can't tell you which ones right now, just that I found
+</I>&gt;<i>  them in Windows.
+</I>
+I guessed it might be to work round something nasty in Windows
+
+Cheers
+
+     M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001638.html">[eLua-dev] elua serial console CRLF strange behaviour
+</A></li>
+	<LI>Next message: <A HREF="001646.html">[eLua-dev] [OT] 2^5
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1639">[ date ]</a>
+              <a href="thread.html#1639">[ thread ]</a>
+              <a href="subject.html#1639">[ subject ]</a>
+              <a href="author.html#1639">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

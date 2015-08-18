@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] IDE project files
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IDE%20project%20files&In-Reply-To=%3CBANLkTikhSP3M16mgQP3qsnYmU2tEfp309w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002387.html">
+   <LINK REL="Next"  HREF="002394.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] IDE project files</H1>
+    <B>Kevin Vermeer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IDE%20project%20files&In-Reply-To=%3CBANLkTikhSP3M16mgQP3qsnYmU2tEfp309w%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] IDE project files">reemrevnivek at gmail.com
+       </A><BR>
+    <I>Mon May  9 16:27:54 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002387.html">[eLua-dev] IDE project files
+</A></li>
+        <LI>Next message: <A HREF="002394.html">[eLua-dev] Services off
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2383">[ date ]</a>
+              <a href="thread.html#2383">[ thread ]</a>
+              <a href="subject.html#2383">[ subject ]</a>
+              <a href="author.html#2383">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, May 9, 2011 at 9:10 AM, Mike King &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mkwired at gmail.com</A>&gt; wrote:
+
+&gt;<i> I want to open this up for general discussion.  Both Bogdanm and I
+</I>&gt;<i> feel that IDE project files should not be in the same directory as the
+</I>&gt;<i> source code.  I've suggested to create a directory at the root of the
+</I>&gt;<i> source tree possibly named &quot;build&quot;.  I think it is more important to
+</I>&gt;<i> document how to build elua's supporting utilities then it is to have
+</I>&gt;<i> the project files.
+</I>
+Do you think the two options exclusive? If the issue is that we wanted to
+have build documentation in build/, I think we can come up with another
+name.
+
+
+&gt;<i> Does anyone have some thoughts on the matter?
+</I>&gt;<i>
+</I>&gt;<i> Original thread
+</I>&gt;<i> <A HREF="https://github.com/elua/elua/pull/3">https://github.com/elua/elua/pull/3</A>
+</I>&gt;<i>
+</I>
+I agree. IDE project files should not be in the same directory as the source
+code in the repository.  However, it makes sense to point the working
+directory of your IDE at this location, so some complications may arise if
+the project files are elsewhere.
+
+I've advocated Premake (<A HREF="http://industriousone.com/premake">http://industriousone.com/premake</A>) before, and I
+think it would be an excellent solution to this problem (if it supported all
+the target IDEs, which it probably does not).   A Lua script (or group of
+Lua scripts) to generate the IDE files means that (1) we don't end up with
+big, binary blobs in the source code directory, (2) configurations can be
+applied to all the IDEs simultaneously, and (3) we don't have to have a
+dozen files for everyone's preferred IDE.
+
+I would be OK with putting a base premake[4].lua file in the source code
+folder.  We may want to have a build/ (or premake/) directory to contain
+files require()'d or dofile()'d from the main file, though.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110509/785c6b92/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110509/785c6b92/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002387.html">[eLua-dev] IDE project files
+</A></li>
+	<LI>Next message: <A HREF="002394.html">[eLua-dev] Services off
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2383">[ date ]</a>
+              <a href="thread.html#2383">[ thread ]</a>
+              <a href="subject.html#2383">[ subject ]</a>
+              <a href="author.html#2383">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

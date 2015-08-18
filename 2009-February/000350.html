@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3CEB64895F-9573-456B-86DE-84627AD5E4ED%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000348.html">
+   <LINK REL="Next"  HREF="000352.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3CEB64895F-9573-456B-86DE-84627AD5E4ED%40fanplastic.org%3E"
+       TITLE="[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb  4 20:56:27 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000348.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+        <LI>Next message: <A HREF="000352.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#350">[ date ]</a>
+              <a href="thread.html#350">[ thread ]</a>
+              <a href="subject.html#350">[ subject ]</a>
+              <a href="author.html#350">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 4, 2009, at 9:30 AM, Bogdan Marinescu wrote:
+
+&gt;<i>
+</I>&gt;<i> I don't see how you could ever meet any sort of hard (or maybe even  
+</I>&gt;<i> soft) RT requirements with lua being the controller of everything.   
+</I>&gt;<i> Unlike forth, lua has a GC, and with it comes many issues, the  
+</I>&gt;<i> biggest of which is  non deterministic execution time.
+</I>&gt;<i>
+</I>&gt;<i> That's only partially true. Remember that you have full control over  
+</I>&gt;<i> the GC, so you can turn it off completely. If you have enough RAM,  
+</I>&gt;<i> you can run your program with the garbage collector completely  
+</I>&gt;<i> turned off.
+</I>&gt;<i>
+</I>&gt;<i> How will loadable C modules fix this issue?  I'm not quite sure I  
+</I>&gt;<i> understand where your coming from with that.
+</I>&gt;<i>
+</I>&gt;<i> I wasn't clear on this, I was talking about &quot;loadable C modules&quot; on  
+</I>&gt;<i> a more general level, closer to o loadable dynamic library that  
+</I>&gt;<i> exposes a number of functions that can be called. If you combine the  
+</I>&gt;<i> ability to turn off the garbage collector with the ability to use  
+</I>&gt;<i> loadable C modules that can do most of the intensive processing work  
+</I>&gt;<i> (in theory you could register them as interrupt handlers, for  
+</I>&gt;<i> example) you might have something that is &quot;quite RT&quot;. It will never  
+</I>&gt;<i> match the RT capabilities of a system written in C or some other  
+</I>&gt;<i> medium-to-low-level language, and it won't even be RT from a Lua  
+</I>&gt;<i> standpoint (since all the &quot;real stuff&quot; happens in C), but it might  
+</I>&gt;<i> still be RT enough for you :)
+</I>
+Hmm.. how are you suggesting this be implemented?  Should the module  
+just have a setup routine that registers a handler on load, or with  
+some sort of init function?  It might be nice to have a C API that  
+abstracts this a little to where code changes between platforms are  
+minimized.
+
+Ah, I see two parts to this.  Having dynamically loadable libraries is  
+useful, but there are also a number of facilities that would make  
+doing RT/IS routines easier.  I think suggesting this sort of behavior  
+as a solution makes me lean even more towards having semaphores /  
+mutexes to make sure that these ISRs aren't being stepped on, or are  
+stepping on stuff going on in Lua.  The other thing that would be  
+highly useful would be queues, or something like them since you cannot  
+count on the VM picking up data products necessarily at a fixed rate.
+
+This and related issues are on my mind currently because I'm finding I  
+have to keep track of a fair amount of state to do all I'm  
+implementing with the ADC module.  I don't explicitly need queues or  
+semaphores as a system-provided tool, but I could certainly make use  
+of them :-)
+
+All of these things certainly should be balanced against flash and RAM  
+requirements in terms of whether they are worth it.  I think FreeRTOS  
+and ChibiOS are pretty small though in both areas, and even if we  
+didn't go full RTOS they might have useful examples for how to  
+implement some of the features they provide.
+
+
+&gt;<i>
+</I>&gt;<i> Actually it only requires one VM.  The lua thread that is waiting on  
+</I>&gt;<i> the semaphore will block in C land.  No need to interrupt the VM.   
+</I>&gt;<i> Basically it would be Lanes for eLua with a well defined c-&gt;lua lua- 
+</I>&gt;<i> &gt;c API.  At least that was my idea anyway. :)
+</I>&gt;<i>
+</I>&gt;<i> I was talking about having to do ISRs from Lua itself. If you just  
+</I>&gt;<i> want to block in C, you might not need threads at all, just block in  
+</I>&gt;<i> a C module and let your interrupt handlers do all the work. It's a  
+</I>&gt;<i> limited model, still pretty usable in my experience. Also in my  
+</I>&gt;<i> experience, there are (too) many times when people rush to use an OS  
+</I>&gt;<i> when they could do very well without it (by &quot;very well&quot; I mean that  
+</I>&gt;<i> the added code complexity would not be significant). If your CPU has  
+</I>&gt;<i> a modern interrupt controller that supports priorities and interrupt  
+</I>&gt;<i> nesting, you'd probably go the OS way only for quite complex  
+</I>&gt;<i> applications (remember that I'm still talking about small-to-medium  
+</I>&gt;<i> complexity embedded systems here).
+</I>
+Right, and while you may not have actuall Lua ISRs you could expose  
+functionality to Lua allowing it to control whether interrupts are  
+enabled/disabled and what is called when said interrupt fires.  I also  
+think some general primitives (queues, semaphores) would be useful as  
+Mike describes, although I'm not sure if we need all that Lanes does.
+
+&gt;<i>
+</I>&gt;<i> As for taking care of how the data is passed between the ISR and the  
+</I>&gt;<i> VM, also see Lanes... ;)
+</I>&gt;<i>
+</I>&gt;<i> I know about Lanes, it's an excellent package. I didn't look at its  
+</I>&gt;<i> code though, so I don't know how the data is passed between states.  
+</I>&gt;<i> All I remember is seeing a relatively large numbers of threads where  
+</I>&gt;<i> people complain about this stuff on the Lua mailing list.
+</I>
+
+I've heard that complaint as well.  The author states that a large  
+number of threads are generated through time, but that there are only  
+a few that are running at any given time.
+
+I think these discussions are interesting.  I've done most of my  
+previous microcontroller coding on bare metal with no RTOS.  These  
+discussions, as well as working on some implementations are helping me  
+to understand the ins and outs of different implementations.
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090204/50824eff/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090204/50824eff/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090204/50824eff/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090204/50824eff/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000348.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+	<LI>Next message: <A HREF="000352.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#350">[ date ]</a>
+              <a href="thread.html#350">[ thread ]</a>
+              <a href="subject.html#350">[ subject ]</a>
+              <a href="author.html#350">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

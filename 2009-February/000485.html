@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Microcontroller Filesystem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Microcontroller%20Filesystem&In-Reply-To=%3C81fbe47d0902170631l24740795s6f1c9cdf0f257a4f%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000483.html">
+   <LINK REL="Next"  HREF="000489.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Microcontroller Filesystem</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Microcontroller%20Filesystem&In-Reply-To=%3C81fbe47d0902170631l24740795s6f1c9cdf0f257a4f%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Microcontroller Filesystem">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Feb 17 15:31:20 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000483.html">[eLua-dev] Large ADC Commit
+</A></li>
+        <LI>Next message: <A HREF="000489.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#485">[ date ]</a>
+              <a href="thread.html#485">[ thread ]</a>
+              <a href="subject.html#485">[ subject ]</a>
+              <a href="author.html#485">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>  The discussion of the eLua file system and autoruns is very interesting.
+</I>&gt;<i> Sorry if this goes over old ground but I have not actually started working
+</I>&gt;<i> with eLua yet (planning to start with the next release &#8211; I'm waiting to see
+</I>&gt;<i> which hardware to buy!)
+</I>&gt;<i>
+</I>
+Currently, the LM3S CPU has the most features implemented for eLua. This
+might or might not hold true in the future, I can't give any guarantees on
+this.
+
+
+&gt;<i> One idea I had when I was working on this on my own was to dispense with a
+</I>&gt;<i> file system altogether and use persistence instead. You would load source
+</I>&gt;<i> code over a network or serial link into a RAM buffer and compile it from
+</I>&gt;<i>
+</I>eLua can already upload code into RAM via XMODEM. Not exactly what you
+meant, but a good start :)
+
+&gt;<i> there. Then there would be a feature added to Lua to back functions in
+</I>&gt;<i> tables off into flash memory in dump (byte-code) format. The value in the
+</I>&gt;<i> table would be replaced by a userdata containing a pointer into the flash. A
+</I>&gt;<i> __call metamethod on the userdata would recover the function into RAM
+</I>&gt;<i> whenever it was called (this could be a caching system so it would be
+</I>&gt;<i> retained in RAM until flushed). Alternatively, the runtime could be modified
+</I>&gt;<i> to execute the function in flash. There could be some flags on each function
+</I>&gt;<i> dumped to flash including a &quot;run at boot&quot; flag. On boot, the system would
+</I>&gt;<i> search the flash function store and run any functions with this flag set.
+</I>&gt;<i>
+</I>I'm not sure I understood this, can you give a simple example (maybe
+together with an equally simple usage scenario)? I just can't grasp the
+concept apparently :)
+
+Sorry again if I've just re-invented the wheel!
+&gt;<i>
+</I>I don't think you did; on the contrary, you probably came up with something
+new that I'm just unable to understand yet :)
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/4f508538/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/4f508538/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000483.html">[eLua-dev] Large ADC Commit
+</A></li>
+	<LI>Next message: <A HREF="000489.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#485">[ date ]</a>
+              <a href="thread.html#485">[ thread ]</a>
+              <a href="subject.html#485">[ subject ]</a>
+              <a href="author.html#485">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

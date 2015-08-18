@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] El bug
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20El%20bug&In-Reply-To=%3CCANKDJfan8zUqVD%3Dx%2B72mATV2dK7qAFaCAXMtRq4juPkh7NNOfw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003247.html">
+   <LINK REL="Next"  HREF="003251.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] El bug</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20El%20bug&In-Reply-To=%3CCANKDJfan8zUqVD%3Dx%2B72mATV2dK7qAFaCAXMtRq4juPkh7NNOfw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] El bug">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jan 16 14:45:40 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003247.html">[eLua-dev] El bug
+</A></li>
+        <LI>Next message: <A HREF="003251.html">[eLua-dev] El bug
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3250">[ date ]</a>
+              <a href="thread.html#3250">[ thread ]</a>
+              <a href="subject.html#3250">[ subject ]</a>
+              <a href="author.html#3250">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Martin,
+
+On Fri, Jan 13, 2012 at 4:19 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> I just found a nasty bug that I've been chasing since December 15th
+</I>&gt;<i> (bang in the middle of the run-up to a product launch - just what we
+</I>&gt;<i> didn't need!)
+</I>&gt;<i>
+</I>&gt;<i> The symptom is that, dependent on the exact combination of elua
+</I>&gt;<i> microversion, toolchain, compiler flags, scons options, exact program
+</I>&gt;<i> text and whether or not you press &quot;Enter&quot; once before running your
+</I>&gt;<i> program, with a probability of about one in twenty the program will
+</I>&gt;<i> run for a few seconds, then the interpreter just stops dead.
+</I>&gt;<i>
+</I>&gt;<i> Long story short: It's a memory corruption bug that bites when you are
+</I>&gt;<i> using the newlib memory allocator, have several discontiguous areas of
+</I>&gt;<i> RAM (like the Mizar32 and EVK1100, with 64KB internal SRAM at 0x0 and
+</I>&gt;<i> 32MB SDRAM at 0xD0000000) and the version of newlib in your toolchain
+</I>&gt;<i> is older than 1.19.0.
+</I>&gt;<i>
+</I>&gt;<i> All the avr32 toolchains I've been using (Atmel GNU toolchain,
+</I>&gt;<i> jsnyder-avr32-toolchain and the recommended avr32 combination in
+</I>&gt;<i> crosstool-ng) contain newlib-1.{16,17}.0, which contains
+</I>&gt;<i> dlmalloc-2.6.4 (from 1996!), whereas newlib-1.19.0 onwards contain
+</I>&gt;<i> dl-malloc 2.6.5, which, according to its commentary, &quot;differs from
+</I>&gt;<i> 2.6.4 only by correcting a statement ordering error that could cause
+</I>&gt;<i> failures only when calls to this malloc are interposed with calls to
+</I>&gt;<i> other memory allocators.&#8221;
+</I>&gt;<i>
+</I>&gt;<i> And when eLua's newlib/stubs.c's sbrk() clone starts using the second
+</I>&gt;<i> memory area, this look the same, to dlmalloc, as if someone else had
+</I>&gt;<i> called sbrk() between one malloc call and the next. Result: the
+</I>&gt;<i> boundary-stomping bug corrupts memory at the edges of its allocated
+</I>&gt;<i> regions.
+</I>&gt;<i>
+</I>&gt;<i> fixes: use one of:
+</I>&gt;<i> - use a toolchain with newlib &gt;= 1.19.0
+</I>&gt;<i> - use the simple or multiple allocators
+</I>&gt;<i> - only use one memory region
+</I>&gt;<i>
+</I>&gt;<i> I dunno how you would code that in the validation thing.
+</I>&gt;<i>
+</I>&gt;<i> // newlib before 2.6.4 has a boundary-stomping bug when sbrk() returns
+</I>&gt;<i> non-contiguous memory regions
+</I>&gt;<i> #if !defined(USE_SIMPLE_ALLOCATOR) &amp;&amp; !defined(USE_MULTIPLE_ALLOCATOR)
+</I>&gt;<i> if ( sizeof(MEM_START_ADDRESS) / sizeof(MEM_START_ADDRESS[0] ) &gt; 1 ) {
+</I>&gt;<i> &#160; &#160;complain();
+</I>&gt;<i> }
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> I don't think you can use sizeof() in a define test, even though it is
+</I>&gt;<i> constant at compile-time, since the preprocessor doesn't have enough
+</I>&gt;<i> knowledge about struct and data sizes.
+</I>&gt;<i>
+</I>&gt;<i> I assume this would affect other platforms than AVR32, if any of them
+</I>&gt;<i> have multiple memory regions and ancient versions of newlib in their
+</I>&gt;<i> toolchains.
+</I>&gt;<i>
+</I>&gt;<i> Sigh
+</I>&gt;<i>
+</I>&gt;<i> Now, where was I on the 14th...?
+</I>
+First of all, congratulations for tracking this bug, it must've been a
+nightmare. Second, you are going to hate me in about a couple of
+minutes. The thing is that 'multiple' SHOULD be used for any board
+with non-contiguous RAM areas. 'multiple' is just a version of
+dlmalloc (the allocator also used by Newlib) specifically compiled
+with support for multilple memory spaces. Using the allocator from
+Newlib for multiple memory spaces might lead to two main problems:
+Newlib's version might be too old to support multiple memory spaces or
+dlmalloc might not be compiled with the proper options for multiple
+memory spaces. To address this issue, the eLua build system
+automatically sets the 'multiple' allocator for specific boards (which
+are known to have non-contigours RAM areas). See this part of
+SConstruct:
+
+# CPU/allocator mapping (if allocator not specified)
+  if comp['allocator'] == 'auto':
+    if comp['board'] in ['LPC-H2888', 'ATEVK1100', 'MBED']:
+      comp['allocator'] = 'multiple'
+    else:
+      comp['allocator'] = 'newlib'
+
+(there is a similar construct in build_elua.lua).
+You can probably see the problem now: somebody (must likely me) forgot
+to add Mizar32 to the list of boards that need the 'multiple'
+allocator. Doing so should fix the problem. Again, I am very sorry
+about this. Things like this happen, unfortunately.
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> &#160; &#160;M
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003247.html">[eLua-dev] El bug
+</A></li>
+	<LI>Next message: <A HREF="003251.html">[eLua-dev] El bug
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3250">[ date ]</a>
+              <a href="thread.html#3250">[ thread ]</a>
+              <a href="subject.html#3250">[ subject ]</a>
+              <a href="author.html#3250">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

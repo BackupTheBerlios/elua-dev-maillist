@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Running C task concurrently (in background) with eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Running%20C%20task%20concurrently%20%28in%20background%29%20with%20eLua&In-Reply-To=%3CCANKDJfYpjO-thh2tzQ4v%3D9J5wZvqqMZYXkRMNANA-cYjHLshhQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004160.html">
+   <LINK REL="Next"  HREF="004156.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Running C task concurrently (in background) with eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Running%20C%20task%20concurrently%20%28in%20background%29%20with%20eLua&In-Reply-To=%3CCANKDJfYpjO-thh2tzQ4v%3D9J5wZvqqMZYXkRMNANA-cYjHLshhQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Running C task concurrently (in background) with eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Jun  5 12:30:46 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004160.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+        <LI>Next message: <A HREF="004156.html">[eLua-dev] eLua Web Builder updated
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4165">[ date ]</a>
+              <a href="thread.html#4165">[ thread ]</a>
+              <a href="subject.html#4165">[ subject ]</a>
+              <a href="author.html#4165">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+
+On Tue, Jun 4, 2013 at 4:46 AM, Ashu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">knowlog at hotmail.com</A>&gt; wrote:
+
+&gt;<i> Hi All,
+</I>&gt;<i>
+</I>&gt;<i> I have a token-passing protocol stack (C code) that need to run in
+</I>&gt;<i> background (over SAM7x uart1).
+</I>&gt;<i> Idea is -- using uLua I can encapsulate the objects (functions) from this
+</I>&gt;<i> protocol and interact with
+</I>&gt;<i> them via Lua script.
+</I>&gt;<i> So far I have tried a couple of approaches:
+</I>&gt;<i> 1) Create platform independent module for the protocol to access its
+</I>&gt;<i> services using three functions:
+</I>&gt;<i>     proto.heartbeat, proto.setval abd proto.getval.
+</I>&gt;<i>     proto.heartbeat, entry function into protocol's state-machine needs to
+</I>&gt;<i> be called every 5~10 mS,
+</I>&gt;<i>     so that it can receive, process and pass tokens in timely fashion. To
+</I>&gt;<i> maxmize speed, I am using
+</I>&gt;<i>     complied (.lc) bytecode of my script; which looks something like this:
+</I>&gt;<i>        /proto.setval(1,&quot;RLY2&quot;) --turn on relay 2
+</I>&gt;<i>        while uart.getchar(1,0)==&quot;&quot; do --continue until knock on term...
+</I>&gt;<i>            proto.heartbeat()
+</I>&gt;<i>            if(proto.getval(&quot;SWT1&quot;)==1) then proto.setval(1,&quot;RLY1&quot;) else
+</I>&gt;<i> proto.setval(0,&quot;RLY1&quot;) end
+</I>&gt;<i>         end/
+</I>&gt;<i>     Problem/ challenge here -- not sure how fast eLua interpreter/ VM gets
+</I>&gt;<i> invoked, but this doesn't
+</I>&gt;<i>     allow token passing to happen in timely manner. RLY2 does get set to 1
+</I>&gt;<i> (and relay clicks on) but
+</I>&gt;<i>     but the one in the loop (RLY1) doesn't get serviced at all. Apparently
+</I>&gt;<i> because heartbeat must be
+</I>&gt;<i>     getting called fast enough, causing token/s to be dropped.
+</I>&gt;<i>
+</I>
+Interesting. The SAM7X isn't a particulary fast CPU, but still I would've
+expected your inner while loop to run at more than 100Hz (since you said
+that 'heartbeat' must be called at least every 10ms). Have you tried to see
+how long does it take between subsequent invocations of proto.hearbeat? The
+SAM7X backend has an implementation of the system timer, you can use it to
+measure this. Also, one thing you can do to gain speed is to &quot;cache&quot; as
+much as the table lookups in local variables. Something like this:
+
+local heartbeart, getval, setval = proto.heartbeat, proto.getval,
+proto.setval
+local getchar = uart.getchar
+
+while getchar(1,0) == &quot;&quot; do
+  heartbeat()
+  if(getval(&quot;SWT1&quot;)==1) then setval(1,&quot;RLY1&quot;) else setval(0,&quot;RLY1&quot;) end
+end
+
+Definitely worth trying.
+
+
+&gt;<i> 2) If I call heartbeat() raw C/directly from main.c -- now proper
+</I>&gt;<i> token-passing behavior is restored.
+</I>&gt;<i>     But now, I need to have a way to alternately pass control to eLua VM/
+</I>&gt;<i> processor. Therefore this
+</I>&gt;<i>     question -- if I had lua byte code (contents of .lc/ .luac file) loaded
+</I>&gt;<i> in local memory, how can I
+</I>&gt;<i>     execute those chucks in-between calls to heartbeat?
+</I>&gt;<i>
+</I>
+This is quite a hard question. In theory, you can't simply execute
+arbitrary chunks of Lua code in the same instance (by which I mean the same
+Lua state) in which you're running your main Lua program by interrupting
+said program. The proper way would be to use Lua interrupt handlers, but if
+that's not fast enough for you, you definitely have a problem. But try it
+first.
+
+
+&gt;<i>
+</I>&gt;<i> Please feel free to suggest any alternate solution/s, such as speeding up
+</I>&gt;<i> eLua invocation, perhaps
+</I>&gt;<i> that might allow me to use approach #1 above (by speeding up call frequency
+</I>&gt;<i> to proto.heartbeat).
+</I>&gt;<i>
+</I>
+Besides using local variables (as above), if you're not using floating
+point at all in your system, you could also try compiling your image with
+'target=lualong'. I don't think there's much more you can do. Maybe modify
+the builder to switch the compiler flags from 'optimize for size' to
+'optimize for speed', but you're most likely going to have a problem with
+this approach on the SAM7X if it's a part with 256K of flash. In fact,
+compilation on AT91SAM7X defaults to &quot;thumb&quot; mode in order to make the eLua
+firmware fit in 256k (which is yet another performance hit). If you have a
+512k part, definitely change the compilation mode to ARM (cpumode=arm) and
+try to compile for speed (change '-Os,-fomit-frame-pointer' in
+build_elua.lua to '-O3').
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> Any help, pointers will be greatly appreciated.
+</I>&gt;<i>
+</I>&gt;<i> P.S. I had great fun exploring and playing with eLua so far...My Sincere
+</I>&gt;<i> THANKS to all developers
+</I>&gt;<i> involved in bringing it to us. Excellent stuff!!!
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Ash
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context:
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/Running-C-task-concurrently-in-background-with-eLua-tp7578047.html">http://elua-development.2368040.n2.nabble.com/Running-C-task-concurrently-in-background-with-eLua-tp7578047.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130605/d322bada/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130605/d322bada/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004160.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+	<LI>Next message: <A HREF="004156.html">[eLua-dev] eLua Web Builder updated
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4165">[ date ]</a>
+              <a href="thread.html#4165">[ thread ]</a>
+              <a href="subject.html#4165">[ subject ]</a>
+              <a href="author.html#4165">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

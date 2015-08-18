@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A Few Models For Dealing With ADC Samples
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3C92ab989c0902181303i161969d7ra0a505fad7d525c5%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000545.html">
+   <LINK REL="Next"  HREF="000556.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A Few Models For Dealing With ADC Samples</H1>
+    <B>Andre Carregal</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3C92ab989c0902181303i161969d7ra0a505fad7d525c5%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] A Few Models For Dealing With ADC Samples">carregal at pobox.com
+       </A><BR>
+    <I>Wed Feb 18 22:03:52 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000545.html">[eLua-dev] Timing
+</A></li>
+        <LI>Next message: <A HREF="000556.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#547">[ date ]</a>
+              <a href="thread.html#547">[ thread ]</a>
+              <a href="subject.html#547">[ subject ]</a>
+              <a href="author.html#547">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Feb 18, 2009 at 5:09 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+&gt;<i> One modification is that we would have to pass a timer number to setmode as
+</I>&gt;<i> well, because eLua doesn't have any resource management system that
+</I>&gt;<i> abstracts this away.
+</I>
+No problem.
+
+&gt;<i> One interesting thing here is what to do if a user calls start when
+</I>&gt;<i> asyn=false. Under your model would you propose that it return an error?
+</I>
+I wouldn't mind having both start() and stop() being equivalent to NOP
+when asyn=false, but that depends on how user friendly you want to be
+to programmers... :o)
+
+&gt;<i> I suppose you could use the start method with asyn=false for a fixed-length
+</I>&gt;<i> pre-collection of samples before read?  If this were done though, perhaps
+</I>&gt;<i> the expectation would be that as soon as you had cleared out samples, it
+</I>&gt;<i> would fill things up again?
+</I>
+I'm afraid this could be confusing. The proposed start() and stop()
+just do that. From the programmer point of view, all the reading
+happens on the read() part.
+
+&gt;<i> If asyn is false, does this mean:  Samples will only be collected when read
+</I>&gt;<i> is called, and they will be returned via read?
+</I>
+Well, that seems reasonable for me since we are talking about a
+synchronous read. But I may be missing some timing details here.
+
+&gt;<i> vs the following (asyn = true): Sampling is never initiated by read, read
+</I>&gt;<i> can only pull out samples that are in the buffer or arriving in the buffer?
+</I>
+Exactly. Iniatilization and termination would be delegated to start()
+and stop(), no matter the asyn mode.
+
+Again, let me know if this violate some timing requirement.
+
+&gt;<i> Right, I think this relates to what I was saying above.  You could have a
+</I>&gt;<i> circular buffer that wraps around when full, or one that fills and then
+</I>&gt;<i> stops until more space is available.
+</I>
+Exactly.
+
+&gt;<i> In this respect, you could describe a circular or linear buffer as
+</I>&gt;<i> controlling whether or not once you start sampling it will stop at the end
+</I>&gt;<i> of the buffer, or be free-running.
+</I>&gt;<i> Hmm...
+</I>
+Call me naive, but I'm not seeing the problem with this approach.
+Would you mind giving more details?
+
+&gt;<i> This is a good idea.  At the moment there is no timeout, but I think this
+</I>&gt;<i> might get complicated unless we say make a dedicated virtual timer or
+</I>&gt;<i> something.
+</I>
+Timeout can be left for future versions, the point was that the
+constructor uses named parameters, which facilitates extensions.
+
+&gt;<i> The whole timer usage issue is one of the reasons why we have a simple
+</I>&gt;<i> sample function, and then a burst function.  One needs a timer (burst, for
+</I>&gt;<i> evenly spaced samples lower than running at the max rate), the other just
+</I>&gt;<i> samples whenever called.
+</I>
+Here a few use cases would help determining what way to go. I think it
+may be possible to set timer types (and behaviors) on the constructor,
+but I'd need to understand better your needs.
+
+&gt;<i> One other thing is that it sounds as if this module will end up being a
+</I>&gt;<i> mixture of a C interface, and some lua code to handle sampler instances? If
+</I>&gt;<i> this is the case, then both the C interface and the end-user interface might
+</I>&gt;<i> be rather different-looking...
+</I>
+Well, once you have the API defined, you can call it from both sides.
+It would depend more on which you would prefer.
+
+Andr&#233;
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000545.html">[eLua-dev] Timing
+</A></li>
+	<LI>Next message: <A HREF="000556.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#547">[ date ]</a>
+              <a href="thread.html#547">[ thread ]</a>
+              <a href="subject.html#547">[ subject ]</a>
+              <a href="author.html#547">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

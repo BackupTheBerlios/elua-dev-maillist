@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New Board with eLua Support - Micromint Eagle 50
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20Board%20with%20eLua%20Support%20-%20Micromint%20Eagle%2050&In-Reply-To=%3C81fbe47d0908130518w4ae4e769o8f2f54391264aab0%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000996.html">
+   <LINK REL="Next"  HREF="000997.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New Board with eLua Support - Micromint Eagle 50</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20Board%20with%20eLua%20Support%20-%20Micromint%20Eagle%2050&In-Reply-To=%3C81fbe47d0908130518w4ae4e769o8f2f54391264aab0%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] New Board with eLua Support - Micromint Eagle 50">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Aug 13 14:18:41 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000996.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+        <LI>Next message: <A HREF="000997.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1002">[ date ]</a>
+              <a href="thread.html#1002">[ thread ]</a>
+              <a href="subject.html#1002">[ subject ]</a>
+              <a href="author.html#1002">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> I think I can even shave some code off of the RPC code if I go through and
+</I>&gt;<i> think about cleaning up the way it's set up with exceptions.  I have at
+</I>&gt;<i> least a few more critical todos on the list for that code, like at least
+</I>&gt;<i> making it so that it isn't necessary to open a serial link and do: lua\r
+</I>&gt;<i> rpc.server()\r to start it up. :-)
+</I>
+
+I think we can define a new startup mode for this. Check the eLua boot
+process here:
+
+<A HREF="http://elua.berlios.de/beta/en/arch_overview.html#boot">http://elua.berlios.de/beta/en/arch_overview.html#boot</A>
+
+The RPC mode is very useful, so I'd like to add a special compilation flag
+for the &quot;boot eLua directly into RPC mode scenario&quot;. Sure, you could have a
+/rom/autorun.lua with only &quot;rpc.server()&quot; inside, but this implies that
+you'd need the ROMFS in the image, which is an unnecessary dependency.
+
+
+&gt;<i> I'd assume you'd need some sort of MMU to make this work correctly, but I
+</I>&gt;<i> was thinking of something along the lines of a mechanism that would allow
+</I>&gt;<i> in-place usage, no LZ stream type stuff with a buffer. I'm thinking
+</I>&gt;<i> something like RLE &amp;/or additional pre-computed de-duplication with a static
+</I>&gt;<i> memory map.  Dictionary size might become a problem, but I'd assume there's
+</I>&gt;<i> a balance somewhere (and someone's probably done this before).  With this,
+</I>&gt;<i> you would have previously checked if there's duplicated code and the lookup
+</I>&gt;<i> would then just point to to the common definition of that.  This said, I
+</I>&gt;<i> assume you need hardware to make these sorts of acrobatics reasonable.
+</I>&gt;<i>
+</I>
+I won't pretend that I fully understood what you said here :) Are we still
+talking about compressing the eLua image itself? If so, my original point
+still stands: you still need to decompress it somewhere, so having it
+compressed and then decompressed will actually make the problem worse. If
+you're thinking about &quot;on-demand decompression&quot;, then yes, you'd need a MMU,
+and you won't find that in the targets currently supported by eLua.
+
+Also, it might be that a stream algorithm like ones derived from Lempel-Ziv
+&gt;<i> could be useful for Lua bytecode or scripts if memory usage could be kept to
+</I>&gt;<i> a minimum.  It would be pretty easy to hook the chunk loading code to apply
+</I>&gt;<i> something like this when something is on its way in or out of the VM.  I
+</I>&gt;<i> think the benefits there might be worth it if, say, LZ77/LZ78 works with a
+</I>&gt;<i> rather tiny buffer size (256 bytes or 512 bytes?).  Either that, or perhaps
+</I>&gt;<i> huffman coding if the entropy in code or bytecode is significantly less than
+</I>&gt;<i> 8 real bits of data per byte.
+</I>&gt;<i>
+</I>
+This, on the other hand, can make sense. Having something like a compressed
+ROM file system filled with Lua scripts might save up some space.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090813/ca75a7ed/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090813/ca75a7ed/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000996.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+	<LI>Next message: <A HREF="000997.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1002">[ date ]</a>
+              <a href="thread.html#1002">[ thread ]</a>
+              <a href="subject.html#1002">[ subject ]</a>
+              <a href="author.html#1002">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

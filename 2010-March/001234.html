@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C33644d3c1003061339ped98b08lc2c16c03d5a9e2b4%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001236.html">
+   <LINK REL="Next"  HREF="001237.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C33644d3c1003061339ped98b08lc2c16c03d5a9e2b4%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sat Mar  6 22:39:44 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001236.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="001237.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1234">[ date ]</a>
+              <a href="thread.html#1234">[ thread ]</a>
+              <a href="subject.html#1234">[ subject ]</a>
+              <a href="author.html#1234">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Mar 6, 2010 at 4:09 AM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+&gt;<i> I must look at PIC32 again myself! But is the serial port really necessary?
+</I>&gt;<i> The MX chips have USB and the (free) Microchip USB stack does Mass Storage
+</I>&gt;<i> Device as well as Human Interface Device (at least on the PIC 18 it does and
+</I>&gt;<i> it will even do both at once). Similar to the Mbed, would it not be possible
+</I>&gt;<i> to make the chip mount as a disk drive on the host computer and edit the
+</I>&gt;<i> script files directly in place?
+</I>
+FYI the way the MBED does this is by having 2 chips on the board, one
+is the main NXP LPC1768, and the other one is the &quot;mbed interface&quot;
+(another nxp mcu), and it's the interface one that's dedicated to
+providing mass storage and the CDC (virtual serial port).  The other
+chip, I believe, doesn't have any direct connection to the USB port,
+and doesn't need to know about it either.  Programming is done by a
+JTAG link between the interface chip and the main LPC1768.
+
+Does the PIC32 have a USB bootloader for programming as well, that
+would make this even more convenient.
+
+&gt;<i> Ideally there could be a switch on the board and you&#8217;d flip it one way for
+</I>&gt;<i> MSD to load your scripts and flip it the other way to run the scripts with
+</I>&gt;<i> access to USB as HID so you could create USB devices.
+</I>
+You could also handle this in software where depending on whether the
+mass storage device has been mounted on one side or the other, the
+storage would be locked out for the opposite side (or read-only?).
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Time for another look, I think &#8211; Thanks Tony!
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+</I>&gt;<i> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+</I>&gt;<i> Sent: 05 March 2010 10:10
+</I>&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i>
+</I>&gt;<i> Subject: Re: [eLua-dev] Single Chip Lua Prospects
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thanks for all the good news, Tony! You made my day.
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Mar 5, 2010 at 1:07 AM, Tony &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tony.elua at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> Even more single-chip eLua candidates are coming, so the situation is a bit
+</I>&gt;<i> better than last year.
+</I>&gt;<i>
+</I>&gt;<i> 1. ST has expanded the STM32 Performance line with models with 96K SRAM and
+</I>&gt;<i> 768K or 1024K flash; packages include a 64-pin QFP.&#160; Not sure on
+</I>&gt;<i> availability, but should be fairly soon.
+</I>&gt;<i>
+</I>&gt;<i> Excellent. I really like the STM32s. If their next step is to bump the RAM
+</I>&gt;<i> to 128k, I'll probably marry that chip (sorry, wife). 96k is good enough
+</I>&gt;<i> though, I have a board with a STM32F103RE (512kF/32kR) and it can do a lot
+</I>&gt;<i> of nice stuff.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2. Microchip has PIC32MX MCUs with 128K SRAM and 512K flash in a QFP-64.
+</I>&gt;<i>
+</I>&gt;<i> WOW! Now this is something I really have to try soon. I have an older PIC32
+</I>&gt;<i> board at home, but accessing its UART requires a connector that is hard to
+</I>&gt;<i> find and even harder to solder, so I didn't touch it yet (although PIC32 has
+</I>&gt;<i> been on eLua's TOPORT list for quite a while now). This is one thing about
+</I>&gt;<i> Microchip's PIC32 boards that annoys me quite a bit: in order to have a
+</I>&gt;<i> proper development environment for eLua (an UART, to be more precise), I'd
+</I>&gt;<i> have to buy the PIC32 board
+</I>&gt;<i> (<A HREF="http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE&amp;nodeId=2615&amp;dDocName=en535536">http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE&amp;nodeId=2615&amp;dDocName=en535536</A>)
+</I>&gt;<i> which should be then stuck in a PIC32 I/O expansion board
+</I>&gt;<i> (<A HREF="http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE&amp;nodeId=2615&amp;dDocName=en535444">http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE&amp;nodeId=2615&amp;dDocName=en535444</A>)
+</I>&gt;<i> and I still have to use some sort of daugherboard in that one to get a
+</I>&gt;<i> serial connector (if I don't feel like soldering, that is).
+</I>&gt;<i> That said, I have to check if I can't use one of the on-board USB
+</I>&gt;<i> connections as a CDC, this might simplify things quite a bit. I don't think
+</I>&gt;<i> I have the time to develop a CDC device on PIC32 myself, but maybe they have
+</I>&gt;<i> something like this in their software library. And who knows, maybe they're
+</I>&gt;<i> even willing to sponsor us. Thanks for the hint! I had no idea about this
+</I>&gt;<i> new line (new to me, as least :) ) of PIC32 devices.
+</I>&gt;<i>
+</I>&gt;<i> 3. If you want to go for broke, Renesas has the SH7216 series with 200MHz
+</I>&gt;<i> speed, FPU, 128K SRAM and 1024K flash -- but as usual with Renesas,
+</I>&gt;<i> availability is poor and the price is high (Digikey only lists one model,
+</I>&gt;<i> not in stock, for $42.27 qty 1).
+</I>&gt;<i>
+</I>&gt;<i> If they're not easily available in the US, chances are they aren't available
+</I>&gt;<i> at all in Europe. I found it quite hard to find Renesas products in Europe.
+</I>&gt;<i> Still, this chip sounds SWEET. Especially the FPU part.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 4. Someday Renesas promises they'll have a new RX600 MCU with 256K SRAM and
+</I>&gt;<i> 4M flash.&#160; On the good side, Renesas does make a lot of very capable MCUs in
+</I>&gt;<i> QFPs.&#160; But, I'm not holding my breath waiting for availability (my guess is
+</I>&gt;<i> it's at least several years away).
+</I>&gt;<i>
+</I>&gt;<i> You're probably right, but it's very good to see this &quot;more on-board RAM and
+</I>&gt;<i> Flash&quot; trend. Very nice for eLua, as we all know :)
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --Tony
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Jun 22, 2009 at 2:42 AM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> When I subscribed to this list half a year ago I confidently expected to be
+</I>&gt;<i> able to use a single chip Lua device in my projects by now. I wanted to use
+</I>&gt;<i> many such chips in a seriously distributed architecture with the processing
+</I>&gt;<i> kept near to the IO to simplify wiring. To avoid buying an endless
+</I>&gt;<i> succession of development boards I set a simple threshold specification of
+</I>&gt;<i> 512K on-chip flash, 64K on-chip RAM, Ethernet capability (I was prepared to
+</I>&gt;<i> compromise with a second chip for this). With this type of distributed
+</I>&gt;<i> architecture, I need lots of IO versatility (analog, PWM, UART, I2C, SPI,
+</I>&gt;<i> counters etc.) but multiplexed on relatively few pins since if you run out
+</I>&gt;<i> of IO you just add another chip. It should therefore be possible to have a
+</I>&gt;<i> simple 20-40 pin package which could be available in hand-solderable form.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> It is very disappointing that after many months still the only chip that
+</I>&gt;<i> comes near is the LPC2888 which seems to be buggy and expensive (the very
+</I>&gt;<i> minimalist LPC-H2888 prototype board is over $150). Looking at the
+</I>&gt;<i> schematics for this board really reinforced my intuition about the
+</I>&gt;<i> importance of on-chip memory &#8211; a ridiculous number of pins (and therefore
+</I>&gt;<i> PCB traces) is wasted on the external memory interface. And the economics
+</I>&gt;<i> are terrible - for just $20 more, you can get the new Acer Aspire Revo R3600
+</I>&gt;<i> nettop (in Linux rather than Vista trim). The latter has both wired and
+</I>&gt;<i> wireless networking, 1GB RAM and an 8GB SSD!
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> IO is the problem of course with an X86 platform. However in my research I
+</I>&gt;<i> found this incredibly poorly marketed chip:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://delcomproduct.com/products_USBIO.asp#DemoBrd">http://delcomproduct.com/products_USBIO.asp#DemoBrd</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> A versatile USB to IO pins chip for only $8! This looks like great universal
+</I>&gt;<i> IO problem solver. Unlike most other DIY USB solutions I&#8217;ve seen which
+</I>&gt;<i> require a driver and/or serial port emulator, this is HID based and
+</I>&gt;<i> therefore driverless on all major OS&#8217;s. I have ordered some of these chips
+</I>&gt;<i> and will report back how it goes.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I am beginning to think it might just be better to cooperate with market
+</I>&gt;<i> forces here since I suspect that X86 computing is going to keep widening the
+</I>&gt;<i> functionality gap and reducing the price gap. Rather than trying to squeeze
+</I>&gt;<i> Lua onto a cramped chip with no operating system, would it maybe be better
+</I>&gt;<i> to produce a custom cut-down Linux distro with Lua built in (and perhaps
+</I>&gt;<i> acting as the shell)?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> What do others think? Will there be cheap, single chip ARM devices meeting
+</I>&gt;<i> my spec available in the next few months?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001236.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="001237.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1234">[ date ]</a>
+              <a href="thread.html#1234">[ thread ]</a>
+              <a href="subject.html#1234">[ subject ]</a>
+              <a href="author.html#1234">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

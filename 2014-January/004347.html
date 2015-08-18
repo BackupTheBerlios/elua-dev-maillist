@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] DAC Module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2014-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20DAC%20Module&In-Reply-To=%3C20140102123619.775240ff%40kite%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="004348.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] DAC Module</H1>
+    <B>Mark Burton</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20DAC%20Module&In-Reply-To=%3C20140102123619.775240ff%40kite%3E"
+       TITLE="[eLua-dev] DAC Module">burtoogle at gmail.com
+       </A><BR>
+    <I>Thu Jan  2 13:36:19 CET 2014</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="004348.html">[eLua-dev] DAC Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4347">[ date ]</a>
+              <a href="thread.html#4347">[ thread ]</a>
+              <a href="subject.html#4347">[ subject ]</a>
+              <a href="author.html#4347">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi,
+
+I have been working on the DAC module. It's a generic module with a
+platform implementation for the stm32f4. The functions that output a
+sequence of samples are clocked using timer match interrupts (no DMA
+required).
+
+------
+
+The Lua interface currently looks like this:
+
+dac.init( id, [bits_per_sample, [options]] )
+
+initialises a single DAC channel
+
+  id = DAC channel id from 0 upwards (stm32f4 allows 0 or 1)
+  bits_per_sample = 8, ... (stm32f4 allows 8, 12 and 16, only 12 bits
+  actually used)
+  options = platform specific option flags (currently unused)
+
+dac.putsample( id, [val] )
+
+outputs a sample to a DAC channel
+
+  id = DAC channel id
+  val = integer value to load into DAC (default 0)
+
+dac.putsamples( id, samples, rate, [timer_id, [bytes_per_sample, [bias,
+[offset, [num_samples]]]]] )
+
+outputs a sequence of samples to a DAC channel
+
+  id = DAC channel id
+  samples = string containing sample data
+  rate = DAC update rate (samples per second)
+  timer_id = id of timer to use (defaults to first timer that can be
+  used)
+  bytes_per_sample = number of bytes per sample (default 1)
+  bias = value added to each sample before writing to DAC (default 0)
+  offset = skip this many bytes at start of string (default 0)
+  num_samples = number of samples to output (defaults to all samples in
+  string)
+
+dac.playwavfile( id, wavfilename, [timer_id, [sample_buf_size]] )
+
+plays a wav file (8 or 16 bit uncompressed PCM only) - currently only
+one channel is output (mono) but it would not be difficult to output 2
+channels for stereo.
+
+  id = DAC channel id
+  wavfilename = name of file containing wav data
+  timer_id = id of timer to use (defaults to first timer that can be
+  used)
+  sample_buf_size = size of circular buffer used to hold samples
+  (default 32)
+
+-------
+
+The platform API is simple: it basically consists of a function to init
+a DAC channel, a function to output a single sample to one or more DAC
+channels and a function to check whether a given timer OK to use as a
+source of interrupts.
+
+int platform_dac_init(unsigned id, unsigned bits_per_sample, unsigned
+options);
+void platform_dac_put_sample(unsigned channel_mask, u16 *data);
+int  platform_dac_check_timer_id(unsigned id, unsigned timer_id);
+
+-------
+
+
+If anyone wants to try the code, it's in the mb-stm32f4-dac branch
+of <A HREF="https://github.com/smartavionics/elua">https://github.com/smartavionics/elua</A>
+
+All feedback is welcome. It's all very new so there's bound to be some
+bugs and design problems.
+
+Cheers,
+
+Mark
+
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="004348.html">[eLua-dev] DAC Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4347">[ date ]</a>
+              <a href="thread.html#4347">[ thread ]</a>
+              <a href="subject.html#4347">[ subject ]</a>
+              <a href="author.html#4347">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

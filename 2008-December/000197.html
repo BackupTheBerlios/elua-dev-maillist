@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] interested in stm32 port
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20interested%20in%20stm32%20port&In-Reply-To=%3C81fbe47d0812270325p73e6ae9bk9f515876cc961040%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000212.html">
+   <LINK REL="Next"  HREF="000205.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] interested in stm32 port</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20interested%20in%20stm32%20port&In-Reply-To=%3C81fbe47d0812270325p73e6ae9bk9f515876cc961040%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] interested in stm32 port">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat Dec 27 12:25:20 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000212.html">[eLua-dev] interested in stm32 port
+</A></li>
+        <LI>Next message: <A HREF="000205.html">[eLua-dev] HREFs in Sputnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#197">[ date ]</a>
+              <a href="thread.html#197">[ thread ]</a>
+              <a href="subject.html#197">[ subject ]</a>
+              <a href="author.html#197">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I am an stm32 platform enthusiast and would love to make an easily
+&gt;<i> script-able platform out of it. eLua seems to fit the bill except that i
+</I>&gt;<i> really hope that 128kb of flash and 20kb of ram (that the stm32 chips i am
+</I>&gt;<i> using have) would be enough (even if barely) to be able to run lua scripts,
+</I>&gt;<i> even pre-compiled if needed, off an SD card.
+</I>
+
+20kb of RAM is a pretty unsafe bet for eLua at this point, so you might be
+disappointed after you finally manage to compile and burn it. Just a fair
+warning :)
+
+
+&gt;<i> I had followed the toolchain building tutorial and built those
+</I>&gt;<i> successfully. But it seems to me that scons for the stm32 target uses
+</I>&gt;<i> arm-none-eabi prefix for toolchain. I suspect that the CodeSourcery's
+</I>&gt;<i> toolchain was used for this target.
+</I>
+
+
+I didn't work on this port, but if its conf.py file reffers to
+arm-none-eabi-gcc, you're probably right about CodeSourcery.
+
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mlittle-endian -Os
+&gt;<i> -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules
+</I>&gt;<i> -Isrc/platform/stm32 -Isrc/uip -Isrc/platform/stm32/FWLib/library/inc
+</I>&gt;<i> -ffunction-sections -fdata-sections -fno-strict-aliasing
+</I>&gt;<i> -DELUA_CPU=STM32F103ZE -DELUA_BOARD=STM3210E-EVAL -DELUA_PLATFORM=STM32
+</I>&gt;<i> -D__BUFSIZ__=128 -DLUA_NUMBER_INTEGRAL -Dgcc -Wall -c src/newlib/stubs.c -o
+</I>&gt;<i> src/newlib/stubs.o
+</I>&gt;<i> src/newlib/stubs.c:311: error: conflicting types for '_gettimeofday_r'
+</I>&gt;<i> /usr/bin/../lib/gcc/arm-none-eabi/4.3.2/../../../../arm-none-eabi/include/reent.h:84:
+</I>&gt;<i> error: previous declaration of '_gettimeofday_r' was here
+</I>&gt;<i> scons: *** [src/newlib/stubs.o] Error 1
+</I>&gt;<i> scons: building terminated because of errors.
+</I>
+
+Happaned to me too. Check your toolchain's include/reent.h file, and also
+these lines from src/newlib/stubs.c:
+
+#*include* *&lt;sys/time.h&gt;*
+#*if* ELUA_PLATFORM == AVR32
+*int* *_gettimeofday_r*( *struct* _reent *r, *struct* timeval *tp,
+*struct* timezone *tzp )
+#*else*
+*int* *_gettimeofday_r*( *struct* _reent *r, *struct* timeval *tv, *void* *tz )
+#*endif*
+{
+  r-&gt;_errno = ENOSYS;
+  *return* -1;
+}
+
+
+It seems that  _gettimeofday_r has different declarations for different
+targets, so you might want to modify the above to fit your include/reent.h
+(it doesn't really matter, as the implementation is empty anyway).
+
+would it be possible to just stick to the toolchain built as per
+&gt;<i> instructions on elua site? or CS's toolchain is really necessary for stm32?
+</I>
+
+You could definitely try to stick to the instructions on eLua's site, but
+more than one people told me that CS's toolchain is probably better for
+Cortex, so I'd go with that for now.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081227/942dfe3a/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081227/942dfe3a/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000212.html">[eLua-dev] interested in stm32 port
+</A></li>
+	<LI>Next message: <A HREF="000205.html">[eLua-dev] HREFs in Sputnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#197">[ date ]</a>
+              <a href="thread.html#197">[ thread ]</a>
+              <a href="subject.html#197">[ subject ]</a>
+              <a href="author.html#197">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C33644d3c1003091142q295ffb85seb4dc3f60751c223%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001242.html">
+   <LINK REL="Next"  HREF="001244.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C33644d3c1003091142q295ffb85seb4dc3f60751c223%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Mar  9 20:42:44 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001242.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="001244.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1243">[ date ]</a>
+              <a href="thread.html#1243">[ thread ]</a>
+              <a href="subject.html#1243">[ subject ]</a>
+              <a href="author.html#1243">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Mar 9, 2010 at 3:08 AM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+&gt;<i> I've never used Microchip CDC. If you have control of both ends why add the
+</I>&gt;<i> complexity of emulating a serial link? I have used USB - Serial converters
+</I>&gt;<i> to use Microchip serial ports with PCs without &quot;real&quot; serial ports. I
+</I>&gt;<i> certainly recommend FTDI-based converters these days because their drivers
+</I>&gt;<i> seem more stable on Vista and 7. They do seem better from a port shuffle
+</I>&gt;<i> basis also. However you still have to find the serial port number in the
+</I>&gt;<i> first place. The only way the user can find it is to interpret the highly
+</I>&gt;<i> technical Device Manager and it is hard to write reliable automatic probes
+</I>&gt;<i> because you do not know what other serial devices may be connected. In my
+</I>&gt;<i> experience, using CDC virtually guarantees high support costs.
+</I>
+I'm not so sure about this.  Arduino uses an FTDI virtual serial port,
+and seems to do just fine with this.  I'm forgetting what it's like
+out of the box to figure out which port is the correct one, but I seem
+to recall there just being some minimal instructions, and certainly
+after it's first been attached it gets the same COM port on Windows,
+and the same device name on OS X.
+
+MBED uses a CDC that runs from an LPC microcontroller, and as far as I
+recall it retains its name on OS X between connections w/ no driver,
+for Windows they now provide some sort of additional &quot;driver&quot; which I
+presume gives one a permanent COM port number, but it definitely gives
+it a name in the device manager that makes it easy to pick out: &quot;mbed
+Serial Port&quot;):
+<A HREF="http://mbed.org/handbook/SerialPC">http://mbed.org/handbook/SerialPC</A>
+
+I suppose it depends on the interaction model desired, but if what one
+wants is a tty, I suspect that presenting as an HID is going to make
+it more complicated to support different platforms.  One would either
+have to provide a driver on each platform or use something like libusb
+to talk to it, and then unless you've made it available as a COM port
+you're likely going to provide an application that gives you a serial
+terminal over the HID or whatever interaction model is desired.  I
+feel as if one is trading a bit of explanation about how to find a
+serial port for a fair bit of code, testing and packaging.  I
+certainly see the value of this when rolling something out to
+non-technical users or for making it easy to turn an eLua
+microcontroller into an HID, but I guess I don't see the advantage
+provided by making this the primary interaction model.
+
+&gt;<i> Besides this, writing good serial port code on a PC is difficult even
+</I>&gt;<i> without emulation in the picture - I've virtually built a career fixing
+</I>&gt;<i> badly written com port code!
+</I>
+I have less experience with Windows, but I could certainly see how one
+could end up in this situation with the POSIX serial model.  As Bogdan
+has noted, we'll be including some serial port library code so at
+least there could be some standardization on what methods are used
+while reading/writing to/from eLua devices.
+
+&gt;<i>
+</I>&gt;&gt;<i> -----Original Message-----
+</I>&gt;&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of Ross Berteig
+</I>&gt;&gt;<i> Sent: 08 March 2010 22:26
+</I>&gt;&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> Subject: Re: [eLua-dev] Single Chip Lua Prospects
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Sometime on 3/8/2010, John Hind wrote:
+</I>&gt;&gt;<i> &#160;&gt;I prefer HID over CDC &#160;for two reasons: On Windows virtual Com
+</I>&gt;&gt;<i> &#160;&gt;ports tend to shuffle about at random and it is difficult to
+</I>&gt;&gt;<i> &#160;&gt;write host-side software that can find the port number reliably
+</I>&gt;&gt;<i> &#160;&gt;in all circumstances without bothering the user with technical
+</I>&gt;&gt;<i> &#160;&gt;details.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The secret to preventing Windows from doing the COM port
+</I>&gt;&gt;<i> assignment shuffle is to give every CDC device a unique serial
+</I>&gt;&gt;<i> number descriptor. Without the serial number, Windows has to rely
+</I>&gt;&gt;<i> on its internal name of the upstream USB port to which the device
+</I>&gt;&gt;<i> is connected. If you move the device to a different port, then it
+</I>&gt;&gt;<i> sees it as a new device, reloads the drivers, and reassigns the
+</I>&gt;&gt;<i> COM port.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I don't know how easy Microchip makes it to do this. Ideally, it
+</I>&gt;&gt;<i> would be easy to generate a serial number at runtime from some
+</I>&gt;&gt;<i> factory guaranteed unique value (the FTDI chips do this, for
+</I>&gt;&gt;<i> instance). Otherwise, you would have to provide for serializing
+</I>&gt;&gt;<i> the devices as or after firmware is loaded.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Ross Berteig &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Ross at CheshireEng.com</A>
+</I>&gt;&gt;<i> Cheshire Engineering Corp. &#160; &#160; &#160; &#160; &#160; <A HREF="http://www.CheshireEng.com/">http://www.CheshireEng.com/</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001242.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="001244.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1243">[ date ]</a>
+              <a href="thread.html#1243">[ thread ]</a>
+              <a href="subject.html#1243">[ subject ]</a>
+              <a href="author.html#1243">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

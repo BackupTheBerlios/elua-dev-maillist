@@ -1,0 +1,341 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Mixed arm and thumb code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mixed%20arm%20and%20thumb%20code&In-Reply-To=%3C81fbe47d0903290558j20a37fa6k4c286e9eed66b2b6%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000720.html">
+   <LINK REL="Next"  HREF="000722.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Mixed arm and thumb code</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mixed%20arm%20and%20thumb%20code&In-Reply-To=%3C81fbe47d0903290558j20a37fa6k4c286e9eed66b2b6%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Mixed arm and thumb code">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sun Mar 29 14:58:16 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000720.html">[eLua-dev] Mixed arm and thumb code
+</A></li>
+        <LI>Next message: <A HREF="000722.html">[eLua-dev] Mixed arm and thumb code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#721">[ date ]</a>
+              <a href="thread.html#721">[ thread ]</a>
+              <a href="subject.html#721">[ subject ]</a>
+              <a href="author.html#721">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> I am however saying that using a language that was designed for it is
+</I>&gt;<i> probably better then (more efficient than?) shoehorning another language in
+</I>&gt;<i> to doing the task.  The fact that the scons package had to be developed to
+</I>&gt;<i> do something that is intrinsic to make is kind of proof of this IMO.
+</I>&gt;<i>
+</I>
+Interesting :) By following your logic, I'd probably come to the same
+conclusion I expressed in my previous message: everything but C is redundant
+:<i>) since C was there from the very beginning, and everything that followed
+</I>has the same functionality in the end, although the means to express it are
+different. Me, I _really_ like when there are many ways to do a given task,
+each suitable for certain kind of people. Efficiency can also be measured in
+more than one way, for example by factoring in the time one needs to learn a
+new build system, or maintenance issues. We use both make and scons where I
+work, and what I observed is that people that had some (spurious) bad
+experiences with make in the past feel more comfortable with scons. This
+doesn't prove much, but is consistent with my views.
+
+The main reason for the frustration was that in make based build systems
+&gt;<i> (usually, not always) you can just 'cd' into part of the project tree and
+</I>&gt;<i> run a make there to (re)make just that part of the tree (say if you were
+</I>&gt;<i> editing files in that directory or whatever and you wanted to run a build
+</I>&gt;<i> test). With scons, as far as I know, there is no way to replicate this
+</I>&gt;<i> behaviour.  You have no choice but to run the entire build from the project
+</I>&gt;<i> root dir.  Please correct me if I am wrong here!
+</I>&gt;<i>
+</I>
+I'm not sure about this. I know you can do &quot;scons -C&quot; just like you do &quot;make
+-C&quot;, so maybe scons has support for what you want if you use multiple
+SConstruct files. But I didn't test this.
+
+
+&gt;<i> It is kind of absolute I guess.  I have used scons in this project, and had
+</I>&gt;<i> exposure to it from a few other things, but never really had to *use*
+</I>&gt;<i> (maintain its use) except with eLua.  I have designed some ruby modules,
+</I>&gt;<i> they sort of have their own build system, but its main purpose is to manage
+</I>&gt;<i> the construction of makefiles, so they technically use make.  I have used a
+</I>&gt;<i> custom lisp based makefile management system, but again it used make on the
+</I>&gt;<i> backend.  Most of the stuff I had to manage used autoconf/automake, which
+</I>&gt;<i> again is really just a makefile management system... Hmm even the buildroot
+</I>&gt;<i> based embedded stuff I had to integrate with/manage used make....  I guess I
+</I>&gt;<i> have been exposed to quite a bit of software that needed to be built, but
+</I>&gt;<i> most of it used make at some point!  I have never really thought about it
+</I>&gt;<i> until now!
+</I>&gt;<i>
+</I>
+In software, history dies hard :) which has both good and bad parts. And,
+from what I could gather, most &quot;hardcore&quot; programmers are generally
+reluctant to change. I'm no exception; this week we talked about the new C++
+standard proposal at work, and I was completely outraged by some of its new
+parts, until I started to think about them and realized that most of them
+make sense. Why would build systems be different? :)
+
+Actually now that I think of it, are there really any build tools out there
+&gt;<i> other then scons and derivatives that *don't* use make at some point??  I
+</I>&gt;<i> can't think of any off hand, but most of the software I build is either
+</I>&gt;<i> something I manage so uses make or a make manager, or foss/gnu type software
+</I>&gt;<i> which mostly uses autoconf....
+</I>&gt;<i>
+</I>
+I don't know of any.
+
+
+&gt;<i> Hmm, now I do find that interesting.  The point of a build tool (IMO) is to
+</I>&gt;<i> make it easy to build software.  This does not necessarily mean make it easy
+</I>&gt;<i> to write the build scripts, but it does mean that a piece of software should
+</I>&gt;<i> *just build* when you unpack it.
+</I>&gt;<i>
+</I>
+Well, thanks for this. It seems that I was so focused on how much I dislike
+make that I forgot to think from the perspective of the end user when it
+comes to building. This is indeed a very good argument towards make, and one
+of the reasons it is still so popular. Maybe it's not fair, but so is life
+:<i>)
+</I>
+
+&gt;<i> As a software developer, there has been quite a bit of things that I wanted
+</I>&gt;<i> to play with but never have because they did not compile *out of the box*.
+</I>&gt;<i> I'm not talking about having to resolve dependencies due to external libs or
+</I>&gt;<i> whatever, I mean if I have to mess with the build system to get a piece of
+</I>&gt;<i> software I just want to use to even build, then its probably not worth my
+</I>&gt;<i> time.  For the most part, software that uses make as a build system *just
+</I>&gt;<i> builds*.  I can't say that for anything else, because for things like scons,
+</I>&gt;<i> you would (for the most part) have to go download scons, and maybe even
+</I>&gt;<i> python, and maybe (at an extreme) build them, before you can even build the
+</I>&gt;<i> scons managed code!  Thats quite a bit of work just to do a task you will
+</I>&gt;<i> more then likely only do once (build the software then install it).  This is
+</I>&gt;<i> why small in a build system is good. :)
+</I>&gt;<i>
+</I>
+You don't have to compile scons, fortunately, but everything else is true.
+
+Think of all the people that don't have a fast connection that have to
+&gt;<i> download a tool that may take many minutes to download and only a few to
+</I>&gt;<i> use.  I would figure that being a person in a country where its hard to get
+</I>&gt;<i> hardware shipped/sourced you of all people would appreciate that.  Imagine
+</I>&gt;<i> if we made people buy a hardware dongle (download a special build software)
+</I>&gt;<i> to do eLua development.  Now quite a few of the people that want to do the
+</I>&gt;<i> development are in countries where buying and shipping the hardware is very
+</I>&gt;<i> difficult (slow network connection).  That may be a bad analogy, but I think
+</I>&gt;<i> it fits to explain where I am coming from with my idea of build systems...
+</I>&gt;<i>
+</I>
+That makes sense, although it's more of an exceptional case; I would imagine
+that if you have enough bandwidth to download eLua, you could spare some for
+python/scons too. If you want to do serious development and you don't have
+access at least to a medium quality Internet connection, your developer life
+won't be easy anyway. Sad, but true.
+
+Hmm, a religious war around make would indeed be an odd one, esp for a first
+&gt;<i> on a list. ;)  Sorry if it seems like I am trying to start one, as I am
+</I>&gt;<i> not.  I just never have understood the want of some to apply a large and
+</I>&gt;<i> generic tool to the job of a very specific and seldom used problem domain.
+</I>&gt;<i> Especially when there already exists a universally available and
+</I>&gt;<i> specifically designed tool for the job.  Thats an issue with me, not anyone
+</I>&gt;<i> else. :)
+</I>&gt;<i>
+</I>
+It might be an issue with you, yes :) Once again, try to apply your own
+logic to programming languages in general, and see where it takes you. And I
+wouldn't consider a build system something &quot;seldom used&quot;; quite on the
+contrary, a build system is present everywhere but in the most trivial
+projects.
+
+
+&gt;<i> PS. Hmmm ... sounds to me like you'd like to contribute a make-based build
+</I>&gt;&gt;<i> system to eLua ? :D
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I could if you really wanted.
+</I>&gt;<i>
+</I>
+So how do we convince you to really want it? :) Cause really, all this
+discussion had the (good) side effect of convincing me that a make-based
+build system is a good thing, at least as an alternative (although having a
+project with two different build systems to choose from seems just plain
+weird). In particular, I'm very curious how you'll manage to duplicate the
+non-build-specific parts in SConstruct using make, like all the platform/CPU
+mappings, the filesystem/board mapping and so on.
+
+
+&gt;<i> I could even make it fancy with a graphical configuration tool like the
+</I>&gt;<i> Linux kernel has (in fact it would be the same tool).  In one way that would
+</I>&gt;<i> be nice to have as it seperates platform configuration out of the code, but
+</I>&gt;<i> I don't think eLua is big enough to actually *need* that feature right now.
+</I>&gt;<i>
+</I>
+It might not need it, but it's surely on the top 5 of our &quot;TODO&quot; list, and
+we'd very much like to have it as soon as possible. It's the kind of thing
+that makes a project look really professional (see for example Ethernut) and
+it saves you from reading all the documentation about the configuration
+parameters (although I put a LOT of effort into writing that, so part of me
+doesn't really want this to happen :D Kidding, of course).
+
+
+&gt;<i> Thanks for the great debate :),
+</I>&gt;<i>
+</I>
+You too!
+
+Best,
+Bogdan
+
+
+&gt;&gt;<i> On Sat, Mar 28, 2009 at 4:09 PM, Bogdan Marinescu &lt;
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Well, personally I have a simple rule: if I keep on forgetting stuff I
+</I>&gt;&gt;&gt;&gt;<i> learn about a tool, it's not good enough for me. With make, I could never
+</I>&gt;&gt;&gt;&gt;<i> remember $@, $?, $&lt; and other syntax stuff. Not to mention that the whole
+</I>&gt;&gt;&gt;&gt;<i> tabbing thing drives me insane. This is reminescent of the old Unix days
+</I>&gt;&gt;&gt;&gt;<i> (somebody here ever tried to modify an old sendmail.cf file ? :), and
+</I>&gt;&gt;&gt;&gt;<i> frankly (besides their unquestionable place in history) I don't think too
+</I>&gt;&gt;&gt;&gt;<i> high of them, mainly because I find them counterproductive. It's the same
+</I>&gt;&gt;&gt;&gt;<i> reason I'll never get along with perl, for example. And the list could go on
+</I>&gt;&gt;&gt;&gt;<i> :) I think we're progressing towards better tools, and although they are far
+</I>&gt;&gt;&gt;&gt;<i> from perfect, I get along with them just fine. scons is an example of such
+</I>&gt;&gt;&gt;&gt;<i> tool for me. Plus, on the more practical side, I could never do the kind of
+</I>&gt;&gt;&gt;&gt;<i> scripting I do in SConstruct with make.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Sat, Mar 28, 2009 at 9:49 PM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Just a general question...  Why do people hate make so much?  Its
+</I>&gt;&gt;&gt;&gt;&gt;<i> extremely powerful and IMO easy(er) to use for dependency tracking build
+</I>&gt;&gt;&gt;&gt;&gt;<i> systems then any other language... Not to mention the fact that anyone that
+</I>&gt;&gt;&gt;&gt;&gt;<i> is already using GCC has gmake installed, where that can't be said about any
+</I>&gt;&gt;&gt;&gt;&gt;<i> other build tool...
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Just my 0.02 currency units.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Mike
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> On Sat, Mar 28, 2009 at 12:07 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> On Thu, Mar 26, 2009 at 16:44, Arnim Littek &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">litteka at sirtrack.com</A>&gt;wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Under these circumstances I'd be questioning whether scons is the
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> right tool
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> for the job.  Tools are not there to make life difficult, and if one
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> doesn't
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> work, it is time to find another.  IMHO
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Under the same philosophy of &quot;doing the most we can in Lua&quot;, I've been
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> checking the possibility of using Hamster&lt;<A HREF="http://luaforge.net/projects/hamster/">http://luaforge.net/projects/hamster/</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> .
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Asko is here in the list with us and is checking what went wrong with
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> my first try on using it.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> I'm not sure if it will solve this issue though, as Hamster is also
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> based on scons.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Best
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Dado
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Arnim.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090329/980b0cff/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090329/980b0cff/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000720.html">[eLua-dev] Mixed arm and thumb code
+</A></li>
+	<LI>Next message: <A HREF="000722.html">[eLua-dev] Mixed arm and thumb code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#721">[ date ]</a>
+              <a href="thread.html#721">[ thread ]</a>
+              <a href="subject.html#721">[ subject ]</a>
+              <a href="author.html#721">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

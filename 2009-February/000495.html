@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 Toolchain
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20Toolchain&In-Reply-To=%3Cb3ef86d60902171052kc3b3776m4e40b16a87e55818%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000494.html">
+   <LINK REL="Next"  HREF="000496.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 Toolchain</H1>
+    <B>Fernando Ara&#250;jo</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20Toolchain&In-Reply-To=%3Cb3ef86d60902171052kc3b3776m4e40b16a87e55818%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 Toolchain">freecky at gmail.com
+       </A><BR>
+    <I>Tue Feb 17 19:52:40 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000494.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+        <LI>Next message: <A HREF="000496.html">[eLua-dev] AVR32 Toolchain
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#495">[ date ]</a>
+              <a href="thread.html#495">[ thread ]</a>
+              <a href="subject.html#495">[ subject ]</a>
+              <a href="author.html#495">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello all !
+   I'm trying to build eLua for AVR32, I've been told to install some
+packages of the AVR GNU toolchain:
+
+avr32-binutils_2.17.atmel.1.2.6-2_i386.deb
+avr32-gcc-newlib_4.2.2-atmel.1.0.8-2_i386.deb
+avr32headers_1.9.11-1_all.deb
+
+I couldn't manage to find these exact versions so I got some newer ones from
+Atmel site (<A HREF="http://www.atmel.com/dyn/Products/tools_card.asp?tool_id=4118">http://www.atmel.com/dyn/Products/tools_card.asp?tool_id=4118</A>):
+
+avr32-binutils_2.18.atmel.1.0.1-1_i386.deb
+avr32-gcc-newlib_4.2.2-atmel.1.1.3-1_i386.deb
+avr32headers_2.0.5-1_all.deb
+
+After installing these and setting the enviroment path, I get the following
+error messages (annexed file), I'm using ubuntu 8.04. Anyone got success
+using AVR32 toolchain ?
+
+
+Thanks in advance,
+
+--
+Fernando Araujo
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/114461ba/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/114461ba/attachment.html</A>&gt;
+-------------- next part --------------
+scons: Reading SConscript files ...
+
+*********************************
+Compiling eLua ...
+CPU:          AT32UC3A0512
+Board:        ATEVK1100
+Platform:     avr32
+Allocator:    multiple
+Target:       lua
+*********************************
+
+Building filesystem...
+Encoded file bisect.lua (646 bytes)
+Encoded file hangman.lua (3750 bytes)
+Encoded file led.lua (947 bytes)
+Encoded file hello.lua (23 bytes)
+Encoded file info.lua (134 bytes)
+Done, total size is 5561 bytes
+
+scons: done reading SConscript files.
+scons: Building targets ...
+avr32-gcc -mpart=uc3a0512 -Os -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -ffunction-sections -fdata-sections -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/main.c -o src/main.o
+avr32-gcc -mpart=uc3a0512 -Os -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -ffunction-sections -fdata-sections -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/romfs.c -o src/romfs.o
+avr32-gcc -mpart=uc3a0512 -Os -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -ffunction-sections -fdata-sections -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/xmodem.c -o src/xmodem.o
+avr32-gcc -mpart=uc3a0512 -Os -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -ffunction-sections -fdata-sections -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/shell.c -o src/shell.o
+avr32-gcc -mpart=uc3a0512 -Os -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -ffunction-sections -fdata-sections -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/term.c -o src/term.o
+avr32-gcc -mpart=uc3a0512 -Os -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -ffunction-sections -fdata-sections -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/common.c -o src/common.o
+In file included from src/common.c:12:
+inc/elua_adc.h:35:7: warning: no newline at end of file
+src/common.c:349:2: warning: no newline at end of file
+avr32-gcc -mpart=uc3a0512 -Os -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -ffunction-sections -fdata-sections -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/buf.c -o src/buf.o
+avr32-gcc -mpart=uc3a0512 -Os -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -ffunction-sections -fdata-sections -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/elua_adc.c -o src/elua_adc.o
+src/elua_adc.c:159:7: warning: no newline at end of file
+avr32-gcc -mpart=uc3a0512 -Os -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -ffunction-sections -fdata-sections -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/dlmalloc.c -o src/dlmalloc.o
+src/dlmalloc.c: In function 'sys_trim':
+src/dlmalloc.c:2436: warning: unused variable 'newsize'
+avr32-gcc -x assembler-with-cpp -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -mpart=uc3a0512 -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/platform/avr32/crt0.s -o src/platform/avr32/crt0.o
+avr32-gcc -x assembler-with-cpp -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -mpart=uc3a0512 -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/platform/avr32/trampoline.s -o src/platform/avr32/trampoline.o
+avr32-gcc -mpart=uc3a0512 -Os -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/avr32 -Isrc/uip -ffunction-sections -fdata-sections -DELUA_CPU=AT32UC3A0512 -DELUA_BOARD=ATEVK1100 -DELUA_PLATFORM=AVR32 -D__BUFSIZ__=128 -DUSE_MULTIPLE_ALLOCATOR -DLUA_OPTIMIZE_MEMORY=2 -DFORAVR32 -DBOARD=1 -Wall -c src/platform/avr32/platform.c -o src/platform/avr32/platform.o
+src/platform/avr32/platform.c: In function 'platform_init':
+src/platform/avr32/platform.c:98: error: 'AVR32_TC_TCCLKS_TIMER_DIV1_CLOCK' undeclared (first use in this function)
+src/platform/avr32/platform.c:98: error: (Each undeclared identifier is reported only once
+src/platform/avr32/platform.c:98: error: for each function it appears in.)
+src/platform/avr32/platform.c: In function 'platform_pio_op':
+src/platform/avr32/platform.c:323: error: 'PLATFORM_PIO_READ_IN_MASK' undeclared (first use in this function)
+scons: *** [src/platform/avr32/platform.o] Error 1
+scons: building terminated because of errors.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000494.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+	<LI>Next message: <A HREF="000496.html">[eLua-dev] AVR32 Toolchain
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#495">[ date ]</a>
+              <a href="thread.html#495">[ thread ]</a>
+              <a href="subject.html#495">[ subject ]</a>
+              <a href="author.html#495">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

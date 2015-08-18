@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTik%2BguSETvVtvi1LzycLX6RrtZJZ%3DQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002564.html">
+   <LINK REL="Next"  HREF="002457.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTik%2BguSETvVtvi1LzycLX6RrtZJZ%3DQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Jun 16 16:23:38 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002564.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002457.html">[eLua-dev] [ANN] New Web Site
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2530">[ date ]</a>
+              <a href="thread.html#2530">[ thread ]</a>
+              <a href="subject.html#2530">[ subject ]</a>
+              <a href="author.html#2530">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 16 June 2011 15:52, Laurent Dufrechou &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">laurent.dufrechou at gmail.com</A>&gt; wrote:
+&gt;<i> Just to come back on why I don't like having address with data in same
+</I>&gt;<i> function is:
+</I>&gt;<i> How do you do this whit your model?:
+</I>&gt;<i>
+</I>&gt;<i> void XXXX_writeRegister(u8 reg, u8 data)
+</I>&gt;<i> {
+</I>&gt;<i> &#160; &#160; &#160; &#160;I2C_startAndSendAddress(I2C_0, XXXXXX, I2C_WRITE);
+</I>&gt;<i> &#160; &#160; &#160; &#160;I2C_sendBytes(I2C_0, &amp;reg, 1, false); //no stop
+</I>&gt;<i> &#160; &#160; &#160; &#160;I2C_sendBytes(I2C_0, &amp;data, 1, true); //repeat start and stop
+</I>&gt;<i> }
+</I>
+You don't. Sending data bytes after a start without an address is not
+valid I2C protocol; every START condition must always be followed by a
+slave address.
+But I think maybe the &quot;//repeat start&quot; comment is a mistake in the
+above; it looks like sendBytes knows nothing about repeated starts or
+slave addresses.
+
+&gt;<i> In your function definition, each time I will have to concatenate all my
+</I>&gt;<i> data in buffer.
+</I>&gt;<i> Ex:
+</I>&gt;<i> void XXXX_writeRegister(u8 reg, u8 data)
+</I>&gt;<i> {
+</I>&gt;<i> &#160; &#160; &#160; &#160;Buff[0]=reg;
+</I>&gt;<i> &#160; &#160; &#160; &#160;Buff[1]=data;
+</I>&gt;<i> &#160; &#160; &#160; &#160;I2C_startAndSendAddress_and_sendBytes(I2C_0, startAndSendAddress
+</I>&gt;<i> &amp;buff, 2, true); //do stop
+</I>&gt;<i> }
+</I>
+That's right.  I2C does not define anything about what the data bytes
+after the slave address mean: if the data selects a device's internal
+register and then the data for that register, that is just data as far
+as I2C is concerned. So yes, for devices that take &quot;register_number;
+register_value&quot; as data you have to put the register number and value
+in a single buffer.
+
+If you want to have a primitive to read/write registers in a specific
+I2C device like an EEPROM, the right place to do that is in a Lua
+module built on top of the eLua i2c interface.
+
+&gt;<i> I find it more near from hardware. Now if avr32 does not support this model,
+</I>&gt;<i> let's go for your option.
+</I>
+No, you can't do half a write and then the other half with AVR32,
+because you can't stop the sending hardware in the middle of the data
+of a packet and then carry on and stop later. You have to have all the
+data already available at the start of the transfer.
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002564.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002457.html">[eLua-dev] [ANN] New Web Site
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2530">[ date ]</a>
+              <a href="thread.html#2530">[ thread ]</a>
+              <a href="subject.html#2530">[ subject ]</a>
+              <a href="author.html#2530">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

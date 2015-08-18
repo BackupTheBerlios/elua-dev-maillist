@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] autorun
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20autorun&In-Reply-To=%3C81fbe47d0902170420v51c65775ue8af12c44e0b707d%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000474.html">
+   <LINK REL="Next"  HREF="000461.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] autorun</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20autorun&In-Reply-To=%3C81fbe47d0902170420v51c65775ue8af12c44e0b707d%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] autorun">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Feb 17 13:20:16 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000474.html">[eLua-dev] autorun
+</A></li>
+        <LI>Next message: <A HREF="000461.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#475">[ date ]</a>
+              <a href="thread.html#475">[ thread ]</a>
+              <a href="subject.html#475">[ subject ]</a>
+              <a href="author.html#475">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Of course, another idea would be to use SDIO support on platforms that
+support it instead of SPI (although I'm not sure there are SDIO interfaces
+on any of the currently supported eLua CPUs). If the interfaces are good
+enough, using SPI or SDIO for the SD/MMC interfacing would be a simple
+matter of defining a macro at compile time.
+The next version of eLua (not 0.6 that should be ready by the end on this
+month, but 0.7) will definitely have much better support for filesystems.
+I'm working on it.
+
+Best,
+Bogdan
+
+On Tue, Feb 17, 2009 at 2:16 PM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> On an LM3S target, the eLua binary is approximately 6.8 KB larger. When you
+</I>&gt;&gt;<i>  relocate your scripts to the SD card the /rom filesystem becomes much
+</I>&gt;&gt;<i> smaller. That results in a net flash space savings for many applications.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Note that I have only implemented this on the LM3S platform and testing
+</I>&gt;&gt;<i> has
+</I>&gt;&gt;<i> been limited.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Porting to the other platforms should only require copying the FatFs mmc.c
+</I>&gt;&gt;<i> file to the platform directory and changing it to match the SSI port I/O
+</I>&gt;&gt;<i> where the MMC/SD card is connected.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> We'll have to make it use the platform SPI interface. In this way, simply
+</I>&gt;<i> providing the platform SPI interface for a new platform would make the whole
+</I>&gt;<i> FS code available to that platform. I didn't look at the code yet to see if
+</I>&gt;<i> something else is involved in the process of making this implementation
+</I>&gt;<i> fully portable.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/96047925/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/96047925/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000474.html">[eLua-dev] autorun
+</A></li>
+	<LI>Next message: <A HREF="000461.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#475">[ date ]</a>
+              <a href="thread.html#475">[ thread ]</a>
+              <a href="subject.html#475">[ subject ]</a>
+              <a href="author.html#475">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] IMPORTANT: eLua coding style
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20eLua%20coding%20style&In-Reply-To=%3Cd3b6d880811170254y6a4b38d9hca70311bc793a4ce%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000087.html">
+   <LINK REL="Next"  HREF="000091.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] IMPORTANT: eLua coding style</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20eLua%20coding%20style&In-Reply-To=%3Cd3b6d880811170254y6a4b38d9hca70311bc793a4ce%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] IMPORTANT: eLua coding style">dadosutter at gmail.com
+       </A><BR>
+    <I>Mon Nov 17 11:54:51 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000087.html">[eLua-dev] IMPORTANT: eLua coding style
+</A></li>
+        <LI>Next message: <A HREF="000091.html">[eLua-dev] IMPORTANT: eLua coding style
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#89">[ date ]</a>
+              <a href="thread.html#89">[ thread ]</a>
+              <a href="subject.html#89">[ subject ]</a>
+              <a href="author.html#89">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks Bogdan,
+   Apart from opening the first { on the same line for blocks, all the rest
+is pretty much what I've always used :)
+   Also, I will only fail the &quot;space out everything&quot; when it is nice to keep
+the line under 80 columns.
+   I'll do my best to keep up with this eLua programming style :)
+
+Best
+Dado
+
+
+On Mon, Nov 17, 2008 at 8:43 AM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hello all,
+</I>&gt;<i>
+</I>&gt;<i> This is something I should've done quite some time ago: a coding style for
+</I>&gt;<i> all eLua contributors. Find it below, and please try to follow it as much as
+</I>&gt;<i> possible. Also, this is the first time I'm writing a &quot;coding style&quot;, so
+</I>&gt;<i> please let me know if something is missing from the picture.
+</I>&gt;<i>
+</I>&gt;<i> *1*. Everything should be spaced out properly. Examples (please note the
+</I>&gt;<i> spacing rules, which is basically &quot;space out everything for readability&quot;):
+</I>&gt;<i>
+</I>&gt;<i> i = 3 (not i=3)
+</I>&gt;<i> a = ( a + 5 ) / 3
+</I>&gt;<i> for( i = 0; i &lt; 10; i ++ ) ...
+</I>&gt;<i> if( ( i == 5 ) &amp;&amp; ( a == 10 ) ) ...
+</I>&gt;<i> unsigned i = ( unsigned )p;
+</I>&gt;<i> void func( int arg1, const char* arg2 ) ...
+</I>&gt;<i>
+</I>&gt;<i> *2*. Indentation: indent everything at 2 SPACES. Again, SPACES. *DO NOT
+</I>&gt;<i> USE TABS*; this is important (and fortunately pretty easy to remember :)
+</I>&gt;<i> ). I saw so many examples where tabs completely fucked up the readability of
+</I>&gt;<i> source code that I don't want to hear about them again. Most editors have an
+</I>&gt;<i> &quot;insert tabs instead of spaces&quot; option; use it, and set your &quot;tab size&quot; to
+</I>&gt;<i> 2.
+</I>&gt;<i>
+</I>&gt;<i> Also, indent &quot;{&quot; and &quot;}&quot; on their own lines:
+</I>&gt;<i>
+</I>&gt;<i> if( i == 2 )
+</I>&gt;<i> {
+</I>&gt;<i>   // some code here
+</I>&gt;<i> }
+</I>&gt;<i> else
+</I>&gt;<i> {
+</I>&gt;<i>   // some other code here
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> Or:
+</I>&gt;<i>
+</I>&gt;<i> void f( int i )
+</I>&gt;<i> {
+</I>&gt;<i>   // function code
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> Do not enclose single statements in {} when given a choice. For example, do
+</I>&gt;<i> this:
+</I>&gt;<i>
+</I>&gt;<i> if( i == 2 )
+</I>&gt;<i>   return;
+</I>&gt;<i>
+</I>&gt;<i> instead of this:
+</I>&gt;<i>
+</I>&gt;<i> if( i == 2 )
+</I>&gt;<i> {
+</I>&gt;<i>   return;
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> Also, follow the &quot;one statement per line&quot; rule. In other words, don't do
+</I>&gt;<i> this:
+</I>&gt;<i>
+</I>&gt;<i> if( i == 2 ) return;
+</I>&gt;<i>
+</I>&gt;<i> Do this instead:
+</I>&gt;<i>
+</I>&gt;<i> if( i == 2 )
+</I>&gt;<i>   return;
+</I>&gt;<i>
+</I>&gt;<i> Note that I'm not using a space between the function name and its parameter
+</I>&gt;<i> list when calling/defining it (I saw that this happens in the Lua code, for
+</I>&gt;<i> example). So do this:
+</I>&gt;<i>
+</I>&gt;<i> void f( int i )
+</I>&gt;<i> {
+</I>&gt;<i>   // function code here
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> f( 2 ); // function call
+</I>&gt;<i>
+</I>&gt;<i> instead of this:
+</I>&gt;<i>
+</I>&gt;<i> void f ( int i )
+</I>&gt;<i>  {
+</I>&gt;<i>   // function code here
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> f ( 2 ); // function call
+</I>&gt;<i>
+</I>&gt;<i> *3*. Line terminators: *THIS IS IMPORTANT TOO!* Use UNIX style (LF) line
+</I>&gt;<i> terminators, not DOS (CR/LF) or old Mac (CR).
+</I>&gt;<i>
+</I>&gt;<i> *4*. Comments: I generally favour C++ style comments (//), but it's
+</I>&gt;<i> perfectly OK to use C style (/**/) comments. I don't like automatic
+</I>&gt;<i> documentation generators like Doxygen, since I think that they tend to make
+</I>&gt;<i> the programmer overdocument the code to the point where it becomes hard to
+</I>&gt;<i> read because of the documentation alone. I'm inclined to underdocument my
+</I>&gt;<i> code; don't follow my style here. Ideally, you'd neither overdocument, nor
+</I>&gt;<i> underdocument your code; just document it as much as you think it's needed,
+</I>&gt;<i> without getting into too much details, but also without omitting important
+</I>&gt;<i> information. In particular, DON'T do this:
+</I>&gt;<i>
+</I>&gt;<i> // This function returns the sum of two numbers
+</I>&gt;<i> // Input: n1 - first number
+</I>&gt;<i> // Input: n2 - the second number
+</I>&gt;<i> // Output: the sum of n1 and n2
+</I>&gt;<i> int sum( int n1, int n2 )
+</I>&gt;<i> {
+</I>&gt;<i>   return n1 + n2;
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> If you do this, I'll personally hunt you for the rest of your life, or at
+</I>&gt;<i> least until you give up programming completely :) When something is
+</I>&gt;<i> self-obvious, documenting it more is pointless and decreases readability.
+</I>&gt;<i> One more thing: we're not addressing to beginner programmers, but rather to
+</I>&gt;<i> experienced/senior programmers, which is another good reason not to try to
+</I>&gt;<i> overdocument your code.
+</I>&gt;<i>
+</I>&gt;<i> Also, if you're using 3rd party code (from a library/support package for
+</I>&gt;<i> example) making it follow the above rules is nice, but not mandatory. Focus
+</I>&gt;<i> on functionality and writing your own code properly, and come back to indent
+</I>&gt;<i> other people's code when you really don't have anything better to do with
+</I>&gt;<i> your time.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081117/07661586/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081117/07661586/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000087.html">[eLua-dev] IMPORTANT: eLua coding style
+</A></li>
+	<LI>Next message: <A HREF="000091.html">[eLua-dev] IMPORTANT: eLua coding style
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#89">[ date ]</a>
+              <a href="thread.html#89">[ thread ]</a>
+              <a href="subject.html#89">[ subject ]</a>
+              <a href="author.html#89">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

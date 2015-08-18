@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 Windows compile issues
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20Windows%20compile%20issues&In-Reply-To=%3C81fbe47d1002020223p7b3f70ddjb89472739bed275a%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001161.html">
+   <LINK REL="Next"  HREF="001163.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 Windows compile issues</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20Windows%20compile%20issues&In-Reply-To=%3C81fbe47d1002020223p7b3f70ddjb89472739bed275a%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 Windows compile issues">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Feb  2 11:23:59 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001161.html">[eLua-dev] AVR32 Windows compile issues
+</A></li>
+        <LI>Next message: <A HREF="001163.html">[eLua-dev] AVR32 Windows compile issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1162">[ date ]</a>
+              <a href="thread.html#1162">[ thread ]</a>
+              <a href="subject.html#1162">[ subject ]</a>
+              <a href="author.html#1162">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Feb 2, 2010 at 11:41 AM, David &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">david at dcmedia.co.za</A>&gt; wrote:
+
+&gt;<i> Hi
+</I>&gt;<i>
+</I>&gt;<i> I am attempting to compile ELUA using AVR32 Studio in Windows. The
+</I>&gt;<i> problem that I have is that Elua provides a bunch of files in the
+</I>&gt;<i> Platform-&gt;Avr32 folder. Many of these files come from the AVR UC3
+</I>&gt;<i> Framework but.
+</I>&gt;<i> appear from an older version of Studio / Toolchain. I am not sure if
+</I>&gt;<i> Linux users have this same problem? Is there a later release available?
+</I>&gt;<i>
+</I>
+Linux users surely have the same problem, the platform library for Atmel
+wasn't updated for quite a while now.
+
+
+&gt;<i> Surely it would be better to use the files provided by the Atmel tools
+</I>&gt;<i> thus ensuring that they are compatible with the latest versions instead
+</I>&gt;<i> of providing these files with ELUA?
+</I>&gt;<i>
+</I>
+Does the installed toolchain come with pre-compiled CPU support libraries?
+What you wrote makes sense if we're using the verbatim copy of Atmel's
+support package for AVR32. Sometimes, though, we make some changes in the
+CPU support libraries to suit our needs. Small changes, granted, but still
+changes. Also, the AVR32 toolchain presents a different model from the
+regular ARM model that we're using, in that its toolchain comes with all the
+required libraries; for all our ARM targets we're using a very generic ARM
+toolchain (not tied to any CPU in particular) and we compile all the
+platform support files ourselves.
+If the toolchain comes with precompiled CPU libraries, and if we're not
+modifying anyhing in the Atmel libraries (I can't check right now), I can
+try to change this model to use the libraries already provided by Atmel. If
+compiling them must still be done by hand, however, this might break our
+build system. Another solution is to update the CPU support library inside
+eLua itself.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100202/81019671/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100202/81019671/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001161.html">[eLua-dev] AVR32 Windows compile issues
+</A></li>
+	<LI>Next message: <A HREF="001163.html">[eLua-dev] AVR32 Windows compile issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1162">[ date ]</a>
+              <a href="thread.html#1162">[ thread ]</a>
+              <a href="subject.html#1162">[ subject ]</a>
+              <a href="author.html#1162">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

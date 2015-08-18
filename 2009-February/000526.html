@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Timing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Timing&In-Reply-To=%3CEMEWEMEW2_DELIMl1H7xvb79fa40f6ba7b49deab5ad%2C%0A%09jbsnyder%40fanplastic.org%2C%20801736.2051234965616113.J%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000529.html">
+   <LINK REL="Next"  HREF="000528.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Timing</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Timing&In-Reply-To=%3CEMEWEMEW2_DELIMl1H7xvb79fa40f6ba7b49deab5ad%2C%0A%09jbsnyder%40fanplastic.org%2C%20801736.2051234965616113.J%3E"
+       TITLE="[eLua-dev] Timing">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 14:59:56 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000529.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+        <LI>Next message: <A HREF="000528.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#526">[ date ]</a>
+              <a href="thread.html#526">[ thread ]</a>
+              <a href="subject.html#526">[ subject ]</a>
+              <a href="author.html#526">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+----- &quot;Dado Sutter&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote: 
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Wed, Feb 18, 2009 at 02:19, James Snyder &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> &gt; wrote: 
+</I>&gt;<i> 
+</I>
+So, one of the things I've been doing recently is tracking timing data for adcscope.lua when running it. I've found certain things that increase or decrease the amount of time spent getting samples, but I hadn't actually checked what the bare minimum time would be for a dry loop like the following: 
+&gt;<i> 
+</I>&gt;<i> term.clrscr() 
+</I>&gt;<i> 
+</I>&gt;<i> while 1 do 
+</I>&gt;<i> t1 = tmr.start(0) 
+</I>&gt;<i> t2 = tmr.read(0) 
+</I>&gt;<i> dtime = tmr.diff(0,t2,t1) 
+</I>&gt;<i> term.gotoxy(1,1) 
+</I>&gt;<i> term.putstr(string.format(&quot;Time (us): %06d&quot;,dtime)) 
+</I>&gt;<i> end 
+</I>&gt;<i> 
+</I>&gt;<i> For LM3S6965, I get 79 us. Is this correct? 
+</I>
+&gt;<i> What is the MCLK freq on your board/kit pls ? 
+</I>
+50 MHz :-) 
+
+tmr.getclock(0) shows the same. 
+
+tmr.mindelay(0) shows 0, indicating according to the description that delays should be accurate to sub microsecond levels... 
+
+&gt;<i> I'll check the timming on my EK-LM3S8962 asap. 
+</I>&gt;<i> 
+</I>&gt;<i> Thanks for showing me that we not always need a tmr.stop() !! :) 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+I get generally the same results if I start the timer outside the loop and do two subsequent reads. 
+&gt;<i> Making t1 and t2 locals shaves off a little but not much. If I make tmr.start and tmr.read locals, things get down to 13 us. 
+</I>
+&gt;<i> Wow, what a difference ! I knew locals were faster (I think Roberto mentions this and other gems in <A HREF="http://www.lua.org/gems/sample.pdf">http://www.lua.org/gems/sample.pdf</A> ) but that seems quite a difference. 
+</I>
+I was reading that yesterday when I was experimenting with this :-) 
+
+I hadn't realized until reading that that one could define functions as locals. 
+
+&gt;<i> 
+</I>&gt;<i> 
+</I>
+Does this jibe with everyone else's findings? 
+
+&gt;<i> asap 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+If I do a local function between the two timers like math.sqrt, I get a stable 48 us/cycle: 
+
+&gt;<i> Good !!! Determinism is welcome here :) 
+</I>&gt;<i> (pls note this can obviously vary, depending on the function used here, at least for different arguments, as you've done in your example below) 
+</I>
+Right. I just wanted to pick something that I figured would require more than a few machine instructions to perform. Doing something like adding a number to s2 is certainly faster. There are also many functions that would run slower. 
+
+&gt;<i> 
+</I>&gt;<i> 
+</I>
+term.clrscr() 
+&gt;<i> 
+</I>&gt;<i> local t1, t2, s2 
+</I>&gt;<i> local tstart = tmr.start 
+</I>&gt;<i> local tread = tmr.read 
+</I>&gt;<i> local speedfun = math.sqrt 
+</I>&gt;<i> 
+</I>&gt;<i> while 1 do 
+</I>&gt;<i> s2 = 23 
+</I>&gt;<i> t1 = tstart(0) 
+</I>&gt;<i> s2 = speedfun(s2) 
+</I>&gt;<i> t2 = tread(0) 
+</I>&gt;<i> dtime = tmr.diff(0,t2,t1) 
+</I>&gt;<i> term.gotoxy(1,1) 
+</I>&gt;<i> term.putstr(string.format(&quot;Delay (us): %06d&quot;,dtime)) 
+</I>&gt;<i> en 
+</I>&gt;<i> 
+</I>&gt;<i> Making all the timing and sampling functions and variables local, here are the timings I'm looking at for adcscope.lua when getting samples from 4 channels. 
+</I>&gt;<i> 
+</I>&gt;<i> Pass table to getsamples, modify specified index ( adc.getsamples(v,1,adcvals,i ): 293 us (stable) 
+</I>&gt;<i> Convert returned table to integer, insert into table (adcvals[i] = adc.getsamples(v,1)[1]): ~470 us (fluctuates) 
+</I>&gt;<i> Replace nested table of values within adcvalues table (adcvals[i] = adc.getsamples(v,1)): ~450 (fluctuates, sometimes maybe up to 1000-2000 us) 
+</I>
+&gt;<i> gc seems to be working on 3rd test :( 
+</I>
+It may be going on the 2nd as well, I should log the maximum timing as well as mean and standar deviation to get some more statistics. 
+
+&gt;<i> 
+</I>
+&gt;<i> Very nice !! Thanks for the precise report again !! 
+</I>&gt;<i> Still, it seems a bit too slow to me :( for a Cortex-M3. I hope this is just a bad impression. 
+</I>
+Yeah, I certainly expect a performance hit for running in an interpreted language, but I'm not sure if this is expected performance. 
+
+Of course this is for desktops, but here is a performance comparison between compiled C and lua from the Computer Language Benchmarks Game: 
+<A HREF="http://shootout.alioth.debian.org/u32/benchmark.php?test=all&amp;lang=lua&amp;lang2=gcc&amp;box=1">http://shootout.alioth.debian.org/u32/benchmark.php?test=all&amp;lang=lua&amp;lang2=gcc&amp;box=1</A> 
+
+Of course this is a totally different chip and whatnot, but it is a single core performance comparison between C and Lua. Not sure if these ratios are similar for ARM or Thumb2 :-) 
+
+&gt;<i> 
+</I>&gt;<i> 
+</I>
+-jsnyder 
+
+&gt;<i> Dado 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+&gt;<i> 
+</I>
+
+&gt;<i> _______________________________________________ 
+</I>&gt;<i> Elua-dev mailing list 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________ Elua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/bcf032dc/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/bcf032dc/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000529.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+	<LI>Next message: <A HREF="000528.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#526">[ date ]</a>
+              <a href="thread.html#526">[ thread ]</a>
+              <a href="subject.html#526">[ subject ]</a>
+              <a href="author.html#526">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

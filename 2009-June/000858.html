@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C81fbe47d0906220410i38d39b3ag8e895d31eb2c2979%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000868.html">
+   <LINK REL="Next"  HREF="000859.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C81fbe47d0906220410i38d39b3ag8e895d31eb2c2979%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jun 22 13:10:30 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000868.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="000859.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#858">[ date ]</a>
+              <a href="thread.html#858">[ thread ]</a>
+              <a href="subject.html#858">[ subject ]</a>
+              <a href="author.html#858">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This idea has certainly crossed my mind. A stripped down (uC)Linux
+distribution running eLua and a sort of I/O expander like the one you
+mentioned might do the trick. Hack, you might not even need Linux at all.
+The standalone eLua distribution for PC is a good start for a fully
+standalone 'make your PC boot into eLua' distro (and it's enough to visit
+osdir.com to see that expanding this to handle things like disk I/O, USB or
+Ethernet isn't an impossible task). And this is something that interests me
+a lot, but sadly I don't have enough resources to advance on this front.
+Personally I'll keep on extending eLua for micros. But if you (or anybody
+else) are interested more in the PC (or netbook or whatever other variation)
+approach, then by all means, go for it :)
+
+Best,
+Bogdan
+
+On Mon, Jun 22, 2009 at 1:42 PM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+
+&gt;<i>  When I subscribed to this list half a year ago I confidently expected to
+</I>&gt;<i> be able to use a single chip Lua device in my projects by now. I wanted to
+</I>&gt;<i> use many such chips in a seriously distributed architecture with the
+</I>&gt;<i> processing kept near to the IO to simplify wiring. To avoid buying an
+</I>&gt;<i> endless succession of development boards I set a simple threshold
+</I>&gt;<i> specification of 512K on-chip flash, 64K on-chip RAM, Ethernet capability (I
+</I>&gt;<i> was prepared to compromise with a second chip for this). With this type of
+</I>&gt;<i> distributed architecture, I need lots of IO versatility (analog, PWM, UART,
+</I>&gt;<i> I2C, SPI, counters etc.) but multiplexed on relatively few pins since if you
+</I>&gt;<i> run out of IO you just add another chip. It should therefore be possible to
+</I>&gt;<i> have a simple 20-40 pin package which could be available in hand-solderable
+</I>&gt;<i> form.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> It is very disappointing that after many months still the only chip that
+</I>&gt;<i> comes near is the LPC2888 which seems to be buggy and expensive (the very
+</I>&gt;<i> minimalist LPC-H2888 prototype board is over $150). Looking at the
+</I>&gt;<i> schematics for this board really reinforced my intuition about the
+</I>&gt;<i> importance of on-chip memory &#8211; a ridiculous number of pins (and therefore
+</I>&gt;<i> PCB traces) is wasted on the external memory interface. And the economics
+</I>&gt;<i> are terrible - for just $20 more, you can get the new Acer Aspire Revo R3600
+</I>&gt;<i> nettop (in Linux rather than Vista trim). The latter has both wired and
+</I>&gt;<i> wireless networking, 1GB RAM and an 8GB SSD!
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> IO is the problem of course with an X86 platform. However in my research I
+</I>&gt;<i> found this incredibly poorly marketed chip:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://delcomproduct.com/products_USBIO.asp#DemoBrd">http://delcomproduct.com/products_USBIO.asp#DemoBrd</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> A versatile USB to IO pins chip for only $8! This looks like great
+</I>&gt;<i> universal IO problem solver. Unlike most other DIY USB solutions I&#8217;ve seen
+</I>&gt;<i> which require a driver and/or serial port emulator, this is HID based and
+</I>&gt;<i> therefore driverless on all major OS&#8217;s. I have ordered some of these chips
+</I>&gt;<i> and will report back how it goes.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I am beginning to think it might just be better to cooperate with market
+</I>&gt;<i> forces here since I suspect that X86 computing is going to keep widening the
+</I>&gt;<i> functionality gap and reducing the price gap. Rather than trying to squeeze
+</I>&gt;<i> Lua onto a cramped chip with no operating system, would it maybe be better
+</I>&gt;<i> to produce a custom cut-down Linux distro with Lua built in (and perhaps
+</I>&gt;<i> acting as the shell)?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> What do others think? Will there be cheap, single chip ARM devices meeting
+</I>&gt;<i> my spec available in the next few months?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090622/e96c4526/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090622/e96c4526/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000868.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="000859.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#858">[ date ]</a>
+              <a href="thread.html#858">[ thread ]</a>
+              <a href="subject.html#858">[ subject ]</a>
+              <a href="author.html#858">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

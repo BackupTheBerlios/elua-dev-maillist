@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problem communicating over USB-CDC
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20communicating%20over%20USB-CDC&In-Reply-To=%3CCAL4-wQpERdtEsKn%3D9Q%2Bm7z-tAKXG%2BTOqQk9pDDWuLjzPqKrsZw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004335.html">
+   <LINK REL="Next"  HREF="004337.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problem communicating over USB-CDC</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20communicating%20over%20USB-CDC&In-Reply-To=%3CCAL4-wQpERdtEsKn%3D9Q%2Bm7z-tAKXG%2BTOqQk9pDDWuLjzPqKrsZw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Problem communicating over USB-CDC">martinwguy at gmail.com
+       </A><BR>
+    <I>Tue Dec 10 12:08:23 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004335.html">[eLua-dev] Problem communicating over USB-CDC
+</A></li>
+        <LI>Next message: <A HREF="004337.html">[eLua-dev] Load lua and run from lua code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4336">[ date ]</a>
+              <a href="thread.html#4336">[ thread ]</a>
+              <a href="subject.html#4336">[ subject ]</a>
+              <a href="author.html#4336">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 09/12/2013, Richard Graham &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> Thanks for that suggestion. I did notice the delay on init but it
+</I>&gt;<i> doesn't bother me to much. I do have 4 virtual timers and I just tried
+</I>&gt;<i> them at 100 Hz, but it doesn't make any difference.
+</I>&gt;<i>
+</I>&gt;<i> Next step is configuring some TX/RX LEDs to help with debugging. Would
+</I>&gt;<i> it be satisfactory to hack that into uart.c, or would there be some
+</I>&gt;<i> better way?
+</I>
+No idea.
+
+You do have
+# define CON_UART_ID        CDC_UART_ID
+in your _conf file I presume?
+
+To see whether it's a console issue or a USB serial port issue, you
+can use uart.write (or whatever it's called) using serial port number
+176 instead of 0 or 1 or VIRT* - that should send stuff to the USB
+serial port if it is working.  It doesn't seem to have a symbolic name
+in eLua.
+
+    M
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004335.html">[eLua-dev] Problem communicating over USB-CDC
+</A></li>
+	<LI>Next message: <A HREF="004337.html">[eLua-dev] Load lua and run from lua code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4336">[ date ]</a>
+              <a href="thread.html#4336">[ thread ]</a>
+              <a href="subject.html#4336">[ subject ]</a>
+              <a href="author.html#4336">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

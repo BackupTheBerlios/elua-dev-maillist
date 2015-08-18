@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y1_ZK8pHAVM-5Wqc8%2B_cj8NMgyt1FgTGqYcTaOirfUuVg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002685.html">
+   <LINK REL="Next"  HREF="002690.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y1_ZK8pHAVM-5Wqc8%2B_cj8NMgyt1FgTGqYcTaOirfUuVg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jul 29 02:51:32 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002685.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002690.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2687">[ date ]</a>
+              <a href="thread.html#2687">[ thread ]</a>
+              <a href="subject.html#2687">[ subject ]</a>
+              <a href="author.html#2687">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Jul 28, 2011 at 12:01 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 25 July 2011 20:17, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> On Wed, Jul 20, 2011 at 5:38 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> &gt; - allowing more precise low sampling frequencies, like Etna's
+</I>&gt;&gt;&gt;&gt;<i> &gt; seismographs at 27.27Hz, for ADC (and I guess PWM).
+</I>&gt;&gt;&gt;&gt;<i> &gt; - getting higher precision for duty cycles
+</I>&gt;&gt;&gt;&gt;<i> &gt; - use of floating point
+</I>&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> This is the tough question. Generally I would be trying to minimize
+</I>&gt;&gt;&gt;&gt;<i> pain for implementation and ugliness in the interface I think.
+</I>&gt;&gt;&gt;<i> +1
+</I>&gt;<i>
+</I>&gt;&gt;<i> 2) Always use the same divisor as passed in.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> There is already an industry convention for passing floating point
+</I>&gt;<i> values as integers. It's called fixed point arithmetic, and that is
+</I>&gt;<i> already in use in eLua: time delays are fixed-point with radix 1000000
+</I>&gt;<i> (microseconds), duty cycles are fixed point with radix 100. &#160;The
+</I>&gt;<i> easiest-to-understand interface would be to allow people to specify
+</I>&gt;<i> the radix of the fixed-point values they are passing, and receive
+</I>&gt;<i> values back in that same radix they asked for.
+</I>
+Right, perhaps with a range of radices that make sense for the
+application, since using microseconds would be overkill and would
+limit sampling rates to the kilohertz range with 32-bit integers, I
+think.
+
+&gt;<i>
+</I>&gt;<i> In eLua we have three separate usage cases of arbitrary numbers being
+</I>&gt;<i> passed/returned as integers:
+</I>&gt;<i> 1. high frequencies for clocks, used in PWM clock, timer clock (also
+</I>&gt;<i> used in ADC), maybe also for I2C and SPI clocks and (even more maybe)
+</I>&gt;<i> UART baud rates.
+</I>&gt;<i> 2. low frequencies for ADC sampling rates and PWM frequencies
+</I>
+These don't have to be low frequencies unless hundreds of kilohertz or
+an order of magnitude higher is considered low :-)  Of course, the
+distinction is relative and for the most part, especially for ADC, I
+would expect sampling rates to be low given the rate of bytecode
+execution in Lua and the cost of doing operations on samples.  PWM can
+certainly run at a few megahertz on many of the platforms we use,
+though this doesn't provide excellent resolution in duty cycle.  That
+said, higher frequencies can be convenient when you want to use it as
+a cheap DAC with an LPF, or to even generate audio.
+
+&gt;<i> 3. duty cycles for PWM
+</I>&gt;<i>
+</I>&gt;<i> Let's look at these:
+</I>&gt;<i>
+</I>&gt;<i> The high frequencies already seem precise enough to me for our
+</I>&gt;<i> purposes, since they're in the 100,000s and 1,000,000, already giving
+</I>&gt;<i> a precision of 1 part in 100.000 except for baud rates, but I've only
+</I>&gt;<i> ever seen integer baud rates, and with a minimum of 110. Checking the
+</I>&gt;<i> actual baud rate that was set and caring about whether it is &#160;less
+</I>&gt;<i> than 0.5% different is Book 3 stuff, not really a design goal for eLua
+</I>&gt;<i> if it will make things more complicated.
+</I>
+I would agree.
+
+&gt;<i>
+</I>&gt;<i> The resolution of the clock that the low frequencies depend on is
+</I>&gt;<i> already returned by their setclock() (or setup()) functions, which
+</I>&gt;<i> return the actual frequency set. This may be very different from the
+</I>&gt;<i> one requested, often a power-of-two divisor of some fixed system clock
+</I>&gt;<i> rate, still in the 100,000s or 1,000,000s range.
+</I>
+Yep.  Some platforms probably could do frequency matching a little
+better, depending on whether there are multiple divisors that can be
+mixed to generate the clock, but that's a separate issue that depends
+on the platform.  When I've noticed that there are deficiencies of
+this sort, I've attempted to improve it.  stm32, for example, was
+adjusting only one clock divisor to get its frequencies which both
+limited the range (couldn't go below around 1Khz) and limited the
+resolution of the selectable frequencies.  There are established
+routines, sometimes provided by the vendor, for properly selecting
+clocks that should be used when finer integer resolution in clocks is
+important.
+
+&gt;<i>
+</I>&gt;<i> [[[
+</I>&gt;<i> As a separate issue, I notice that there is a function in the ADC
+</I>&gt;<i> module, also called setclock, that does something different from the
+</I>&gt;<i> other setclock() functions.
+</I>&gt;<i> i2c, spi and tmr.setclock() all set their own underlying hardware
+</I>&gt;<i> independently of each other, and they all have a setclock() function
+</I>&gt;<i> that works the same way as the others (nice!).
+</I>&gt;<i> adc.setclock() is different: it sets a lower frequency sampling rate
+</I>&gt;<i> based on a number of cycles of a chosen timer. The user can find the
+</I>&gt;<i> real frequency of the timer in question, since they can called
+</I>&gt;<i> tmr.setclock() (or tmr.getclock()) on the timer they are associating
+</I>&gt;<i> with the adc channel.
+</I>&gt;<i> I suggest adc.setclock() be renamed to something different, since it's
+</I>&gt;<i> a different function with different parameters from the other
+</I>&gt;<i> setclock() functions. In fact, it's more similar in what it does to
+</I>&gt;<i> the other modules' *.setup() functions.
+</I>&gt;<i> ]]]
+</I>
+This is a good point.  It does multiple things... It configures the
+ADC to trigger on the timer passed, and then sets up a timer so that
+it has a period close to the requested clock.  Setup might be OK, but
+I actually have a minor dislike for the convention of the &quot;setup&quot;
+function since they take different parameters depending on the
+peripheral that's being setup. For consistency sake this would make
+sense though.  As far as alternatives, maybe something like settimer
+or setuptimer might make more sense?  Alternately if we wanted ADC to
+support other trigger sources, it could be named something like
+settrigger or setuptrigger?
+
+Ideally, maybe the tmr module could be adapted so that it's functions
+could be used to set up the period, and then the ADC function could
+just ensure that the ADC would trigger on match (or whatever event it
+can use from the timer).  Besides some special configuration for
+timers to sometimes generate events or certain things like that, the
+current tmr API doesn't lend itself to configuring cycle durations.
+One could add another function, similar to set_match_int, or adapt
+set_match_int/rename it to allow it to configure hardware peripheral
+triggers in addition to interrupts.
+
+&gt;<i>
+</I>&gt;<i> In the last case, the duty cycles' true precision is the period of one
+</I>&gt;<i> cycle of the PWM waveform expressed in PWM clock cycles. That
+</I>&gt;<i> information is available to the user through pwm.setclock() and
+</I>&gt;<i> getclock() interfaces.
+</I>&gt;<i> However, the underlying granularity of the available duty cycles as a
+</I>&gt;<i> fraction of the PWM wave period changes whenever you change the PWM
+</I>&gt;<i> frequency.
+</I>&gt;<i> Users who want to get the maximum precision from their PWM duty cycle
+</I>&gt;<i> will need to do some interesting math coding to achieve this, but it
+</I>&gt;<i> should be possible.
+</I>
+As I was mentioning before, there are some established/recommended
+routines that vendors provide for doing things like this.  For STM32,
+for example, we do the following for PWM and I think ADC frequencies:
+
+period = (base peripheral clock) / desired_clock;
+prescaler = ( period / 65536 ) + 1;
+period = period/prescaler;
+
+period (automatic reload value) and prescaler are then set to
+registers after subtracting 1.
+
+The resulting clock can then be computed as:
+(base peripheral clock) / prescaler / period
+
+With a 32 MHz clock this gives error along these lines along with
+minimum step sizes (100/period)
+<A HREF="http://i.imgur.com/YwqB8.png">http://i.imgur.com/YwqB8.png</A>
+
+This is a little platform specific in terms of register sizes and max
+prescaler sizes, but something similar could be adapted for most
+platforms.
+
+&gt;<i> The Lua code to do that would be good as an
+</I>&gt;<i> advanced example in the eLua manual. Such power users would need to
+</I>&gt;<i> figure out the period in clock cycles of the PWM at the actual
+</I>&gt;<i> frequency that was set, then set the duty cycle with a radix that is
+</I>&gt;<i> equal to that. That is awkward in the current pwm.setup() function,
+</I>&gt;<i> since it takes duty cycle and frequency at the same time, so they'd
+</I>&gt;<i> have to call it twice, once with the wrong duty cycle and once with
+</I>&gt;<i> the right one once you've found out the actual PWM frequency.
+</I>
+I think it would be nice to show how to do the manual approach from
+Lua and to maybe make the interface a little less awkward.  I also
+like making the default behavior one that doesn't require that the
+user write an algorithm to set PWM up as long as we can do a pretty
+good job automatically.
+
+&gt;<i>
+</I>&gt;<i> Furthermore, on AVR32, being told to set both the frequency and duty
+</I>&gt;<i> cycle causes a glitch in the output because the stupid hardware
+</I>&gt;<i> interface can only set either the frequency or the duty cycle once per
+</I>&gt;<i> output cycle so you get one cycle either at the new frequency and old
+</I>&gt;<i> duty cycle or at the old frequency with the new duty cycle.
+</I>
+Interesting.  I assume that you can temporarily stop the peripheral,
+set the values and then start it again though?  Sure you might lose
+some clock cycles, but I'm not sure we're guaranteeing that PWM is
+continuous through successive calls.  Not sure if we would need to do
+so either.
+
+&gt;<i>
+</I>&gt;<i> Worse yet, pwm.setup(id, frequency, duty_cycle) takes two parameters
+</I>&gt;<i> both of which are in the proposed fixed-point format, which is ugly.
+</I>&gt;<i> Even in the naive case where you get higher precision by giving a duty
+</I>&gt;<i> cycle radix of 1000 or 1000000, you'd need to supply a bogus extra
+</I>&gt;<i> parameter for the undesired precision of the PWM output frequency.
+</I>
+This is another reason why I'm not a massive fan of &quot;setup&quot; functions,
+I kindof think this should be two separate functions.
+
+Would we really need a radix other than 1 for PWM frequencies though?
+I'm not sure if non-integer frequencies are ever needed.
+
+&gt;<i>
+</I>&gt;<i> These are three arguments in favour of splitting pwm.setup() into two
+</I>&gt;<i> functions like pwm.setfreq() and pwm.setduty(). &#160;A fourth is that all
+</I>&gt;<i> the other modules' setup() functions are usually called once at start
+</I>&gt;<i> of program, then the output is varied as the program runs using
+</I>&gt;<i> module-specific functions, whereas the current pwm.setup() is used
+</I>&gt;<i> repeatedly while the programming is running to vary the output.
+</I>
+Yeah, I've felt this way for a while now.  Bogdan, any comments on
+this front? We're starting to get into a number of API changes and
+proposals here :-)
+
+&gt;<i>
+</I>&gt;&gt;<i> 3) The divisor returned is determined by the low-level code in order
+</I>&gt;&gt;<i> to provide best accuracy in conveying the frequency selected given the
+</I>&gt;&gt;<i> available variable size for storing the values.
+</I>&gt;<i>
+</I>&gt;<i> Trying to select the most precise pair of integers to represent an
+</I>&gt;<i> arbitrary value is actually quite a difficult math-theoretical
+</I>&gt;<i> problem, not to mention the difficullty in the user code that would be
+</I>&gt;<i> necessary to correctly handle them.
+</I>
+This is true.  It's an optimization problem.  There are some simple
+single-shot approaches that have what are most likely acceptable error
+levels like the one mentioned earlier.  Really choosing things
+optimally is harder and is iterative unless one has a lookup table.
+I'd be OK with selecting one that's not perfect, but could be adjusted
+a little to provide low error in the ranges that the peripherals are
+generally used.
+
+&gt;<i>
+</I>&gt;&gt;<i> As a potential additional option, 1) could be revised such that if no
+</I>&gt;&gt;<i> divisor is passed, return divisor is always 1, but if a 1 is passed
+</I>&gt;&gt;<i> than the divisor is allowed to float as in 3) above.
+</I>&gt;<i>
+</I>&gt;<i> We already have the first part, and the defaults are 100 for the duty
+</I>&gt;<i> cycle, 1,000,000 for delays and 1 for frequencies. &#160;I hink the second
+</I>&gt;<i> idea is a nightmare for us and for the users.
+</I>&gt;<i>
+</I>&gt;&gt;<i> provide consistency with current behavior and maximum potential return
+</I>&gt;&gt;<i> value accuracy.
+</I>&gt;<i>
+</I>&gt;<i> I don't value euther of these. On the one hand I'm not afraid to
+</I>&gt;<i> change the platform (or the Lua) interfaces if that gives a worthwhile
+</I>&gt;<i> improvement in what you can do or how easy it is to understand, and
+</I>&gt;<i> the current interface did not consider the practical problems that we
+</I>&gt;<i> are trying to improve now.
+</I>&gt;<i> &#160;I seem to remember someone saying that, before we release eLua 1.0,
+</I>&gt;<i> maintaining backward compatability is not a problem, especially given
+</I>&gt;<i> the small user base. &#160;Of course, we don't want to break things for no
+</I>&gt;<i> significant gain.
+</I>
+I could have worded that better, and I agree with what you just said
+here, I believe I was just saying that it was a plus that it wouldn't
+break existing functionality, which does have some value.
+
+&gt;<i> &#160;I don't think total laboratory-standard mathematical accuracy is as
+</I>&gt;<i> important a degisn goal for eLua as being simple to use and having an
+</I>&gt;<i> Lua interface that is pleasant to use and easy to understand. &#160;It's a
+</I>&gt;<i> design tradeoff, since lab accuracy requires a different set of
+</I>&gt;<i> interfaces than one that is easy-to-use but adequate for most
+</I>&gt;<i> purposes.
+</I>
+I don't mean to say that they really need to be optimal, we would end
+up wasting computational time and memory with some iterative
+optimization algorithm or lookup tables.  The reason that I said
+&quot;maximum _potential_ return value accuracy&quot; was that this would give
+the backend implementer the most precise representation of the
+frequency the user wanted.  Again, I would be happy with a simple
+non-iterative algorithm with a known worst-case that is acceptable.
+
+&gt;<i> &#160;Already, moving to optional variable radix fixed point for some
+</I>&gt;<i> values is a step towards higher accuracy and away from easy-to-use,
+</I>&gt;<i> but seems to bring some advantages.
+</I>&gt;<i>
+</I>&gt;&gt;<i> As far as rethinking the API is concerned, I think either way we come
+</I>&gt;&gt;<i> back to an issue of fractional frequencies with integer expressions
+</I>&gt;&gt;<i> problem, unless the integer builds are to have different functionality
+</I>&gt;&gt;<i> than the floating point builds.
+</I>&gt;<i>
+</I>&gt;<i> That was my first idea for low frequencies: optional FP, but I think
+</I>&gt;<i> your optional divisor (or radix in fixed-point math language) solution
+</I>&gt;<i> may be a better one.
+</I>
+It's a tradeoff, but since we already have some pre-selected radix
+notation, I think making it an option that the user can provide to
+select different radices make sense.  I would tend to agree that just
+going with fixed-point (powers of 10) might be the least messy to deal
+with, and also makes for easy mental digesting of parameters and
+return values for the programmer.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002685.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002690.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2687">[ date ]</a>
+              <a href="thread.html#2687">[ thread ]</a>
+              <a href="subject.html#2687">[ subject ]</a>
+              <a href="author.html#2687">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

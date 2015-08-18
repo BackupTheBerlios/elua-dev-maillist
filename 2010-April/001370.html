@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problem with space memory in Lm3s8962
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20with%20space%20memory%20in%20Lm3s8962&In-Reply-To=%3Cs2gd3b6d881004281038z418fdb80g82d2ada8fdabc4ac%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001369.html">
+   <LINK REL="Next"  HREF="001371.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problem with space memory in Lm3s8962</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20with%20space%20memory%20in%20Lm3s8962&In-Reply-To=%3Cs2gd3b6d881004281038z418fdb80g82d2ada8fdabc4ac%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Problem with space memory in Lm3s8962">dadosutter at gmail.com
+       </A><BR>
+    <I>Wed Apr 28 19:38:03 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001369.html">[eLua-dev] Problem with space memory in Lm3s8962
+</A></li>
+        <LI>Next message: <A HREF="001371.html">[eLua-dev] Problem with space memory in Lm3s8962
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1370">[ date ]</a>
+              <a href="thread.html#1370">[ thread ]</a>
+              <a href="subject.html#1370">[ subject ]</a>
+              <a href="author.html#1370">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+On Wed, Apr 28, 2010 at 12:23, C&#233;sar Ra&#250;l Mamani Choquehuanca &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesarmamani82 at gmail.com</A>&gt; wrote:
+
+&gt;<i>  Hello all,
+</I>&gt;<i>
+</I>&gt;<i> I'm using a LM3S8962 for my programming, but i understand why comments take
+</I>&gt;<i> up space in memory controller.
+</I>&gt;<i>
+</I>I didn't understand exactly if you _do_ understand or if you _don't_
+understand why comments in programs take up space in memory.
+Files stored in the ROMFS occupies Flash memory, whether if it is code,
+comments or whatever.
+You can save Flash space if your source files are well commented using the
+&quot;romfs&quot; build parameter. It currently supports two diferent modes, other
+than the default &quot;verbatim&quot; that is means store the files as they are.
+1 - *scons board=EK-LM3S8962 romfs=compress prog*
+     Files are stored as source (Lua will compile them at load-time) but an
+algorithm removes comments, spaces, compresses var names and everything
+possible. The file stays semantically identical to your original but it now
+occupies much less space.
+2 - *scons board=EK-LM3S8962 romfs=compile prog
+    *Lua source files are compiled and only the bytecodes are stored in the
+ROMFS. You don't have access to your source code anymore (i.e.: can't
+io.read it as string lines...) but it takes even less space in the ROMFS and
+it also loads a bit faster, because Lua doesn't have to parse and compile it
+before executing.
+
+Pls note that the examples above are for your EK-LM3S8962 kit but the romfs
+option works for any target. It works from eLua v0.7 on.
+
+ Also I deleted almost files of ROMFS and can't send my lua file to lm3s8962
+&gt;<i> cause it send me the next message for example &quot;got 4883 bytes&quot;
+</I>&gt;<i>
+</I>This is usually a message sent from the &quot;recv&quot; shell command right ?
+In this case we don't have support yet to send Lua bytecodes over XModem and
+you need to remove manually your comments from your source or get a kit with
+some more ram :(
+This is easially (and fun !) done in Lua using string.gsub or similar
+techniques. You can also search the web for the Lua lib that does source
+code compressing and use it.
+
+ even i reduce my code or remove os comments.
+&gt;<i>
+</I>Do you mean, you have removed all your comments already and you still can't
+transmit the source via XModem from a terminal ? I have to check if we have
+some constraints like a &quot;file buffer&quot; limitation but I don't think so.
+
+
+&gt;<i> Before i dont have that problem. Im using the svn public repository.
+</I>&gt;<i>
+</I>
+Maybe your program have been growing too much since then ?
+
+And congrats again for your great project !!!!!!!!
+<A HREF="http://wiki.eluaproject.net/Anubisway">http://wiki.eluaproject.net/Anubisway</A>
+
+Best
+&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;<i>
+</I>
+Best
+Dado
+
+
+
+&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100428/1e52abec/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100428/1e52abec/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001369.html">[eLua-dev] Problem with space memory in Lm3s8962
+</A></li>
+	<LI>Next message: <A HREF="001371.html">[eLua-dev] Problem with space memory in Lm3s8962
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1370">[ date ]</a>
+              <a href="thread.html#1370">[ thread ]</a>
+              <a href="subject.html#1370">[ subject ]</a>
+              <a href="author.html#1370">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

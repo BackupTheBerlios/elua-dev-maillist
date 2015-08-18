@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A Few Models For Dealing With ADC Samples
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1IDsv13b345b42cc8d1e10b6a76%2C%0A%09jbsnyder%40fanplastic.org%2C%20A1B5759F-3A83-49D4-8008-BD9%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000560.html">
+   <LINK REL="Next"  HREF="000561.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A Few Models For Dealing With ADC Samples</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1IDsv13b345b42cc8d1e10b6a76%2C%0A%09jbsnyder%40fanplastic.org%2C%20A1B5759F-3A83-49D4-8008-BD9%3E"
+       TITLE="[eLua-dev] A Few Models For Dealing With ADC Samples">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Feb 19 20:54:56 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000560.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+        <LI>Next message: <A HREF="000561.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#565">[ date ]</a>
+              <a href="thread.html#565">[ thread ]</a>
+              <a href="subject.html#565">[ subject ]</a>
+              <a href="author.html#565">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 18, 2009, at 6:35 PM, Andre Carregal wrote:
+
+&gt;<i> On Wed, Feb 18, 2009 at 7:00 PM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> I didn't mean to imply that there was a problem with this part of the
+</I>&gt;&gt;<i> approach.  I think this would be useful for situations where you  
+</I>&gt;&gt;<i> know you
+</I>&gt;&gt;<i> want to collect samples about an event, but you're not sure if you'd
+</I>&gt;&gt;<i> necessarily pick up the results before a ring implementation might  
+</I>&gt;&gt;<i> result in
+</I>&gt;&gt;<i> samples being overwritten.
+</I>&gt;<i>
+</I>&gt;<i> But assuming that the event or generator is continuous, this could
+</I>&gt;<i> lead to the program reading really old data, no? Wouldn't this be
+</I>&gt;<i> somewhat strange since the data flow would tend to be very unrelated
+</I>&gt;<i> to the real time flow?
+</I>
+That may be true.  The problem with hypothetical situations is that  
+their number is infinite :-)
+
+&gt;<i> You can look at this as something similar to the choices offered by
+</I>&gt;<i> TCP and UDP. You can offer continuity or real time, but not both at
+</I>&gt;<i> the same time if the reading loop is not fast enough to follow the
+</I>&gt;<i> event flow. :o)
+</I>
+Right, although at least we likely don't have to worry about the  
+security issues that appear with things coming over TCP/UDP :-)
+
+&gt;<i>
+</I>&gt;&gt;&gt;<i> Timeout can be left for future versions, the point was that the
+</I>&gt;&gt;&gt;<i> constructor uses named parameters, which facilitates extensions.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Right.  I'm not exactly sure what the best route is for this now.   
+</I>&gt;&gt;<i> The
+</I>&gt;&gt;<i> approach I'm inclined to take for now is to return nil values or  
+</I>&gt;&gt;<i> something
+</I>&gt;&gt;<i> similar if there are no pending operations which could provide the  
+</I>&gt;&gt;<i> requested
+</I>&gt;&gt;<i> set of samples.  This should be fairly robust for built-in ADCs,  
+</I>&gt;&gt;<i> but might
+</I>&gt;&gt;<i> have some ugly situations if you had an external ADC that just got  
+</I>&gt;&gt;<i> unplugged
+</I>&gt;&gt;<i> :-)
+</I>&gt;<i>
+</I>&gt;<i> I'd suggest returning an empty table when there were no samples and a
+</I>&gt;<i> nil+errmsg when there was an error.
+</I>
+OK, that seems reasonable.  In the latter case we actually return a  
+luaL_error, although those are mainly done in cases where buffer  
+allocations fail.  For something more recoverable, it seems reasonable  
+to complain but not bail out completely.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> Here a few use cases would help determining what way to go. I  
+</I>&gt;&gt;&gt;<i> think it
+</I>&gt;&gt;&gt;<i> may be possible to set timer types (and behaviors) on the  
+</I>&gt;&gt;&gt;<i> constructor,
+</I>&gt;&gt;&gt;<i> but I'd need to understand better your needs.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I think this is one of the critical things here.  I know ways in  
+</I>&gt;&gt;<i> which I
+</I>&gt;&gt;<i> would use this personally, and have built in a fair amount of  
+</I>&gt;&gt;<i> infrastructure
+</I>&gt;&gt;<i> for that.  The problem is that I can think of innumerable features  
+</I>&gt;&gt;<i> that
+</I>&gt;&gt;<i> _could_ be useful in hypothetical situations :-)  It would be nice  
+</I>&gt;&gt;<i> to have a
+</I>&gt;&gt;<i> rundown of common usage scenarios and see how well whatever  
+</I>&gt;&gt;<i> implementation
+</I>&gt;&gt;<i> is chosen fulfills that range.  This would allow us to draw the  
+</I>&gt;&gt;<i> line on
+</I>&gt;&gt;<i> features.  I'm certainly not aiming to reproduce MATLAB's data  
+</I>&gt;&gt;<i> acquisition
+</I>&gt;&gt;<i> toolbox or anything :-)
+</I>&gt;<i>
+</I>&gt;<i> Agreed, but for that a wiki page is better than a mail thread. :o)
+</I>
+Yeah.  Maybe we should consider that.  I can post some of this up on  
+the eLua wiki, so that it is in one place while I'm working on  
+implementation and people can make changes when needed.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> Well, once you have the API defined, you can call it from both  
+</I>&gt;&gt;&gt;<i> sides.
+</I>&gt;&gt;&gt;<i> It would depend more on which you would prefer.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Sorry, what I meant here was that the implementation of the API  
+</I>&gt;&gt;<i> itself might
+</I>&gt;&gt;<i> be a mixture of Lua and C.  Looking a bit at some things in PIL  
+</I>&gt;&gt;<i> though,
+</I>&gt;&gt;<i> suggest to me that you could still do the module implementation on  
+</I>&gt;&gt;<i> the C
+</I>&gt;&gt;<i> side.
+</I>&gt;<i>
+</I>&gt;<i> Exactly, but that choice usually depends more on system restrictions
+</I>&gt;<i> than on style.
+</I>&gt;<i>
+</I>&gt;&gt;<i> OT: Speaking of which I should just break down and get a copy of  
+</I>&gt;&gt;<i> PIL 2, I'm
+</I>&gt;&gt;<i> mainly using the online version of the first edition :-)  Is there  
+</I>&gt;&gt;<i> any way
+</I>&gt;&gt;<i> to get an electronic version of the second edition or is there just  
+</I>&gt;&gt;<i> the
+</I>&gt;&gt;<i> paper version?
+</I>&gt;<i>
+</I>&gt;<i> No PiL 2 electronic version yet.
+</I>&gt;<i>
+</I>&gt;<i> &lt;plug&gt;
+</I>&gt;<i> If you decide to get the cellulose version, keep in mind that buying
+</I>&gt;<i> it from lua.org or luaforge.net helps each project respectively, it's
+</I>&gt;<i> your choice. hehe
+</I>&gt;<i> &lt;/plug&gt;
+</I>
+Hmm.. If I had more spare funds, I might do both.  Perhaps I'll go  
+with lua.org for now since I've not yet thanked them for such a lovely  
+and simple but flexible language :-)
+
+(That said, I also have to say that I'm also a large fan certain  
+language written by a Dutch man, who may happen to currently work for  
+Google.  Different tools for different situations.  This other  
+language could definitely learn a thing or two about VM  
+implementation, if not some other things, from Lua.)
+
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/dcf59e83/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/dcf59e83/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/dcf59e83/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/dcf59e83/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000560.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+	<LI>Next message: <A HREF="000561.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#565">[ date ]</a>
+              <a href="thread.html#565">[ thread ]</a>
+              <a href="subject.html#565">[ subject ]</a>
+              <a href="author.html#565">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

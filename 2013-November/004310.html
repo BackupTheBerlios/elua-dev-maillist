@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32F4
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4&In-Reply-To=%3C20131129164747.GD4252%40%28none%29%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004309.html">
+   <LINK REL="Next"  HREF="004311.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32F4</H1>
+    <B>Richard M&#246;hn</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4&In-Reply-To=%3C20131129164747.GD4252%40%28none%29%3E"
+       TITLE="[eLua-dev] STM32F4">richard.moehn at fu-berlin.de
+       </A><BR>
+    <I>Fri Nov 29 17:47:47 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004309.html">[eLua-dev] STM32F4
+</A></li>
+        <LI>Next message: <A HREF="004311.html">[eLua-dev] io.open nil return on mBed?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4310">[ date ]</a>
+              <a href="thread.html#4310">[ thread ]</a>
+              <a href="subject.html#4310">[ subject ]</a>
+              <a href="author.html#4310">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Nov 29, 2013 at 10:24:11AM -0600, Bill wrote:
+&gt;<i> I seem to be missing a step, I was getting a fail at comproto, but now it
+</I>&gt;<i> is only at receive.
+</I>&gt;<i> I get:
+</I>&gt;<i> &gt; stm32f4discovery.comproto.receive()
+</I>&gt;<i> stdin:1: attempt to call field 'receive' (a nil value)
+</I>&gt;<i> stack traceback:
+</I>&gt;<i>         stdin:1: in main chunk
+</I>&gt;<i>         [C]: ?
+</I>
+You might open the eLua shell, start the Lua shell and type the
+following:
+
+    &gt; = stm32f4discovery
+    &gt; = stm32f4discovery.comproto
+    &gt; = stm32f4discovery.comproto.receive
+
+If the first one fails, it might be because platform_name was not
+properly set in boards/known/stm32f4discovery.lua. If the second one
+fails, something with the registration of the module went wrong. If the
+third one fails, something with the registration of the function went
+wrong.
+
+And there is an issue with you stripped-down version of receive(): One
+can't use the normal &quot;return&quot; from C to return a value to Lua. Instead,
+it must be pushed onto the stack and then you return the number of
+things you have pushed on the stack. Therefore, the function should look
+like this:
+
+    static int stm32f4discovery_comproto_receive(lua_State *L)
+    {
+        lua_pushinteger(L, 42);
+        return 1;
+    }
+
+You can read about this here:
+<A HREF="http://www.lua.org/manual/5.1/manual.html#3">http://www.lua.org/manual/5.1/manual.html#3</A> The book Programming in Lua
+probably is an easier introduction, though.
+
+Best,
+
+Richard
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004309.html">[eLua-dev] STM32F4
+</A></li>
+	<LI>Next message: <A HREF="004311.html">[eLua-dev] io.open nil return on mBed?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4310">[ date ]</a>
+              <a href="thread.html#4310">[ thread ]</a>
+              <a href="subject.html#4310">[ subject ]</a>
+              <a href="author.html#4310">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

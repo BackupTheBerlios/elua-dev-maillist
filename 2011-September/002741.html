@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua net module/UIP &amp; multiple connections
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module/UIP%20%26%20multiple%20connections&In-Reply-To=%3CCANKDJfbbJ0BpsdikjPvt5wLaNWH7GY6Ur68x7rdJf681NTvuuA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002736.html">
+   <LINK REL="Next"  HREF="002744.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua net module/UIP &amp; multiple connections</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module/UIP%20%26%20multiple%20connections&In-Reply-To=%3CCANKDJfbbJ0BpsdikjPvt5wLaNWH7GY6Ur68x7rdJf681NTvuuA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua net module/UIP &amp; multiple connections">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Sep 27 09:15:23 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002736.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+        <LI>Next message: <A HREF="002744.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2741">[ date ]</a>
+              <a href="thread.html#2741">[ thread ]</a>
+              <a href="subject.html#2741">[ subject ]</a>
+              <a href="author.html#2741">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Thu, Sep 22, 2011 at 11:44 AM, Michael Sallaway &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">michael at sallaway.com</A>&gt;wrote:
+
+&gt;<i> Hi all,
+</I>&gt;<i>
+</I>&gt;<i> I've developed a board based on an LM3S6950, and added support for it to
+</I>&gt;<i> eLua -- it's basically acting as a giant ethernet-&gt;RS485 converter, with
+</I>&gt;<i> different streams for each of the 3 different UARTs.
+</I>&gt;<i>
+</I>&gt;<i> I've got most of it working -- it's running eLua on the platform, I've got
+</I>&gt;<i> a console, and it's run the lhttpd test server fine, so I know all the base
+</I>&gt;<i> components are working properly. However, when I run my script, it's not
+</I>&gt;<i> accepting connections most of the time, and when it does, it doesn't process
+</I>&gt;<i> any data.
+</I>&gt;<i>
+</I>&gt;<i> I've copied the relevant parts of my script below. I'm basically using the
+</I>&gt;<i> timeout specifiers to the net.accept() and net.recv() calls to poll for new
+</I>&gt;<i> connections, and then poll for data on each open socket. However, I'm
+</I>&gt;<i> finding that when I initiate a connection from another machine (using netcat
+</I>&gt;<i> to dump a fixed packet over the network to the dev board), it's only
+</I>&gt;<i> accepted about 20% of the time (guesstimate), and when it is accepted, it
+</I>&gt;<i> doesn't ever process any of the data.
+</I>&gt;<i>
+</I>&gt;<i> So, my question(s) are thus: for the networking implementation, does the
+</I>&gt;<i> lua script have to be waiting/blocking in the net.accept() or net.recv()
+</I>&gt;<i> call to actually receive or process any data? Or does the underlying network
+</I>&gt;<i> system queue data until it's requested?  If so, then does anyone have any
+</I>&gt;<i> suggestions as to what may be causing my problems?
+</I>&gt;<i>
+</I>
+The short answer to your question is &quot;the TCP/IP implementation in eLua is
+buggy&quot;. So buggy, in fact, that it sometimes can simply loose packages. I've
+just discovered this recently. I suspect this is the case with your
+application. I have a fix in the works, but I can't estimate when it will be
+ready.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> while true do
+</I>&gt;<i>    -- check to see if there is anyone trying to connect (port 7474, and use
+</I>&gt;<i> timer 2 to timeout after 10ms)
+</I>&gt;<i>    local sock, rip, acceptErr = net.accept(7474, 2, 10000)
+</I>&gt;<i>
+</I>&gt;<i>    -- if we got a connection, remember it
+</I>&gt;<i>    if (acceptErr == net.ERR_OK) then
+</I>&gt;<i>        local newEntry = { socket = sock, remoteip = rip }
+</I>&gt;<i>        table.insert(sockets, newEntry)
+</I>&gt;<i>        print(&quot;Got connection on socket: &quot;, sock)
+</I>&gt;<i>        print(&quot;Remote ip: &quot; .. net.unpackip(rip, &quot;*s&quot;))
+</I>&gt;<i>    end
+</I>&gt;<i>
+</I>&gt;<i>    -- iterate through all sockets, see if there's any data, and if so,
+</I>&gt;<i> update the states as appropriate
+</I>&gt;<i>    for i,v in ipairs(sockets) do
+</I>&gt;<i>        local socket = v[&quot;socket&quot;]
+</I>&gt;<i>        local remoteip = v[&quot;remoteip&quot;]
+</I>&gt;<i>        local data = { }
+</I>&gt;<i>
+</I>&gt;<i>        -- listen for 10ms (on timer 2) for up to 2048 bytes from this
+</I>&gt;<i> socket
+</I>&gt;<i>        data, readErr = net.recv(socket, 2048, 2, 10000)
+</I>&gt;<i>        if (readErr == net.ERR_OK) then
+</I>&gt;<i>            print(&quot;received data, processing # bytes: &quot;, #data)
+</I>&gt;<i>            processPacket(data);
+</I>&gt;<i>        elseif (readErr == net.ERR_CLOSED) then
+</I>&gt;<i>            -- close and forget the socket
+</I>&gt;<i>            print(&quot;socket closed, deleting: &quot;, socket)
+</I>&gt;<i>            net.close(socket)
+</I>&gt;<i>            table.remove(sockets, i)
+</I>&gt;<i>
+</I>&gt;<i>        elseif (readErr == net.ERR_ABORTED) then
+</I>&gt;<i>            print(&quot;error: socket read aborted:&quot;, socket)
+</I>&gt;<i>
+</I>&gt;<i>        elseif (readErr == net.ERR_OVERFLOW) then
+</I>&gt;<i>            print(&quot;error: socket read overflowed: &quot;, socket)
+</I>&gt;<i>
+</I>&gt;<i>        elseif (readErr == net.ERR_TIMEDOUT or readErr == net.ERR_TIMEOUT)
+</I>&gt;<i> then
+</I>&gt;<i>            -- typo in the API; it can be either (TIMED or TIME)OUT.
+</I>&gt;<i>        else
+</I>&gt;<i>            print(&quot;error: don't know what the read result code was! socket /
+</I>&gt;<i> resultCode: &quot;, socket, readErr)
+</I>&gt;<i>        end
+</I>&gt;<i>    end
+</I>&gt;<i>
+</I>&gt;<i>    for k,v in pairs(outputPackets) do
+</I>&gt;<i>        -- if the outputPackets table for this stream isn't empty, and the
+</I>&gt;<i> UART Tx is empty, start a packet
+</I>&gt;<i>        if (next(v) ~= nil) then
+</I>&gt;<i>            if (lm3s.uart.txEmpty(k - 1)) then
+</I>&gt;<i>                print(&quot;Empty Tx for UART, will start new packet: &quot;, k-1);
+</I>&gt;<i>                uartTxInterrupt(k - 1);
+</I>&gt;<i>            end
+</I>&gt;<i>        end
+</I>&gt;<i>    end
+</I>&gt;<i>
+</I>&gt;<i>    collectgarbage('collect')
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> ______________________________**_________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/**mailman/listinfo/elua-dev&lt;https://lists.berlios.de/mailman/listinfo/elua-dev</A>&gt;
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110927/e5769bef/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110927/e5769bef/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002736.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+	<LI>Next message: <A HREF="002744.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2741">[ date ]</a>
+              <a href="thread.html#2741">[ thread ]</a>
+              <a href="subject.html#2741">[ subject ]</a>
+              <a href="author.html#2741">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

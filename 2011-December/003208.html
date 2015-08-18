@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Inversion of timer.*() parameters
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Inversion%20of%20timer.%2A%28%29%20parameters&In-Reply-To=%3CCAL4-wQoS-wkR1N2Tb-A6xULL5QVe-GZCZP1viy%3D8aSCC2M5qag%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003213.html">
+   <LINK REL="Next"  HREF="003209.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Inversion of timer.*() parameters</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Inversion%20of%20timer.%2A%28%29%20parameters&In-Reply-To=%3CCAL4-wQoS-wkR1N2Tb-A6xULL5QVe-GZCZP1viy%3D8aSCC2M5qag%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Inversion of timer.*() parameters">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Dec 29 21:09:45 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003213.html">[eLua-dev] WebBuilder and Flash//HTML 5
+</A></li>
+        <LI>Next message: <A HREF="003209.html">[eLua-dev] Inversion of timer.*() parameters
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3208">[ date ]</a>
+              <a href="thread.html#3208">[ thread ]</a>
+              <a href="subject.html#3208">[ subject ]</a>
+              <a href="author.html#3208">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>In the recent &quot;system timer&quot; mods, an additional change was made that
+inverst the order of the timer parameters from
+
+    tmr.delay(timer_id, delay)
+to
+    tmr.delay(delay, timer_id)
+
+and similarly for the other tmr.*() functions
+
+Please let us think again about this change, about which there was no
+discussion that I saw.
+
+The very small advantage of it is to be able to write
+     tmr.delay(100)
+instead of
+     tmr.delay(tmr.SYS_TIMER, 100)
+which is just syntactic sugar with no operational advantage.
+
+The disavantages are
+- it breaks almost all code ever written for eLua
+- it makes it impossible to write code that works in different
+versions of eLua, unless you do all delays with for loops tuned to the
+CPU speed and use timers for nothing else, since there is no sane way
+to find out which syntax is being used.
+- all existing firmware that we have produced and shipped would need
+changing if we decide to follow this change, and all the alternate
+firmware versions we have published become junk
+- people writing eLua video tutorials cannot speak about timers unless
+they include a section on changing the syntax according to which
+version of eLua you are using, or resign themselves to it not working
+in all existing (or all future) boards
+
+Code that users send me asking me to help resolve bugs now contains stuff like:
+
+		if new_elua then
+
+			tmr.delay( delay_time, timer_id )
+
+		else
+
+			tmr.delay( timer_id, delay_time )
+
+		end
+
+(this is an example from today!). Before this sort of thing becomes
+commonplace, or before people resort to inventing tricks to discover
+which is the syntax is today's firmware, PLEASE can we go back to the
+original parameter order?
+
+As a compromise we could let tmr.delay(nil, 100) to mean &quot;use the
+system timer&quot;, which is less ugly without breaking everything.
+
+I also notice that three new system variables tmr.SYS_TIMER,
+uart.SYS_TIMER and net.SYS_TIMER have appeared.  What are the second
+two for?
+
+Cheers
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003213.html">[eLua-dev] WebBuilder and Flash//HTML 5
+</A></li>
+	<LI>Next message: <A HREF="003209.html">[eLua-dev] Inversion of timer.*() parameters
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3208">[ date ]</a>
+              <a href="thread.html#3208">[ thread ]</a>
+              <a href="subject.html#3208">[ subject ]</a>
+              <a href="author.html#3208">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

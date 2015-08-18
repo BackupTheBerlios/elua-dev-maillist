@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Platform specific modules proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Platform%20specific%20modules%20proposal&In-Reply-To=%3C81fbe47d0901131034m780d7b63y7445f2601d7f40cc%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000270.html">
+   <LINK REL="Next"  HREF="000281.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Platform specific modules proposal</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Platform%20specific%20modules%20proposal&In-Reply-To=%3C81fbe47d0901131034m780d7b63y7445f2601d7f40cc%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Platform specific modules proposal">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Jan 13 19:34:08 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000270.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+        <LI>Next message: <A HREF="000281.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#280">[ date ]</a>
+              <a href="thread.html#280">[ thread ]</a>
+              <a href="subject.html#280">[ subject ]</a>
+              <a href="author.html#280">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>OK, so let's summarize: most people see a benefit in both approaches (Mike's
+and main),  and I'm one of them :). So let's try to find the best of both
+worlds here.
+
+What Alex proposed is OK and looks very good from an abstraction point of
+view, but I don't want to add another layer to eLua. I'm really trying to
+keep eLua's design principles in line with Lua's: simple, minimalistic even,
+yet completely functional.
+
+What I like most in this thread is Mike's idea about keeping capabilities,
+also what I dislike most is his idea about explicitly querying for the
+forementioned capabilities :) What if we skip the query step? After all, our
+backend already knows the capabilities, so the programmer can simply ask for
+what he needs and get an object ID in return. An example:
+
+*local uart_id, errmsg = uart.get{ speed = uart.SPEED_115200, flowctrl =
+uart.HW, mode = uart.M8N1, type = uart.RS485}
+-- check for errors here
+uart.send( uart_id, ... ) -- use the rest of the platform interface as usual
+.............................................
+uart.unlock( uart_id ) -- we're done with this UART
+*
+Of course, the query still happens, but this time is not explicit (as it
+happens automagically in the backend), and I think this makes life much
+easier for the end user. It can also take care of the locking/unlocking
+mechanism that Mike proposed.
+
+I'd like to have something like this in eLua, but it requires a very good
+understanding of all the attributes of all the peripherals from all the
+platforms, which is not something that should be taken lightly (in fact I
+think it's something quite difficult).
+
+And James, what happened in BasicStamp will never happen in eLua, unless of
+course aliens those pesy aliens FINALLY manage to take control of my mind
+and modify the code for their evil purposes :) The platform interface will
+ALWAYS use standard units (hertz, microseconds, stuff like this).
+
+Best,
+Bogdan
+
+On Sat, Jan 10, 2009 at 12:40 AM, Alex Babkin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ababkin at gmail.com</A>&gt; wrote:
+
+&gt;<i> Very interesting discussion!
+</I>&gt;<i>
+</I>&gt;<i> I think James summarized the debate quite nicely. You just cannot have your
+</I>&gt;<i> cake and eat it in this situation.
+</I>&gt;<i> I personally see that there are important values on both sides of the
+</I>&gt;<i> debate: standardizing things makes it easy and seamless to jump from one
+</I>&gt;<i> specific HW platform to another, while having Mike's check/execute mechanism
+</I>&gt;<i> would allow extracting best potential from the specifics of particular HW
+</I>&gt;<i> platform.
+</I>&gt;<i> In fact, i am convinced that both of these are needed.
+</I>&gt;<i>
+</I>&gt;<i> Here are some thoughts about this after reading the debate:
+</I>&gt;<i>    why not have 2 levels of abstraction the following way:
+</I>&gt;<i>    - Mike's idea of check/execute mechanism will be the lower level and
+</I>&gt;<i> implemented directly in C
+</I>&gt;<i>    - Bogdan's more generic and &quot;worry-less&quot; interface will be the upper
+</I>&gt;<i> level and *implemented in Lua*, and built *on top* of the Mike's layer
+</I>&gt;<i> interfacing to it with the check/execute mechanism. This extra level of
+</I>&gt;<i> abstraction will be HW specific just like Mike's layer, this is necessary as
+</I>&gt;<i> the items in Bogdan's generic layer will depend on default configuration
+</I>&gt;<i> details of the specific HW platform (i.e best default timer would be a 32bit
+</I>&gt;<i> one on a platform that has 32bit timers, and 16bit on a platform that only
+</I>&gt;<i> has 16bit timers, etc)
+</I>&gt;<i>
+</I>&gt;<i> Example: Bogdan's layer implements a generic timer abstraction. This layer
+</I>&gt;<i> queries Mike's layer for types of timers available (of which Mike's layer is
+</I>&gt;<i> aware of) using a standardized querying mechanism, and also knows how to
+</I>&gt;<i> determine the best type for the default timer that would be used in Bogdan's
+</I>&gt;<i> layer as the default timer. Mike's layer knows how to supply hooks to
+</I>&gt;<i> various types of timers' actions that Bogdan's layer understands how to use.
+</I>&gt;<i>
+</I>&gt;<i> What this solves: A user who wants to use a generic timer, goes ahead with
+</I>&gt;<i> the standard (Bogdan's) timer abstraction and doesn't concern oneself with
+</I>&gt;<i> details like various checks (as Bogdan's layer takes care of all these
+</I>&gt;<i> details in ways specific to particular HW platform)
+</I>&gt;<i> A more advanced user, who wants to be &quot;closer to the metal&quot;, will use
+</I>&gt;<i> Mike's layer directly
+</I>&gt;<i>
+</I>&gt;<i> Potential gotchas and disadvantages:
+</I>&gt;<i> - two layers instead of one, albeit only one layer is implemented in C, the
+</I>&gt;<i> other one is all Lua.
+</I>&gt;<i> - Mike's check/execute mechanism has to be standardized
+</I>&gt;<i> - two sets of standards to maintain.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hope this helps somewhat
+</I>&gt;<i> Alex
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Jan 9, 2009 at 4:22 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Jan 9, 2009, at 2:01 PM, Bogdan Marinescu wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Oh, but timers can do so much more then just generate delays.  This is
+</I>&gt;&gt;&gt;<i> why I proposed such a flexible interface.  As for caring what functionality
+</I>&gt;&gt;&gt;<i> a platform has, IMO, since this is an embedded system and users would be
+</I>&gt;&gt;&gt;<i> writing software that is closer to the hardware, I would argue that an eLua
+</I>&gt;&gt;&gt;<i> user *would* want to know if the timer was 8, 16, or 32 bits.  Even if they
+</I>&gt;&gt;&gt;<i> are just doing delays, that knowledge would be invaluable in that it could
+</I>&gt;&gt;&gt;<i> tell you minimum timer resolution and maximum timeout values.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You're right, timers can do much more than just generate delays, I was
+</I>&gt;&gt;<i> simplifying to make a point, the same principle applies to any timer
+</I>&gt;&gt;<i> operation. As for your idea that the users would want to know what kind of
+</I>&gt;&gt;<i> hardware they're using, I could argue that since they're doing that, they
+</I>&gt;&gt;<i> might as well know if their timers can do capture or not :), so querying for
+</I>&gt;&gt;<i> capabilities becomes kinda redundant in this context. And for
+</I>&gt;&gt;<i> minimum/maximum timer resolution, we already have
+</I>&gt;&gt;<i> tmr.getmindelay/tmr.getmaxdelay. Which are much more useful in this
+</I>&gt;&gt;<i> particular situation, since knowing if a timer is 8/16/32 bits tells only
+</I>&gt;&gt;<i> half of the story, you'd also need the timer frequency and a calculator
+</I>&gt;&gt;<i> somewhere :) This is why I still stand by my initial point, which I'd like
+</I>&gt;&gt;<i> to reformulate a bit: yes, the user should know his platform, he just
+</I>&gt;&gt;<i> shouldn't care that much about it. To me it's more natural to call functions
+</I>&gt;&gt;<i> like &quot;getmindelay&quot; that completely hide the hardware (and allow for other
+</I>&gt;&gt;<i> neat stuff, like the virtual timers that I implemented recently) than to try
+</I>&gt;&gt;<i> to figure this out from the hardware. After all, Lua is a high level
+</I>&gt;&gt;<i> language, and although the programmer does indeed use it at a level that's
+</I>&gt;&gt;<i> very close to the hardware, he might not want to feel this. Much like most C
+</I>&gt;&gt;<i> programmer out there don't want to feel that there's some assembly code
+</I>&gt;&gt;<i> lurking in the shadows of their beautifully intended code blocks :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This brings up some basic issues with abstraction.  Recently I've had the
+</I>&gt;&gt;<i> (not so great, because of the platform) privilege of helping some students
+</I>&gt;&gt;<i> work with Basic Stamp for projects they were working on that involved some
+</I>&gt;&gt;<i> servos.  A quick and easy way to control these is using the PULSOUT command.
+</I>&gt;&gt;<i>  During the project a few of them had their boards burn out and they were
+</I>&gt;&gt;<i> replaced with ones at higher clock rates, and what I found out was that the
+</I>&gt;&gt;<i> values being used with PULSOUT were directly tied to clock rate, so they had
+</I>&gt;&gt;<i> to guess at the ranges needed to control the servos.  To me this represents
+</I>&gt;&gt;<i> a bad tradeoff of &quot;knowing your hardware,&quot; especially with something geared
+</I>&gt;&gt;<i> towards accessibility for beginners.  On the other hand, with Arduino, this
+</I>&gt;&gt;<i> is handled completely differently, the hardware details are completely
+</I>&gt;&gt;<i> abstracted away.  One passes angles for the servo instead of pulse length
+</I>&gt;&gt;<i> related to clock cycles or even millisecond length.  What's bizarre about
+</I>&gt;&gt;<i> this is that Arduino basically uses C, and compiles down to AVR assembler,
+</I>&gt;&gt;<i> and Basic Stamp is interpreted.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Abstraction, almost much by definition, is limiting in some way. The
+</I>&gt;&gt;<i> benefits one gets are in making something easier, that otherwise would not
+</I>&gt;&gt;<i> have been.  In some cases you might want direct access to how the timers are
+</I>&gt;&gt;<i> implemented and set things yourself.  One major downside to this is that
+</I>&gt;&gt;<i> it's annoying to port, and may make for rather messy implementations.  If
+</I>&gt;&gt;<i> you switch to another micro because it's a bit faster or has hardware
+</I>&gt;&gt;<i> support for something that was previously being emulated, you might have to
+</I>&gt;&gt;<i> tweak all of your magic numbers over again.  In order to get around this you
+</I>&gt;&gt;<i> might also end up building some sort of abstraction in Lua instead of C.  If
+</I>&gt;&gt;<i> the feature is useful in many cases, perhaps the module should be extended,
+</I>&gt;&gt;<i> while keeping the abstraction consistent, to include the feature.  If the
+</I>&gt;&gt;<i> feature is a one off, you could still write your own custom module in C.  I
+</I>&gt;&gt;<i> think it would be nicer to keep the Lua side of the interface generally the
+</I>&gt;&gt;<i> same across platforms where possible, with the exception of the platform
+</I>&gt;&gt;<i> specific modules.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> One other thought though:  If a feature, on some platforms, requires
+</I>&gt;&gt;<i> emulation, and that emulation is particularly expensive over a full hardware
+</I>&gt;&gt;<i> implementation, it might be nice to know if eLua is using that in emulation
+</I>&gt;&gt;<i> rather than in hardware.  Perhaps this could somehow be tied in with the pd
+</I>&gt;&gt;<i> module, either in the form of a list of hardware supported features, like
+</I>&gt;&gt;<i> when one looks at /proc/cpuinfo on linux, or something else?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Just a few thoughts.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>   --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> ph: (847) 644-2322
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090113/582ff765/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090113/582ff765/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000270.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+	<LI>Next message: <A HREF="000281.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#280">[ date ]</a>
+              <a href="thread.html#280">[ thread ]</a>
+              <a href="subject.html#280">[ subject ]</a>
+              <a href="author.html#280">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

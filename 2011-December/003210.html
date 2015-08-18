@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Inversion of timer.*() parameters
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Inversion%20of%20timer.%2A%28%29%20parameters&In-Reply-To=%3CCANKDJfa0QZDT%3D%2BnrC6Th%3DbcRx6ZK1n2dq9DHOqSA-26PR0zCzg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003209.html">
+   <LINK REL="Next"  HREF="003212.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Inversion of timer.*() parameters</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Inversion%20of%20timer.%2A%28%29%20parameters&In-Reply-To=%3CCANKDJfa0QZDT%3D%2BnrC6Th%3DbcRx6ZK1n2dq9DHOqSA-26PR0zCzg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Inversion of timer.*() parameters">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Dec 29 22:54:54 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003209.html">[eLua-dev] Inversion of timer.*() parameters
+</A></li>
+        <LI>Next message: <A HREF="003212.html">[eLua-dev] current status of STM32F4DISCOVERY port,	full screen editor and LCD connectivity
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3210">[ date ]</a>
+              <a href="thread.html#3210">[ thread ]</a>
+              <a href="subject.html#3210">[ subject ]</a>
+              <a href="author.html#3210">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+(quick reply, I'm on vacation and on my ipad)
+
+On Thursday, December 29, 2011, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> In the recent &quot;system timer&quot; mods, an additional change was made that
+</I>&gt;<i> inverst the order of the timer parameters from
+</I>&gt;<i>
+</I>&gt;<i>    tmr.delay(timer_id, delay)
+</I>&gt;<i> to
+</I>&gt;<i>    tmr.delay(delay, timer_id)
+</I>&gt;<i>
+</I>&gt;<i> and similarly for the other tmr.*() functions
+</I>&gt;<i>
+</I>&gt;<i> Please let us think again about this change, about which there was no
+</I>&gt;<i> discussion that I saw.
+</I>&gt;<i>
+</I>&gt;<i> The very small advantage of it is to be able to write
+</I>&gt;<i>     tmr.delay(100)
+</I>&gt;<i> instead of
+</I>&gt;<i>     tmr.delay(tmr.SYS_TIMER, 100)
+</I>&gt;<i> which is just syntactic sugar with no operational advantage.
+</I>
+The main idea was definitely NOT syntax sugar. It was that the user
+shouldn't have to worry about timer IDs in the first place (and that this
+was a big problem with the original design) except for some rare cases.
+This philosophy should also be reflected in the API.
+
+&gt;<i>
+</I>&gt;<i> The disavantages are
+</I>&gt;<i> - it breaks almost all code ever written for eLua
+</I>
+which isn't that much code yet. I shoud have made it explicit somewhere
+that API changes are to EXPECTED until 1.0. actually i will add this to the
+docs.
+
+&gt;<i> - it makes it impossible to write code that works in different
+</I>&gt;<i> versions of eLua, unless you do all delays with for loops tuned to the
+</I>&gt;<i> CPU speed and use timers for nothing else, since there is no sane way
+</I>&gt;<i> to find out which syntax is being used.
+</I>&gt;<i> - all existing firmware that we have produced and shipped would need
+</I>&gt;<i> changing if we decide to follow this change, and all the alternate
+</I>&gt;<i> firmware versions we have published become junk
+</I>
+Obsolete syntax/modules/functions are a reality in a lot of software
+projects. They exist now and they will continue to exist in elua in the
+future. The solution is not to forget about them, just to find a better way
+to handle them (see below).
+
+&gt;<i> - people writing eLua video tutorials cannot speak about timers unless
+</I>&gt;<i> they include a section on changing the syntax according to which
+</I>&gt;<i> version of eLua you are using, or resign themselves to it not working
+</I>&gt;<i> in all existing (or all future) boards
+</I>
+True. Patrick would agree with you wholehearteadly :)
+
+&gt;<i>
+</I>&gt;<i> Code that users send me asking me to help resolve bugs now contains stuff
+</I>like:
+&gt;<i>
+</I>&gt;<i>                if new_elua then
+</I>&gt;<i>
+</I>&gt;<i>                        tmr.delay( delay_time, timer_id )
+</I>&gt;<i>
+</I>&gt;<i>                else
+</I>&gt;<i>
+</I>&gt;<i>                        tmr.delay( timer_id, delay_time )
+</I>&gt;<i>
+</I>&gt;<i>                end
+</I>&gt;<i>
+</I>&gt;<i> (this is an example from today!). Before this sort of thing becomes
+</I>&gt;<i> commonplace, or before people resort to inventing tricks to discover
+</I>&gt;<i> which is the syntax is today's firmware, PLEASE can we go back to the
+</I>&gt;<i> original parameter order?
+</I>
+As far as I am concerned, the answer is no. I simply find the new way much
+more natural and logical.
+
+&gt;<i>
+</I>&gt;<i> As a compromise we could let tmr.delay(nil, 100) to mean &quot;use the
+</I>&gt;<i> system timer&quot;, which is less ugly without breaking everything.
+</I>
+As always, beauty is in the eye of the beholder. for me, tmr.delay(nil,100)
+is ugly as sin and leaves anybody not familiar with the API wondering &quot;WTF
+does that mean?&quot; tmr.delay(100) is much more clear and descriptive.
+
+&gt;<i>
+</I>&gt;<i> I also notice that three new system variables tmr.SYS_TIMER,
+</I>&gt;<i> uart.SYS_TIMER and net.SYS_TIMER have appeared.  What are the second
+</I>&gt;<i> two for?
+</I>
+just for completion, they all reffer to the system timer ID. I understand
+why they can be confusing, there's no problem if we remove them.
+
+conclusion: i believe API changes are both necessarry and unavoidable. We
+can make the API transition smoother by designing a deprecation mechanism.
+The users will be able to use the old API as usual for a while (for example
+until the next official release) with a warning from eLua, being able to
+experiment with the new API at the same time. The old API will still be
+there for a number of versions, but under a different name, then it will
+disappear completely.
+An example for the timer module:
+
+tmr.delay(tmr.SYS_TIMER, 100) --current version
+future.tmr.delay(100) -- this is going to be used in the future
+
+(this mirrors partially the idea of futures found in Python)
+
+Or:
+
+local tmr=tmr -- to use the old version
+local tmr= future.tmr -- to use the new version
+
+I'm making this up as i write, so i'm sure it has lots of drawbacks (in
+particular, i'd be very happy if we can avoid module versioning) and can be
+improved a lot. I'm opened to suggestions in this area.
+
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i>
+</I>&gt;<i>    M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111229/aa80fcce/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111229/aa80fcce/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003209.html">[eLua-dev] Inversion of timer.*() parameters
+</A></li>
+	<LI>Next message: <A HREF="003212.html">[eLua-dev] current status of STM32F4DISCOVERY port,	full screen editor and LCD connectivity
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3210">[ date ]</a>
+              <a href="thread.html#3210">[ thread ]</a>
+              <a href="subject.html#3210">[ subject ]</a>
+              <a href="author.html#3210">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

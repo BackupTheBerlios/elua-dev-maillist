@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] mbed RTC module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20mbed%20RTC%20module&In-Reply-To=%3CCAMHCYBeCSHVgu_hqOH5uP7DWWYO0tgbh865r-F2mCoRFf7p-VA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003553.html">
+   <LINK REL="Next"  HREF="003612.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] mbed RTC module</H1>
+    <B>Thiago Naves</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20mbed%20RTC%20module&In-Reply-To=%3CCAMHCYBeCSHVgu_hqOH5uP7DWWYO0tgbh865r-F2mCoRFf7p-VA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] mbed RTC module">naves.thiago at gmail.com
+       </A><BR>
+    <I>Wed Jun  6 19:34:30 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003553.html">[eLua-dev] mbed RTC module
+</A></li>
+        <LI>Next message: <A HREF="003612.html">[eLua-dev] mbed RTC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3577">[ date ]</a>
+              <a href="thread.html#3577">[ thread ]</a>
+              <a href="subject.html#3577">[ subject ]</a>
+              <a href="author.html#3577">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Jun 6, 2012 at 6:05 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 6 June 2012 07:06, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; I think we should have no problem to make a single interface for setting
+</I>&gt;<i> and
+</I>&gt;<i> &gt; getting dates and times.
+</I>&gt;<i> &gt; I liked the mizar interface, but it seems a bit verbose having to create
+</I>&gt;<i> a
+</I>&gt;<i> &gt; table to set a date / time.
+</I>&gt;<i>
+</I>&gt;<i> Verbose? I aimed for the minimum of cruft and limiting the interface
+</I>&gt;<i> to the essential information.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>Yes, but I was comparing the table interface to a string interface.
+Actually, I think the table interface is good to store various datetimes (
+in a scheduler for example ),
+while the string interface is better for debugging ( hard coded dates,
+setting via terminal, ... ) and
+writing to an LCD or terminal for example.
+
+
+&gt;<i>  &gt; The interface on my branch ( I think Bogdan wrote it for str9 ) is a bit
+</I>&gt;<i> &gt; closer to the Lua interface, but without the string formatting options.
+</I>&gt;<i> &gt; That is,
+</I>&gt;<i> &gt; mbed.rtc.gettime(&quot;*t&quot;) returns a table with the fields hour, min, sec
+</I>&gt;<i> &gt; mbed.rtc.gettime(&quot;*s&quot;) returns a string formated as HH:MM:SS
+</I>&gt;<i> &gt; mbed.rtc.getdate(&quot;*t&quot;) returns a table with the fields year, month, day
+</I>&gt;<i> &gt; mbed.rtc.getdate(&quot;*s&quot;) returns a string formated as DD/MM/YYYY
+</I>&gt;<i>
+</I>&gt;<i> I saw this, and couldn't bring myself to use it because it has two defects:
+</I>&gt;<i> 1. You can't set the date and time in a single call, and making two
+</I>&gt;<i> calls sets the date wrong by a day at midnight when 00:00:00 falls
+</I>&gt;<i> between the calls. Time-and-date-setting (and reading) needs to be a
+</I>&gt;<i> single atomic operation
+</I>&gt;<i>
+</I>
+True. I'll change that.
+
+
+&gt;<i> 2. DD/MM/YYYY is MM/DD/YYYY in the USA, so you can't write code
+</I>&gt;<i> without knowing the date-printing conventions in your
+</I>&gt;<i> internationalization locale, which is not something that eLua does
+</I>&gt;<i> because the tables of info for it to work is huge, the same as the
+</I>&gt;<i> daylight time stuff, unless you do this at compile-time to produce
+</I>&gt;<i> i18n-zone-specific firmware, again something I would prefer to avoid
+</I>&gt;<i> if possible.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>I think we could choose a format and document it, rather than having none.
+I agree we should not try to support all of them.
+
+
+&gt;<i>  &gt; The set functions setdate and settime can receive a table with those
+</I>&gt;<i> fields
+</I>&gt;<i> &gt; or a string in that same format.
+</I>&gt;<i> &gt; I could add day of week as Lua have, but str9 has no support for the day
+</I>&gt;<i> of
+</I>&gt;<i> &gt; year...
+</I>&gt;<i>
+</I>&gt;<i> Our clocks don't have DOY either (and shouldn't as it's a value
+</I>&gt;<i> derived from other fields.
+</I>&gt;<i> I have a short magic formula somewhere that will calculate it if you
+</I>&gt;<i> need it for some reason.
+</I>&gt;<i>
+</I>
+It's not hard to calculate that, but I don't need it right now too...I was
+just comparing to the Lua functions.
+
+
+&gt;<i> Actually, DOW is redundant too, but both Lua and the hardware have it,
+</I>&gt;<i> so i just pass it on.
+</I>&gt;<i>
+</I>
+Same here ( I have to add that yet ).
+
+
+&gt;<i> Presumably a hypothetical clock with a DOY register could take note of
+</I>&gt;<i> that field if present, and return it, but it looks like a non-problem
+</I>&gt;<i> to me at present
+</I>&gt;<i>
+</I>&gt;<i>
+</I>Me too.
+
+
+&gt;<i> &gt; In the alarm part the case is a bit more complicated as the str9 alarm
+</I>&gt;<i> only
+</I>&gt;<i> &gt; have the hour, min, sec and day of month fields, while the mbed has full
+</I>&gt;<i> &gt; date and time support.
+</I>&gt;<i>
+</I>&gt;<i> That's easy - just ignore fields that the hardware does not support.
+</I>&gt;<i>
+</I>
+Either that or store in memory the fields not supported by the hardware and
+compare those
+when a interrupt arrives and only add a eLua interrupt if it matches.
+
+
+&gt;<i>
+</I>&gt;<i> &gt; For now, I left different APIs for the alarm, as I have no idea how to
+</I>&gt;<i> unify
+</I>&gt;<i> &gt; that.
+</I>&gt;<i>
+</I>&gt;<i> I see not a lot has changed in eLua-API-discussion world!  :)
+</I>&gt;<i>
+</I>
+:<i>)
+</I>
+
+Thiago
+
+
+&gt;<i>    M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120606/6b3dfdb3/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120606/6b3dfdb3/attachment-0001.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003553.html">[eLua-dev] mbed RTC module
+</A></li>
+	<LI>Next message: <A HREF="003612.html">[eLua-dev] mbed RTC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3577">[ date ]</a>
+              <a href="thread.html#3577">[ thread ]</a>
+              <a href="subject.html#3577">[ subject ]</a>
+              <a href="author.html#3577">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

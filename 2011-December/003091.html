@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Unexpected behaviour in cpu module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Unexpected%20behaviour%20in%20cpu%20module&In-Reply-To=%3C4EDFB5E9.7060803%40productcreationstudio.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003083.html">
+   <LINK REL="Next"  HREF="003093.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Unexpected behaviour in cpu module</H1>
+    <B>Ned Konz</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Unexpected%20behaviour%20in%20cpu%20module&In-Reply-To=%3C4EDFB5E9.7060803%40productcreationstudio.com%3E"
+       TITLE="[eLua-dev] Unexpected behaviour in cpu module">ned at productcreationstudio.com
+       </A><BR>
+    <I>Wed Dec  7 19:52:25 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003083.html">[eLua-dev] Unexpected behaviour in cpu module
+</A></li>
+        <LI>Next message: <A HREF="003093.html">[eLua-dev] Unexpected behaviour in cpu module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3091">[ date ]</a>
+              <a href="thread.html#3091">[ thread ]</a>
+              <a href="subject.html#3091">[ subject ]</a>
+              <a href="author.html#3091">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>In the STM32F reference manual RM0008, in section 2.1 under &quot;AHB/APB 
+bridges&quot; it says:
+&gt;<i> When a 16- or 8-bit access is performed on an APB register, the access 
+</I>&gt;<i> is transformed into
+</I>&gt;<i> a 32-bit access: the bridge duplicates the 16- or 8-bit data to feed 
+</I>&gt;<i> the 32-bit vector.
+</I>
+And at least on the STM32F1xxx parts, you have to go through the AHB/APB 
+bridges to get to any of the peripheral registers.
+
+It may be that you can safely use the strb instruction on core registers 
+that don't have to go through these bridges.
+
+Generally, you want to access registers using the same width as the 
+register itself (though some registers may be documented as allowing 
+16-bit access).
+
+On 12/06/2011 07:44 PM, James Snyder wrote:
+&gt;<i> Both of the platforms you mention are ARM and Cortex-M3, so it's
+</I>&gt;<i> perhaps not hugely surprising that they would exhibit similar
+</I>&gt;<i> behavior.  Now as far as what is going on, the code for the function
+</I>&gt;<i> that's being used (cpu_w8), generates the following code in gcc:
+</I>&gt;<i> 00018362&lt;cpu_w8&gt;:
+</I>&gt;<i> 18362:       b538            push    {r3, r4, r5, lr}
+</I>&gt;<i> 18364:       2102            movs    r1, #2
+</I>&gt;<i> 18366:       4604            mov     r4, r0
+</I>&gt;<i> 18368:       f7f8 ffdf       bl      1132a&lt;luaL_checkinteger&gt;
+</I>&gt;<i> 1836c:       2101            movs    r1, #1
+</I>&gt;<i> 1836e:       4605            mov     r5, r0
+</I>&gt;<i> 18370:       4620            mov     r0, r4
+</I>&gt;<i> 18372:       f7f8 ffda       bl      1132a&lt;luaL_checkinteger&gt;
+</I>&gt;<i> 18376:       4620            mov     r0, r4
+</I>&gt;<i> 18378:       2101            movs    r1, #1
+</I>&gt;<i> 1837a:       f7f8 ffa9       bl      112d0&lt;luaL_checknumber&gt;
+</I>&gt;<i> 1837e:       f00c fffb       bl      25378&lt;__aeabi_d2uiz&gt;
+</I>&gt;<i> 18382:       7005            strb    r5, [r0, #0]
+</I>&gt;<i> 18384:       2000            movs    r0, #0
+</I>&gt;<i> 18386:       bd38            pop     {r3, r4, r5, pc}
+</I>&gt;<i>
+</I>&gt;<i> I believe the strb near the end is probably what's important, where it
+</I>&gt;<i> copies the value from r5 into an address in r0 with a zero offset.
+</I>&gt;<i>
+</I>&gt;<i> According to this page (<A HREF="http://www.heyrick.co.uk/assembler/str.html">http://www.heyrick.co.uk/assembler/str.html</A>):
+</I>&gt;<i> A byte store (STRB) repeats the bottom 8 bits of the source register
+</I>&gt;<i> four times across the data bus. The external memory system should
+</I>&gt;<i> activate the appropriate byte subsystem to store the data.
+</I>&gt;<i>
+</I>&gt;<i> I can't find exactly that same description in in the Cortex-M3
+</I>&gt;<i> reference manuals, which seem to suggest that at least for memory
+</I>&gt;<i> writes it should zero extend up to 32-bits, but I have found
+</I>&gt;<i> references for other ARM parts that describe this same replication
+</I>&gt;<i> behavior:
+</I>&gt;<i> <A HREF="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0087e/ch11s09s03.html">http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0087e/ch11s09s03.html</A>
+</I>&gt;<i>
+</I>&gt;<i> As far as a conclusion to this, I'm not sure what might be best if we
+</I>&gt;<i> were to consider modifying the behavior of the module.  We could
+</I>&gt;<i> certainly consider doing reading, masking and then writing registers,
+</I>&gt;<i> but there are some registers that might be write-only.  Certainly it
+</I>&gt;<i> would seem to be prudent to use 32-bit writes with registers of the
+</I>&gt;<i> same size on ARM.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Dec 6, 2011 at 3:33 PM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;  wrote:
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Dec 6, 2011 at 11:21 PM, Brian Thorne&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">hardbyte at gmail.com</A>&gt;  wrote:
+</I>&gt;&gt;&gt;<i> Hi all,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I came across some strange behaviour when writing to the first 8 bits of a
+</I>&gt;&gt;&gt;<i> 32 bit register from elua with cpu.w8. The lua code seems to write copies of
+</I>&gt;&gt;&gt;<i> the 8 bits to all other writeable bits in the targeted 32bit register; if
+</I>&gt;&gt;&gt;<i> the register has RO bits they are unaffected. I have seen this on two
+</I>&gt;&gt;&gt;<i> different boards (LM3S and an STM32F1). Is this expected and desired
+</I>&gt;&gt;&gt;<i> behaviour? If so could we make this clearer in the documentation?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Using cpu.w8 with hardware bitbanding from the micro's datasheet or using
+</I>&gt;&gt;&gt;<i> cpu.w32 were the two methods I found to successfully write to just the byte
+</I>&gt;&gt;&gt;<i> referenced.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The code for cpu.w8 looks OK to me. I believe that some CPU registers are
+</I>&gt;&gt;<i> simply not byte addressable. Try cpu.w8 on a memory location (for example a
+</I>&gt;&gt;<i> fixed RAM address); if it works as expected, the problem is definitely in
+</I>&gt;&gt;<i> the hardware.
+</I>&gt;<i> Should there, perhaps, be some sort of option or command that would
+</I>&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Cheers,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Brian
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+-- 
+Ned Konz
+Product Creation | Studio
+425 Westlake Av. N
+Seattle, WA 98109
+PH 206-297-7200
+<A HREF="http://productcreationstudio.com">http://productcreationstudio.com</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003083.html">[eLua-dev] Unexpected behaviour in cpu module
+</A></li>
+	<LI>Next message: <A HREF="003093.html">[eLua-dev] Unexpected behaviour in cpu module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3091">[ date ]</a>
+              <a href="thread.html#3091">[ thread ]</a>
+              <a href="subject.html#3091">[ subject ]</a>
+              <a href="author.html#3091">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

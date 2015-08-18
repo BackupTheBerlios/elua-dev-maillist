@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] PATCH: fix std_get_desc() stub type
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PATCH%3A%20fix%20std_get_desc%28%29%20stub%20type&In-Reply-To=%3CAANLkTikWx3c%3DA0kfsn3JaMZfexUhs5GNMRda379vYiMP%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001501.html">
+   <LINK REL="Next"  HREF="001503.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] PATCH: fix std_get_desc() stub type</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PATCH%3A%20fix%20std_get_desc%28%29%20stub%20type&In-Reply-To=%3CAANLkTikWx3c%3DA0kfsn3JaMZfexUhs5GNMRda379vYiMP%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] PATCH: fix std_get_desc() stub type">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Jul 30 14:57:02 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001501.html">[eLua-dev] PATCH: fix std_get_desc() stub type
+</A></li>
+        <LI>Next message: <A HREF="001503.html">[eLua-dev] PATCH: fix std_get_desc() stub type
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1502">[ date ]</a>
+              <a href="thread.html#1502">[ thread ]</a>
+              <a href="subject.html#1502">[ subject ]</a>
+              <a href="author.html#1502">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Jul 30, 2010 at 3:41 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> Hi again
+</I>&gt;<i> &#160;Here's tiny patch to fix a type error when building with neither
+</I>&gt;<i> BUILD_CON_GENERIC nor BUILD_CON_TCP defined
+</I>
+Thanks!
+
+&gt;<i> &#160;I guess I should introduce myself: I'm porting eLua to a new avr32
+</I>&gt;<i> platform with 128KB of flash. The good news is that it *does* still
+</I>&gt;<i> fit in 128KB, just, but only if all BUILD_ options and all ROM modules
+</I>&gt;<i> are disabled, so apart from the porting, I'll be focussing on various
+</I>&gt;<i> ways of reducing the static code size so that I can enable some of the
+</I>&gt;<i> modules we will be needing.
+</I>
+Excellent news. Some ideas:
+
+- do you require the compiler? if no, you can build the image without
+the Lua compiler (which is fine if you just need to execute bytecode).
+There's no explicit support in eLua for this, but look in a standard
+Lua 5.1.4 source distribution at etc/noparser.c for a good starting
+point.
+- do you need floating point in eLua? If not, you can try to compile
+in integer mode (lualong). Not sure if this will save much space
+though.
+- do you feel brave? :) If so, you can start re-writing the C library :)
+
+And finally, something that I'd like you to check since you're going
+this route: can you please try and see if eLua compiles under AVR32
+without libm (remove -lm from the link options) if you don't include
+the Lua math library?
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001501.html">[eLua-dev] PATCH: fix std_get_desc() stub type
+</A></li>
+	<LI>Next message: <A HREF="001503.html">[eLua-dev] PATCH: fix std_get_desc() stub type
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1502">[ date ]</a>
+              <a href="thread.html#1502">[ thread ]</a>
+              <a href="subject.html#1502">[ subject ]</a>
+              <a href="author.html#1502">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Default device in device manager
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Default%20device%20in%20device%20manager&In-Reply-To=%3Cd3b6d880904090807w3d769787o6eedfd2277ad715e%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000755.html">
+   <LINK REL="Next"  HREF="000760.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Default device in device manager</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Default%20device%20in%20device%20manager&In-Reply-To=%3Cd3b6d880904090807w3d769787o6eedfd2277ad715e%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Default device in device manager">dadosutter at gmail.com
+       </A><BR>
+    <I>Thu Apr  9 17:07:15 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000755.html">[eLua-dev] Default device in device manager
+</A></li>
+        <LI>Next message: <A HREF="000760.html">[eLua-dev] Default device in device manager
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#757">[ date ]</a>
+              <a href="thread.html#757">[ thread ]</a>
+              <a href="subject.html#757">[ subject ]</a>
+              <a href="author.html#757">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for the explanations Mike.
+Although I see that it helps somewhat for a few commands typing, I don't
+think the introduction of a new and different concept (the &quot;default&quot; device)
+will help more than confuse though :(
+I think that it is actually good to type explicitly the full path to what
+we're doing, including the device name (actually part of the path already),
+unless we come up with an implementation of a true &quot;cd&quot; command.
+This is just my feeling, let's see if we have some more opinions.
+
+ZModem lighter than XModem ? :-o Really ? It will be great to have it then !
+:<i>)
+</I>
+And talking about XModem, does anybody know why it &quot;times out&quot; after a few
+seconds (7~9) if we don't send the file ? It did not happened before, in
+it's firsts implementations and I lost track on exactly when the problem
+showed up. It seems to be in it's final days anyway :)
+
+Regards
+Dado
+
+
+
+
+
+On Wed, Apr 8, 2009 at 20:52, Mike Thompson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpthompson at gmail.com</A>&gt; wrote:
+
+&gt;<i> Dado Sutter wrote:
+</I>&gt;<i> &gt; Thanks for the ideas and for the code effort Mike !
+</I>&gt;<i> &gt; I'm not sure if I got the big-picture. What you are proposing is a sort
+</I>&gt;<i> &gt; of a &quot;cd&quot; command ? Or a different abstraction, like the &quot;default&quot;
+</I>&gt;<i> &gt; device as you've proposed ?
+</I>&gt;<i>
+</I>&gt;<i> Well, the reason I proposed this is that whenever I went to go run a lua
+</I>&gt;<i> program at the command prompt I had to type something like the following:
+</I>&gt;<i>
+</I>&gt;<i> eLua# lua /efc/hello.lua
+</I>&gt;<i> Press CTRL+Z to exit Lua
+</I>&gt;<i> Hello, World!
+</I>&gt;<i> eLua#
+</I>&gt;<i>
+</I>&gt;<i> With this change, in the C code I make '/efc' the default device when it
+</I>&gt;<i> is initialized and can now do the following:
+</I>&gt;<i>
+</I>&gt;<i> eLua# lua hello.lua
+</I>&gt;<i> Press CTRL+Z to exit Lua
+</I>&gt;<i> Hello, World!
+</I>&gt;<i> eLua#
+</I>&gt;<i>
+</I>&gt;<i> Since the 'hello.lua' program has no preceeding '/' character and a
+</I>&gt;<i> default device index has been registered the device manager simply
+</I>&gt;<i> assumes the file name should be opened on the default device.
+</I>&gt;<i>
+</I>&gt;<i> Likewise, I implemented zmodem upload which handles bulk transfer of
+</I>&gt;<i> multiple files kicked off using an 'rz' command at the prompt.  Since,
+</I>&gt;<i> the zmodem handles the naming of files as they are transferred, I still
+</I>&gt;<i> needed to tell it which volume the files should be directed at such as:
+</I>&gt;<i>
+</I>&gt;<i> eLua# rz /efc
+</I>&gt;<i>
+</I>&gt;<i> With the default volume, the files were automatically directed to the
+</I>&gt;<i> desired volume with:
+</I>&gt;<i>
+</I>&gt;<i> eLua# rz
+</I>&gt;<i> [...three files get transferred and automatically named...]
+</I>&gt;<i> eLua# ls
+</I>&gt;<i> bisect.lua                       646
+</I>&gt;<i> hangman.lua                      3750
+</I>&gt;<i> hello.lua                        23
+</I>&gt;<i> eLua# lua hello.lua
+</I>&gt;<i> Press CTRL+Z to exit Lua
+</I>&gt;<i> Hello, World!
+</I>&gt;<i> eLua#
+</I>&gt;<i>
+</I>&gt;<i> (ignore the 'ls' command, you didn't see that :-)
+</I>&gt;<i>
+</I>&gt;<i> This isn't really a 'cd' command as the semantics of a current working
+</I>&gt;<i> directory aren't being introduced.  Really, it's just a way to direct
+</I>&gt;<i> the opening of a filename without a prefixing the device name ('/efc' in
+</I>&gt;<i> my examples) to the filename.
+</I>&gt;<i>
+</I>&gt;<i> Hopefully this makes the nature of my proposed change a little more
+</I>&gt;<i> understandable.
+</I>&gt;<i>
+</I>&gt;<i> Mike
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090409/41c71451/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090409/41c71451/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000755.html">[eLua-dev] Default device in device manager
+</A></li>
+	<LI>Next message: <A HREF="000760.html">[eLua-dev] Default device in device manager
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#757">[ date ]</a>
+              <a href="thread.html#757">[ thread ]</a>
+              <a href="subject.html#757">[ subject ]</a>
+              <a href="author.html#757">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

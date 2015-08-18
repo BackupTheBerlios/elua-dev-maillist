@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua vs Lua on RTOS
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs%20Lua%20on%20RTOS&In-Reply-To=%3CAANLkTi%3DiKLUXNQHNpEF92iJ_LTE3G2qfXV2TCoh6h%3Des%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001911.html">
+   <LINK REL="Next"  HREF="001914.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua vs Lua on RTOS</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs%20Lua%20on%20RTOS&In-Reply-To=%3CAANLkTi%3DiKLUXNQHNpEF92iJ_LTE3G2qfXV2TCoh6h%3Des%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua vs Lua on RTOS">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Jan 25 20:25:09 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001911.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+        <LI>Next message: <A HREF="001914.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1913">[ date ]</a>
+              <a href="thread.html#1913">[ thread ]</a>
+              <a href="subject.html#1913">[ subject ]</a>
+              <a href="author.html#1913">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Jan 25, 2011 at 12:11 PM, Lwazi Dub &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">lwazidub at gmail.com</A>&gt; wrote:
+&gt;<i> Hi everyone,
+</I>&gt;<i>
+</I>&gt;<i> I am not a Lua programmer but I find this project interesting. Why
+</I>&gt;<i> would one use eLua instead of running their Lua app on an RTOS?
+</I>&gt;<i> Does/Will eLua have threads that run directly on cpu cores? I have a
+</I>&gt;<i> thousand other questions and thoughts but I will leave that for
+</I>&gt;<i> another thread maybe.
+</I>
+Most of the platforms we currently run on are single core
+microcontrollers.  There are a few multicore or multithreaded
+microcontrollers out there like XMOS or the Propeller, but at least
+for the former, not enough RAM &amp; Flash are provided to make it really
+usable with eLua.  eLua is currently written to run directly on a
+single core, kindof as its own operating system.  We've looked into
+some concurrency models, but at the moment if you were to port it to a
+multi-core platform or run it on multi-core x86, it won't use more
+than one core.  It would be possible, but it would likely require
+multiple Lua states running separately and concurrently on different
+cores with some sort of message passing interface between the
+instances.
+
+For the microcontroller platforms we run on, an RTOS would generally
+just add overhead.  In our upcoming release we will support basic
+concurrency in more of an event-driven manner using interrupts which
+are
+
+&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>
+</I>&gt;<i> Lwazi
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001911.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+	<LI>Next message: <A HREF="001914.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1913">[ date ]</a>
+              <a href="thread.html#1913">[ thread ]</a>
+              <a href="subject.html#1913">[ subject ]</a>
+              <a href="author.html#1913">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

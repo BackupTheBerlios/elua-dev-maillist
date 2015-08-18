@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New Board with eLua Support - Micromint Eagle 50
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20Board%20with%20eLua%20Support%20-%20Micromint%20Eagle%2050&In-Reply-To=%3C004901ca1b89%2480b89390%248229bab0%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000991.html">
+   <LINK REL="Next"  HREF="000992.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New Board with eLua Support - Micromint Eagle 50</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20Board%20with%20eLua%20Support%20-%20Micromint%20Eagle%2050&In-Reply-To=%3C004901ca1b89%2480b89390%248229bab0%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] New Board with eLua Support - Micromint Eagle 50">john.hind at zen.co.uk
+       </A><BR>
+    <I>Wed Aug 12 22:14:31 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000991.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+        <LI>Next message: <A HREF="000992.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#999">[ date ]</a>
+              <a href="thread.html#999">[ thread ]</a>
+              <a href="subject.html#999">[ subject ]</a>
+              <a href="author.html#999">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Bogdan, no way I intended to disparage your superb work on eLua. Of course
+it is an achievement of note to get this much functionality into such a
+tight space. However in application terms it is still a platform not a
+solution so actually using it in a real project is going to be limited by
+only having a few tens of KB of application space. The more functionality
+the platform offers the more we're going to want to do with it and the more
+application space we'll need! 
+
+ 
+
+Make no mistake, eLua will be great, but it just needs the hardware to
+mature maybe another year or so to be ready for real-world application. Of
+course the separate memory solution is viable for centralised architectures
+with excellent boards like the Electrum, but then you are out of eLua's USP
+- you have plenty of resources to run standard Lua on Linux.
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+Sent: 12 August 2009 17:35
+To: eLua Users and Development List
+Subject: Re: [eLua-dev] New Board with eLua Support - Micromint Eagle 50
+
+ 
+
+ 
+
+I would not want my firmware to
+be occupying 9/10ths of the available memory with the application grubbing
+around in the last few KB!
+
+
+Personally, I'd be quite OK with that if my firmware happens to be a quite
+complete programming environment, including a programming language and its
+corresponding virtual machine :)
+
+Best,
+Bogdan
+
+ 
+
+ 
+
+-----Original Message-----
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Jesus Alvarez
+
+ 
+
+Sent: 12 August 2009 13:54
+To: eLua Users and Development List
+
+Subject: Re: [eLua-dev] New Board with eLua Support - Micromint Eagle 50
+
+John,
+
+eLua with the default configuration and networking takes about 216 KB on
+the Micromint Eagle boards. There are 8 KB reserved for the bootloader.
+Swapping to the microSD card is normally not required. If your
+application uses additional code beyond the remaining flash, one
+alternative is to use the eLua configuration parameters to eliminate
+functions that are not needed. 256 KB could be a limitation if your eLua
+application also requires a medium size RTOS.
+
+A constraint in the flash for the Micromint Eagle is the use of
+TI/Luminary LM3S processors. They do not currently have a low cost 512KB
+flash option. Yet that has not been a significant limitation for
+customer applications. A large majority of standalone 32-bit embedded
+applications that we have seen work well within 256 KB flash. In fact,
+most 'C' applications can even add an RTOS and still have flash left.
+
+We do have an AVR32-based controller in the works that will have the
+option of 512 KB of flash, mainly because that option is available in
+that MCU.
+
+For applications with larger memory footprints we also offer an ARM9
+controller with 64 MB of RAM and 512MB or 1 GB of NAND flash. It targets
+applications using Linux but could be used for standalone applications
+too. A new 400 MHz model of the Electrum line in the picoITX form factor
+will be available for under $100 in about four weeks. I have not built
+eLua for the ARM9 but will do at some point.
+
+Regards,
+Jesus Alvarez
+
+_______________________________________________
+Elua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+_______________________________________________
+Elua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+mind. Although you can certainly run eLua as an academic or benchmarking
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090812/d67c96cd/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090812/d67c96cd/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000991.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+	<LI>Next message: <A HREF="000992.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#999">[ date ]</a>
+              <a href="thread.html#999">[ thread ]</a>
+              <a href="subject.html#999">[ subject ]</a>
+              <a href="author.html#999">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

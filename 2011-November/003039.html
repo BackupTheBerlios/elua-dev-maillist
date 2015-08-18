@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32f4DSCY%20-%20MCU%20settings%20-%20flash%20prefetch%20on&In-Reply-To=%3CCAJ%3DY9Y2ttx61CgRGefo37U5nsSA1QRM4uXPROCFeq6om-Q1yiQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003038.html">
+   <LINK REL="Next"  HREF="003041.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32f4DSCY%20-%20MCU%20settings%20-%20flash%20prefetch%20on&In-Reply-To=%3CCAJ%3DY9Y2ttx61CgRGefo37U5nsSA1QRM4uXPROCFeq6om-Q1yiQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Nov 28 20:01:43 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003038.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+        <LI>Next message: <A HREF="003041.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3039">[ date ]</a>
+              <a href="thread.html#3039">[ thread ]</a>
+              <a href="subject.html#3039">[ subject ]</a>
+              <a href="author.html#3039">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Well, I'm not completely sure.  I haven't tried replicating pito's
+results, but I think I'll try and see how much time variance I get
+when I run some benchmarks.  One might figure that those timing
+differences could be chalked up to using a low frequency system timer,
+but the difference there is many cycles at the current 16 Hz rate that
+the system timer is set for.
+
+The fact that they have greyed out the prefetch feature in their clock
+configuration tool, and they've said here that the &quot;prefetch
+instruction&quot; isn't supported on RevA parts would seem to suggest that
+that setting shouldn't do anything. I'm not completely clear if
+there's a difference between any meaning of a &quot;prefetch queue
+instruction&quot; and simply enabling prefetch as a feature in the flash
+access control register.
+
+Without further detail, it might be in our best interests to disable
+it for RevA parts even though there's no guidance provided on whether
+any unexpected results might occur from attempting to enable it?  The
+errata just says that the prefetch instruction is unsupported, that
+there's no workaround and it will be fixed in the next silicon rev.
+It would have been a bit clearer, if they were referring to this
+issue, if they had said that &quot;instruction prefetch&quot; was unsupported.
+
+The description of &quot;instruction prefetch&quot; is basically what you would
+expect of such a feature in the &quot;flash memory interface&quot; manual
+(<A HREF="http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/PROGRAMMING_MANUAL/DM00023388.pdf">http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/PROGRAMMING_MANUAL/DM00023388.pdf</A>):
+&quot;Each Flash memory read operation provides 128 bits from either four
+instructions of 32 bits
+or 8 instructions of 16 bits according to the program launched. So, in
+case of sequential
+code, at least four CPU cycles are needed to execute the previous read
+instruction line.
+Prefetch on the I-Code bus can be used to read the next sequential
+instruction line from the
+Flash memory while the current instruction line is being requested by
+the CPU. Prefetch is
+enabled by setting the PRFTEN bit in the FLASH_ACR register. &quot;
+
+*shrug*
+
+2011/11/28 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;:
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2011/11/28 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2011/11/21 pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;:
+</I>&gt;&gt;<i> &gt; ..it would be a nice option to have for compiling eLua interpreter
+</I>&gt;&gt;<i> &gt; into ram (ie in CCM for stm32f4). Flash seems to be quite slow :)..
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It's certainly be possible to force some more things into RAM. &#160;One
+</I>&gt;&gt;<i> easy thing you can do is partially or fully disable LTR:
+</I>&gt;&gt;<i> <A HREF="http://www.eluaproject.net/doc/v0.8/en_arch_ltr.html">http://www.eluaproject.net/doc/v0.8/en_arch_ltr.html</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> However, some of the performance difference you'd see form this you
+</I>&gt;&gt;<i> could get by using &quot;local&quot; variables selectively within the program to
+</I>&gt;&gt;<i> reduce flash lookups.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also note that the CCM is only for data, the MCU won't execute any
+</I>&gt;&gt;<i> code in that RAM. &#160;You could certainly use it for storing data
+</I>&gt;&gt;<i> structures and bytecode though.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On a related note: I've turned on prefetch by default in the branch,
+</I>&gt;&gt;<i> removed a double call to the clock setup code that was being done, and
+</I>&gt;&gt;<i> double-checked the PLL setup, which I'm now pretty sure is correct
+</I>&gt;&gt;<i> after getting a bit confused by the example code that ST ships. &#160;I'm
+</I>&gt;&gt;<i> not completely sure why they don't enable prefetch by default, there
+</I>&gt;&gt;<i> is a related errata, but I'm not sure exactly what affect it has since
+</I>&gt;&gt;<i> it seems like there's definitely a performance benefit to turning
+</I>&gt;&gt;<i> prefetch on, and they enable it by default on STM32F2xx parts. &#160;T
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> he
+</I>&gt;&gt;<i> related Errata is:
+</I>&gt;&gt;<i> &quot;The ART Accelerator prefetch queue instruction is not supported.
+</I>&gt;&gt;<i> This limitation does not prevent the ART Accelerator from using the
+</I>&gt;&gt;<i> cache enable/disable
+</I>&gt;&gt;<i> capability and the selection of the number of wait states according to
+</I>&gt;&gt;<i> the system frequency&quot;
+</I>&gt;<i>
+</I>&gt;<i> I don't understand. So it doesn't exist, but turning it on makes a
+</I>&gt;<i> difference ? :)
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; p.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;&gt;<i> &gt; Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;&gt;<i> &gt; Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; P&#345;edm&#283;t: [eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</I>&gt;&gt;<i> &gt; Datum: 21.11.2011 - 10:53:47
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; Hi,
+</I>&gt;&gt;<i> &gt;&gt; It seems to me the flash prefetch is not ON
+</I>&gt;&gt;<i> &gt;&gt; currently (in
+</I>&gt;&gt;<i> &gt;&gt; system_stm32f4xx.c line 396), the line shall be:
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; FLASH-&gt;ACR = FLASH_ACR_PRFTEN | FLASH_ACR_ICEN
+</I>&gt;&gt;<i> &gt;&gt; |FLASH_ACR_DCEN |
+</I>&gt;&gt;<i> &gt;&gt; FLASH_ACR_LATENCY_5WS;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; A benchmark I do shows:
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; 1. without FLASH_ACR_PRFTEN set:
+</I>&gt;&gt;<i> &gt;&gt; ..1000x Iterations elapsed: 6.396281 secs
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; 2. with FLASH_ACR_PRFTEN:
+</I>&gt;&gt;<i> &gt;&gt; ..1000x Iterations elapsed: 5.618634 secs
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; 3. with 4ws (do not do it at home, at your own
+</I>&gt;&gt;<i> &gt;&gt; risk, you may brick
+</I>&gt;&gt;<i> &gt;&gt; your board!):
+</I>&gt;&gt;<i> &gt;&gt; ..1000x Iterations elapsed: 5.258016 secs
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; P.
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; --
+</I>&gt;&gt;<i> &gt;&gt; Jak se vyhnout nachlazen&#237; a dal&#353;&#237;m zdravotn&#237;m
+</I>&gt;&gt;<i> &gt;&gt; pot&#237;&#382;&#237;m v nep&#345;&#237;jemn&#233;m
+</I>&gt;&gt;<i> &gt;&gt; podzimn&#237;m obdob&#237;? &#268;t&#283;te speci&#225;l Zdrav&#237; na podzim
+</I>&gt;&gt;<i> &gt;&gt; na
+</I>&gt;&gt;<i> &gt;&gt; <A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; --
+</I>&gt;&gt;<i> &gt; Jak se vyhnout nachlazen&#237; a dal&#353;&#237;m zdravotn&#237;m pot&#237;&#382;&#237;m v nep&#345;&#237;jemn&#233;m
+</I>&gt;&gt;<i> &gt; podzimn&#237;m obdob&#237;? &#268;t&#283;te speci&#225;l Zdrav&#237; na podzim na
+</I>&gt;&gt;<i> &gt; <A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003038.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+	<LI>Next message: <A HREF="003041.html">[eLua-dev] STM32f4DSCY - MCU settings - flash prefetch on
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3039">[ date ]</a>
+              <a href="thread.html#3039">[ thread ]</a>
+              <a href="subject.html#3039">[ subject ]</a>
+              <a href="author.html#3039">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

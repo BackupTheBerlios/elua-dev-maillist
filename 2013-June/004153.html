@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Running C task concurrently (in background) with eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Running%20C%20task%20concurrently%20%28in%20background%29%20with%20eLua&In-Reply-To=%3C1370310398960-7578047.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004173.html">
+   <LINK REL="Next"  HREF="004155.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Running C task concurrently (in background) with eLua</H1>
+    <B>Ashu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Running%20C%20task%20concurrently%20%28in%20background%29%20with%20eLua&In-Reply-To=%3C1370310398960-7578047.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] Running C task concurrently (in background) with eLua">knowlog at hotmail.com
+       </A><BR>
+    <I>Tue Jun  4 03:46:38 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004173.html">[eLua-dev] New to eLua and STM32F4xx
+</A></li>
+        <LI>Next message: <A HREF="004155.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4153">[ date ]</a>
+              <a href="thread.html#4153">[ thread ]</a>
+              <a href="subject.html#4153">[ subject ]</a>
+              <a href="author.html#4153">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi All,
+
+I have a token-passing protocol stack (C code) that need to run in
+background (over SAM7x uart1).
+Idea is -- using uLua I can encapsulate the objects (functions) from this
+protocol and interact with 
+them via Lua script.
+So far I have tried a couple of approaches:
+1) Create platform independent module for the protocol to access its
+services using three functions: 
+    proto.heartbeat, proto.setval abd proto.getval. 
+    proto.heartbeat, entry function into protocol's state-machine needs to
+be called every 5~10 mS, 
+    so that it can receive, process and pass tokens in timely fashion. To
+maxmize speed, I am using 
+    complied (.lc) bytecode of my script; which looks something like this:
+       /proto.setval(1,&quot;RLY2&quot;) --turn on relay 2
+       while uart.getchar(1,0)==&quot;&quot; do --continue until knock on term...
+           proto.heartbeat()
+           if(proto.getval(&quot;SWT1&quot;)==1) then proto.setval(1,&quot;RLY1&quot;) else
+proto.setval(0,&quot;RLY1&quot;) end
+	end/
+    Problem/ challenge here -- not sure how fast eLua interpreter/ VM gets
+invoked, but this doesn't 
+    allow token passing to happen in timely manner. RLY2 does get set to 1
+(and relay clicks on) but 
+    but the one in the loop (RLY1) doesn't get serviced at all. Apparently
+because heartbeat must be 
+    getting called fast enough, causing token/s to be dropped.
+2) If I call heartbeat() raw C/directly from main.c -- now proper
+token-passing behavior is restored.
+    But now, I need to have a way to alternately pass control to eLua VM/
+processor. Therefore this 
+    question -- if I had lua byte code (contents of .lc/ .luac file) loaded
+in local memory, how can I 
+    execute those chucks in-between calls to heartbeat?
+
+Please feel free to suggest any alternate solution/s, such as speeding up
+eLua invocation, perhaps 
+that might allow me to use approach #1 above (by speeding up call frequency
+to proto.heartbeat).
+
+Any help, pointers will be greatly appreciated.
+
+P.S. I had great fun exploring and playing with eLua so far...My Sincere
+THANKS to all developers 
+involved in bringing it to us. Excellent stuff!!!
+
+Thanks,
+Ash
+
+
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/Running-C-task-concurrently-in-background-with-eLua-tp7578047.html">http://elua-development.2368040.n2.nabble.com/Running-C-task-concurrently-in-background-with-eLua-tp7578047.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004173.html">[eLua-dev] New to eLua and STM32F4xx
+</A></li>
+	<LI>Next message: <A HREF="004155.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4153">[ date ]</a>
+              <a href="thread.html#4153">[ thread ]</a>
+              <a href="subject.html#4153">[ subject ]</a>
+              <a href="author.html#4153">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

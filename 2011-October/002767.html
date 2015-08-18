@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Expo of adc sequencer?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Expo%20of%20adc%20sequencer%3F&In-Reply-To=%3CCAL4-wQqL%3DTjKQFNt2VeLV0EjO13B55uzDdsJ%2BBX71h01cQ4ceg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002766.html">
+   <LINK REL="Next"  HREF="002768.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Expo of adc sequencer?</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Expo%20of%20adc%20sequencer%3F&In-Reply-To=%3CCAL4-wQqL%3DTjKQFNt2VeLV0EjO13B55uzDdsJ%2BBX71h01cQ4ceg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Expo of adc sequencer?">martinwguy at gmail.com
+       </A><BR>
+    <I>Fri Oct  7 23:34:23 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002766.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+        <LI>Next message: <A HREF="002768.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2767">[ date ]</a>
+              <a href="thread.html#2767">[ thread ]</a>
+              <a href="subject.html#2767">[ subject ]</a>
+              <a href="author.html#2767">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Just tried it on the EVK1100 even without setting up all the pots.
+</I>&gt;<i> Yeah, something is definitely very weird there, and I can get strange
+</I>&gt;<i> behavior even with only 2 or 3 channels going at once. &#160;With all 8, it
+</I>&gt;<i> looks like, for example channel 1 shows up at channel 0 most of the
+</I>&gt;<i> time. &#160;With 2 channels 0,1 I think I was getting exactly the same
+</I>&gt;<i> output for both.
+</I>&gt;<i>
+</I>&gt;<i> What's odd is that, at least for me, something like adcscope seems to
+</I>&gt;<i> work better. &#160;I'll have to try and narrow down the differences between
+</I>&gt;<i> cases. &#160;Certainly timing would be different. &#160;I also don't get the
+</I>&gt;<i> same sort of behavior (from quick checking of letting channels float
+</I>&gt;<i> then grounding them) with the same snippet as above (except with fewer
+</I>&gt;<i> channels) on LM3S.
+</I>
+It seems to happen when it gets an ADC interrupt but only some of the
+channels have completed conversion. It then changes the active
+channels to reflect the ones it it still waiting for, which calls code
+that does a full software reset of the ADC subsystem every time it
+gets a value. That would certainly confuse it in the middle of a
+conversion! Search for SWRST in avr32/platform.c
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002766.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+	<LI>Next message: <A HREF="002768.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2767">[ date ]</a>
+              <a href="thread.html#2767">[ thread ]</a>
+              <a href="subject.html#2767">[ subject ]</a>
+              <a href="author.html#2767">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

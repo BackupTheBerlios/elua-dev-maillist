@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Getting Started
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Getting%20Started&In-Reply-To=%3CCAJ%3DY9Y1Sa7Kx9g4efTEKTPdTyxDadMV4cB91tuE9QKiC22%2BrDg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002718.html">
+   <LINK REL="Next"  HREF="002719.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Getting Started</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Getting%20Started&In-Reply-To=%3CCAJ%3DY9Y1Sa7Kx9g4efTEKTPdTyxDadMV4cB91tuE9QKiC22%2BrDg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Getting Started">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Sep 19 05:11:01 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002718.html">[eLua-dev] Getting Started
+</A></li>
+        <LI>Next message: <A HREF="002719.html">[eLua-dev] run elua on i386, what to do with the .elf?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2721">[ date ]</a>
+              <a href="thread.html#2721">[ thread ]</a>
+              <a href="subject.html#2721">[ subject ]</a>
+              <a href="author.html#2721">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Sep 14, 2011 at 12:37 PM,  &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">kyasi at gis.net</A>&gt; wrote:
+&gt;<i> Hi
+</I>&gt;<i>
+</I>&gt;<i> I am having a difficult time getting started.
+</I>&gt;<i> I would like to evaluate eLua, and have tried installing the pre built
+</I>&gt;<i> images on
+</I>&gt;<i> various platforms. &#160;EVK1100, EVK1101, AT91SSAM7X_EK.
+</I>&gt;<i> In all cases i get the start up prompt on the uart port at 115200 but
+</I>&gt;<i> all i get back
+</I>&gt;<i> is 0xFF or the ( special y character ) on any input.
+</I>&gt;<i> I found reference to this being potentially caused by SER_MUX being
+</I>&gt;<i> enabled.
+</I>
+This is likely correct, it looks like SER_MUX defaults to being
+enabled for those targets.
+
+&gt;<i>
+</I>&gt;<i> At this time i do not have the tool chain installed. I wanted to just
+</I>&gt;<i> evaluate the pre built images to see the potential of eLua.
+</I>&gt;<i>
+</I>&gt;<i> I went to the web builder and tried to build an image with BUILD_SERMUX
+</I>&gt;<i> not selected, thinking this might eliminate the serial mux problem, but
+</I>&gt;<i> when i load that image i get the same exact results.
+</I>&gt;<i>
+</I>&gt;<i> I must be doing something basically wrong.
+</I>
+It looks like there's a bug for AVR32 where even if that option is
+deselected it's still enabling something of that functionality.  I'll
+file a bug report for this, it may have something to do with the
+alternate location for where platform configuration data is stored for
+avr32 targets.
+
+It looks like it also doesn't generate the .hex file that is
+convenient for use with.
+
+I don't have an AT91 board, but in attempting the same for that
+platform, it seems that it also has that defaulted to enabled and on
+the web builder toggling the options for this don't appear to have an
+effect, so it appears that there's an issue there as well.
+
+&gt;<i>
+</I>&gt;<i> Any suggestions or can someone tell me how i can get a pre built image
+</I>&gt;<i> that will just work with a simple terminal emulator program.
+</I>
+In the interim, I can generate an image for you out of trunk if that
+would be helpful.
+
+&gt;<i>
+</I>&gt;<i> I would also like to find a prebuilt image of eLuawebserver for the
+</I>&gt;<i> EVK1100 if that is available. I only see a link to a complete source
+</I>&gt;<i> repository. But i do not have the toolchain available to build any of
+</I>&gt;<i> these images or even the mux.exe that might be needed if i have to work
+</I>&gt;<i> with sermux enabled.
+</I>
+Hopefully we can get that corrected in the builder shortly, though I
+think the version of eLua that's being used on the builder (the last
+release of 0.8) might not support networking.  This is now in the main
+trunk.
+
+As far as eLuaWebServer is concerned, you might need to communicate
+with Nuccio regarding what differences there are there vs what is in
+trunk, since that version seems to have some specialized configuration
+options that I'm not familiar with, but here's a build straight out of
+those sources:
+<A HREF="http://dl.dropbox.com/u/169337/elua_lualong_at32uc3a0512.elf">http://dl.dropbox.com/u/169337/elua_lualong_at32uc3a0512.elf</A>
+<A HREF="http://dl.dropbox.com/u/169337/elua_lualong_at32uc3a0512.hex">http://dl.dropbox.com/u/169337/elua_lualong_at32uc3a0512.hex</A>
+
+Based on the sources, I believe that it will try to use a static IP of
+192.168.1.10.  When I tried quickly testing it with a FAT32 SD card
+that was lying around, it seems to at least load up with the files
+copied to an SD card.  NOTE: I'm not sure whether we currently work
+with SDHC cards of large sizes, when I tried this with an 8 GB card it
+wouldn't work, but another 4GB card I had lying around did.
+
+Hope that helps.
+
+&gt;<i>
+</I>&gt;<i> I tried reading all i could find, but now i am stuck.
+</I>&gt;<i>
+</I>&gt;<i> any suggestions or links would be appreciated.
+</I>&gt;<i>
+</I>&gt;<i> Thanks
+</I>&gt;<i>
+</I>&gt;<i> Ken
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002718.html">[eLua-dev] Getting Started
+</A></li>
+	<LI>Next message: <A HREF="002719.html">[eLua-dev] run elua on i386, what to do with the .elf?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2721">[ date ]</a>
+              <a href="thread.html#2721">[ thread ]</a>
+              <a href="subject.html#2721">[ subject ]</a>
+              <a href="author.html#2721">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] PID Module I/O
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PID%20Module%20I/O&In-Reply-To=%3Cd3b6d880811260701m6e72ff18jb19bc37c75d4b735%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000130.html">
+   <LINK REL="Next"  HREF="000102.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] PID Module I/O</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PID%20Module%20I/O&In-Reply-To=%3Cd3b6d880811260701m6e72ff18jb19bc37c75d4b735%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] PID Module I/O">dado at pobox.com
+       </A><BR>
+    <I>Wed Nov 26 16:01:04 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000130.html">[eLua-dev] PID Module I/O
+</A></li>
+        <LI>Next message: <A HREF="000102.html">[eLua-dev] Require(path/modulename)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#131">[ date ]</a>
+              <a href="thread.html#131">[ thread ]</a>
+              <a href="subject.html#131">[ subject ]</a>
+              <a href="author.html#131">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yes, Ralph will not like it too much but this is exactly what I intend to do
+:<i>-o :)
+</I>   There is a class in PUC-Rio called &quot;Introduction to Engineering&quot;, offered
+on the very first period for ALL the students of ALL engineerings. Lego NXT
+kits are used to assembly &quot;robotic&quot; projects for a final presentation 6
+months later.
+   The course is not focused on the software, electrical hardware,
+programming technics but on solutions aproaches to diferent chalenges. What
+I intend to do is to offer eLua for the students from the first contact they
+have with software at the university and to make them use the Legos as if
+eLua/Lua was the &quot;machine language&quot; of the kits.
+   Other more specialized classes on robotics, mechanical engineering and
+control &amp; automation also use dedicated hardware for the projects and they
+are all a very fertile terrain for eLua too. But the Lego is strategically
+important and it will be great if we can come up with an eLua porting for it
+one of these days.
+
+   The PID module thread is another and independent story though, as we
+really need them for what we have already and for ongoing projects. As some
+others (that I also intend to discuss here very soon), it would be nice to
+have the great advice from all of you on the architectural aspects
+
+Best
+Dado
+
+
+On Wed, Nov 26, 2008 at 12:32, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;wrote:
+
+&gt;<i> I think pbLua already has a PID module? I might be wrong though, it's been
+</I>&gt;<i> a while since I looked at it.
+</I>&gt;<i> Are you thinking eLua on Lego NXT? Ralph might get upset :)
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Nov 26, 2008 at 4:15 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Pls let's keep this thread (PID) warm, because it is an important one for
+</I>&gt;&gt;<i> eLua usage in some small projects but some that will present eLua to a
+</I>&gt;&gt;<i> loooooot of students downhere.
+</I>&gt;&gt;<i> If we can have it running on a Lego NXT (Atmel ARM9) platform, it will be
+</I>&gt;&gt;<i> still better !!!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Nov 19, 2008 at 06:00, Bogdan Marinescu &lt;
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> That's one way to do it, but you're tying the PID module to
+</I>&gt;&gt;&gt;<i> peripherals, which is a bit strange to me, since PID itself doesn't
+</I>&gt;&gt;&gt;<i> care at all about peripherals, it uses only numbers to operate.
+</I>&gt;&gt;&gt;<i> Ideally, I'd make the PID module completely unaware of the fact that
+</I>&gt;&gt;&gt;<i> we even have an ADC in the system. Feed it the required inputs
+</I>&gt;&gt;&gt;<i> (numerically), then take the outputs and output them to wherever you
+</I>&gt;&gt;&gt;<i> like (PWM, screen, file...).
+</I>&gt;&gt;&gt;<i> Then again, your approach is tightly integrated with the rest of the
+</I>&gt;&gt;&gt;<i> system, which might be a better approach, so it could work. But then
+</I>&gt;&gt;&gt;<i> we'd have to define the exact interface(s) required for &quot;PID devices&quot;
+</I>&gt;&gt;&gt;<i> such as PInput, DInput, Output. If these interfaces can be made small
+</I>&gt;&gt;&gt;<i> and easy enough to use, there's no reason not to go with your
+</I>&gt;&gt;&gt;<i> approach.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Wed, Nov 19, 2008 at 5:38 AM, Pedro Bittencourt
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt; Greetings,
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Today I had a brief conversation with Prof. Meggiolaro (A Robotics
+</I>&gt;&gt;&gt;<i> professor
+</I>&gt;&gt;&gt;<i> &gt; from mech department at PUC-Rio) about his requirements for the PID
+</I>&gt;&gt;&gt;<i> module.
+</I>&gt;&gt;&gt;<i> &gt; The basic application is control of DC motors, for actuators of
+</I>&gt;&gt;&gt;<i> &gt; manipulators. Based on that we made a little brain storm (or should be
+</I>&gt;&gt;&gt;<i> a
+</I>&gt;&gt;&gt;<i> &gt; brain breeze =) ) about the interfacing of the PID module with the
+</I>&gt;&gt;&gt;<i> external
+</I>&gt;&gt;&gt;<i> &gt; world.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; We concluded that PID should be independent of AD , DA , PWM etc
+</I>&gt;&gt;&gt;<i> modules,
+</I>&gt;&gt;&gt;<i> &gt; but easily &quot;linkable&quot;. So I was wondering about some kind of linking
+</I>&gt;&gt;&gt;<i> &gt; mechanism to set the origin of the input and destination of output.
+</I>&gt;&gt;&gt;<i> &gt; Something like this:
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; PID.setPInput(AD0)
+</I>&gt;&gt;&gt;<i> &gt; PID.setDInput(SPI0)
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; PID.setOutput(PWM0)
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; here we would set the proportional input from the AD0 and the
+</I>&gt;&gt;&gt;<i> Differential
+</I>&gt;&gt;&gt;<i> &gt; input from a SPI interface  (this is a common case. suppose we use a
+</I>&gt;&gt;&gt;<i> &gt; external ADc that sends data via SPI)
+</I>&gt;&gt;&gt;<i> &gt; and setting the output to PWM
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Suggestions, critics, dark spells, anyone?
+</I>&gt;&gt;&gt;<i> &gt; --
+</I>&gt;&gt;&gt;<i> &gt; --Pedro Bittencourt
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt; Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081126/e751be33/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081126/e751be33/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000130.html">[eLua-dev] PID Module I/O
+</A></li>
+	<LI>Next message: <A HREF="000102.html">[eLua-dev] Require(path/modulename)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#131">[ date ]</a>
+              <a href="thread.html#131">[ thread ]</a>
+              <a href="subject.html#131">[ subject ]</a>
+              <a href="author.html#131">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

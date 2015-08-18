@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Possible bug in LPC17xx memory configuration?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Possible%20bug%20in%20LPC17xx%20memory%20configuration%3F&In-Reply-To=%3CCAOLz05q-9wP4%2BHg3zy-rc8gvO5KochPn-5C73tDQEob2dMPgHg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003861.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Possible bug in LPC17xx memory configuration?</H1>
+    <B>Amr Bekhit</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Possible%20bug%20in%20LPC17xx%20memory%20configuration%3F&In-Reply-To=%3CCAOLz05q-9wP4%2BHg3zy-rc8gvO5KochPn-5C73tDQEob2dMPgHg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Possible bug in LPC17xx memory configuration?">amrbekhit at gmail.com
+       </A><BR>
+    <I>Fri Nov 30 12:15:12 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003861.html">[eLua-dev] Race Car Data acquisition using embedded Lua
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3865">[ date ]</a>
+              <a href="thread.html#3865">[ thread ]</a>
+              <a href="subject.html#3865">[ subject ]</a>
+              <a href="author.html#3865">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I've been working on a new eLua platform for the LPC177x_8x series of chips
+based on the existing LPC17xx platform (which, despite the name similarity,
+actually have some fundamental differences to the LPC17xx series and so
+can't use the same platform). While looking through the LPC17xx memory
+configuration at the end of platform_conf.h, I think that the definition is
+incorrect. Here's what the LPC17xx definitions looks like:
+
+#define MEM_END_ADDRESS       { ( void* )( SRAM_ORIGIN + SRAM_SIZE -
+STACK_SIZE_TOTAL - 1 ), ( void* )( SRAM2_ORIGIN + SRAM2_SIZE - 1 ) }
+
+The definition for MEM_END_ADDRESS[0] implies that the stack is located
+right at very top of RAM (like in some of the other ARM ports, where the
+actual stack size is TOTAL_RAM - bss - data). However, for the LPC17xx
+port, the stack is declared as an array, pulStack, in the startup file and
+the linker places this array right after the data and bss sections, and so
+I think that the MEM_END_ADDRESS definition should be:
+
+#define MEM_END_ADDRESS       { ( void* )( SRAM_ORIGIN + SRAM_SIZE - 1 ), (
+void* )( SRAM2_ORIGIN + SRAM2_SIZE - 1 ) }
+
+I modified conf.py so that the linker could generate a map file (
+comp.Prepend(LINKFLAGS =
+[TARGET_FLAGS,'-Wl,-e,Reset_Handler','-Wl,-static','-Wl,-Map,' + comp[
+'cpu' ] + '.map']) ) and looking at the address that pulStack is located at
+confirms that it is not at the top of SRAM like in some of the other ports.
+
+I suppose it's not really a &quot;bug&quot; in that I don't think it's going to cause
+any problems, but does give you an extra [STACK_SIZE] bytes of RAM for eLua!
+
+Amr
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20121130/025eb680/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20121130/025eb680/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003861.html">[eLua-dev] Race Car Data acquisition using embedded Lua
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3865">[ date ]</a>
+              <a href="thread.html#3865">[ thread ]</a>
+              <a href="subject.html#3865">[ subject ]</a>
+              <a href="author.html#3865">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

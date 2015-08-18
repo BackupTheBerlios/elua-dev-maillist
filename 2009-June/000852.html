@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Re-compiling with cross-compiler?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Re-compiling%20with%20cross-compiler%3F&In-Reply-To=%3CEMEWEMEW2_DELIMl5EC8Vf4c00d018597a79542593d%2C%0A%09jbsnyder%40fanplastic.org%2C%20D0CEFBD6-5849-42C2-8B82-C10%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000851.html">
+   <LINK REL="Next"  HREF="000853.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Re-compiling with cross-compiler?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Re-compiling%20with%20cross-compiler%3F&In-Reply-To=%3CEMEWEMEW2_DELIMl5EC8Vf4c00d018597a79542593d%2C%0A%09jbsnyder%40fanplastic.org%2C%20D0CEFBD6-5849-42C2-8B82-C10%3E"
+       TITLE="[eLua-dev] Re-compiling with cross-compiler?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jun 15 19:08:29 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000851.html">[eLua-dev] About net module
+</A></li>
+        <LI>Next message: <A HREF="000853.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#852">[ date ]</a>
+              <a href="thread.html#852">[ thread ]</a>
+              <a href="subject.html#852">[ subject ]</a>
+              <a href="author.html#852">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The one last thing I think I need to do before getting LuaRPC into  
+eLua itself is to deal with compiling for different platforms so that  
+you can serialize functions between nodes.  The only problem is that  
+if you string.dump a local function, that bytecode is already compiled  
+for the local host.
+
+I'm thinking it should be possible to somehow modify the dump code in  
+the cross compiler to convert a pre-existing function into a dump that  
+would be correct for a target device to which it is being sent.  I  
+assume this would be easier (and more flexible) than somehow caching  
+the original source representation and replaying it through the  
+compiler later?  It would also be nice to be able to do things full- 
+circle where a function could be dumped on a host, loaded on a target,  
+redumped on the target and reloaded on the host, or another machine  
+that doesn't have the same environment parameters.
+
+If anyone has any thoughts on this, I'd certainly appreciate them if  
+they might help avoid rabbit holes that don't have an exit :-)
+
+-jsnyder
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000851.html">[eLua-dev] About net module
+</A></li>
+	<LI>Next message: <A HREF="000853.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#852">[ date ]</a>
+              <a href="thread.html#852">[ thread ]</a>
+              <a href="subject.html#852">[ subject ]</a>
+              <a href="author.html#852">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

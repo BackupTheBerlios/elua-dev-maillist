@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A shield for stm32f4disco - sram
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20shield%20for%20stm32f4disco%20-%20sram&In-Reply-To=%3CCANKDJfYTsMzrRi3_vnDXBf_2fg07Ce3m3CO%2BV%3DgE2SOv6io0Dw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003174.html">
+   <LINK REL="Next"  HREF="003160.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A shield for stm32f4disco - sram</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20shield%20for%20stm32f4disco%20-%20sram&In-Reply-To=%3CCANKDJfYTsMzrRi3_vnDXBf_2fg07Ce3m3CO%2BV%3DgE2SOv6io0Dw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] A shield for stm32f4disco - sram">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Dec 19 21:09:42 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003174.html">[eLua-dev] A shield for stm32f4disco - sram
+</A></li>
+        <LI>Next message: <A HREF="003160.html">[eLua-dev] eLuaWebBuilder updates
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3173">[ date ]</a>
+              <a href="thread.html#3173">[ thread ]</a>
+              <a href="subject.html#3173">[ subject ]</a>
+              <a href="author.html#3173">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2011/12/19 Tony &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tony.elua at gmail.com</A>&gt;
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2011/12/17 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2011/12/16 Tony &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tony.elua at gmail.com</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> 2011/12/16 pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> ..this is about the availability and the price of the SRAMS. BGA
+</I>&gt;&gt;&gt;&gt;<i> packages are nogo for DIY, SDRAMS are nogo for stm32f4, and PSRAMS
+</I>&gt;&gt;&gt;&gt;<i> are slow (~70ns) and BGA.
+</I>&gt;&gt;&gt;&gt;<i> The only 10ns TSOP candidates I see are:
+</I>&gt;&gt;&gt;&gt;<i> IS61WV102416BLL-10TLI (10ns 1Mx16)
+</I>&gt;&gt;&gt;&gt;<i> IS61WV20488BLL-10TLI (10ns, 2Mx8)
+</I>&gt;&gt;&gt;&gt;<i> The big Q is where to get them cheap?? P.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Nowhere....they're ~24USD on Digikey, and smaller sizes cost about the
+</I>&gt;&gt;&gt;<i> same per bit (4Mb is ~$6, 8Mb is ~$18).  I did a Digikey search, and nobody
+</I>&gt;&gt;&gt;<i> else (IDT, Cypress, etc) looks significantly cheaper.  If you need speed
+</I>&gt;&gt;&gt;<i> but want to spend less, look at using a smaller size, although ISSI's
+</I>&gt;&gt;&gt;<i> smaller SRAMs are in different packages (e.g. 44-TSOP instead of 48-TSOP).
+</I>&gt;&gt;&gt;<i> (Side note: huge internal SRAM is coming at a hopefully affordable price:
+</I>&gt;&gt;&gt;<i> Freescale's next generation Kinetis ARM MCU's will have 512K SRAM).
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is true, but I'd be a bit cautious. Sure, the internal memory is
+</I>&gt;&gt;<i> getting larger and larger, but there are still some constraints that must
+</I>&gt;&gt;<i> be respected when designing the chip. For example, the latest M4 cores from
+</I>&gt;&gt;<i> NXP can have up to 264k of RAM on-chip; however, the parts that have 264k
+</I>&gt;&gt;<i> of RAM don't have any Flash at all. It's likely that something similar will
+</I>&gt;&gt;<i> happen with Freescale's Kinetis and with similar parts from other
+</I>&gt;&gt;<i> manufacturers. Then again, I know very little about how chips are actually
+</I>&gt;&gt;<i> fabricated, so these restrictions might disappear in the near future.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;<i> Freescale is claiming 1M-&gt;4M flash on chip.  However, these won't be
+</I>&gt;<i> shipping for a long time (sometime next year); Freescale doesn't even have
+</I>&gt;<i> a part number list up yet so at this point I consider it all
+</I>&gt;<i> marketing-talk, not reality. I'm wondering what the price will be;
+</I>&gt;<i> Freescale has actually had PowerPC MCU's with lots of RAM and flash for
+</I>&gt;<i> years, but they are hard to get and very expensive (&gt;$50).
+</I>&gt;<i>
+</I>
+I think (and hope)
+the ARM chips will be priced a bit less aggresively, given the competition.
+
+Renesas is another company with a roadmap (for the Rx CPUs) with lots of
+&gt;<i> SRAM and flash, but their existing chips are hard to get and expensive.
+</I>&gt;<i>
+</I>
+Yes. Also, many of their chips have expensive proprietary toolchains (I
+didn't check GCC's list of targets lately though, things might've got
+better in this area).
+
+
+&gt;<i>
+</I>&gt;<i> Getting back to off-chip memory, does anyone know what the impact of SDRAM
+</I>&gt;<i> is on eLua performance?  My guess is that even 55nSec SRAM would have
+</I>&gt;<i> better performance, but the per bit cost of SDRAM is enticing.
+</I>&gt;<i>
+</I>
+SDRAMs are a no-go for STM32 in particular. Other than that, we have a
+board built around a LPC2468 and generous ammount of SDRAM, it works quite
+well. Truth be told, until now I focused 85% on making eLua smaller and
+only 15% worrying about its performance, so I didn't run any actual tests,
+it was just a &quot;hey, this feels quite snappy&quot; feeling.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> --Tony
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --Tony
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;&gt;&gt;&gt;<i> Od: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;<i> Komu: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;&gt;&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;&gt;&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] A shield for stm32f4disco - sram
+</I>&gt;&gt;&gt;&gt;<i> Datum: 16.12.2011 - 12:46:19
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &gt; Hi,
+</I>&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;<i> &gt; On Thu, Dec 15, 2011 at 9:39 PM, pito
+</I>&gt;&gt;&gt;&gt;<i> &gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; Bogdan, I'm thinking on a devel of a small
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; shield for stm32f4disco
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; &gt; board, as the first step with a sram on it. I've
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; found a 2Mx16 55ns
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; &gt; sram in my junk box, but it seems &quot;slow&quot; to me
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; for that mcu. What is
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; &gt; your experience as you run 1Mb sram in your
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; stm32f103 eLuaBrain
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; &gt; system? P.
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;<i> &gt; First of all: excellent idea. Second: 55ns might
+</I>&gt;&gt;&gt;&gt;<i> &gt; be indeed a tad too slow.
+</I>&gt;&gt;&gt;&gt;<i> &gt; In general, the experience with external SRAM is
+</I>&gt;&gt;&gt;&gt;<i> &gt; that it slows Lua quite a
+</I>&gt;&gt;&gt;&gt;<i> &gt; bit. This is unfortunate, but both very logical
+</I>&gt;&gt;&gt;&gt;<i> &gt; (as every single value in
+</I>&gt;&gt;&gt;&gt;<i> &gt; Lua (be it number, string, table or anything else)
+</I>&gt;&gt;&gt;&gt;<i> &gt; is allocated on the
+</I>&gt;&gt;&gt;&gt;<i> &gt; heap) and necessary. So, as as rule of thumb, the
+</I>&gt;&gt;&gt;&gt;<i> &gt; faster the SRAM, the
+</I>&gt;&gt;&gt;&gt;<i> &gt; better (but you already knew that :) ). The SRAM
+</I>&gt;&gt;&gt;&gt;<i> &gt; on the STM3210E-EVAL has a
+</I>&gt;&gt;&gt;&gt;<i> &gt; 10ns access time and it works quite well. I never
+</I>&gt;&gt;&gt;&gt;<i> &gt; looked at the SRAM
+</I>&gt;&gt;&gt;&gt;<i> &gt; initialization code, thus I don't know how the
+</I>&gt;&gt;&gt;&gt;<i> &gt; external memory controller
+</I>&gt;&gt;&gt;&gt;<i> &gt; is set; in particular, I don't know what timings
+</I>&gt;&gt;&gt;&gt;<i> &gt; are set for the external
+</I>&gt;&gt;&gt;&gt;<i> &gt; SRAM access. On the other hand, at 55ns the
+</I>&gt;&gt;&gt;&gt;<i> &gt; maximum theoretical speed is
+</I>&gt;&gt;&gt;&gt;<i> &gt; about 18MHz, which seems quite low. If I'd to this
+</I>&gt;&gt;&gt;&gt;<i> &gt; (and did I say this is
+</I>&gt;&gt;&gt;&gt;<i> &gt; an excellent idea already?) I'd try to at least
+</I>&gt;&gt;&gt;&gt;<i> &gt; design the whole thing for
+</I>&gt;&gt;&gt;&gt;<i> &gt; a faster memory. If you can find a 10ns memory in
+</I>&gt;&gt;&gt;&gt;<i> &gt; the same package as your
+</I>&gt;&gt;&gt;&gt;<i> &gt; 55ns memory, chances are you won't even need to
+</I>&gt;&gt;&gt;&gt;<i> &gt; change your PCB, so
+</I>&gt;&gt;&gt;&gt;<i> &gt; everybody wins :)
+</I>&gt;&gt;&gt;&gt;<i> &gt; If you do this and you have some space left on
+</I>&gt;&gt;&gt;&gt;<i> &gt; your shield, please let me
+</I>&gt;&gt;&gt;&gt;<i> &gt; know, maybe we can fit the video generator there
+</I>&gt;&gt;&gt;&gt;<i> &gt; ...
+</I>&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;<i> &gt; Best,
+</I>&gt;&gt;&gt;&gt;<i> &gt; Bogdan
+</I>&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;<i> Nakupujte v&#225;no&#269;n&#237; d&#225;rky levn&#283;ji. V&#237;ce o v&#225;no&#269;n&#237; akci Economia
+</I>&gt;&gt;&gt;&gt;<i> najdete na <A HREF="http://web.volny.cz/data/click.php?id=1313">http://web.volny.cz/data/click.php?id=1313</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111219/2bc260a6/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111219/2bc260a6/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003174.html">[eLua-dev] A shield for stm32f4disco - sram
+</A></li>
+	<LI>Next message: <A HREF="003160.html">[eLua-dev] eLuaWebBuilder updates
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3173">[ date ]</a>
+              <a href="thread.html#3173">[ thread ]</a>
+              <a href="subject.html#3173">[ subject ]</a>
+              <a href="author.html#3173">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Arduino Due (Atmel SAM3) port - got eLua running
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Arduino%20Due%20%28Atmel%20SAM3%29%20port%20-%20got%20eLua%20running&In-Reply-To=%3CCACVaRuGYtFN%3Dk9CGpnbKJ6uSP6DcUYCe1kXBcbMHOOvk_O03yA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004274.html">
+   <LINK REL="Next"  HREF="004276.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Arduino Due (Atmel SAM3) port - got eLua running</H1>
+    <B>Gabriel Duarte</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Arduino%20Due%20%28Atmel%20SAM3%29%20port%20-%20got%20eLua%20running&In-Reply-To=%3CCACVaRuGYtFN%3Dk9CGpnbKJ6uSP6DcUYCe1kXBcbMHOOvk_O03yA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Arduino Due (Atmel SAM3) port - got eLua running">confusosk8 at gmail.com
+       </A><BR>
+    <I>Tue Nov  5 16:24:59 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004274.html">[eLua-dev] Arduino Due (Atmel SAM3) port - got eLua running
+</A></li>
+        <LI>Next message: <A HREF="004276.html">[eLua-dev] Arduino Due (Atmel SAM3) port - got eLua running
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4275">[ date ]</a>
+              <a href="thread.html#4275">[ thread ]</a>
+              <a href="subject.html#4275">[ subject ]</a>
+              <a href="author.html#4275">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I got and Arduino DUE here and would like to help on the port, improve it!
+
+
+2013/11/4 FP AB &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A>&gt;
+
+&gt;<i>
+</I>&gt;<i> Afraid I did not use libsam, hope that doesn't cause problems.
+</I>&gt;<i> I sent an e-mail in August (not to whole list) asking how to coordinate on
+</I>&gt;<i> arduino due port, but never got response.
+</I>&gt;<i> I did poke around in the Arduino source code some, but somehow didn't find
+</I>&gt;<i> the libsam directory.
+</I>&gt;<i> Atmel software framework (ASF) seemed to be the main library I could find
+</I>&gt;<i> mentioned in relation to Atmel SAM3/4, so went ahead and used it.
+</I>&gt;<i>
+</I>&gt;<i> I am not sure what the relation is between libsam and ASF - looking at a
+</I>&gt;<i> couple of the driver files, there seem to be similar functions, but some of
+</I>&gt;<i> the function names may be different?
+</I>&gt;<i>
+</I>&gt;<i> ASF has drivers in a ton of directories (I copied the ASF directory
+</I>&gt;<i> structure in the SAM platform to make it easier to
+</I>&gt;<i> update the drivers as new versions come out, or to integrate additional
+</I>&gt;<i> drivers to support extra hardware).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &gt; ----- Original Message -----
+</I>&gt;<i> &gt; From: Gabriel Duarte
+</I>&gt;<i> &gt; Sent: 11/01/13 12:51 PM
+</I>&gt;<i> &gt; To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> &gt; Subject: Re: [eLua-dev] Arduino Due (Atmel SAM3) port - got eLua running
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Cool!! You have used libsam coming with Arduino IDE? 2 days ago I had
+</I>&gt;<i> &gt; started a script to compile pure C to Arduino DUE, in order to start
+</I>&gt;<i> &gt; porting eLua as soon as possible.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 2013/11/1 &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A>&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt; Just a quick note, I got eLua running on the Atmel SAM3X8E (Arduino
+</I>&gt;<i> DUE).
+</I>&gt;<i> &gt; &gt; Using Atmel Software Framework libraries.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Do not have support for much working in platform.c yet.
+</I>&gt;<i> &gt; &gt; Support for other devices (PIO, Timer, etc.) is in various states of
+</I>&gt;<i> draft.
+</I>&gt;<i> &gt; &gt; Now that have serial port working, so I can run the interpreter, that
+</I>&gt;<i> &gt; &gt; should facilitate
+</I>&gt;<i> &gt; &gt; debugging support for various modules.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Will put up on github when I get chance.
+</I>&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;<i> &gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; Gabriel Duarte
+</I>&gt;<i> &gt; Linux User #471185
+</I>&gt;<i> &gt; Rio de Janeiro / RJ
+</I>&gt;<i> &gt; <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Gabriel Duarte
+Linux User #471185
+Rio de Janeiro / RJ
+<A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20131105/48931ca9/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20131105/48931ca9/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004274.html">[eLua-dev] Arduino Due (Atmel SAM3) port - got eLua running
+</A></li>
+	<LI>Next message: <A HREF="004276.html">[eLua-dev] Arduino Due (Atmel SAM3) port - got eLua running
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4275">[ date ]</a>
+              <a href="thread.html#4275">[ thread ]</a>
+              <a href="subject.html#4275">[ subject ]</a>
+              <a href="author.html#4275">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

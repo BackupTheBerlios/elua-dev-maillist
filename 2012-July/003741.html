@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] extreme small
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20extreme%20small&In-Reply-To=%3CCAL4-wQq%3DsgraxSKML-uT7N6%3Dxh6Dp84T6KpSXSpiTj%3DYQWsB0Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003740.html">
+   <LINK REL="Next"  HREF="003743.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] extreme small</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20extreme%20small&In-Reply-To=%3CCAL4-wQq%3DsgraxSKML-uT7N6%3Dxh6Dp84T6KpSXSpiTj%3DYQWsB0Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] extreme small">martinwguy at gmail.com
+       </A><BR>
+    <I>Wed Jul 25 15:49:37 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003740.html">[eLua-dev] extreme small
+</A></li>
+        <LI>Next message: <A HREF="003743.html">[eLua-dev] extreme small
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3741">[ date ]</a>
+              <a href="thread.html#3741">[ thread ]</a>
+              <a href="subject.html#3741">[ subject ]</a>
+              <a href="author.html#3741">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 25 July 2012 13:44, Karoly Molnar &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">molnarkaroly at hotmail.com</A>&gt; wrote:
+&gt;<i> Do you know of any hints, git repository or any
+</I>&gt;<i> other information to help me to see where to cut the code?
+</I>&gt;<i> On the MBED with the standard settings I was able to go down to
+</I>&gt;<i> 120K. This is still twice as much as desired.
+</I>
+I've done a lot of code size reduction hacks, for which the patches
+are on the &quot;mizar32&quot; branch.
+This was for AVR32 CPU and barely fits in 120K with just uart, pio and
+tmr modules.
+The code size reduction hacks made enough space to enable all working modules.
+
+On a different CPU, of course. you will get better or worse code size.
+Using the original Thumb instructions instead of ARM instructions used
+to save about 30% code size with GCC, while I gather that Thumb2,
+which the MBED's Cortex-M3 has, does slightly better *and* maintains
+the speed of ARM instructions.
+
+It also depends a lot on which compiler you use. For example, using
+-Os LLVM for x86 generates *much* smaller code than GCC. When I
+measured it, it was something like 170K compared to 250K.  For ARM,
+however, the situation was the reverse: LLVM generated much larger
+code than GCC, again with both compilers tuned for minimum code size.
+I haven't measured the proprietary (Keil) compilers, and have no idea
+about XMOS's code density of relative compiler performance. I guess
+you will have to experiment (and your measured results would be
+interesting)
+
+&gt;<i> Is it also
+</I>&gt;<i> possible to disable / remove the text parser so only the bytecode execution
+</I>&gt;<i> engine remains in the eLua binary?
+</I>
+That is another option, yes, which should also help quite a lot, but
+is not one I pursued.
+
+   M
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003740.html">[eLua-dev] extreme small
+</A></li>
+	<LI>Next message: <A HREF="003743.html">[eLua-dev] extreme small
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3741">[ date ]</a>
+              <a href="thread.html#3741">[ thread ]</a>
+              <a href="subject.html#3741">[ subject ]</a>
+              <a href="author.html#3741">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

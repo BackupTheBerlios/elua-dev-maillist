@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] off topic - parallella
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20off%20topic%20-%20parallella&In-Reply-To=%3CCAJ%3DY9Y0ee7nNaXexDf2eyb_9BAVBk6GmiVistbwvRz%3DUrPA0iA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003842.html">
+   <LINK REL="Next"  HREF="003844.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] off topic - parallella</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20off%20topic%20-%20parallella&In-Reply-To=%3CCAJ%3DY9Y0ee7nNaXexDf2eyb_9BAVBk6GmiVistbwvRz%3DUrPA0iA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] off topic - parallella">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sat Oct 27 18:09:22 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003842.html">[eLua-dev] off topic - parallella
+</A></li>
+        <LI>Next message: <A HREF="003844.html">[eLua-dev] eLua services issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3843">[ date ]</a>
+              <a href="thread.html#3843">[ thread ]</a>
+              <a href="subject.html#3843">[ subject ]</a>
+              <a href="author.html#3843">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Oct 27, 2012 at 1:05 AM, martinwguy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 26/10/2012, Roger Critchlow &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rec at elf.org</A>&gt; wrote:
+</I>&gt;&gt;<i> <A HREF="http://www.kickstarter.com/projects/adapteva/parallella-a-supercomputer-for-everyone">http://www.kickstarter.com/projects/adapteva/parallella-a-supercomputer-for-everyone</A>
+</I>&gt;<i>
+</I>&gt;<i> There's another factor: lots of wimpy cores doesn't equal a very fast computer.
+</I>&gt;<i> On the one hand, you need to have a task that parallelises well and
+</I>&gt;<i> uses all the cores with the same load on each, and even if you do have
+</I>&gt;<i> a parallelisable task, often the total execution time for a job ends
+</I>&gt;<i> up waiting for the slowest thread to complete, so still depends on the
+</I>&gt;<i> speed of a single core.
+</I>
+As I think anyone whose written CUDA or OpenCL code can tell you,
+parallel computing is not a panacea.  The task has to be well suited
+to get decent performance (usually where you can fit the work for a
+given core in it's local memory and not hit global memory
+frequently/also play nice with other's global access). The nature of
+the individual cores limits what's efficient to do with them. They
+have limited instruction sets, and at least historically with GPUs
+when you have floating point it's not double precision.  The epiphany
+seems to have this particular limitation as well:
+
+&quot;Double-precision  floating-point arithmetic is emulated using
+software libraries and should be
+avoided if performance considerations outweigh the need for additional
+precision.&quot;
+-- <A HREF="http://www.adapteva.com/wp-content/uploads/2012/10/epiphany_arch_reference_3.12.10.03.pdf">http://www.adapteva.com/wp-content/uploads/2012/10/epiphany_arch_reference_3.12.10.03.pdf</A>
+
+Also, a kernel and processing model that is highly efficient on one
+architecture of these platforms is not necessarily efficient on
+another (say even nVIDIA &lt;-&gt; ATI), you really need to pay attention to
+the architecture.
+
+That said, their proposed price point for a self-contained unit with
+the specifications they're indicating sounds quite impressive to me,
+and I think there are a lot of interesting potential applications for
+it. If you're wanting to play with the programming model for something
+like this, you should be able to use OpenCL, CUDA or DirectCompute on
+your desktop if you have a recent-enough GPU (nVIDIA &amp; ATI have
+shipped support for some time). Just be prepared to shift your
+programming paradigm to an entirely different perspective :-)  Also,
+if you do numerical computing there are some nice wrappers for things
+like Python to do numerical computing on these platforms:
+
+<A HREF="http://mathema.tician.de/software/pycuda">http://mathema.tician.de/software/pycuda</A>
+<A HREF="http://mathema.tician.de/software/pyopencl">http://mathema.tician.de/software/pyopencl</A>
+
+&gt;<i>
+</I>&gt;<i> And Lua only runs on a single thread anyway.
+</I>
+Indeed. I could potentially see using something like this with Lua in
+the way that pycuda/pyopencl might work (send out chunks of work to
+kernels running on a GPU/other highly parallel minimalist core
+architecture), but this machine runs a full Linux, and one might as
+well take advantage of existing scripting or low level language
+support I think.
+
+That said, while I can't think of any practical use, it would be quite
+neat if you could fit a Lua interpreter in the local memory space of
+an individual core :-)
+
+&gt;<i>
+</I>&gt;<i> But for intellectual curiosity, see Google's paper on the subject:
+</I>&gt;<i> &quot;Brawny cores sill beat wimpy cores, most of the time&quot;
+</I>&gt;<i> <A HREF="http://research.google.com/pubs/archive/36448.pdf">http://research.google.com/pubs/archive/36448.pdf</A>
+</I>&gt;<i>
+</I>&gt;<i>     M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003842.html">[eLua-dev] off topic - parallella
+</A></li>
+	<LI>Next message: <A HREF="003844.html">[eLua-dev] eLua services issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3843">[ date ]</a>
+              <a href="thread.html#3843">[ thread ]</a>
+              <a href="subject.html#3843">[ subject ]</a>
+              <a href="author.html#3843">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] I'm back! (Finally)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20I%27m%20back%21%20%28Finally%29&In-Reply-To=%3C81fbe47d0812110541u15c9fd6ei7c907f3671ac8cc4%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000174.html">
+   <LINK REL="Next"  HREF="000177.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] I'm back! (Finally)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20I%27m%20back%21%20%28Finally%29&In-Reply-To=%3C81fbe47d0812110541u15c9fd6ei7c907f3671ac8cc4%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] I'm back! (Finally)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Dec 11 14:41:55 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000174.html">[eLua-dev] I'm back! (Finally)
+</A></li>
+        <LI>Next message: <A HREF="000177.html">[eLua-dev] I'm back! (Finally)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#176">[ date ]</a>
+              <a href="thread.html#176">[ thread ]</a>
+              <a href="subject.html#176">[ subject ]</a>
+              <a href="author.html#176">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> This is where I am now, trying to learn the pros and cons of each module
+</I>&gt;<i> implementation aproach, in my
+</I>&gt;<i> still-hard-to-find-exclusive-time-for-eLua-dev-and-studies :(  I'll keep
+</I>&gt;<i> learning from you guys !!! :)
+</I>&gt;<i> ADC/DCA are certainly very important additions to eLua now and you have my
+</I>&gt;<i> vote here too.
+</I>&gt;<i> The PID module will be a natural consequence and will finally be tested.
+</I>&gt;<i> But some of our platforms do not have DACs, so we should provide a way to
+</I>&gt;<i> map them thru SPI too. How would this be handled in this module approach ?
+</I>&gt;<i>
+</I>
+This is a very good question, and I'm thinking about it. I imaigned a few
+ways, but none of them seem to be good enough, so I'll keep on thinking.
+
+
+&gt;<i> Could we begin to discuss a general Interrupt handling module strategy for
+</I>&gt;<i> eLua too ? Or we will stay with custom (platform-dependent) solutions for
+</I>&gt;<i> now ?
+</I>&gt;<i>
+</I>
+We should begin to discuss an interrupt handling strategy, no doubt about
+it. The simplest and less intrusive way is to use standard Lua hooks, most
+like lua.c handles &quot;ctrl+c&quot;. We might need to modify the code a bit, but
+nothing major. Should be fairly simple actually, I just didn't have a chance
+to try it yet.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Thu, Dec 11, 2008 at 4:05 AM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> We also have loadable modules, at least on STM32.  Take a look at
+</I>&gt;&gt;&gt;<i> modcommon.c in the modules dir, function luaopen_mod, and the lua_lcd.c file
+</I>&gt;&gt;&gt;<i> in platform/stm32/ for an example of how its used.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> At the end of the file I create a luaL_reg struct with a single entry
+</I>&gt;&gt;&gt;<i> that gets placed in a special location in memory via the linker script and
+</I>&gt;&gt;&gt;<i> the section attribute. luaopen_mod uses the package.preload table entry to
+</I>&gt;&gt;&gt;<i> push a handler to call the luaopen_lcd init function when someone does a
+</I>&gt;&gt;&gt;<i> require 'stm3210lcd'.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> So while the FLASH space is always used for the module, the RAM space
+</I>&gt;&gt;&gt;<i> required for the module table and etc are not loaded until someone calls
+</I>&gt;&gt;&gt;<i> require.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Comments on this methodology are very welcome!
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Mike
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Wed, Dec 10, 2008 at 6:34 PM, Pedro Bittencourt &lt;
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Dado,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Actually, we HAVE pixel resolution with the RIT display, we simply do
+</I>&gt;&gt;&gt;&gt;<i> not use it (yet).
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> (we can achieve that with the draw() function, where we can &quot;draw&quot; a
+</I>&gt;&gt;&gt;&gt;<i> given matrix in the (x,y) position, a.k.a. offset, of the display)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> --Pedro Bittencourt
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Wed, Dec 10, 2008 at 8:31 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Hello Mike !   Nice to have you back ! Someone of this list arranged
+</I>&gt;&gt;&gt;&gt;&gt;<i> to lay you off at work :) :) :)
+</I>&gt;&gt;&gt;&gt;&gt;<i>    The current version of Pong depends only on a PutChar (on RIT
+</I>&gt;&gt;&gt;&gt;&gt;<i> display it is called stringdraw() ) function to draw the ball and the
+</I>&gt;&gt;&gt;&gt;&gt;<i> paddle. If you have pixel resolution to position it, instead of just lines x
+</I>&gt;&gt;&gt;&gt;&gt;<i> columns, your ball will move smootly too.
+</I>&gt;&gt;&gt;&gt;&gt;<i>     The driver/wrapper was implemented in a module called &quot;disp&quot;, which
+</I>&gt;&gt;&gt;&gt;&gt;<i> is not good because it is platform-dependend. Also, the Lua code now
+</I>&gt;&gt;&gt;&gt;&gt;<i> requires (yes, with require() ) a Lua module, called LM3S, that introduces
+</I>&gt;&gt;&gt;&gt;&gt;<i> the Luminary Micro onboard goodies, like the buttons, leds and some utility
+</I>&gt;&gt;&gt;&gt;&gt;<i> functions. This module is easially adaptable for your board devices (or
+</I>&gt;&gt;&gt;&gt;&gt;<i> external components connected to it). I've been playing also with a version
+</I>&gt;&gt;&gt;&gt;&gt;<i> that implements everything in C and it would be nice if we could load it
+</I>&gt;&gt;&gt;&gt;&gt;<i> dinamically (we don't have dinamically loadable C modules, yet), only if the
+</I>&gt;&gt;&gt;&gt;&gt;<i> board is an LM3S platform.
+</I>&gt;&gt;&gt;&gt;&gt;<i>    So, as you can see, I've been playing a lot with different ways to
+</I>&gt;&gt;&gt;&gt;&gt;<i> write modules, none of them to definitive yet. We must bring some more
+</I>&gt;&gt;&gt;&gt;&gt;<i> discussion to the list, to show the pros &amp; cons of each approach.
+</I>&gt;&gt;&gt;&gt;&gt;<i>    Teo and Ives has been working on a GPS module, 100% Lua (for now),
+</I>&gt;&gt;&gt;&gt;&gt;<i> with lots of good points to discuss here too. We will have to write add an
+</I>&gt;&gt;&gt;&gt;&gt;<i> INT handler for it (UART Rx), even not beeing a generic INT module for eLua
+</I>&gt;&gt;&gt;&gt;&gt;<i> yet, as well as circular queues for the input stream (just for fun, once GPS
+</I>&gt;&gt;&gt;&gt;&gt;<i> Rx doesn' t really need it :)
+</I>&gt;&gt;&gt;&gt;&gt;<i>    I also need a Counter module, to read an RGB+Pan light sensor and,
+</I>&gt;&gt;&gt;&gt;&gt;<i> again, I'll probably write it in C, over the Luminary Micro low level lib
+</I>&gt;&gt;&gt;&gt;&gt;<i> for Timers and GPIO. It will not be a generic Counter module for eLua yet
+</I>&gt;&gt;&gt;&gt;&gt;<i> but it should do the work for a small project here.
+</I>&gt;&gt;&gt;&gt;&gt;<i>    These many possibilities for eLua module architectures may confuse
+</I>&gt;&gt;&gt;&gt;&gt;<i> users at first but they are actually very versatile and I hope to write
+</I>&gt;&gt;&gt;&gt;&gt;<i> about it on the wiki asap.
+</I>&gt;&gt;&gt;&gt;&gt;<i>    Pedro is working on a PID module, 100% Lua and it will work over ADC
+</I>&gt;&gt;&gt;&gt;&gt;<i> and DAC modules, that eLua also needs.
+</I>&gt;&gt;&gt;&gt;&gt;<i>    Some other games are comming too :) as they are great for my
+</I>&gt;&gt;&gt;&gt;&gt;<i> students to learn Lua, eLua, real-time programming and, last but not least,
+</I>&gt;&gt;&gt;&gt;&gt;<i> to have fun !! :)
+</I>&gt;&gt;&gt;&gt;&gt;<i>    Me and Bogdan have received an AVR32 board too, the EVK1100 and
+</I>&gt;&gt;&gt;&gt;&gt;<i> Bogdan will begin to port eLua to it soon, with some possible issues due to
+</I>&gt;&gt;&gt;&gt;&gt;<i> what Atmel has done to Newlib. Downhere, I will see what I can do for the
+</I>&gt;&gt;&gt;&gt;&gt;<i> Legos NXTs, as soon as the classes are over and I can put my hands again on
+</I>&gt;&gt;&gt;&gt;&gt;<i> a kit :) :)
+</I>&gt;&gt;&gt;&gt;&gt;<i>    So welcome back and send us your ideas ! :)
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Best
+</I>&gt;&gt;&gt;&gt;&gt;<i> Dado
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> On Wed, Dec 10, 2008 at 17:53, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> I had a few bumps in the road lately (got layed off at work...) but I
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> am back on track a bit now ready to do more STM32 work (I asked for the kit
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> since they were not going to use it anymore, and they gave it to me!).
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Does anyone have any suggestions or ideas for me?  I was thinking
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> about trying to port Dados pong to it...  And of course fix up the I2C
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> module.  We should maybe start a discussion on what modules need to be done
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> etc that are on the list that maybe I or others could work on?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Mike
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081211/5074b004/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081211/5074b004/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000174.html">[eLua-dev] I'm back! (Finally)
+</A></li>
+	<LI>Next message: <A HREF="000177.html">[eLua-dev] I'm back! (Finally)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#176">[ date ]</a>
+              <a href="thread.html#176">[ thread ]</a>
+              <a href="subject.html#176">[ subject ]</a>
+              <a href="author.html#176">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

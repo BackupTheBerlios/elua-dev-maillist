@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] MOD711 flashing errors
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20MOD711%20flashing%20errors&In-Reply-To=%3C834ae5d10811131138o4f003e76rd7364e55ffa59588%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000075.html">
+   <LINK REL="Next"  HREF="000079.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] MOD711 flashing errors</H1>
+    <B>T&#233;o Benjamin</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20MOD711%20flashing%20errors&In-Reply-To=%3C834ae5d10811131138o4f003e76rd7364e55ffa59588%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] MOD711 flashing errors">teo.benjamin at gmail.com
+       </A><BR>
+    <I>Thu Nov 13 20:38:22 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000075.html">[eLua-dev] MOD711 flashing errors
+</A></li>
+        <LI>Next message: <A HREF="000079.html">[eLua-dev] MOD711 flashing errors
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#78">[ date ]</a>
+              <a href="thread.html#78">[ thread ]</a>
+              <a href="subject.html#78">[ subject ]</a>
+              <a href="author.html#78">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yes, I understood. I'm asking because we have no idea as well.
+We didn't change anything else...
+But right now we are trying to flash it again and we have different errors.
+Now it's not working!!!!!!
+It seems that the OpenOCD can not erase the flash.
+
+This is the str7prg.cfg file:
+
+#daemon configuration
+telnet_port 4444
+gdb_port 3333
+
+#interface
+interface parport
+parport_port 0
+parport_cable wiggler
+jtag_speed 0
+
+#use combined on interfaces or targets that can't set TRST/SRST separately
+reset_config trst_and_srst srst_pulls_trst
+
+#jtag scan chain
+jtag_device 4 0x1 0xf 0xe
+
+#target configuration
+daemon_startup reset
+
+target arm7tdmi little run_and_init 0 arm7tdmi
+run_and_halt_time 0 30
+
+working_area 0 0x2000C000 0x4000 nobackup
+flash bank str7x 0x40000000 0x00040000 0 0 0 STR71x
+
+#Script used for FLASH programming
+target_script 0 reset str7_flashprogram.script
+
+On Thu, Nov 13, 2008 at 5:33 PM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> No, sorry, I didn't make myself clear enough :) The &quot;installing openocd&quot;
+</I>&gt;<i> document was perfectly fine. The thing that I don't get is why OpenOCD is
+</I>&gt;<i> giving these errors. It looks almost like it doesn't detect the target
+</I>&gt;<i> properly, but I find that hard to believe, since it's programming just fine
+</I>&gt;<i> ... Did you modify anything else in str7prg.cfg?
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Nov 13, 2008 at 9:30 PM, T&#233;o Benjamin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">teo.benjamin at gmail.com</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I'm sorry!
+</I>&gt;&gt;<i> I sent the portuguese version of &quot;installing openocd&quot;.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It's now in english:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> dependences:
+</I>&gt;&gt;<i> automake
+</I>&gt;&gt;<i> subversion
+</I>&gt;&gt;<i> autoconf
+</I>&gt;&gt;<i> texinfo
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> svn checkout <A HREF="svn://svn.berlios.de/openocd/trunk">svn://svn.berlios.de/openocd/trunk</A> -r 717
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> cd trunk
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ./bootstrap
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ./configure --enable-parport --enable-parport_ppdev
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> make
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> sudo make install
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> use the str7prg.cfg Bogdan's file to SRT711 but change the section #JTAG
+</I>&gt;&gt;<i> Interface to:
+</I>&gt;&gt;<i> ####
+</I>&gt;&gt;<i> interface parport
+</I>&gt;&gt;<i> parport_port 0
+</I>&gt;&gt;<i> parport_cable wiggler
+</I>&gt;&gt;<i> jtag_speed 0
+</I>&gt;&gt;<i> ####
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> sudo openocd -f str7prg.cfg
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Thu, Nov 13, 2008 at 4:37 PM, T&#233;o Benjamin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">teo.benjamin at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hello eLua people.
+</I>&gt;&gt;&gt;<i> Last week we did a eLua build and burned it into MOD711.
+</I>&gt;&gt;&gt;<i> We started all the OpenOCD from the beginning in a fresh-and-new Ubuntu.
+</I>&gt;&gt;&gt;<i> We did not build eLua in this computer, only got a pre-built image from
+</I>&gt;&gt;&gt;<i> other computer here in the lab.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> It worked fine. We tried to burn 3 different images 3 times and that was
+</I>&gt;&gt;&gt;<i> ok.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> But we've got some errors in the burning process and I think it's a
+</I>&gt;&gt;&gt;<i> little bit strange (isn't it?).
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'm sending 2 documents here:
+</I>&gt;&gt;&gt;<i> -The first describes everything we did to install and configure OpenOCD.
+</I>&gt;&gt;&gt;<i> -The other one is an error log. We got the same errors for all the tries.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I think we need some help to understand it before writing a tutorial for
+</I>&gt;&gt;&gt;<i> this.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks,
+</I>&gt;&gt;&gt;<i> T&#233;o
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081113/61958c04/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081113/61958c04/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000075.html">[eLua-dev] MOD711 flashing errors
+</A></li>
+	<LI>Next message: <A HREF="000079.html">[eLua-dev] MOD711 flashing errors
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#78">[ date ]</a>
+              <a href="thread.html#78">[ thread ]</a>
+              <a href="subject.html#78">[ subject ]</a>
+              <a href="author.html#78">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

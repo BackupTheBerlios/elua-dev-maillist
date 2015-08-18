@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Panda Board status
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Panda%20Board%20status&In-Reply-To=%3C213873.14231.qm%40web161212.mail.bf1.yahoo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002349.html">
+   <LINK REL="Next"  HREF="002370.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Panda Board status</H1>
+    <B>Tim michals</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Panda%20Board%20status&In-Reply-To=%3C213873.14231.qm%40web161212.mail.bf1.yahoo.com%3E"
+       TITLE="[eLua-dev] Panda Board status">tcmichals at yahoo.com
+       </A><BR>
+    <I>Thu May  5 18:48:13 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002349.html">[eLua-dev] Panda Board status
+</A></li>
+        <LI>Next message: <A HREF="002370.html">[eLua-dev] Panda Board status
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2368">[ date ]</a>
+              <a href="thread.html#2368">[ thread ]</a>
+              <a href="subject.html#2368">[ subject ]</a>
+              <a href="author.html#2368">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yes, I have BUF_ENABLE_UART enabled.&#160; This is my understanding how the UART ISR buffering works
+The UART fires an interrupt, this invokes a common function handler, uart_rx_common_handler, 
+
+
+static void uart_rx_common_handler( elua_int_resnum resnum )
+{
+&#160; cmn_int_handler( INT_UART_RX, resnum );
+&#160; VICVectAddr = 0;
+}
+
+cmn_int_handler calls the function below:
+
+
+#ifdef BUF_ENABLE_UART
+static elua_int_c_handler prev_uart_rx_handler;
+
+static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+{&#160;&#160; 
+&#160; if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+&#160;&#160;&#160; cmn_rx_handler( resnum, platform_s_uart_recv( resnum, 0 ) );
+&#160; 
+
+
+Within the function platform_s_uart_recv is called,&#160; returns only one character, USB can send a buffer of characters in one interrupt.
+
+
+________________________________
+From: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+To: eLua Users and Development List (www.eluaproject.net) &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+Sent: Wednesday, May 4, 2011 1:30 AM
+Subject: Re: [eLua-dev] Panda Board status
+
+
+Hi (and sorry for the late reply),
+
+
+On Fri, Apr 29, 2011 at 8:08 AM, Tim Michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+
+I've created a fork and have basic serial ports and USB CDC serial working.
+&gt;<i>Now just getting the data from the USB virtual serial port to the eLua
+</I>&gt;<i>framework.
+</I>&gt;<i>For example, the virtual serial port=1 +the last physical serial port. &#160;So
+</I>&gt;<i>
+</I>&gt;<i>all of the UART functions are still used with a switch or if statement to
+</I>&gt;<i>make the physical Serial port+1 to USB virtual Serial. &#160;Thoughts?
+</I>&gt;<i>
+</I>&gt;<i>Also, where the headache is it may not be connected with the code is running
+</I>&gt;<i>IE USB is disconnected... But the virtual UART functions will return -1 in
+</I>&gt;<i>this case.
+</I>&gt;<i>
+</I>&gt;<i>The main issue is the USB CDC Serial can send a packet of data, more then
+</I>&gt;<i>one character. &#160;So, looking at the code I was thinking of changing the
+</I>&gt;<i>common_uart.c
+</I>&gt;<i>
+</I>&gt;<i>static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+</I>&gt;<i>{
+</I>&gt;<i>&#160;if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+</I>&gt;<i>&#160; &#160;cmn_rx_handler( resnum, platform_s_uart_recv( resnum, 0 ) );
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>to
+</I>&gt;<i>static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+</I>&gt;<i>{
+</I>&gt;<i>&#160;if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+</I>&gt;<i>{
+</I>&gt;<i>&#160; &#160;u8 _data;
+</I>&gt;<i>&#160; &#160;while (-1 != (_data = platform_s_uart_recv( resnum, 0 ))
+</I>&gt;<i>&#160; &#160; &#160;cmn_rx_handler( resnum, _data );
+</I>&gt;<i>
+</I>&gt;<i>So this way it just gets all of the data and buffers it etc, if not using
+</I>&gt;<i>ISR it uses the standard UART functions. &#160;Enabling Interrupts on USB Serial
+</I>&gt;<i>is just a stub.
+</I>&gt;<i>
+</I>&gt;<i>Thoughts? OR just way off base? --
+</I>&gt;<i>
+</I>
+Not way off base, but personally I think that the proper way to handle this would be to enable serial buffering (BUF_ENABLE_UART). This is exactly why we have buffers, they function as a &quot;bridge&quot; between two ends of a connection, one of which produces items and another consumes items, generally at different speeds. Please let me know if you need help with enabling the serial buffers.
+
+Best,
+Bogdan
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110505/eca397dc/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110505/eca397dc/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002349.html">[eLua-dev] Panda Board status
+</A></li>
+	<LI>Next message: <A HREF="002370.html">[eLua-dev] Panda Board status
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2368">[ date ]</a>
+              <a href="thread.html#2368">[ thread ]</a>
+              <a href="subject.html#2368">[ subject ]</a>
+              <a href="author.html#2368">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

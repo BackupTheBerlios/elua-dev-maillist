@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LM3S6569 on Mac OS X Issues
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LM3S6569%20on%20Mac%20OS%20X%20Issues&In-Reply-To=%3CB47DCCA0-C51A-4CCB-931E-5839E90ADE39%40mac.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001397.html">
+   <LINK REL="Next"  HREF="001402.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LM3S6569 on Mac OS X Issues</H1>
+    <B>Stefan Brantschen</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LM3S6569%20on%20Mac%20OS%20X%20Issues&In-Reply-To=%3CB47DCCA0-C51A-4CCB-931E-5839E90ADE39%40mac.com%3E"
+       TITLE="[eLua-dev] LM3S6569 on Mac OS X Issues">stefan.brantschen at mac.com
+       </A><BR>
+    <I>Thu May 27 22:10:07 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001397.html">[eLua-dev] scripts to build toolchains ( arm79 and cortex-m3 )
+</A></li>
+        <LI>Next message: <A HREF="001402.html">[eLua-dev] LM3S6569 on Mac OS X Issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1401">[ date ]</a>
+              <a href="thread.html#1401">[ thread ]</a>
+              <a href="subject.html#1401">[ subject ]</a>
+              <a href="author.html#1401">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I experience issues with connecting my brand-new LM3S6569 to Mac OS X. I flashed the eLua 0.7 binary to the board from Windows, and can operate the board from Windows as well without problems (eLua shell, Lua interpreter, example programs in ROM).
+
+I then tried to talk to the board from Mac OS X. I installed the FTDIUSBSerialDriver and edited the Info.plist file according to James' instructions, including making sure the permissions are OK:
+
+desroches:Extensions] sbr2&gt; pwd
+/System/Library/Extensions
+[desroches:Extensions] sbr2&gt; cd FTDIUSBSerialDriver.kext/Contents/
+[desroches:Contents] sbr2&gt; ls -l
+total 384
+-rwxr-xr-x  1 root  wheel  196303 May 27 16:56 Info.plist
+drwxr-xr-x  3 root  wheel     102 Oct 21  2009 MacOS
+drwxr-xr-x  3 root  wheel     102 Oct 21  2009 Resources
+[desroches:Contents] sbr2&gt; plutil -lint Info.plist
+Info.plist: OK
+[desroches:Contents] sbr2&gt; 
+
+&gt;<i>From the Info.plist file:
+</I>
+&lt;key&gt;IOKitPersonalities&lt;/key&gt;
+	&lt;dict&gt;
+	 &lt;key&gt;Stellaris LM3S6965&lt;/key&gt;
+		&lt;dict&gt;
+			&lt;key&gt;CFBundleIdentifier&lt;/key&gt;
+			&lt;string&gt;com.FTDI.driver.FTDIUSBSerialDriver&lt;/string&gt;
+			&lt;key&gt;IOClass&lt;/key&gt;
+			&lt;string&gt;FTDIUSBSerialDriver&lt;/string&gt;
+			&lt;key&gt;IOProviderClass&lt;/key&gt;
+			&lt;string&gt;IOUSBInterface&lt;/string&gt;
+			&lt;key&gt;bConfigurationValue&lt;/key&gt;
+			&lt;integer&gt;1&lt;/integer&gt;
+			&lt;key&gt;bInterfaceNumber&lt;/key&gt;
+			&lt;integer&gt;1&lt;/integer&gt;
+			&lt;key&gt;idProduct&lt;/key&gt;
+			&lt;integer&gt;48345&lt;/integer&gt;
+			&lt;key&gt;idVendor&lt;/key&gt;
+			&lt;integer&gt;1027&lt;/integer&gt;
+		&lt;/dict&gt;
+...
+
+In the System Profiler I see the Stellaris board on USB level, including the product and vendor IDs (0xbcd9 and 0x0403, ie. 48345 and 1027 decimal). I have rebooted the system more than once.
+
+But: the serial link does not appear in /dev.
+
+Have I missed something?
+
+Thanks!
+-- Stefan
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001397.html">[eLua-dev] scripts to build toolchains ( arm79 and cortex-m3 )
+</A></li>
+	<LI>Next message: <A HREF="001402.html">[eLua-dev] LM3S6569 on Mac OS X Issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1401">[ date ]</a>
+              <a href="thread.html#1401">[ thread ]</a>
+              <a href="subject.html#1401">[ subject ]</a>
+              <a href="author.html#1401">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

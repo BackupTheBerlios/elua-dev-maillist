@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Tracing a memeory leak in Lua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Tracing%20a%20memeory%20leak%20in%20Lua&In-Reply-To=%3CD077EEADA7E54DACBF7FDD6CA026CE63%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003480.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Tracing a memeory leak in Lua</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Tracing%20a%20memeory%20leak%20in%20Lua&In-Reply-To=%3CD077EEADA7E54DACBF7FDD6CA026CE63%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Tracing a memeory leak in Lua">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Apr 26 20:50:07 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003480.html">[eLua-dev] Tracing a memeory leak in Lua
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3481">[ date ]</a>
+              <a href="thread.html#3481">[ thread ]</a>
+              <a href="subject.html#3481">[ subject ]</a>
+              <a href="author.html#3481">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Are you writing just pure Lua code or using the C API? It's much easier to accidentally have memory leaks from the C side (letting the stack grow, allocating objects and anchoring them in the registry, etc..).  If things are growing within the memory reported by collectgarbage they should be objects that are being tracked by the VM, but are still referenced by something.
+
+Towards the end of locating what's building up, you can walk through the global table (_G) and enumerate everything that's connected to that part of the state.  You should be able to find some table dumping code, maybe something like this: <A HREF="https://github.com/kikito/inspect.lua">https://github.com/kikito/inspect.lua</A>
+
+Or one of the examples here:
+<A HREF="http://lua-users.org/wiki/TableSerialization">http://lua-users.org/wiki/TableSerialization</A>
+
+For the registry side of things, you can use the debug library to get the contents of the registry:
+<A HREF="http://www.lua.org/manual/5.1/manual.html#5.9">http://www.lua.org/manual/5.1/manual.html#5.9</A>
+
+Additionally, is your code only able to run on an MCU or can you use it on a desktop as well?  Some of the Lua debugging tools are probably easier to use from a desktop environment without modification:
+<A HREF="http://lua-users.org/wiki/DebuggingLuaCode">http://lua-users.org/wiki/DebuggingLuaCode</A>
+
+It would be nice to have some simple way to dump and visualize the interconnection of objects in memory from a Lua state, but I'm not sure if there's an existing tool that will just do this for you.  I know there are such tools for Python like objgraph  (<A HREF="http://mg.pov.lt/objgraph/">http://mg.pov.lt/objgraph/</A>), but I haven't seen something like this for Lua yet. 
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+
+
+On Wednesday, April 25, 2012 at 8:23 AM, Tim michals wrote:
+
+&gt;<i> This is more of a general Lua question: global Lua memory keeps rising, for example printing out collectgabarge(&quot;count&quot;) 
+</I>&gt;<i> and the memory keeps rising, also, I do collectgabarge(&quot;collect&quot;), does not help. So, guess there has to be some table growing in memory.
+</I>&gt;<i> Is there a way to dump all of the tables and table sizes? or what is the best method to track this down?
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> (mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>)
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003480.html">[eLua-dev] Tracing a memeory leak in Lua
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3481">[ date ]</a>
+              <a href="thread.html#3481">[ thread ]</a>
+              <a href="subject.html#3481">[ subject ]</a>
+              <a href="author.html#3481">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

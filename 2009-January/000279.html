@@ -1,0 +1,574 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20Tiny%20RAM%20patch%20%28finally%29%20added%20to%20eLua&In-Reply-To=%3C81fbe47d0901120551k3229d5a3w6c799b89fe751e42%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000278.html">
+   <LINK REL="Next"  HREF="000282.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua Tiny RAM patch (finally) added to eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20Tiny%20RAM%20patch%20%28finally%29%20added%20to%20eLua&In-Reply-To=%3C81fbe47d0901120551k3229d5a3w6c799b89fe751e42%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Lua Tiny RAM patch (finally) added to eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jan 12 14:51:21 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000278.html">[eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+</A></li>
+        <LI>Next message: <A HREF="000282.html">[eLua-dev] reducing rom size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#279">[ date ]</a>
+              <a href="thread.html#279">[ thread ]</a>
+              <a href="subject.html#279">[ subject ]</a>
+              <a href="author.html#279">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Part II: how to actually use the patch.
+
+If you read my previous message carefully (just kidding, I know you did :)
+), you noticed that the patch is controlled via the
+*LUA_OPTIMIZE_MEMORY*macro, that can have 3 values: 0 (patch not
+active), 1 (medium
+optimizations) and 2 (aggressive optimizations). In eLua, however, we'll use
+just 0 and 2, to keep things less confusing (and because it makes sense to
+do so for the current targets of eLua). A new scons parameter was added to
+control this optimization:
+
+*scons &lt;args&gt; optram = 0* (disable optimization). In this mode
+luaL_register_light will still use regular Lua tables and functions, just to
+maintain full compatiblity with &quot;regular&quot; Lua. Also, in this mode, you can't
+use &quot;global&quot; rotables (&quot;global&quot; rotables are explained below). You can use
+this mode for higher compatibility with Lua, for higher speed (although I
+don't think that the difference in speed is so large) or to test the patch
+itself (if you have a Lua program that's not working with optimizations
+enabled, but works with *optram=0*, chances are that LTR is screwing
+something up). I might remove this mode as some point, but not anytime soon.
+*scons &lt;args&gt; optram = 1* (enable optimization, which actually means that *
+LUA_OPTIMIZE_MEMORY* is set to 2. *optram=1* is also the default, so you
+don't need to specify it explicitly in the scons command line).
+
+Now for the interesting part: how to actually use it. Let's assume that you
+want to register a simple module called &quot;*mod*&quot; that has a single function
+named &quot;f&quot;. For regular Lua, you'd do something like this:
+
+*static const luaL_reg mod_map[] =
+{
+  { &quot;f&quot;, f_implementation },
+  { NULL, NULL }
+};
+
+LUALIB_API int luaopen_mod( lua_State *L )
+{
+  luaL_register( L, &quot;mod&quot;, mod_map );
+  return 1;
+}
+*
+For the rotables implementation, however, you'd need to define the same
+thing like this:
+
+*const luaR_entry mod_map[] = **// note: no static this time*
+*{
+  { LRO_STRKEY( &quot;f&quot; ), LRO_FUNCVAL( f_implementation ) },
+  { LRO_NILKEY, LRO_NILVAL }
+};
+
+// note: in this case the &quot;luaopen_mod&quot; function isn't really needed anymore
+LUALIB_API int luaopen_mod( lua_State *L )
+{
+  return 0;
+}
+*
+A few points about the rotables example above:
+
+- a rotable needs a &quot;map&quot; (*mod_map*) array much like a regular module, but
+you need to define that array with special macros:
+  - for keys: *LRO_STRKEY(&quot;str&quot;)* defines a string key,
+*LRO_NUMKEY(n)*defines an integer key, and
+*LRO_NILKEY* defines a NULL (empty) key
+  - for values: *LRO_FUNCVAL(f)* defines a lightfunction value, *
+LRO_NUMVAL(f)* defines a number value, *LRO_RO(p)* defines a rotable value
+(p is the pointer to the rotable) and *LRO_NILVAL* defines a NULL (empty)
+value.
+- all the &quot;global&quot; rotables in the system (the ones that must be visible
+from _G, like the rotables of all the modules exported to Lua) must be
+included in a special array, called *lua_rotable *(defined in *linit.c*).
+Simply including the rotable's definition array (*mod_map *in this case) in
+the *lua_rotable *array makes it visible globally, thus you don't need to
+call any kind of register function.
+
+The two forms above (for regular tables and for rotables) are clearly
+different, but we want to keep them both to be able to work at both optlevel
+0 and optlevel 2. You can use #ifdefs to differentiate between the two cases
+in different optimization levels, but this becomes really annoying after a
+(short) while. This is why I added another file called *lrodefs.h* (src/lua)
+that can be used to give an &quot;universal&quot; definition to our map arrays. Once
+again, an example is the best way to describe this:
+
+*#define MIN_OPT_LEVEL  2 // the minimum optimization level at which we use
+rotables
+#include &quot;lrodefs.h&quot;
+**const LUA_REG_TYPE mod_map[] = // note: no more luaL_reg or luaR_entry
+**{
+  { LSTRKEY( &quot;f&quot; ), LFUNCVAL( f_implementation ) },
+  { LNILKEY, LNILVAL }
+};
+// note: no more LRO_something, just Lsomething (for example LRO_STRKEY
+becomes LSTRKEY)
+
+**LUALIB_API int luaopen_mod( lua_State *L )
+{
+  LREGISTER( L, &quot;mod&quot;, mod_map ); // note: no more luaL_register, no &quot;return
+1&quot;
+}
+*
+Now, if *LUA_OPTIMIZE_MEMORY* is less than *MIN_OPT_LEVEL* (thus 0 in the
+case of eLua), the above definition will compile in its &quot;regular table&quot;
+format. If *LUA_OPTIMIZE_MEMORY* is 2, it compiles to the rotables format.
+Problem solved :) *&quot;LREGISTER&quot;* will also take care of calling
+&quot;luaL_register&quot; and return 1 and optlevel 0 and do absolutely nothing at
+optlevel 2. You can see more examples of this in any module from* *
+src/modules.
+
+To actually use all this stuff in eLua, simply replace your old definition
+of platform modules from *platform_conf.h *like this:
+
+*Old format:
+
+#define LUA_PLATFORM_LIBS\
+  { AUXLIB_PIO, luaopen_pio },\
+  { AUXLIB_TMR, luaopen_tmr },\
+  { AUXLIB_PD, luaopen_pd },\
+  { AUXLIB_UART, luaopen_uart },\
+  { AUXLIB_TERM, luaopen_term },\
+  { AUXLIB_PWM, luaopen_pwm },\
+  { AUXLIB_PACK, luaopen_pack },\
+  { AUXLIB_BIT, luaopen_bit },\
+  { LUA_MATHLIBNAME, luaopen_math }**
+
+New format:
+
+#define LUA_PLATFORM_LIBS_ROM\  // note: this time the macro is called
+LUA_PLATFORM_LIBS_ROM
+  _ROM( AUXLIB_PIO, luaopen_pio, pio_map )\
+  _ROM( AUXLIB_TMR, luaopen_tmr, tmr_map )\
+  _ROM( AUXLIB_PD, luaopen_pd, pd_map )\
+  _ROM( AUXLIB_UART, luaopen_uart, uart_map )\
+  _ROM( AUXLIB_TERM, luaopen_term, term_map )\
+  _ROM( AUXLIB_PWM, luaopen_pwm, pwm_map )\
+  _ROM( AUXLIB_PACK, luaopen_pack, pack_map )\
+  _ROM( AUXLIB_BIT, luaopen_bit, bit_map )\
+  _ROM( LUA_MATHLIBNAME, luaopen_math, math_map )
+
+IMPORTANT: *the fact that there are no commas between two different _ROM
+declaration (as seen above) is NOT an error; on the contrary, this is very
+much intended. Try using commas and you'll get in trouble really soon :)
+
+Note the addition of a 3rd parameter to the _ROM macro, which is the name of
+the definition array for the (ro)table.
+That's it. The code in linit.c will take care of everything else, including
+initializing the list of modules in *LUA_PLATFORM_LIBS_ROM *with regular
+tables instead of rotables at optlevel 0.
+You can also have a list of modules that you to use regular tables no matter
+what the optimization level is. In that case, list it in the
+*LUA_PLATFORM_LIBS_REG
+*macro via the *old *syntax for *LUA_PLATFORM_LIBS *(the regular Lua syntax
+for defining a module to be registered with luaL_register). If you want this
+module to use lightfunctions instead of regular functions (at optlevel 2),
+use &quot;*luaL_register_light*&quot; instead of &quot;*luaL_register*&quot;.
+
+Other notes:
+
+- for eLua, *MIN_OPT_LEVEL* should be always set to 2
+- you need a C99-compatible compiler to use this (because of the
+compile-time explicit union initialization that's needed to declare const
+rotables). Fortunately this isn't a issue right now, as all current eLua
+targets use GCC and GCC knows how to handle this.
+- your linker command file should export two symbols: *stext *and *etext*.
+They should be declared before and after the .rodata* section placement
+(generally you'd declare *stext *at the beginning of *.text *definition and
+*etext *and the end of *.text* definition, see for example
+src/lua/at91sam7x256/flash256.lds for an example). These are needed by the
+patch to differentiate between a regular table and a rotable (long story
+here :), will get into details if you want me to).
+- *remember to declare all you rotable's definition array as 'const'!!
+*Forgetting
+to do so will not only increase memory usage, it will also render the patch
+not functional, because of the way it recognizes rotables (see above).
+- rotables can have metatables. If a rotable must have a metatable, it needs
+a *&quot;__metatable&quot;* field to point to its metatable (which is also a rotable,
+not necessarily another rotable) and the usual metatable functions. For
+example, let's make our *mod *rotable its own metatable and declare an
+__index function. Moreover, let's do this for both optlevel 0 and optlevel
+2.
+
+*static int mod_mt_index( lua_State *L ) {
+  return 0;
+}*
+
+*#define MIN_OPT_LEVEL  2 // the minimum optimization level at which we use
+rotables
+#include &quot;lrodefs.h&quot;
+**const LUA_REG_TYPE mod_map[] =
+**{
+  { LSTRKEY( &quot;f&quot; ), LFUNCVAL( f_implementation ) },
+#if LUA_OPTIMIZE_MEMORY &gt; 0
+  { LSTRKEY( &quot;__metatable&quot; ), LROVAL( mod_map ) },
+#endif
+**  { LSTRKEY( &quot;__index&quot; ), LFUNCVAL( mod_mt_index) },*
+*  { LNILKEY, LNILVAL };*
+*};
+
+**LUALIB_API int luaopen_mod( lua_State *L )
+{
+#if LUA_OPTIMIZE_MEMORY &gt; 0
+  return 0;
+#else
+  luaL_register( L, &quot;mod&quot;, mod_map );
+
+  // Set &quot;mod&quot; as its own metatable
+  lua_pushvalue( L, -1 );
+  lua_setmetatable( L, -2 );
+
+  return 1;
+#endif
+}*
+
+That's it for now, I hope I was clear enough. I know there will be
+questions, please feel free to ask anything.
+
+Best,
+Bogdan
+
+On Mon, Jan 12, 2009 at 10:57 AM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> OK people, it seems that this got your interested :), so these are the gory
+</I>&gt;<i> details. First a few words about the patch itself ; the text below is a
+</I>&gt;<i> modified version of the text I used to present the first version of the
+</I>&gt;<i> patch in the Lua list, but now we're talking about the second version of the
+</I>&gt;<i> patch, which is better, fixes some very nasty bugs from V1 and has more
+</I>&gt;<i> features.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ================================================================================
+</I>&gt;<i>
+</I>&gt;<i> Audience
+</I>&gt;<i> ========
+</I>&gt;<i>
+</I>&gt;<i> For people that use Lua on desktops, this patch is probably of no interest,
+</I>&gt;<i> as its purpose is to minimize RAM footprint (at the expense of
+</I>&gt;<i> speed/executable size). If, on the other hand, you're trying to run Lua on a
+</I>&gt;<i> resource contrained system (like a microcontroller) or in a sandboxed
+</I>&gt;<i> environment, and you're more concerned with memory usage than with speed,
+</I>&gt;<i> you might find this patch useful.
+</I>&gt;<i>
+</I>&gt;<i> Motivation
+</I>&gt;<i> ==========
+</I>&gt;<i>
+</I>&gt;<i> The main thing that drove me to write this patch is Lua's memory
+</I>&gt;<i> consumption at startup (obtained by running lua -e
+</I>&gt;<i> &quot;print(collectgarbage'count')&quot;). It's about 17k for regular Lua 5.1.4, and
+</I>&gt;<i> more than 25k for some of eLua's platforms. These figures are mainly a
+</I>&gt;<i> result of registering many different modules to Lua. Each time you register
+</I>&gt;<i> a module (via luaL_register) you create a new table and populate it with the
+</I>&gt;<i> module's methods. But a table is a read/write datatype, so luaL_register is
+</I>&gt;<i> quite inefficient if you don't plan to do any write operations on that table
+</I>&gt;<i> later (adding new elements or manipulating existing ones). I found that I
+</I>&gt;<i> almost never have to do any such operations on a module's table after it was
+</I>&gt;<i> created, I just query it for its elements. So, from the perspective of
+</I>&gt;<i> someone worried about memory usage, I'd rather have a different type of
+</I>&gt;<i> table in this case, one that wouldn't need any RAM at all, since it would be
+</I>&gt;<i> read only, so it could reside entirely in ROM.
+</I>&gt;<i> And there's one more thing related to this context: Lua's functions. While
+</I>&gt;<i> Lua does have the concept of C functions, they still require data structures
+</I>&gt;<i> that need to be allocated (see lua_pushcclosure in lapi.c for details), as
+</I>&gt;<i> they can have upvalues or environments. Once again, this isn't something I
+</I>&gt;<i> use often with eLua. Most of the times my functions (especially the ones
+</I>&gt;<i> exported by a C module) are very simple, and they don't need upvalues or
+</I>&gt;<i> environments at all. In conclusion, having a &quot;simpler&quot; function type would
+</I>&gt;<i> improve memory usage.
+</I>&gt;<i>
+</I>&gt;<i> Details
+</I>&gt;<i> =======
+</I>&gt;<i>
+</I>&gt;<i> The patch adds two new data types to Lua. Both or them are based on the
+</I>&gt;<i> lightuserdata type already found in Lua, and they share the same basic
+</I>&gt;<i> attributes: they don't need to be dynamically allocated (as they're just
+</I>&gt;<i> pointers on steroids) and they're compared in the same way lightuserdatas
+</I>&gt;<i> are compared (by value). And of course, they are not collectable, so the
+</I>&gt;<i> garbage collector won't have anything to do with them. The new types are:
+</I>&gt;<i>
+</I>&gt;<i> 1. lightfunctions: these are &quot;simple&quot; functions, in the sense that they
+</I>&gt;<i> can't have upvalues or environments. They are just pointers to regular C
+</I>&gt;<i> functions. Other than that, you can use them from Lua just as you'd use any
+</I>&gt;<i> other function.
+</I>&gt;<i>
+</I>&gt;<i> 2. ro(m)tables: these are read-only tables, but unlike the read-only tables
+</I>&gt;<i> that one can already implement in Lua with metamethods, they have a very
+</I>&gt;<i> specific property: they don't need any RAM at all. They are fully constant,
+</I>&gt;<i> so they can be read directly from ROM. They have a number of special
+</I>&gt;<i> features and limitations when compared with a regular table:
+</I>&gt;<i>
+</I>&gt;<i> - rotables can only contain values of type &quot;lightfunction&quot;, lua_Number or
+</I>&gt;<i> pointers to other rotables.
+</I>&gt;<i> - you can't add/delete/modify elements from rotables (obviously).
+</I>&gt;<i>
+</I>&gt;<i> *NEW IN V2: *
+</I>&gt;<i>
+</I>&gt;<i> - you can use rotables as metatables for both &quot;regular&quot; tables and for Lua
+</I>&gt;<i> types (via debug.setmetatable)
+</I>&gt;<i> - rotabels can have another rotable (or itself) as a metatable
+</I>&gt;<i> - rotabels can have both string and integer keys
+</I>&gt;<i> - you can iterate over rotables with pairs/ipairs/next just as you do with
+</I>&gt;<i> &quot;regular&quot; tables.
+</I>&gt;<i>
+</I>&gt;<i> Just as with lightuserdata, you can only create lightfunctions and rotables
+</I>&gt;<i> from C code, never from Lua itself.
+</I>&gt;<i>
+</I>&gt;<i> How to use it
+</I>&gt;<i> ==========
+</I>&gt;<i>
+</I>&gt;<i> The patch must be applied to an unmodified Lua 5.1.4 source tree. Once you
+</I>&gt;<i> unpack the source tree and download the patch, do this:
+</I>&gt;<i>
+</I>&gt;<i> $ cd lua-5.1.4
+</I>&gt;<i> $ cp &lt;location&gt;/lua_tiny_ram.patch .
+</I>&gt;<i> $ patch -p1 &lt; lua_tiny_ram.patch
+</I>&gt;<i>
+</I>&gt;<i> Then edit lua-5.1.4/src/Makefile to set the optimization level for the
+</I>&gt;<i> patch:
+</I>&gt;<i>
+</I>&gt;<i> CFLAGS= -O2 -Wall $(MYCFLAGS) -DLUA_OPTIMIZE_MEMORY=x, where x can be:
+</I>&gt;<i>
+</I>&gt;<i> 0: this doesn't actually optimize anything, in just tries to keep the
+</I>&gt;<i> patched version as close as possible to the unpatched version in terms of
+</I>&gt;<i> speed and functionality. This passes the full Lua 5.1 test suite (see
+</I>&gt;<i> &quot;Testing&quot; below for details).
+</I>&gt;<i>
+</I>&gt;<i> 1: this applies a moderate optimization, the resulting code takes less
+</I>&gt;<i> memory and still passes the full test suite. In this mode most of the
+</I>&gt;<i> standard libraries are modified to use lightfunctions instead of &quot;regular&quot;
+</I>&gt;<i> functions, and some of them are &quot;converted&quot; to use rotables instead of
+</I>&gt;<i> regular tables.
+</I>&gt;<i>
+</I>&gt;<i> 2: aggresive optimizations, this modifies the standard libraries even more
+</I>&gt;<i> than it does at level 1. The IO library is modified to use the registry
+</I>&gt;<i> instead of environments, thus making it more resource-friendly (the side
+</I>&gt;<i> effect being that this mode doesn't support pipes). It also leaves the _G
+</I>&gt;<i> table with a single method (__index) and sets it as its own metatable, so
+</I>&gt;<i> all the &quot;standard&quot; Lua functions are now hidden behind a __index access.
+</I>&gt;<i> This mode passes almost all the tests in the Lua 5.1 test suite, except for
+</I>&gt;<i> a few tests from &quot;db.lua&quot; (which fail because the functions in &quot;io&quot; are now
+</I>&gt;<i> lightfunctions and they can't have upvalues anymore) and a few more  from
+</I>&gt;<i> &quot;nextvar.lua&quot; (which fail because of reasons I don't fully understand, but
+</I>&gt;<i> they have to do with the fact that _G's only method is now __index).
+</I>&gt;<i>
+</I>&gt;<i> To use it in your own code, call &quot;luaL_register_light&quot; instead of
+</I>&gt;<i> &quot;luaL_register&quot; to register your module with lightfunctions istead of
+</I>&gt;<i> regular functions. Also, you can completeley forget about registering your
+</I>&gt;<i> module if you use rotables. See linit.c, mathlib.c and oslib.c for an
+</I>&gt;<i> example of how to turn your regular code into code that uses rotables.
+</I>&gt;<i>
+</I>&gt;<i> Results
+</I>&gt;<i> =======
+</I>&gt;<i>
+</I>&gt;<i> All of the results come from running &quot;lua -e
+</I>&gt;<i> &quot;print(collectgarbage'count')&quot;&quot; from the command line.
+</I>&gt;<i>
+</I>&gt;<i> *NOTE: these numbers are no longer perfectly accurate for version 2 of the
+</I>&gt;<i> patch, but they're still pretty close to the real numbers.*
+</I>&gt;<i>
+</I>&gt;<i> Regular Lua 5.1.4:           17.0966
+</I>&gt;<i> Patched Lua 5.1.4, OPT = 0 : 17.0849 (the difference comes from a few small
+</I>&gt;<i> changes in loadlib.c)
+</I>&gt;<i> Patched Lua 5.1.4, OPT = 1 :  9.2011
+</I>&gt;<i> Patched Lua 5.1.4, OPT = 2 :  5.8984
+</I>&gt;<i>
+</I>&gt;<i> Before you ask: I don't have any information about how the patch alters the
+</I>&gt;<i> execution speed, and I don't plan to do any soon, as this is not at all
+</I>&gt;<i> something I'm concerned with at this point. Clearly the virtual machine
+</I>&gt;<i> would be slower, but I have no idea how much slower. Of course, you're more
+</I>&gt;<i> than welcomed to test this yourself and post your results.
+</I>&gt;<i>
+</I>&gt;<i> Testing
+</I>&gt;<i> =======
+</I>&gt;<i>
+</I>&gt;<i> I tested my patch with the Lua 5.1 test suite (
+</I>&gt;<i> <A HREF="http://lua-users.org/lists/lua-l/2006-03/msg00723.html">http://lua-users.org/lists/lua-l/2006-03/msg00723.html</A>). I had to modify
+</I>&gt;<i> it a bit to take into account the new datatypes, the modified test suite is
+</I>&gt;<i> available from <A HREF="ftp://ftp.berlios.de/pub/elua">ftp://ftp.berlios.de/pub/elua</A> (anonymous). The test suite
+</I>&gt;<i> was an excellent testing tool. I thought I had the patch ready until I found
+</I>&gt;<i> the test suite and ran it. After another week of work, I had something that
+</I>&gt;<i> could be called functional :)
+</I>&gt;<i>
+</I>&gt;<i> I tested everything via &quot;make generic&quot;, which is how I always build Lua for
+</I>&gt;<i> my embedded environments. This means (among other things) that I didn't test
+</I>&gt;<i> pipes and dynamic module loading, although I don't see why they wouldn't
+</I>&gt;<i> work (except for pipes, which won't work at optmization level 2, as already
+</I>&gt;<i> explained).
+</I>&gt;<i>
+</I>&gt;<i> I never tested the patch in a multithreaded environment with more threads
+</I>&gt;<i> running different lua_States. I never even used regular Lua like this, so I
+</I>&gt;<i> can't make asumptions about how my patch would behave in a multithreaded
+</I>&gt;<i> environment. It doesn't use any global or static variables, but you might
+</I>&gt;<i> encounter other problems with it.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ================================================================================
+</I>&gt;<i>
+</I>&gt;<i> Coming up next: how to use the patch in eLua.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Jan 12, 2009 at 5:46 AM, Pedro Bittencourt &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> My theory that Bogdan came from Valhalla to help us, pitful humans, with
+</I>&gt;&gt;<i> eLua is getting validated.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --Pedro Bittencourt
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, Jan 12, 2009 at 1:06 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Wow, this is amazing :-)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Based on a cursory look through, it sounds as if some tables and maybe
+</I>&gt;&gt;&gt;<i> functions are now classed as read-only? Is this so they don't have to be
+</I>&gt;&gt;&gt;<i> allocated in SRAM?  If the numbers below are accurate, it seems there's
+</I>&gt;&gt;&gt;<i> quite a benefit to doing so.  Is there much of a performance hit?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> -jsnyder
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ----- Original Message -----
+</I>&gt;&gt;&gt;<i> From: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> To: &quot;eLua Users and Development List&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;&gt;<i> Sent: Sunday, January 11, 2009 2:57:19 PM GMT -06:00 US/Canada Central
+</I>&gt;&gt;&gt;<i> Subject: [eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> If you've been wondering why I suddenly stopped replying in the threads
+</I>&gt;&gt;&gt;<i> about the platform specific modules/ADC platform interface/whatever else,
+</I>&gt;&gt;&gt;<i> here's your answer: in the last couple of days I've been working like a
+</I>&gt;&gt;&gt;<i> crazy maniac on integrating my Lua Tiny RAM (LTR) patch in eLua. I'll send a
+</I>&gt;&gt;&gt;<i> larger e-mail explaining what's LTR later, for now let's review the svn
+</I>&gt;&gt;&gt;<i> commit log:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> *- Lua Tiny RAM (LTR) patch is now integrated in eLua and is enabled by
+</I>&gt;&gt;&gt;<i> default
+</I>&gt;&gt;&gt;<i> - all eLua modules updated to work with LTR
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> *And now for something really interesting: the results! The table below
+</I>&gt;&gt;&gt;<i> summarizes the RAM usage in kbytes (as obtained by running *lua -e
+</I>&gt;&gt;&gt;<i> &quot;print(collectgarbage'count')&quot; *from the eLua shell). OPT=0 is LTR's
+</I>&gt;&gt;&gt;<i> &quot;compatibility mode&quot; (basically this means that the patch is disabled, so
+</I>&gt;&gt;&gt;<i> you're running plain Lua) and OPT=2 is the patch in action.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> |=============|============|============|
+</I>&gt;&gt;&gt;<i> | PLATFORM    |   OPT=0    |   OPT=2    |
+</I>&gt;&gt;&gt;<i> |=============|============|============|
+</I>&gt;&gt;&gt;<i> | AVR32       |     23.75  |      5.42  |
+</I>&gt;&gt;&gt;<i> | AT91SAM7X   |     25.16  |      5.42  |
+</I>&gt;&gt;&gt;<i> | STR7        |     24.92  |      5.42  |
+</I>&gt;&gt;&gt;<i> | STR9        |     22.23  |      5.42  |
+</I>&gt;&gt;&gt;<i> | LPC2888     |     22.23  |      5.42  |
+</I>&gt;&gt;&gt;<i> | I386        |     16.90  |      5.42  |
+</I>&gt;&gt;&gt;<i> | LM3S        |     27.14  |      5.42  |
+</I>&gt;&gt;&gt;<i> | STM32       |     ?????  |      ????  | (hint: 5.42:))
+</I>&gt;&gt;&gt;<i> |=============|============|============|
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Beautiful, no? :)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> *Mike, *please test this on your STM3210 board (yes, I also modified
+</I>&gt;&gt;&gt;<i> your port) and let me know how it works.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> - *&quot;cpu&quot; module added to avr32, at91sam7x, str7*
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Pretty self-explanatory.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> * - &quot;disp&quot; module no longer generic (now stays in src/modules/lm3s). For
+</I>&gt;&gt;&gt;<i> this reason, the &quot;disp&quot; platform interface was also removed.*
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> This concludes an older discussion on the list. The &quot;disp&quot; module was
+</I>&gt;&gt;&gt;<i> specific to the LM3S boards, and its platform interface wasn't generic
+</I>&gt;&gt;&gt;<i> enough, so it was moved to the LM3S backend and the platform interface was
+</I>&gt;&gt;&gt;<i> removed.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> *- the &quot;modcommon&quot; mechanism in STM32 (ROM loader) was depreciated in
+</I>&gt;&gt;&gt;<i> favour of the Lua Tiny RAM patch (and the &quot;stm3210lcd&quot; module from the STM32
+</I>&gt;&gt;&gt;<i> backend now uses LTR).*
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Sorry, Mike :), but I really think this is the better way to go with
+</I>&gt;&gt;&gt;<i> this. Maybe we can still use parts of your mechanism in other parts of eLua.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> * - small bugfixes*
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'll be coming back to our API-related threads after I manage to breathe
+</I>&gt;&gt;&gt;<i> a bit :) and after I send more information about LTR to the world.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________ Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090112/ae3f44e2/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090112/ae3f44e2/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000278.html">[eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+</A></li>
+	<LI>Next message: <A HREF="000282.html">[eLua-dev] reducing rom size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#279">[ date ]</a>
+              <a href="thread.html#279">[ thread ]</a>
+              <a href="subject.html#279">[ subject ]</a>
+              <a href="author.html#279">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

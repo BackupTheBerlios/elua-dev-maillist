@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] collectgarbage(&quot;count&quot;)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3CAANLkTik9cWrMIQBkEDvHjxoARolmmEM8CzjFCCed5iu7%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001421.html">
+   <LINK REL="Next"  HREF="001422.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] collectgarbage(&quot;count&quot;)</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3CAANLkTik9cWrMIQBkEDvHjxoARolmmEM8CzjFCCed5iu7%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] collectgarbage(&quot;count&quot;)">dadosutter at gmail.com
+       </A><BR>
+    <I>Thu Jun 10 22:19:43 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001421.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+        <LI>Next message: <A HREF="001422.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1419">[ date ]</a>
+              <a href="thread.html#1419">[ thread ]</a>
+              <a href="subject.html#1419">[ subject ]</a>
+              <a href="author.html#1419">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+On Thu, Jun 10, 2010 at 16:32, Stefan Brantschen
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">stefan.brantschen at mac.com</A>&gt;wrote:
+
+&gt;<i> On my LM3S6965 board, I get &quot;not enough memory&quot; errors when
+</I>&gt;<i> collectgarbage(&quot;count&quot;) returns a value that is way lower than the available
+</I>&gt;<i> memory, between 30 and 40k, with 64k on the chip.
+</I>
+
+Do you mean, you get a &quot;not enough memory&quot; error when simply executing a
+collectgarbage(&quot;count&quot;) instruction ? Or your program gets &quot;not enough
+memory&quot; errors when the returned &quot;count&quot; value is under 30~40K ?
+
+Shouldn't I get close to the board's limit of 64k?
+
+
+Not really, because the Lua (and possibly your program too) eats part of the
+available RAM.
+
+Or do I not understand the value returned by collectgarbage(&quot;count&quot;)
+&gt;<i> correctly?
+</I>
+
+collectgarbage(&quot;count&quot;) returns the ammount of RAM currently allocated/in
+use by Lua in KB ( * 1024 = in Bytes).  Thus, 64 - collectgarbage(&quot;count&quot;)
+should give you the ammount of free RAM you still have in your app.
+
+
+
+&gt;<i> I tested with one collectgarbage(&quot;collect&quot;) call per duty cycle of my
+</I>&gt;<i> program to hopefully keep the influence of the dynamics of the garbage
+</I>&gt;<i> collector small.
+</I>&gt;<i>
+</I>
+The Lua GC is actually much less frightening to our embedded apps than what
+it may seem at first :)
+If your app is not _that_ critical, just let it do it's job and it is
+usually enough. You can tune a couple of variables to tune the GC to your
+app but you'll hardly need it.
+
+&gt;<i>
+</I>&gt;<i> Thanks for any enlightening!
+</I>&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i> -- Stefan
+</I>&gt;<i>
+</I>
+Best
+Dado
+
+
+
+
+
+
+&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100610/f0e9a50c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100610/f0e9a50c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001421.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+	<LI>Next message: <A HREF="001422.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1419">[ date ]</a>
+              <a href="thread.html#1419">[ thread ]</a>
+              <a href="subject.html#1419">[ subject ]</a>
+              <a href="author.html#1419">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

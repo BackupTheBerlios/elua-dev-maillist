@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua on floss weekly, requested topics
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20on%20floss%20weekly%2C%20requested%20topics&In-Reply-To=%3C33644d3c1003171226pd4fc430wbcc8d8ba0c735506%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001272.html">
+   <LINK REL="Next"  HREF="001269.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua on floss weekly, requested topics</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20on%20floss%20weekly%2C%20requested%20topics&In-Reply-To=%3C33644d3c1003171226pd4fc430wbcc8d8ba0c735506%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua on floss weekly, requested topics">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Mar 17 20:26:51 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001272.html">[eLua-dev] How can I help?
+</A></li>
+        <LI>Next message: <A HREF="001269.html">[eLua-dev] eLua on floss weekly, requested topics
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1268">[ date ]</a>
+              <a href="thread.html#1268">[ thread ]</a>
+              <a href="subject.html#1268">[ subject ]</a>
+              <a href="author.html#1268">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Mar 16, 2010 at 3:44 PM, Patrick
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">spell_gooder_now at spellingbeewinnars.org</A>&gt; wrote:
+&gt;<i> I can't wait for James Snyder's interview on floss weekly. It looks like the
+</I>&gt;<i> date was pushed back till April 7th.
+</I>&gt;<i>
+</I>&gt;<i> Would it be a good idea to list topics that might be good to touch on?
+</I>
+I think that's a great idea :-)  I certainly have more than enough
+that I could ramble on about during the interview.  The hosts will be
+directing the questions, but  , from my recollection, many are general
+enough where there's some latitude possible in the answers, and
+suggestions would be good.  As such, here's a google moderator series
+for suggestions:
+
+<A HREF="http://goo.gl/mod/1HSL">http://goo.gl/mod/1HSL</A>
+
+I certainly can't guarantee that I'll get to things posted there
+during the interview, but I'll definitely keep an eye on it as April
+7th draws close :-)
+
+&gt;<i>
+</I>&gt;<i> I am trying to make my way around the eLua site but here are a few things
+</I>&gt;<i> that are not obvious to this noob.
+</I>&gt;<i>
+</I>&gt;<i> 1)I have no background in C/assembly programming of microcontrollers, I am
+</I>&gt;<i> not really understanding how pins are grouped into buses and how chip
+</I>&gt;<i> features are used, more information for the utter beginner would be nice.
+</I>
+I suppose there are two parts to this question, one is on the side of
+general conventions in microcontrollers, and the other is how one
+would use these through eLua.  Generally, though we're abstracting
+things, we do so in a way that's still rather similar to the
+underlying hardware model, so, hopefully, a general description of how
+GPIO works (general logic control related to pins) would be applicable
+to eLua's model.  I think we have some decent coverage for translating
+general microcontroller knowledge to how that could be applied with
+eLua, but we don't bridge the gap as much from less microcontroller
+familiarity.
+
+I think we could certainly benefit from having some more guides on
+that level, and while I suspect it's possible to generate quite a
+large volume of documentation (medium sized tome :-) from doing
+something like this thoroughly, we might be able to get away with some
+tutorial basics and then point to a more extensive description of the
+details elsewhere plus our API docs.  I suspect it might be easier to
+put together some off-the-cuff screencasts on certain topics, maybe I
+could make one on the question you've asked above as a test, if I get
+some time for it this week/weekend?  I make no guarantees that this
+will become a series, but I am more likely to do things when there
+people interested and pinging me about it :-)
+
+If I understand correctly, is what you're wondering about how to use
+GPIO (using pins for digital input/output, and how one can control
+them as groups?) or is this a more general question that includes
+things like how pins can be used for Serial, ADC, CAN, etc...?
+
+&gt;<i> 2)I know many chips will be different but what is the general hardware that
+</I>&gt;<i> is needed for this, is everything done via Jtag?
+</I>
+As Dado was saying, it depends :-)   We have guides for many of them.
+Some platforms like STM32 have a serial bootloader that makes it
+really easy to load firmware from a simple cross-platform tool
+(there's a Python tool, and now Bogdan has also started a C-based
+version which will eventually make it into the project, but for now is
+up on github: <A HREF="http://github.com/jsnyder/stm32ld">http://github.com/jsnyder/stm32ld</A>).  One new platform,
+the mbed (<A HREF="http://mbed.org/">http://mbed.org/</A>) has a mass storage filesystem that allows
+one to simply copy a new firmware version to the filesystem and hit
+the reset button to load it up.
+
+&gt;<i>
+</I>&gt;<i> 3)Is this project at production level?
+</I>
+Adding to Dado's comments:
+Also, note that a large portion of the code that's actually running is
+directly derived from Lua 5.1.4.  We've added some patches (Lua Tiny
+RAM, Emergency Garbage Collection (which is used by other projects),
+etc..) and some modules, but the core Lua code is used by a reasonably
+large number of people and has a deliberately slow release pace to
+ensure that what gets released is quite stable.  In my personal
+experience, what we've been releasing is pretty stable, and while
+there are likely bugs, I don't know of any right now that cause the VM
+to crash (it will bail if it runs out of memory and EGC didn't help).
+So... While I wouldn't use it to replace the drive-by-wire system in a
+car, it's not too bad :-)
+
+&gt;<i>
+</I>&gt;<i> Thanks for reading-Patrick
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001272.html">[eLua-dev] How can I help?
+</A></li>
+	<LI>Next message: <A HREF="001269.html">[eLua-dev] eLua on floss weekly, requested topics
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1268">[ date ]</a>
+              <a href="thread.html#1268">[ thread ]</a>
+              <a href="subject.html#1268">[ subject ]</a>
+              <a href="author.html#1268">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

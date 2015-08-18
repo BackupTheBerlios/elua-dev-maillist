@@ -1,0 +1,287 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Help with PWM on LPC2468
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Help%20with%20PWM%20on%20LPC2468&In-Reply-To=%3CAANLkTinP34_itNOP6KHYD2giSeS7NOpoAkbA1k6LW9zB%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001537.html">
+   <LINK REL="Next"  HREF="001539.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Help with PWM on LPC2468</H1>
+    <B>Ives Cunha</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Help%20with%20PWM%20on%20LPC2468&In-Reply-To=%3CAANLkTinP34_itNOP6KHYD2giSeS7NOpoAkbA1k6LW9zB%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Help with PWM on LPC2468">ivesncc at gmail.com
+       </A><BR>
+    <I>Thu Aug  5 00:06:48 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001537.html">[eLua-dev] Help with PWM on LPC2468
+</A></li>
+        <LI>Next message: <A HREF="001539.html">[eLua-dev] Help with PWM on LPC2468
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1538">[ date ]</a>
+              <a href="thread.html#1538">[ thread ]</a>
+              <a href="subject.html#1538">[ subject ]</a>
+              <a href="author.html#1538">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I have this on my platform_conf:
+#define PINSEL_BASE_ADDR 0xE002C000
+#define IO_PINSEL0           ( PINSEL_BASE_ADDR + 0x00 )
+#define IO_PINSEL1           ( PINSEL_BASE_ADDR + 0x04 )
+#define IO_PINSEL2           ( PINSEL_BASE_ADDR + 0x08 )
+#define IO_PINSEL3           ( PINSEL_BASE_ADDR + 0x0C )
+#define IO_PINSEL4           ( PINSEL_BASE_ADDR + 0x10 )
+#define IO_PINSEL5           ( PINSEL_BASE_ADDR + 0x14 )
+#define IO_PINSEL6           ( PINSEL_BASE_ADDR + 0x18 )
+#define IO_PINSEL7           ( PINSEL_BASE_ADDR + 0x1C )
+#define IO_PINSEL8           ( PINSEL_BASE_ADDR + 0x20 )
+#define IO_PINSEL9           ( PINSEL_BASE_ADDR + 0x24 )
+#define IO_PINSEL10         ( PINSEL_BASE_ADDR + 0x28 )
+
+#define PLATFORM_CPU_CONSTANTS\
+ _C( IO_PINSEL0 ),\
+ _C( IO_PINSEL1 ),\
+ _C( IO_PINSEL2 ),\
+ _C( IO_PINSEL3 ),\
+ _C( IO_PINSEL4 ),\
+ _C( IO_PINSEL5 ),\
+ _C( IO_PINSEL6 ),\
+ _C( IO_PINSEL7 ),\
+ _C( IO_PINSEL8 ),\
+ _C( IO_PINSEL9 ),\
+ _C( IO_PINSEL10 )
+
+Do I have to do something more?
+
+2010/8/4 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+
+&gt;<i> On Thu, Aug 5, 2010 at 12:42 AM, Ives Cunha &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ivesncc at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; Hi.
+</I>&gt;<i> &gt;      Thank to you I could fiinally make it work, but the function cpu.w32
+</I>&gt;<i> &gt; only worked when I used hexadecimal address.
+</I>&gt;<i> &gt;      Is something wrong with platform_conf?
+</I>&gt;<i>
+</I>&gt;<i> It's not wrong, just incomplete. You need to list all the constants
+</I>&gt;<i> that you need to expose via the CPU module yourself:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www.eluaproject.net/en_refman_gen_cpu.html#cpu_constants">http://www.eluaproject.net/en_refman_gen_cpu.html#cpu_constants</A>
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> &gt; 2010/8/4 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Yep.  I'm currently following a policy of configuring these sorts of
+</I>&gt;<i> &gt;&gt; things automatically if there's only one pin that can be used for a
+</I>&gt;<i> &gt;&gt; configuration.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; I think what would be nice is for platform.c to have data on usable
+</I>&gt;<i> &gt;&gt; pin mappings for various peripherals that are supported, and if the
+</I>&gt;<i> &gt;&gt; user asks to set up the peripheral by referring to a pin rather than
+</I>&gt;<i> &gt;&gt; the device id, it will attempt to set up the pin for that use.
+</I>&gt;<i> &gt;&gt; Admittedly there may currently be some scenarios where if something
+</I>&gt;<i> &gt;&gt; like CAN is set up on STM32 there may not be a way to revert the pin
+</I>&gt;<i> &gt;&gt; to default behavior without a reset (though I would have to check).
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Tue, Aug 3, 2010 at 4:22 PM, Bogdan Marinescu
+</I>&gt;<i> &gt;&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt; &gt; On Wed, Aug 4, 2010 at 12:11 AM, Bogdan Marinescu
+</I>&gt;<i> &gt;&gt; &gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt; &gt;&gt; On Wed, Aug 4, 2010 at 12:07 AM, James Snyder &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt; wrote:
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; One thing that may or may not have been brought up yet is that this
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; platform requires pins to be configured for certain outputs to work.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; I'm not sure what the defaults are on this board, but you may need
+</I>&gt;<i> to
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; set the contents of some PINSEL registers.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; pwmled.lua does this:
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; elseif pd.board() == 'ELUA-PUC' then
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;  pwmid, tmrid = 7, 0
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;  local psel = cpu.r32( cpu.IO_PINSEL3 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;  psel = bit.bor( bit.band( psel, 0xFFFFFCFF ), 0x00000200 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;  cpu.w32( cpu.IO_PINSEL3, psel )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; It likely wouldn't be too hard to have a wrapper function that does
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; this, similar to the mbed one, since the configuration models are
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; almost the same for these platforms.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; The PINSEL register descriptions should be in the LPC2468 manual.
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt; Thanks James, that's probably the problem. I'll try to fix it in SVN
+</I>&gt;<i> &gt;&gt; &gt;&gt; tonight, although your solution provides a nice workaround directly
+</I>&gt;<i> in
+</I>&gt;<i> &gt;&gt; &gt;&gt; eLua.
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Actually, I'll probably not try to fix it directly in SVN, since the
+</I>&gt;<i> &gt;&gt; &gt; I/O configuration of the LPC2468 allows multiple pins as outputs for
+</I>&gt;<i> &gt;&gt; &gt; the same PWM channel. As I don't know what pins Ives is trying to use,
+</I>&gt;<i> &gt;&gt; &gt; probably the best method for him is to use the method above, tailored
+</I>&gt;<i> &gt;&gt; &gt; to his specific needs. Datasheet to the rescue! :)
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Best,
+</I>&gt;<i> &gt;&gt; &gt; Bogdan
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; On Tue, Aug 3, 2010 at 3:44 PM, Ives Cunha &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ivesncc at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; Hi,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;     I just tried some more things with no good result, so I gonna
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; report my
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; tests for you know better what is happening.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;    At first I tested this code on EKLM3S8962 and it worked.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;   pwm.setclock( 0, 12000000 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;   pwm.setup( 0, 5000, 90 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;   pwm.start( 0 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;   pwm.setup( 1, 5000, 10 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;   pwm.start( 1 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; so I tried it on eLua Demo Board and again my exit signal was a
+</I>&gt;<i> 2.8V
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; DC.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; I turned on all PWM on Demo board, and saw all the pins that have
+</I>&gt;<i> PWM
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; function, and again the exit was a 2.8V DC.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; Then I tryed to use I/O function on some of this pins to see if
+</I>&gt;<i> there
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; were
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; any connection problem, and all the pins worked properly.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; I have a deadline of a week, is possible to solve this til then?
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; Could someone else test this function on LPC?
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; Thanks again
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; Ives
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; 2010/7/27 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; Hi,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; Thanks for the report, I'll take a look at it.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; Best,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; Bogdan
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; On Tue, Jul 27, 2010 at 3:20 AM, Ives Cunha &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ivesncc at gmail.com</A>&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; wrote:
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; Hi,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; I am trying to use the PWM0[1] and PWM0[2] on eLua Demo Board(
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; LPC2468
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; ),
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; but at the exit pin I only see a DC level.
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; This is what I am doing:
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; pwm.setclock( 0, 12000000 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; pwm.setup( 0, 5000, 90 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; pwm.start( 0 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; pwm.setup( 1, 5000, 30 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; pwm.start( 1 )
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; Am I missing something here?
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; Thanks,
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; Ives
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; --
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; James Snyder
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; Biomedical Engineering
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; Northwestern University
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; Phone: (847) 448-0386
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; --
+</I>&gt;<i> &gt;&gt; James Snyder
+</I>&gt;<i> &gt;&gt; Biomedical Engineering
+</I>&gt;<i> &gt;&gt; Northwestern University
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> &gt;&gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> &gt;&gt; Phone: (847) 448-0386
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100804/d3aee7e5/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100804/d3aee7e5/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001537.html">[eLua-dev] Help with PWM on LPC2468
+</A></li>
+	<LI>Next message: <A HREF="001539.html">[eLua-dev] Help with PWM on LPC2468
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1538">[ date ]</a>
+              <a href="thread.html#1538">[ thread ]</a>
+              <a href="subject.html#1538">[ subject ]</a>
+              <a href="author.html#1538">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

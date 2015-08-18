@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Multitasking Proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Multitasking%20Proposal&In-Reply-To=%3CAANLkTinzTYQwdZ0-xZmyB9UYSRdKLHMgd8e%2BKsyM%2B-XS%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001977.html">
+   <LINK REL="Next"  HREF="001960.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Multitasking Proposal</H1>
+    <B>Fabien</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Multitasking%20Proposal&In-Reply-To=%3CAANLkTinzTYQwdZ0-xZmyB9UYSRdKLHMgd8e%2BKsyM%2B-XS%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Multitasking Proposal">fleutot+lua at gmail.com
+       </A><BR>
+    <I>Tue Feb  1 23:15:12 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001977.html">[eLua-dev] Multitasking Proposal
+</A></li>
+        <LI>Next message: <A HREF="001960.html">[eLua-dev] Multitasking Proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1978">[ date ]</a>
+              <a href="thread.html#1978">[ thread ]</a>
+              <a href="subject.html#1978">[ subject ]</a>
+              <a href="author.html#1978">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Two additional remarks, drawn from personal experience:
+
+   - In practice, you need some locking mechanisms even in collaborative
+   multithreading, although mmuch less frequently. At least some form of mutex.
+   - The kind of work done under interruption and within demanding realtime
+   constraints is usually simple and not portable. As a result, the advantage
+   of Lua over C in such contexts isn't as huge as usually.
+
+Also, there's a serious issue with the Java-like multithreading model, as
+opposed to the Unix-like multi-process model. With threads (shared memory),
+you'll eventually leak memory as your application grows more complex, and
+the only way to fix this is by rebooting the whole VM.
+
+In a well designed Unix application, there are lots of short-lived processes
+with separate data (save some carefully delimited IPC). Many of those
+processes won't even bother freeing allocated memory: everything is
+reclaimed when the process is killed, at the end of its ideally short life.
+This forgotten but robust way of managing memory is finally rediscovered,
+e.g. in Google Chrome's architecture. Building an application this way is a
+strong incentive to choose RTOS preemptive processes, *if* the underlying OS
+is powerful enough and you're willing to use processes the proper way.
+However, such OSes will more typically run the regular Lua VM than eLua.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110201/8f679341/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110201/8f679341/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001977.html">[eLua-dev] Multitasking Proposal
+</A></li>
+	<LI>Next message: <A HREF="001960.html">[eLua-dev] Multitasking Proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1978">[ date ]</a>
+              <a href="thread.html#1978">[ thread ]</a>
+              <a href="subject.html#1978">[ subject ]</a>
+              <a href="author.html#1978">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

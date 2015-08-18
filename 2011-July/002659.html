@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y2gUHkJbAyK3y2HA7Rxwt23n4m0DSJRkB%2BgD818rf9B4A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002646.html">
+   <LINK REL="Next"  HREF="002660.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y2gUHkJbAyK3y2HA7Rxwt23n4m0DSJRkB%2BgD818rf9B4A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jul 18 02:39:18 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002646.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002660.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2659">[ date ]</a>
+              <a href="thread.html#2659">[ thread ]</a>
+              <a href="subject.html#2659">[ subject ]</a>
+              <a href="author.html#2659">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Jul 13, 2011 at 7:53 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 14 July 2011 00:58, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> On Wed, Jul 13, 2011 at 9:50 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> I've put a query on the avrfreaks forum
+</I>&gt;&gt;&gt;<i> <A HREF="http://www.avrfreaks.net/index.php?name=PNphpBB2&amp;file=viewtopic&amp;p=848231">http://www.avrfreaks.net/index.php?name=PNphpBB2&amp;file=viewtopic&amp;p=848231</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks. &#160;I'll keep an eye on that. &#160;I don't know many people at Atmel,
+</I>&gt;&gt;<i> but I suppose I could also ask someone I've communicated with a few
+</I>&gt;&gt;<i> times around toolchain stuff.
+</I>&gt;<i>
+</I>&gt;<i> You saw the reply? Maybe UC3A is the same...
+</I>
+Yep, caught it after you sent this message.  Strangely that topic
+isn't loading for me anymore?  Not sure if this is a database glitch
+or otherwise.
+
+I could certainly give it a try, however I'd like some documentation
+that clearly indicates which devices this should be attempted on vs
+not.
+
+&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &#160;If not, we can
+</I>&gt;&gt;&gt;&gt;<i> use timer interrupts which I've been intending to add support for, but
+</I>&gt;&gt;&gt;&gt;<i> haven't gotten around to yet.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> That sounds like the best solution, which would work on all platforms,
+</I>&gt;&gt;&gt;<i> including those without hardware trigger support.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> There might be some downsides to using interrupts in terms of latency
+</I>&gt;&gt;<i> or effective clock jitter depending on whether latencies are constant
+</I>&gt;&gt;<i> but it's better than no timer trigger support and should just be
+</I>&gt;&gt;<i> documented when used for a given platform.
+</I>&gt;<i>
+</I>&gt;<i> True. I hadn't thought of that. For something like audio, timing
+</I>&gt;<i> jitter would introduce extra noise.
+</I>
+I haven't investigated the various platforms.  Cortex-M3 is supposed
+to be a pretty large improvement over previous ARM designs, but I have
+no idea what it's like on AVR32.  It does appear that there is a
+priority system, which should be useful for situations like this.  One
+positive thing is that for things like timer interrupts, the volume of
+code executed should be fairly small since it basically comes down to
+verifying the interrupt source and initiating a software conversion.
+I think it's a good backup to have, but wherever possible I'd like to
+use hardware support if it exists.
+
+One other thing that has occurred to me is that the AVR32 manuals
+mention using PWM to trigger interrupts, and I think I understood that
+external interrupts may be supported even if the timer ones are not.
+I'm wondering that another possibility might be to &quot;sacrifice&quot; a pin
+to have its state toggled through PWM or otherwise and have that
+trigger ADC conversions?
+
+I think I'll ping the individual I've communicated with before at
+Atmel and see if even if he might not know off-hand if he could
+forward the request to the appropriate individual(s) and maybe get
+that manual/datasheet fixed at the same time.  Given that it's missing
+that section, I wonder if that's a typo in a recent version and that
+information was in older versions of the same?
+
+Best.
+
+-jsnyder
+
+&gt;<i>
+</I>&gt;<i> &#160; M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002646.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002660.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2659">[ date ]</a>
+              <a href="thread.html#2659">[ thread ]</a>
+              <a href="subject.html#2659">[ subject ]</a>
+              <a href="author.html#2659">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

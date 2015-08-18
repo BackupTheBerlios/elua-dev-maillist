@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New linux platform for eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20linux%20platform%20for%20eLua&In-Reply-To=%3CEMEWEMEW2_DELIMl4JFuY02ef2318fa5212f17f3773%2C%0A%09jbsnyder%40fanplastic.org%2C%206861DBC2-7FEB-43B3-8DE4-FF8%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000826.html">
+   <LINK REL="Next"  HREF="000828.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New linux platform for eLua</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20linux%20platform%20for%20eLua&In-Reply-To=%3CEMEWEMEW2_DELIMl4JFuY02ef2318fa5212f17f3773%2C%0A%09jbsnyder%40fanplastic.org%2C%206861DBC2-7FEB-43B3-8DE4-FF8%3E"
+       TITLE="[eLua-dev] New linux platform for eLua">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed May 20 22:56:16 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000826.html">[eLua-dev] New linux platform for eLua
+</A></li>
+        <LI>Next message: <A HREF="000828.html">[eLua-dev] New linux platform for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#827">[ date ]</a>
+              <a href="thread.html#827">[ thread ]</a>
+              <a href="subject.html#827">[ subject ]</a>
+              <a href="author.html#827">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On May 20, 2009, at 2:51 PM, Bogdan Marinescu wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, May 20, 2009 at 9:58 PM, Robert G. Jakabosky &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bobby at sharedrealm.com</A> 
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> First make sure you have the latest svn revision, since Bogdan  
+</I>&gt;<i> renamed the
+</I>&gt;<i> platform to &quot;sim&quot; and made it easier to add support for other host  
+</I>&gt;<i> OS.  Still
+</I>&gt;<i> use &quot;cpu=linux&quot; with the build command.
+</I>&gt;<i>
+</I>&gt;<i> This holds for Linux only, I bet OSX uses a different way to invoke  
+</I>&gt;<i> syscalls. He'd need to use &quot;cpu=osx&quot; and implement the  hostif_osx.c  
+</I>&gt;<i> file in src/platform/sim. How to do this, I have no idea :)
+</I>
+Yeah, I was making a _darwin one (since OS X is built on top of a BSD- 
+like set of sources called Darwin)
+
+&gt;<i>
+</I>&gt;<i> You will need the i686-elf toolchain built with newlib support.   
+</I>&gt;<i> Glibc is not
+</I>&gt;<i> used when building the &quot;sim&quot; plantform, so the syscalls to the host  
+</I>&gt;<i> OS need
+</I>&gt;<i> to be manually written.  As far as I know you can't use a copy of  
+</I>&gt;<i> the gcc
+</I>&gt;<i> toolchain that was built for glibc.
+</I>&gt;<i>
+</I>&gt;<i> I also don't think this is possible, gcc built with gliobc depends  
+</I>&gt;<i> on glibc in a number of obscure ways (I'm sure the same holds for  
+</I>&gt;<i> Newlib at least to some extent). I tried using the precompiled  
+</I>&gt;<i> ncurses library from Linux in our sim executable to set up the  
+</I>&gt;<i> terminal, and the linker blessed me with so many errors that I gave  
+</I>&gt;<i> up instantly. I'm sure things would've been different if I tried to  
+</I>&gt;<i> compile ncurses itself with i686-elf-gcc, but this is already more  
+</I>&gt;<i> complex than needed.
+</I>
+OK.  The reason I was asking was because I did manage to get the i686- 
+elf toolchain to build on OS X, but I then realized that OS X works  
+with Mach-O binaries, not ELF.  I tried building a normal GCC for OS X  
+w/ the only difference being using newlib as opposed to glibc, but  
+newlib's build process died on me, so I'll have to figure out what  
+went wrong there.  I can't find reference to anyone trying to use  
+newlib as a C library on OS X (not terribly surprising, I guess).
+
+There are elf loading environments for OS X like vx32 (<A HREF="http://pdos.csail.mit.edu/~baford/vm/">http://pdos.csail.mit.edu/~baford/vm/</A> 
+) and Google's Native Client (<A HREF="http://code.google.com/p/nativeclient/">http://code.google.com/p/nativeclient/</A>),  
+but those might be more of a pain than its worth.
+
+Two things that Native Client has going for it at the moment are that  
+it uses Newlib as its C library, and that I suppose you could use it  
+to make eLua run in a web browser (pointless, but neat?)
+
+Why can't things be simple? :-) (and why no ELF support, Apple?)
+
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090520/0227fa46/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090520/0227fa46/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090520/0227fa46/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090520/0227fa46/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000826.html">[eLua-dev] New linux platform for eLua
+</A></li>
+	<LI>Next message: <A HREF="000828.html">[eLua-dev] New linux platform for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#827">[ date ]</a>
+              <a href="thread.html#827">[ thread ]</a>
+              <a href="subject.html#827">[ subject ]</a>
+              <a href="author.html#827">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

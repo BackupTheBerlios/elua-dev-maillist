@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RTC pull request
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTC%20pull%20request&In-Reply-To=%3CCAL4-wQo0ap4F84sCksKd2TGbvK4R-ZqTojjXyBgKZByQ5o5s3Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003372.html">
+   <LINK REL="Next"  HREF="003376.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RTC pull request</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTC%20pull%20request&In-Reply-To=%3CCAL4-wQo0ap4F84sCksKd2TGbvK4R-ZqTojjXyBgKZByQ5o5s3Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RTC pull request">martinwguy at gmail.com
+       </A><BR>
+    <I>Tue Mar 20 19:36:22 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003372.html">[eLua-dev] RTC pull request
+</A></li>
+        <LI>Next message: <A HREF="003376.html">[eLua-dev] RTC pull request
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3373">[ date ]</a>
+              <a href="thread.html#3373">[ thread ]</a>
+              <a href="subject.html#3373">[ subject ]</a>
+              <a href="author.html#3373">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 20 March 2012 17:51, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i> I've posted a pull request on the eLua repo about a month ago adding a RTC
+</I>&gt;<i> module for the STR9 platform.
+</I>&gt;<i> Did anyone have a look at it?
+</I>
+Hi. I just had a look at it. This explains where the documentation for
+str9.rtc.*() came from, whose code didn't exist in the repo
+
+I removed the docs for the codeless str9.rtc.*() functions in commit
+a05c209ab2e14e7879f8f5f49064f5b87fa7367e so I guess you'll need to
+fish that out again and include it, extended to include the spec for
+the alarm functions.
+
+One problem with it is that is has separate setdate() and settime()
+functions, which means that you can'r reliably set the time and date:
+if a program sets or gets both at midnight and the time rolls over
+between the two calls, the date is set or returned 24 hours wrong. A
+better interface would be one call that handles both in one go.
+   For Mizar32 I did this using the same table structure as is used in
+the strangely named standard Lua functions os.date() and os.time()
+(which *don't* handle time and date respectively!). To adjust only
+some fields, you call it with the parameters you want to change:
+   mizar32.rtc.set( { hour=12, min=34 } )
+and it does read-modify-write of all fields atomically.
+
+The other problem is with its time formats: &quot;03/04/2012&quot; is ambiguous
+since in America it means the 4th of March and in the rest of the
+world the 3rd of April, whereas the Lua-like table is unambiguous,
+time zones apart. But I doubt we want to get into internationalization
+and timezones inside eLua...
+
+If we aim at ending up with a single rtc.*() module ultimately, it
+might be good to make the platform modules as similar as possible in
+preparation for the merge.
+
+Thanks for the suggestion for an interface to RTC alarm interrupts. I
+hadn't figured out how to handle this. The DS1337 and PCF8653 have
+multiple alarm timers and interrupts. Am I reading your code examples
+right, that the first parameter for the setalarm() method is the alarm
+timer ID?
+
+    M
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003372.html">[eLua-dev] RTC pull request
+</A></li>
+	<LI>Next message: <A HREF="003376.html">[eLua-dev] RTC pull request
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3373">[ date ]</a>
+              <a href="thread.html#3373">[ thread ]</a>
+              <a href="subject.html#3373">[ subject ]</a>
+              <a href="author.html#3373">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

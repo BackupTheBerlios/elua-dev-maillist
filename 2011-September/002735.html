@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Getting Started
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Getting%20Started&In-Reply-To=%3CCAJ%3DY9Y0ed0Mwovdu9LhsrtNDzXSsyiqhuKw%3D6W3D5NJ0k%2BU_Cw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002734.html">
+   <LINK REL="Next"  HREF="002737.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Getting Started</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Getting%20Started&In-Reply-To=%3CCAJ%3DY9Y0ed0Mwovdu9LhsrtNDzXSsyiqhuKw%3D6W3D5NJ0k%2BU_Cw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Getting Started">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Sep 22 02:16:24 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002734.html">[eLua-dev] Getting Started
+</A></li>
+        <LI>Next message: <A HREF="002737.html">[eLua-dev] Getting Started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2735">[ date ]</a>
+              <a href="thread.html#2735">[ thread ]</a>
+              <a href="subject.html#2735">[ subject ]</a>
+              <a href="author.html#2735">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Sep 21, 2011 at 4:28 PM,  &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">kyasi at gis.net</A>&gt; wrote:
+&gt;<i> Hello James
+</I>&gt;<i>
+</I>&gt;<i> The zip files still do not work on my board.
+</I>&gt;<i> I verified that the MD5 of the zip and included files when arrived at my
+</I>&gt;<i> end
+</I>&gt;<i> had the same MD5 as you reported in your email reply.
+</I>&gt;<i> So I do not think the files are getting corrupted.
+</I>
+This is very strange.
+
+What are you using to flash your device?  I was using DFU programmer:
+<A HREF="http://dfu-programmer.sourceforge.net/">http://dfu-programmer.sourceforge.net/</A>
+
+It's important to use one of the more recent versions if you are,
+since in the last version or two they've fixed some issues that could
+result in incorrect flashing.
+
+If I can figure out what tool you're using perhaps I can replicate
+things on my end.  Are you just flashing through AVR Studio?
+Regardless, do the ELF files work for you and could you try that
+instead?
+
+&gt;<i>
+</I>&gt;<i> this is a little strange... the eLuawebserver files you sent me work ok.
+</I>&gt;<i> And i went back and used the web builder, i deselected the build
+</I>&gt;<i> switches for SERMUX and RFS and i loaded the generated file to my board.
+</I>&gt;<i> ( I did not expect this all to work because i tried that intially, but i
+</I>&gt;<i> just wanted to insure that i could get the lua prompt on the serial port
+</I>&gt;<i> to verify, connections and terminal emulator etc are all as they should
+</I>&gt;<i> be. &#160;And Yes, with that file i get the proper v .8 prompt each time i
+</I>&gt;<i> hit reset or power cycle the board, but as we discussed before, i get
+</I>&gt;<i> the &quot;y&quot; response if i just use the terminal program for input because of
+</I>&gt;<i> the ser mux.
+</I>
+So, one difference between the images I've sent would be that the
+eLuaWebserver should be a bit smaller since it is integer only instead
+of including floating point emulation.  I wonder if it could be
+related to the flashing tool somehow?
+
+In retrosect, the hex format used for the images contains checksum
+data that should help to ensure the integrity of data as it is being
+read:
+<A HREF="http://en.wikipedia.org/wiki/Intel_HEX">http://en.wikipedia.org/wiki/Intel_HEX</A>
+
+If you can try the ELF file as well, maybe try flashing that?  I don't
+know which flash tool you're using or what formats it supports.
+
+&gt;<i>
+</I>&gt;<i> So i do not understand what could possibly be going on.
+</I>&gt;<i> Especially since the same image works on your board.
+</I>&gt;<i>
+</I>&gt;<i> Thanks for spending the time with me. Ill try to install the toolchain
+</I>&gt;<i> and see if i can get anywhere with that.
+</I>
+No problem. I'm quite curious what could be causing this discrepancy
+in behavior.  Depending on the outcome this might be an important
+point to note in our documentation or a bug to be fixed.
+
+I can also try building images with exactly the same options as the
+eLuaWebserver (integer only, specific memory allocator, don't conserve
+RAM by storing pre-initialized data in flash) was built on the off
+chance that that maybe had something to do with the difference in
+behavior, but I presume you have an at32uc3a0512 and the board has
+SDRAM attached.
+
+Best.
+
+-jsnyder
+
+&gt;<i>
+</I>&gt;<i> Ken
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ----- Original Message Follows -----
+</I>&gt;&gt;<i> On Wed, Sep 21, 2011 at 9:07 AM, &#160;&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">kyasi at gis.net</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; Hi James
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Well the files still do not work on my system.
+</I>&gt;&gt;<i> &gt; I downloaded the updated hex and elf files that you provided.
+</I>&gt;&gt;<i> &gt; I have no problem programming the flash with these files but i still
+</I>&gt;&gt;<i> &gt; get no
+</I>&gt;&gt;<i> &gt; output on the serial port and no responses from inputs.
+</I>&gt;&gt;<i> &gt; I compared the new files to the original and their are differences,
+</I>&gt;&gt;<i> &gt; so i think that
+</I>&gt;&gt;<i> &gt; confirms i have the new files.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Since this image works on your EVK1100 i guess ill have to try to
+</I>&gt;&gt;<i> &gt; figure out why it does not work on my setup.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Just to confirm your set up.
+</I>&gt;&gt;<i> &gt; 1. you connect your terminal program to uart0 ( i have tired both )
+</I>&gt;&gt;<i> &gt; 2. you set terminal for 115.2k N 8 1 &#160;no flow control ( I have
+</I>&gt;<i> tried
+</I>&gt;&gt;<i> &gt; other combinations)
+</I>&gt;&gt;<i> &gt; 3. if you press the reset button on the board you get the prompt or
+</I>&gt;&gt;<i> &gt; if you just power cycle the board you get the prompt ? &#160;( i have
+</I>&gt;&gt;<i> &gt; tried both with no results )
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Strange. &#160;Yes, UART0, 115200 8N1. &#160;Perhaps the file is getting mangled
+</I>&gt;&gt;<i> when downloaded since the hex file appears to be an ascii file?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Here's a zip containing the elf and hex:
+</I>&gt;&gt;<i> <A HREF="http://dl.dropbox.com/u/169337/eLua-Vanilla/eLua_at32uc3a0512.zip">http://dl.dropbox.com/u/169337/eLua-Vanilla/eLua_at32uc3a0512.zip</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also, here are MD5s for all the files in the directory:
+</I>&gt;&gt;<i> 746d69168d898c1da1e9cad5a86ce220 &#160;eLua_at32uc3a0512.zip
+</I>&gt;&gt;<i> 78e410fa3dfd01cfe39c69c9419cf349 &#160;elua_lua_at32uc3a0512.elf
+</I>&gt;&gt;<i> 2967c61646d6a01dc3683e9d323a14be &#160;elua_lua_at32uc3a0512.hex
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I checked my hardware again and other applications have no problem
+</I>&gt;&gt;<i> &gt; communicating thru the serial uart comm ports to the terminal
+</I>&gt;&gt;<i> program. &gt;
+</I>&gt;&gt;<i> &gt; I will try to figure this out.
+</I>&gt;&gt;<i> &gt; I will also try to install the tool chain.
+</I>&gt;&gt;<i> &gt; Can you tell me the command line and options you used to build this
+</I>&gt;&gt;<i> &gt; image ?
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; thanks again for your help ?
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; PS... can you tell me why when i respond to your emails it seems to
+</I>&gt;&gt;<i> &gt; start a new thread with the same subject line, but when you respond
+</I>&gt;&gt;<i> &gt; your reply goes to the proper thread when viewed thru the web
+</I>&gt;&gt;<i> &gt; archive ? &#160;I just &quot;reply all&quot; to the email message i get from you,
+</I>&gt;&gt;<i> &gt; but apparently that does not work as i expected.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I suspect you mean on the archives here?
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/pipermail/elua-dev/2011-September/thread.html">https://lists.berlios.de/pipermail/elua-dev/2011-September/thread.html</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Nabble seems to pick up on it correctly:
+</I>&gt;&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/">http://elua-development.2368040.n2.nabble.com/</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The basic functionality for pipermail's tracking of threads depends on
+</I>&gt;&gt;<i> the email client maintaining the &quot;In-Reply-To&quot; header when it does a
+</I>&gt;&gt;<i> reply (it might, in some versions also use the subject line?). &#160;I'm
+</I>&gt;&gt;<i> not sure why, but GMail (which is what I'm using for email) seems to
+</I>&gt;&gt;<i> make use of or maintain this header, while messages sent from your
+</I>&gt;&gt;<i> client do not. I'm not sure if there's a way to get it to behave
+</I>&gt;&gt;<i> differently depending on how you reply to messages.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Ken
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002734.html">[eLua-dev] Getting Started
+</A></li>
+	<LI>Next message: <A HREF="002737.html">[eLua-dev] Getting Started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2735">[ date ]</a>
+              <a href="thread.html#2735">[ thread ]</a>
+              <a href="subject.html#2735">[ subject ]</a>
+              <a href="author.html#2735">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

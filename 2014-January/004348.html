@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] DAC Module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2014-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20DAC%20Module&In-Reply-To=%3CCAL4-wQrNHfNeA%2BKCTcjAb%3DKA8VcAJALZJQRFi96DZDzA4Po06A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004347.html">
+   <LINK REL="Next"  HREF="004349.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] DAC Module</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20DAC%20Module&In-Reply-To=%3CCAL4-wQrNHfNeA%2BKCTcjAb%3DKA8VcAJALZJQRFi96DZDzA4Po06A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] DAC Module">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Jan  2 16:01:25 CET 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004347.html">[eLua-dev] DAC Module
+</A></li>
+        <LI>Next message: <A HREF="004349.html">[eLua-dev] DAC Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4348">[ date ]</a>
+              <a href="thread.html#4348">[ thread ]</a>
+              <a href="subject.html#4348">[ subject ]</a>
+              <a href="author.html#4348">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 02/01/2014, Mark Burton &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">burtoogle at gmail.com</A>&gt; wrote:
+&gt;<i> I have been working on the DAC module. It's a generic module with a
+</I>&gt;<i> platform implementation for the stm32f4. The functions that output a
+</I>&gt;<i> sequence of samples are clocked using timer match interrupts (no DMA
+</I>&gt;<i> required).
+</I>
+THanks! :) Here's my 2c-worth (all negative, of course! :)
+
+&gt;<i> The Lua interface currently looks like this:
+</I>&gt;<i>
+</I>&gt;<i> dac.init( id, [bits_per_sample, [options]] )
+</I>&gt;<i> initialises a single DAC channel
+</I>&gt;<i>   id = DAC channel id from 0 upwards (stm32f4 allows 0 or 1)
+</I>&gt;<i>   bits_per_sample = 8, ... (stm32f4 allows 8, 12 and 16, only 12 bits
+</I>&gt;<i>   actually used)
+</I>&gt;<i>   options = platform specific option flags (currently unused)
+</I>
+All the other modules have functions called *.setup(), not *.init(),
+so I guess this should be renamed.
+
+I'm not sure that a place-holder for non-existent options is useful.
+If, one day, extra options are needed, the implementer can add an
+extra parameter with a default value of nil and that will be
+backward-compatible with existing code.
+
+Most other eLua functions have a way to request what the current
+bits-per-sample are, and the usual eLua way is for the user to say
+what they would like, then eLua sets the nearest possible value to the
+number of bits you asked for, and return that as the value of the
+setup function, the dac.setbitspersample() function or whatever.
+
+That suggests:
+
+actual_bits = dac.setup( id, [bits_per_sample] )
+initialises a single DAC channel
+    id = DAC channel id from 0 upwards (stm32f4 allows 0 or 1)
+   bits_per_sample = 8, 12 and 16, only 12 bits
+Returns:
+   actual_bits = the actual number of bits per sample set to the DAC
+
+I was wondering whether any hardware can have a different number of
+bits per channel.
+With other eLua interfaces, like pwm.setclock(id, freq) it lets you
+setup the channels with different values if you like, then there is a
+note in the platform-specific documentation to tell you that, for
+example, on AVR32 all channels run from the same clock, so changing
+one changes them all.
+
+&gt;<i> dac.putsample( id, [val] )
+</I>&gt;<i>
+</I>&gt;<i> outputs a sample to a DAC channel
+</I>
+&gt;<i>   id = DAC channel id
+</I>&gt;<i>   val = integer value to load into DAC (default 0)
+</I>
+I'm not sure that having a default value is useful. I'd just make it a
+compulsory 2nd argument. That would help people who forget to specify
+the channel in their code, saying dac.putsample(sample) and this way
+the error message would be that they have forgotten a parameter
+instead of either outputting 0 on a random channel or saying &quot;invalid
+channel&quot;.
+
+&gt;<i> dac.putsamples( id, samples, rate, [timer_id, [bytes_per_sample, [bias,
+</I>&gt;<i> [offset, [num_samples]]]]] )
+</I>&gt;<i>
+</I>&gt;<i> outputs a sequence of samples to a DAC channel
+</I>&gt;<i>
+</I>&gt;<i>   id = DAC channel id
+</I>&gt;<i>   rate = DAC update rate (samples per second)
+</I>
+Is this likely to change from call to call? If not, maybe it would be
+more apt to put it in dac.setup()
+
+&gt;<i>   samples = string containing sample data
+</I>&gt;<i>   bytes_per_sample = number of bytes per sample (default 1)
+</I>
+I'm not sure about the string data type. There seem to be two idioms
+in use in eLua already for variable sizes and number of parameters.
+One is switching on the data type, which can be an integer, a string
+or an array, the other is to put the samples as the last parameter and
+allow any number of them. See i2c.write, which does both (!)
+
+Going back to the string type, this means that if I have an array of
+16-bit samples as numbers, I would need a bizarre code to chop each
+sample into two bytes and compose a weird string.  Again, I think
+using an array of integers seems less awkward.
+
+Also, if we have bits-per-sample in the setup function, doesn't this
+determine bytes-per-sample?
+
+&gt;<i>   bias = value added to each sample before writing to DAC (default 0)
+</I>&gt;<i>   offset = skip this many bytes at start of string (default 0)
+</I>&gt;<i>   num_samples = number of samples to output (defaults to all samples in
+</I>&gt;<i>   string)
+</I>
+Are these necessary? There is already a Lua idiom to select a
+substring (or sub-array) from an existing sample buffer, without
+replicating that functionality here.
+That said, if we look at the existing adc module, that has
+samples = adc.getsamples( id, count )
+whish returns a table of integers, and
+adc.insertsamples( id, table, idx, count )
+to write samples into a sub-array of an existing table.  Maybe you
+imitate this metaphor more closely in dac.*()?
+
+&gt;<i> dac.playwavfile( id, wavfilename, [timer_id, [sample_buf_size]] )
+</I>&gt;<i>
+</I>&gt;<i> plays a wav file (8 or 16 bit uncompressed PCM only) - currently only
+</I>&gt;<i> one channel is output (mono) but it would not be difficult to output 2
+</I>&gt;<i> channels for stereo.
+</I>&gt;<i>
+</I>&gt;<i>   id = DAC channel id
+</I>&gt;<i>   wavfilename = name of file containing wav data
+</I>&gt;<i>   timer_id = id of timer to use (defaults to first timer that can be
+</I>&gt;<i>   used)
+</I>&gt;<i>   sample_buf_size = size of circular buffer used to hold samples
+</I>&gt;<i>   (default 32)
+</I>
+Most eLua functions are more low-level than this. See i2c, for which I
+suggested a higher-level interface to send an entire packet, but that
+was rejected in favour of the existing bit-by-bit interface.
+Also, opening files, and decoding wav-file-format has nothing to do
+with a DAC module, but is a specific need for the audio or sound
+effects that you need. For that, you could have a separete
+wav-file-reading (and wav-file-writing!) module, returning (and
+taking) arrays of integers - that would interface nicely with the ADC
+module which would be able to save its results in files, and to the
+DAC module which could take those arrays and play them, How does that
+sound?
+
+I assume that the critical issue for sound output is being able to
+play audio in real time, for which having any Lua code running between
+samples will make it too slow. Once you've read your WAV file into a
+Lua table, you should be able to call dac.putsamples(id, table [,idx
+[,count]]) to achieve the effects you need, with
+samples=wav.read(file) as a support function.
+
+Would that work for what you need to do?
+
+&gt;<i> The platform API is simple: it basically consists of a function to init
+</I>&gt;<i> a DAC channel, a function to output a single sample to one or more DAC
+</I>&gt;<i> channels and a function to check whether a given timer OK to use as a
+</I>&gt;<i> source of interrupts.
+</I>&gt;<i>
+</I>&gt;<i> int platform_dac_init(unsigned id, unsigned bits_per_sample, unsigned
+</I>&gt;<i> options);
+</I>&gt;<i> void platform_dac_put_sample(unsigned channel_mask, u16 *data);
+</I>&gt;<i> int  platform_dac_check_timer_id(unsigned id, unsigned timer_id);
+</I>
+OK. This is nice and clean.
+
+Thanks, and sorry for turning the world upside-down for you!
+
+    M
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004347.html">[eLua-dev] DAC Module
+</A></li>
+	<LI>Next message: <A HREF="004349.html">[eLua-dev] DAC Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4348">[ date ]</a>
+              <a href="thread.html#4348">[ thread ]</a>
+              <a href="subject.html#4348">[ subject ]</a>
+              <a href="author.html#4348">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

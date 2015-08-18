@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20GPIO%3A%20Use%20PX_00%20pin%20names%20instead%20of%20PD_%2A%20and%0A%09PE_%2A&In-Reply-To=%3CAANLkTik4YccRM%2Bj-vbfSCdCw0Y6Tx5qxKn1zpDooTWFt%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001893.html">
+   <LINK REL="Next"  HREF="001915.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20GPIO%3A%20Use%20PX_00%20pin%20names%20instead%20of%20PD_%2A%20and%0A%09PE_%2A&In-Reply-To=%3CAANLkTik4YccRM%2Bj-vbfSCdCw0Y6Tx5qxKn1zpDooTWFt%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jan 17 00:29:33 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001893.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+        <LI>Next message: <A HREF="001915.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1894">[ date ]</a>
+              <a href="thread.html#1894">[ thread ]</a>
+              <a href="subject.html#1894">[ subject ]</a>
+              <a href="author.html#1894">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;&gt;<i> static
+</I>&gt;&gt;<i> void SELECT (void)
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i> &#160; &#160;platform_pio_op( MMCFS_CS_PORT , ( ( u32 ) 1 &lt;&lt; MMCFS_CS_PIN ),
+</I>&gt;&gt;<i> PLATFORM_IO_PIN_CLEAR );
+</I>&gt;&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> That's wrong. &#160;SD_MMC_SPI_NPCS_PIN is a GPIO number 0-105.
+</I>&gt;<i> It only happens to work here because the pin in question is on port 0.
+</I>
+I wouldn't call it 'wrong', it's just the way eLua works :) And the
+model is inspired from the real world.This oddity (using GPIO pin
+numbers instead of port/pin combination) is specific to AVR32, all the
+other platforms have a GPIO subsystem that define both ports and pins.
+Which is the same model eLua uses. Some platforms have 8 pins/port,
+other have 32 pins/port, none has more than 32. Sure, having a single
+port with 106 pins is a particular case of the port/pin model, but it
+doesn't quite fit the eLua model for the reasons outlined in the
+previous e-mail.
+
+&gt;<i> It should be using macros to convert from GPIO pin number to port/pin number.
+</I>
+Maybe this is indeed what we should consider for AVR32 as a particular case.
+
+&gt;<i> By coincidence, it's the same conversion as PLATFORM_IO_GET_PORT() and
+</I>&gt;<i> PLATFORM_IO_GET_PIN(v) - but only by coincidence. &#160;I guess we need two
+</I>&gt;<i> more (avr32-specific) macros to do this right.
+</I>
+Yes. BTW, PLATFORM_IO_GET_PIN doesn't work properly in this case since
+it only uses 5 bits to encode a pin number. By extension, the other
+macros that encode/decode ports/pins don't work either.
+
+&gt;<i>
+</I>&gt;&gt;<i> From inc/platform.h:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> pio_type platform_pio_op( unsigned port, pio_type pinmask, int op );
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> since PX has more than 32 pins we'd have to change that to a 64 bit unsigned
+</I>&gt;<i>
+</I>&gt;<i> In hardware, PX does not exist; it's just a strange Atmel naming
+</I>&gt;<i> convention for pins on ports 2 and 3.
+</I>
+&gt;<i>
+</I>&gt;&gt;<i> that we won't be able to read/write the value of PX as a whole
+</I>&gt;<i>
+</I>&gt;<i> You can't read/write PX as a whole, simply because it doesn't exist!
+</I>
+I understand you very well, I'm just trying to find a way to map the
+AVR32 model to the &quot;rest of the world&quot; model (I know this is an
+untasteful generalization, but up to this point experience seems to
+suggest that it is real :) ). The &quot;rest of the world&quot; model contains
+functions for reading/writing ports as a whole (8/32 bits at a time,
+depending on the platform) which is much faster than setting
+individual pins. Imagine that you have a small graphical LCD (128x64
+and alike) with an 8-bit interface connected to your GPIO pins.
+Settings pins individually to control this works but can be very slow.
+Doing it at port level might increase speed significantly.
+However, this gives me an idea of &quot;ranges&quot; that one could use as a
+generalization for GPIO functionality. Something like this:
+
+range = gpio.range( 0, 7 ) -- initialize a GPIO range for pins 0 to 7 of a prt
+range.add( 9 ) -- add pin 9 to range
+range.add( 12, 14 ) -- add pins 12, 13, 14 to range
+
+gpio.set( range, 0 ) - clear all pins in range (ideally in a single operation)
+gpio.set( range, 1 ) - set all pins in range (ideally in a single operation)
+v = gpio.get( range ) - read all pins in range in variable 'v'
+
+This extended model could cover even the AVR32 case properly and might
+eliminate the need for the concept of 'ports' completely.
+
+&gt;<i> You can read ports 2 and 3 separately and mix the bits up to maintain
+</I>&gt;<i> the illusion that port X exists.
+</I>&gt;<i> I wouldn't bother making life so difficult for so little (no) gain.
+</I>&gt;<i>
+</I>&gt;&gt;<i> I don't expect many problems for this if we document it properly.
+</I>&gt;<i>
+</I>&gt;<i> Extra complexity is always a problem. In fact, in computing, managing
+</I>&gt;<i> complexity is *the* problem.
+</I>
+I couldn't agree with you more, and this is exactly what I'm trying to
+avoid here. I chose the port/pin model initially because it was fit
+for most eLua targets (and still is) so it was the easiest to
+implement. I'm trying to avoid extra complexity by mapping AVR32 over
+the same model (while at the same time trying not to loose
+funcionality (like getport/setport)) instead of handling special cases
+for specific platforms. True, I'm not doing it very well :) so it
+might seem that I'm increasing complexity while I'm trying to do the
+exact opposite.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001893.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+	<LI>Next message: <A HREF="001915.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1894">[ date ]</a>
+              <a href="thread.html#1894">[ thread ]</a>
+              <a href="subject.html#1894">[ subject ]</a>
+              <a href="author.html#1894">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

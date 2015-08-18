@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Peripheral%20Function%20Side%20Effects%20%28was%3A%20eLua%0A%20design%20change%20to%20allow%20synchronized%20PWM%20channel%20start%3F%29&In-Reply-To=%3CBANLkTim874Df-xWDz6wVAPt9MbdtOmjCww%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002260.html">
+   <LINK REL="Next"  HREF="002262.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Peripheral%20Function%20Side%20Effects%20%28was%3A%20eLua%0A%20design%20change%20to%20allow%20synchronized%20PWM%20channel%20start%3F%29&In-Reply-To=%3CBANLkTim874Df-xWDz6wVAPt9MbdtOmjCww%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Apr  8 14:13:38 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002260.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+        <LI>Next message: <A HREF="002262.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2261">[ date ]</a>
+              <a href="thread.html#2261">[ thread ]</a>
+              <a href="subject.html#2261">[ subject ]</a>
+              <a href="author.html#2261">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Fri, Apr 8, 2011 at 2:29 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 7 April 2011 17:46, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; Not really. A large part of the eLua audience are those people that are
+</I>&gt;<i> NOT
+</I>&gt;<i> &gt; embedded engineers but want to use the hardware anyway
+</I>&gt;<i>
+</I>&gt;<i> Ah, OK. We have different objectives then.
+</I>&gt;<i> In a toy system for beginners, I suppose holding their hands and
+</I>&gt;<i> popping up with info boxs on simple errors may be useful to people who
+</I>&gt;<i> don't have a good grasp of what they are doing..
+</I>&gt;<i>
+</I>
+Definitely. l maintain that this is also useful in the prototyping phase of
+a project even if you know very well what you're doing. We're all prone to
+mistakes.
+
+
+&gt;<i> I aim for a production-quality system that permits you to drive the
+</I>&gt;<i> hardware with precision to achieve quality results.
+</I>&gt;<i> Of course, these two objectives are not mutually exclusive.
+</I>&gt;<i>
+</I>&gt;<i> However, the objectives *do* conflict when it comes to something like
+</I>&gt;<i> the difference between being able to set the duty cycle roughly in
+</I>&gt;<i> percent or getting the maximum available precision, in which case you
+</I>&gt;<i> need to be able to find out the period in cycles and set it to a
+</I>&gt;<i> number of cycles.  If you just want to dim LEDs and don't mind the
+</I>&gt;<i> dimming being visibly stepped at low values, percent is OK. If you
+</I>&gt;<i> want to use PWM as a crude DAC, percent reduces it to being slightly
+</I>&gt;<i> worse than a 7-bit DAC whereas the hardware (in this case) is capable
+</I>&gt;<i> of 1 in 1000 precision at 11kHz - a little better than telephone
+</I>&gt;<i> quality.
+</I>&gt;<i>
+</I>
+Why would the objectives conflict? You're talking about an API change which
+has nothing to do with the proposed warnings system.
+As a side note, as James already suggested a number of times, the PWM API
+should really be changed. I'm talking about a major change (directly in the
+platform interface). We can discuss how to accomplish this in another
+thread. Martin, you seem to know a lot of things about how a PWM should
+actually be used. Would you mind starting this thread?
+
+
+&gt;<i> Yes, I know there's an issue proposing a higher precision of PWM duty
+</I>&gt;<i> cycle specification, though I expect it will be to set it as a
+</I>&gt;<i> fraction of a million, like the delays.  The most precise primitive
+</I>&gt;<i> would be to be able to find out the period in clock cycles and to set
+</I>&gt;<i> the duty period in clock cycles, but from what you say that seems
+</I>&gt;<i> inappropriate to the eLua way of thinking.
+</I>&gt;<i>
+</I>
+I didn't mean to imply that, I apologize if I did. What I aim for is
+platform independence, as much as possible. If you have an API that respects
+that but allows for a better usage of a peripheral (PWM or anything else)
+then I really don't have anything against implementing it.
+
+
+&gt;<i> Or you (as the implementer) can know that SPI clocks tend to be chosen
+</I>&gt;<i> to drive devices at their maximum rated speed, and select an available
+</I>&gt;<i> speed that is as high as possible without exceeding the specified
+</I>&gt;<i> speed, while UART baud rates need to be as close to the requested rate
+</I>&gt;<i> as possible so that the communication is more likely to work,
+</I>
+
+Agreed.  This was always the intended functionality anyway (except for the
+SPI part where AFARK none of the implementations try to return a clock which
+is always lower than or equal with the expected one).
+
+and PWM
+&gt;<i> frequencies are more likely to be used to generate an audio tone or ti
+</I>&gt;<i> signal devices that respond to PWM signals, so are probably best
+</I>&gt;<i> chosen as close to the requested value as possible.
+</I>
+
+This, on the other hand, is something that I generally don't agree with:
+enforcing a policy. I always believed this is a bad thing to do in general.
+In this case the policy enforcement happens because of some assumptions like
+&quot;PWM frequencies are more likely to be used to generate an audio tone&quot;.
+Maybe or maybe not. You might feed this PWM into a boost converter and you
+might not want to round to the nearest higher value in this case. Then you'd
+like to return the lower value. Then again, your boost converter might be
+working in inverted logic for some reason, thus in this case you'd want to
+round to the nearest higher value. No good response here, the safest thing
+to do is to round to the nearest value in either direction and let the user
+know about this.
+
+
+&gt;<i> However, it's well documented that the primitives return the actual
+</I>
+speed selected (or, rather a number close to the actual value!), so
+&gt;<i> power programmers can check that to see what really happened and
+</I>&gt;<i> correct if necessary.
+</I>&gt;<i>
+</I>
+Yes, or they could completely forget about that :) I did this so many times
+before that I can't even count them. So I'd be grateful if the sytem lets
+them know about their mistake. I'm ready to bet that I'm not the only one.
+
+
+&gt;<i> My feeling is that issuing a warning is a solution to the programmer
+</I>&gt;<i> anxiety that arises when you can't do exactly what was asked and can't
+</I>&gt;<i> decide what would be right. Dumping the problem on the user is one
+</I>&gt;<i> solution, to make them decide. Another is to make a policy decision
+</I>&gt;<i> (for example, if a requested value is higher or lower than the
+</I>&gt;<i> possible values, set the highest or lowest possible, and if it cannot
+</I>&gt;<i> be precisely obtained, set the arithmetically closest value, or the
+</I>&gt;<i> nearest available lower value or whatever).
+</I>&gt;<i>
+</I>
+As specified above I'm not a big fan on imposing policies in general. I
+recently read &quot;Linux Device Drivers&quot; which seems to agree on the &quot;don't
+inforce policy&quot; idea for drivers. Sometimes it makes sense (like the UART
+situation you presented above). Sometimes it might only look that it makes
+sense.
+
+
+&gt;<i> Issuing a warning when the value is not precise creates the question
+</I>&gt;<i> &quot;How much imprecision is not precise?&quot; More than an integer different?
+</I>&gt;<i>
+</I>
+You can always say &quot;Warning: clock set to y instead of requested x&quot;. That's
+pretty precise :) and it lets the user decide on the actual implications of
+this.
+
+
+&gt;<i> That will throw errors all the time. More than 10% different?  Or 5%?
+</I>&gt;<i> Why 5? Why 10? Do we need another primitive to set the imprecision
+</I>&gt;<i> that triggers warnings?
+</I>
+OK, I'm exaggerating to make a point, but there is a risk that it just
+&gt;<i> replaces a technical problem with a philosophical one and unless
+</I>&gt;<i> someone wants to go through all the existing code looking for places
+</I>&gt;<i> where a warning might be useful to a beginner, I can predict that the
+</I>&gt;<i> warning support will be not be consistent, but just limited to a few
+</I>&gt;<i> cases where the programmer thought it might be useful.
+</I>&gt;<i>
+</I>
+I can almost guarantee that it will be exactly this at first. However, if we
+make it into an easy to use framework, implementers will hopefully feel
+encouraged to add more warnings as they are found.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110408/3050dbdd/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110408/3050dbdd/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002260.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+	<LI>Next message: <A HREF="002262.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2261">[ date ]</a>
+              <a href="thread.html#2261">[ thread ]</a>
+              <a href="subject.html#2261">[ subject ]</a>
+              <a href="author.html#2261">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

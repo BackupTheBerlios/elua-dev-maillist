@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Mixed arm and thumb code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mixed%20arm%20and%20thumb%20code&In-Reply-To=%3C0KHC003X671J2UNW%40vms173005.mailsrvcs.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000711.html">
+   <LINK REL="Next"  HREF="000725.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Mixed arm and thumb code</H1>
+    <B>Ross Berteig</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mixed%20arm%20and%20thumb%20code&In-Reply-To=%3C0KHC003X671J2UNW%40vms173005.mailsrvcs.net%3E"
+       TITLE="[eLua-dev] Mixed arm and thumb code">Ross at CheshireEng.com
+       </A><BR>
+    <I>Mon Mar 30 22:31:53 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000711.html">[eLua-dev]  AT91SAM7 debug with JTAG
+</A></li>
+        <LI>Next message: <A HREF="000725.html">[eLua-dev] eCos 3.0 is out
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#724">[ date ]</a>
+              <a href="thread.html#724">[ thread ]</a>
+              <a href="subject.html#724">[ subject ]</a>
+              <a href="author.html#724">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Sometime on 3/28/2009, Mike Panetta wrote:
+&gt;<i>Actually now that I think of it, are there really any build 
+</I>&gt;<i>tools out there
+</I>&gt;<i>other then scons and derivatives that *don't* use make at some 
+</I>&gt;<i>point??  I
+</I>&gt;<i>can't think of any off hand, but most of the software I build 
+</I>&gt;<i>is either
+</I>&gt;<i>something I manage so uses make or a make manager, or foss/gnu 
+</I>&gt;<i>type software
+</I>&gt;<i>which mostly uses autoconf....
+</I>
+Ant, the build system that seems to be preferred by the Java 
+crowd, is completely unlike Make, and does not use make on the 
+back end, unless extended with a custom build step that invokes 
+make. It takes a whole-project view of the build, and IMHO 
+doesn't mix well with the notion of building just this subtree 
+of a project. On the other hand, the whole Java language design 
+choice of storing source files in directory paths named after 
+their fully-qualified class names is so hostile to that kind of 
+development that you (or at least me, coming from a lot of 
+background with make on more platforms than I want to count) 
+don't even notice that lack as you fight all the other barriers 
+that development in Java seems to throw your way.
+
+I'm reasonably sure that attempting to get make to drive the 
+build of a serious Java project would drive anyone around the bend.
+
+Getting Ant to build &quot;foreign&quot; language (i.e. some C files 
+implementing a few JNI classes) sources was surprisingly easy, 
+unlike my attempts to do real work that needed &quot;custom&quot; (meaning 
+non-standard) build steps in most IDEs. In some ways it was 
+easier to get Ant to build them than it was to use the C code 
+from the Java application. But that is part of a rant about Java 
+that is even further off topic than this discussion of build 
+systems ;-)
+
+There is even NAnt, which is a port of Ant to the .NET universe.
+
+One of the barriers to getting started with Ant that I noticed 
+was its use of the full expressive power of XML to describe the 
+build. For me, all that XML punctuation really gets in the way 
+of what all boils down to wanting to describe the dependency 
+graph, decorated by build instructions.
+
+I've always felt that make does that part really well, with a 
+minimum of extraneous punctuation.
+
+Getting slightly closer to the list's topic, my only exposure to 
+scons was not positive: for reasons that made sense at the time 
+I needed to build VLC from sources on Solaris. Not only were the 
+33 libraries a barmier (most of which needed patching, and all 
+needed building on the target platform) but the final straw was 
+tripping over one that needed scons to build, which meant 
+finding a working Python for Solaris, and learning scons to fix 
+the inevitable platform-specific build issues. By that point, 
+the return on the investment became negative, and we abandoned 
+the whole idea.
+
+I have to agree with Mike's general message that a good build 
+system really has to work out-of-the-box for distribution with a 
+portable project. Otherwise, getting it setup and working 
+becomes yet another barrier to adoption of the system.
+
+Ross Berteig                               <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Ross at CheshireEng.com</A>
+Cheshire Engineering Corp.           <A HREF="http://www.CheshireEng.com/">http://www.CheshireEng.com/</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000711.html">[eLua-dev]  AT91SAM7 debug with JTAG
+</A></li>
+	<LI>Next message: <A HREF="000725.html">[eLua-dev] eCos 3.0 is out
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#724">[ date ]</a>
+              <a href="thread.html#724">[ thread ]</a>
+              <a href="subject.html#724">[ subject ]</a>
+              <a href="author.html#724">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

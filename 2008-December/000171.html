@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] I'm back! (Finally)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20I%27m%20back%21%20%28Finally%29&In-Reply-To=%3Cd3b6d880812110521s75bd9f3ct5a5cb4f74222adb9%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000175.html">
+   <LINK REL="Next"  HREF="000178.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] I'm back! (Finally)</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20I%27m%20back%21%20%28Finally%29&In-Reply-To=%3Cd3b6d880812110521s75bd9f3ct5a5cb4f74222adb9%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] I'm back! (Finally)">dadosutter at gmail.com
+       </A><BR>
+    <I>Thu Dec 11 14:21:24 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000175.html">[eLua-dev] I'm back! (Finally)
+</A></li>
+        <LI>Next message: <A HREF="000178.html">[eLua-dev] Toolchain Build Errors
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#171">[ date ]</a>
+              <a href="thread.html#171">[ thread ]</a>
+              <a href="subject.html#171">[ subject ]</a>
+              <a href="author.html#171">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Dec 10, 2008 at 21:34, Pedro Bittencourt &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+
+&gt;<i> Dado,
+</I>&gt;<i>
+</I>&gt;<i> Actually, we HAVE pixel resolution with the RIT display, we simply do not
+</I>&gt;<i> use it (yet).
+</I>
+
+Errr :)
+   We HAVE pixel resolution with the RIT display and we DO use it in Pong.
+We have even overcome the issue of even-column-number-addressing-only,
+because of the way they pack their pixels (two per byte with the nibble
+indicating the gray/intensity).
+
+
+&gt;<i> (we can achieve that with the draw() function, where we can &quot;draw&quot; a given
+</I>&gt;<i> matrix in the (x,y) position, a.k.a. offset, of the display)
+</I>
+
+Yeap,
+   This is what is done in Pong :)
+   But with the stringDraw function (instead of imageDraw())
+
+--Pedro Bittencourt
+
+
+Best
+Dado
+
+
+
+
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Dec 10, 2008 at 8:31 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hello Mike !   Nice to have you back ! Someone of this list arranged to
+</I>&gt;&gt;<i> lay you off at work :) :) :)
+</I>&gt;&gt;<i>    The current version of Pong depends only on a PutChar (on RIT display
+</I>&gt;&gt;<i> it is called stringdraw() ) function to draw the ball and the paddle. If you
+</I>&gt;&gt;<i> have pixel resolution to position it, instead of just lines x columns, your
+</I>&gt;&gt;<i> ball will move smootly too.
+</I>&gt;&gt;<i>     The driver/wrapper was implemented in a module called &quot;disp&quot;, which is
+</I>&gt;&gt;<i> not good because it is platform-dependend. Also, the Lua code now requires
+</I>&gt;&gt;<i> (yes, with require() ) a Lua module, called LM3S, that introduces the
+</I>&gt;&gt;<i> Luminary Micro onboard goodies, like the buttons, leds and some utility
+</I>&gt;&gt;<i> functions. This module is easially adaptable for your board devices (or
+</I>&gt;&gt;<i> external components connected to it). I've been playing also with a version
+</I>&gt;&gt;<i> that implements everything in C and it would be nice if we could load it
+</I>&gt;&gt;<i> dinamically (we don't have dinamically loadable C modules, yet), only if the
+</I>&gt;&gt;<i> board is an LM3S platform.
+</I>&gt;&gt;<i>    So, as you can see, I've been playing a lot with different ways to
+</I>&gt;&gt;<i> write modules, none of them to definitive yet. We must bring some more
+</I>&gt;&gt;<i> discussion to the list, to show the pros &amp; cons of each approach.
+</I>&gt;&gt;<i>    Teo and Ives has been working on a GPS module, 100% Lua (for now), with
+</I>&gt;&gt;<i> lots of good points to discuss here too. We will have to write add an INT
+</I>&gt;&gt;<i> handler for it (UART Rx), even not beeing a generic INT module for eLua yet,
+</I>&gt;&gt;<i> as well as circular queues for the input stream (just for fun, once GPS Rx
+</I>&gt;&gt;<i> doesn' t really need it :)
+</I>&gt;&gt;<i>    I also need a Counter module, to read an RGB+Pan light sensor and,
+</I>&gt;&gt;<i> again, I'll probably write it in C, over the Luminary Micro low level lib
+</I>&gt;&gt;<i> for Timers and GPIO. It will not be a generic Counter module for eLua yet
+</I>&gt;&gt;<i> but it should do the work for a small project here.
+</I>&gt;&gt;<i>    These many possibilities for eLua module architectures may confuse
+</I>&gt;&gt;<i> users at first but they are actually very versatile and I hope to write
+</I>&gt;&gt;<i> about it on the wiki asap.
+</I>&gt;&gt;<i>    Pedro is working on a PID module, 100% Lua and it will work over ADC
+</I>&gt;&gt;<i> and DAC modules, that eLua also needs.
+</I>&gt;&gt;<i>    Some other games are comming too :) as they are great for my students
+</I>&gt;&gt;<i> to learn Lua, eLua, real-time programming and, last but not least, to have
+</I>&gt;&gt;<i> fun !! :)
+</I>&gt;&gt;<i>    Me and Bogdan have received an AVR32 board too, the EVK1100 and Bogdan
+</I>&gt;&gt;<i> will begin to port eLua to it soon, with some possible issues due to what
+</I>&gt;&gt;<i> Atmel has done to Newlib. Downhere, I will see what I can do for the Legos
+</I>&gt;&gt;<i> NXTs, as soon as the classes are over and I can put my hands again on a kit
+</I>&gt;&gt;<i> :) :)
+</I>&gt;&gt;<i>    So welcome back and send us your ideas ! :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Dec 10, 2008 at 17:53, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I had a few bumps in the road lately (got layed off at work...) but I am
+</I>&gt;&gt;&gt;<i> back on track a bit now ready to do more STM32 work (I asked for the kit
+</I>&gt;&gt;&gt;<i> since they were not going to use it anymore, and they gave it to me!).
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Does anyone have any suggestions or ideas for me?  I was thinking about
+</I>&gt;&gt;&gt;<i> trying to port Dados pong to it...  And of course fix up the I2C module.  We
+</I>&gt;&gt;&gt;<i> should maybe start a discussion on what modules need to be done etc that are
+</I>&gt;&gt;&gt;<i> on the list that maybe I or others could work on?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Mike
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081211/2e33f851/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081211/2e33f851/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000175.html">[eLua-dev] I'm back! (Finally)
+</A></li>
+	<LI>Next message: <A HREF="000178.html">[eLua-dev] Toolchain Build Errors
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#171">[ date ]</a>
+              <a href="thread.html#171">[ thread ]</a>
+              <a href="subject.html#171">[ subject ]</a>
+              <a href="author.html#171">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

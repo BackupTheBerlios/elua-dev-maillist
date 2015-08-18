@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LuaRPC hangs if module name passed in the RPC call	is incorrect
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20hangs%20if%20module%20name%20passed%20in%20the%20RPC%20call%0A%09is%20incorrect&In-Reply-To=%3CCAJ%3DY9Y1WYYFFoJ5DZKHp8%3DEOSjs2cWq0bsZMJL6xwOv7GM%2B%2Bow%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003404.html">
+   <LINK REL="Next"  HREF="003379.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LuaRPC hangs if module name passed in the RPC call	is incorrect</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20hangs%20if%20module%20name%20passed%20in%20the%20RPC%20call%0A%09is%20incorrect&In-Reply-To=%3CCAJ%3DY9Y1WYYFFoJ5DZKHp8%3DEOSjs2cWq0bsZMJL6xwOv7GM%2B%2Bow%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] LuaRPC hangs if module name passed in the RPC call	is incorrect">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Mar 27 04:16:29 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003404.html">[eLua-dev] LuaRPC hangs if module name passed in the RPC call is incorrect
+</A></li>
+        <LI>Next message: <A HREF="003379.html">[eLua-dev] Controllers and wireless
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3411">[ date ]</a>
+              <a href="thread.html#3411">[ thread ]</a>
+              <a href="subject.html#3411">[ subject ]</a>
+              <a href="author.html#3411">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Mar 26, 2012 at 9:09 AM, Ivan - Omnima &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ivan at omnima.co.uk</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> I'm in the process of testing the LuaRPC functions - all is working well
+</I>&gt;<i> apart from one edge case.
+</I>&gt;<i>
+</I>&gt;<i> This happens if a function in an unknown/unregistered module is called. In
+</I>&gt;<i> this case eLua would hang.
+</I>
+I've just committed some changes on the master repository that I think
+should correct a few issues, both of which are mentioned in the commit
+message:
+<A HREF="https://github.com/elua/elua/commit/fbebb2949efe548e457da8dcce53c319ce5a0880">https://github.com/elua/elua/commit/fbebb2949efe548e457da8dcce53c319ce5a0880</A>
+
+I may opt for a more permanent or flexible approach to deal with this
+problem in the future, but in testing it seemed to be handling a
+couple different test conditions correctly.  Another thing that might
+make sense is allowing the user to catch this error with the handler
+they've set rather than just dumping a stack trace.
+
+&gt;<i>
+</I>&gt;<i> Under normal operation this should not happen but a user could by mistake
+</I>&gt;<i> enter an incorrect name.
+</I>&gt;<i>
+</I>&gt;<i> For example:
+</I>&gt;<i>
+</I>&gt;<i> #Successful call to a known function - ok
+</I>&gt;<i> #Call executes and returns ok - as it's a function implemented in the
+</I>&gt;<i> registered 'ox' module
+</I>&gt;<i> slave.ox.enable_zwave(true)
+</I>&gt;<i>
+</I>&gt;<i> #Call to a non-existent function within a module - returns ok
+</I>&gt;<i> #Correctly returns an error (indicates: stdin:1: undefined function)
+</I>&gt;<i> slave.ox.newfunction1234()
+</I>&gt;<i>
+</I>&gt;<i> But calling a function in an undefined module hangs in the call to
+</I>&gt;<i> lua_getfield(L,-1,token) in read_cmd_call(..) within luarpc.c:
+</I>&gt;<i>
+</I>&gt;<i> slave.oxnew.newfunction1234() #This would hang on the server side of LuaRPC
+</I>&gt;<i> as oxnew is not known - is not implemented in eLua.
+</I>&gt;<i>
+</I>&gt;<i> Any suggestions on how we can lookup whether a module is registered - to
+</I>&gt;<i> prevent the hang?
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i> Ivan
+</I>&gt;<i>
+</I>&gt;<i> Omnima Limited
+</I>&gt;<i> Ivan Ignjatic
+</I>&gt;<i> 176 Kennington Road
+</I>&gt;<i> Oxford OX1 5PG
+</I>&gt;<i>
+</I>&gt;<i> Tel. 0845 8692601
+</I>&gt;<i> Fax. 01865 326421
+</I>&gt;<i>
+</I>&gt;<i> Web: www.omnima.co.uk
+</I>&gt;<i> Skype: omnimaautomation
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003404.html">[eLua-dev] LuaRPC hangs if module name passed in the RPC call is incorrect
+</A></li>
+	<LI>Next message: <A HREF="003379.html">[eLua-dev] Controllers and wireless
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3411">[ date ]</a>
+              <a href="thread.html#3411">[ thread ]</a>
+              <a href="subject.html#3411">[ subject ]</a>
+              <a href="author.html#3411">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

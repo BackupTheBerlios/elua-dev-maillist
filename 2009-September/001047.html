@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua on 8-bit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20on%208-bit&In-Reply-To=%3C698661E3-F32C-46C7-808F-6D2ECBEE1FC1%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001046.html">
+   <LINK REL="Next"  HREF="001048.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua on 8-bit</H1>
+    <B>Dean Hall</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20on%208-bit&In-Reply-To=%3C698661E3-F32C-46C7-808F-6D2ECBEE1FC1%40gmail.com%3E"
+       TITLE="[eLua-dev] eLua on 8-bit">dwhall256 at gmail.com
+       </A><BR>
+    <I>Sun Sep 27 20:30:21 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001046.html">[eLua-dev] eLua on 8-bit
+</A></li>
+        <LI>Next message: <A HREF="001048.html">[eLua-dev] eLua on 8-bit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1047">[ date ]</a>
+              <a href="thread.html#1047">[ thread ]</a>
+              <a href="subject.html#1047">[ subject ]</a>
+              <a href="author.html#1047">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I achieved this in the PyMite VM by defining a &quot;memory space&quot; type/ 
+enum.  I did this because my initial target was AVR (a Harvard  
+architecture) and I had to be able to tell if the static bytecode- 
+compiled code image was in Program Memory (Flash) or RAM.  I  
+abstracted this to other memory spaces like EEPROM and SEEPROM, but I  
+haven't implemented them yet.  PyMite users are wanting access to a  
+file system, so MEMSPACE_FS may be my next memory space to implement.
+
+As an implementation note: when a PyMite function executes, the  
+execution frame is in RAM, of course, but the function's bytecodes  
+remain in its original memory space.  That is, I don't copy any  
+function's bytecode into RAM.  I just read it from the memory space on- 
+demand.  Considering most functions have about 1-2 KB of bytecode, and  
+there can be a dozen functions stacked up in the call-tree; leaving  
+bytecode in its memory space saves considerable amounts of RAM.
+
+!!Dean
+
+On Sep 27, 2009, at 13:17 , Bogdan Marinescu wrote:
+
+&gt;<i> One of the things that I really want to do is to let the VM execute  
+</I>&gt;<i> code from arbitrary memories (for example SPI/I2C EEPROMs) and use  
+</I>&gt;<i> different types of RAMs (for example SPI/I2C SRAMs :) ). Or simply  
+</I>&gt;<i> use a serial FRAM that can work both as a SRAM and an EEPROM. These  
+</I>&gt;<i> are small, relatively inexpensive devices, and having a VM that can  
+</I>&gt;<i> take advantage of them can greatly expand the MCU capabilities.
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001046.html">[eLua-dev] eLua on 8-bit
+</A></li>
+	<LI>Next message: <A HREF="001048.html">[eLua-dev] eLua on 8-bit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1047">[ date ]</a>
+              <a href="thread.html#1047">[ thread ]</a>
+              <a href="subject.html#1047">[ subject ]</a>
+              <a href="author.html#1047">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

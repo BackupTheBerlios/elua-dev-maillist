@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RPC over SOCK_STREAM
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3CCAJ%3DY9Y1qqigvKCpukPean3anH1oYP4mO1q-9rhoMbABAyoA2MQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002759.html">
+   <LINK REL="Next"  HREF="002781.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RPC over SOCK_STREAM</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3CCAJ%3DY9Y1qqigvKCpukPean3anH1oYP4mO1q-9rhoMbABAyoA2MQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RPC over SOCK_STREAM">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Oct  7 01:09:14 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002759.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+        <LI>Next message: <A HREF="002781.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2765">[ date ]</a>
+              <a href="thread.html#2765">[ thread ]</a>
+              <a href="subject.html#2765">[ subject ]</a>
+              <a href="author.html#2765">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Oct 5, 2011 at 2:46 PM, raman &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> FYI, there is already desktop socket code here:
+</I>&gt;<i> <A HREF="https://github.com/jsnyder/luarpc">https://github.com/jsnyder/luarpc</A>
+</I>&gt;<i>
+</I>&gt;<i> Oops. I didn't check on this before. I will use this on my test branch.
+</I>&gt;<i>
+</I>&gt;<i> This doesn't actually send anything over the wire. &#160;The way subtables
+</I>&gt;<i> of the slave work is that they create helpers that can replay indexing
+</I>&gt;<i> over the wire when an action is requested like calling a function
+</I>&gt;<i> (call) or assignment (newindex). &#160;I suppose we could check these
+</I>&gt;<i> things when the helpers are created, but the slave/server will return
+</I>&gt;<i> errors if it can't index remotely when you try an operation that does
+</I>&gt;<i> require communication.
+</I>&gt;<i>
+</I>&gt;<i> Ah, great. That answers a lot of my questions.
+</I>&gt;<i>
+</I>&gt;<i> So, if you get through the connect phase, it probably at least did a
+</I>&gt;<i> header exchange to establish the connection.
+</I>&gt;<i>
+</I>&gt;<i> Yes, The initial header exchange works.
+</I>&gt;<i>
+</I>&gt;&gt;<i> However, I ran into a few
+</I>&gt;&gt;<i> problems: pio.pin.setdir(###) does not return. It goes into a waiting
+</I>&gt;&gt;<i> state.
+</I>&gt;&gt;<i> I am sure the file descriptor returned by elua_accept(###) is valid. While
+</I>&gt;&gt;<i> tracing through the code, I realized that the state does not enter
+</I>&gt;&gt;<i> read_cmd_call(###). I can only wonder if there&#8217;s a problem with the code
+</I>&gt;&gt;<i> for
+</I>&gt;&gt;<i> transport_open_listener(###).
+</I>&gt;<i>
+</I>&gt;<i> It would be nice to know if it gets into rpc_dispatch_helper(L,
+</I>&gt;<i> handle). &#160;Does the client send an RPC_READY back to the server? &#160;I'm
+</I>&gt;<i> guessing it does if it gets to that function at all and gets to a hung
+</I>&gt;<i> state.
+</I>&gt;<i>
+</I>&gt;<i> When I tried debugging, the control did not go through case: RPC_CMD_CALL.
+</I>&gt;<i> So, it doesn't send back the macro value to the server.
+</I>
+Hmm.. that's interesting, and certainly tells us a bit about where
+things might be stuck.
+
+&gt;<i>
+</I>&gt;<i> I suppose I stripped out the debug code, so that would need to be
+</I>&gt;<i> added in to display this on the fly on the desktop side. &#160;I can put
+</I>&gt;<i> this back and make it optional if you're not familiar enough with the
+</I>&gt;<i> code to put some instrumentation in?
+</I>&gt;<i>
+</I>&gt;<i> The debug code would be of great help. I'm using term for a quick display of
+</I>&gt;<i> events happening on the server side.
+</I>
+OK.  I'll look into sticking some of that back in.  At different
+points I would have it spit out some details about generally what it
+was doing as well as sometimes doing dumps of all the data that was
+being sent.  It sounds like even just full dumps might be useful since
+it bails/hangs so early.
+
+You can add to the transport_write_buffer and transport_read_buffer to
+watch each message that's received/sent from the perspective of the
+desktop machine quite easily.
+
+&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Do you have any suggestions for me ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I could put up my test branch online. (Where can I put the code ?) Is
+</I>&gt;&gt;<i> someone willing to work on this ? I could use some help.
+</I>&gt;<i>
+</I>&gt;<i> I'd be more than willing to take a look at it.
+</I>&gt;<i> Awesome. I was involved with github for the SWIG project. I'll fork eLua, do
+</I>&gt;<i> the changes and request a pull.
+</I>
+OK.  I believe I should see this in my messages on GitHub when you do so.
+
+&gt;<i>
+</I>&gt;<i> One more thing:
+</I>&gt;<i> I went though the previous post describing the issues with elua_uip.c
+</I>&gt;<i> Will this interfere with the performance of RPC over ethernet ?
+</I>&gt;<i> Do we have to do anything about this before ?
+</I>
+Well, I'm not sure.  I haven't used TCP/IP on eLua a whole lot and so
+I'm not that familiar with the failure or problem modes that have been
+experienced.  I think I understand a little of how they might happen
+based on what Bogdan has mentioned to me about what he's working on
+(which should improve functionality and add UDP support).
+
+I think that ultimately we might be best off if we can make it work
+with a stateless protocol like UDP, and handle missing data or failed
+data exchanges within LuaRPC, which is fairly careful about sending
+data back and forth (hence things like RPC_READY, which prevent the
+sender from just dumping lots of data to the microcontroller without
+knowing if there's a ready and waiting buffer).  I believe that Bogdan
+is also fleshing out the UDP support within eLua a bit more with his
+branch, and he has mentioned that RFS runs very well over this
+transport.
+
+I suspect that we should definitely be able to make it work on top of
+the TCP/IP, even as it is now, but if if is causing the failures
+you've currently been experiencing then we may have some more definite
+test cases for areas where the networking support needs improvement.
+
+I'm quite happy to see you jumping into working on LuaRPC over TCP/IP
+however since I have planned to do this for some time, I just haven't
+had enough micros with ethernet on them that I was needing it to use
+with projects.
+
+&gt;<i>
+</I>&gt;<i> Awaiting your response.
+</I>&gt;<i> Raman
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6863543.html">http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6863543.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002759.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+	<LI>Next message: <A HREF="002781.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2765">[ date ]</a>
+              <a href="thread.html#2765">[ thread ]</a>
+              <a href="subject.html#2765">[ subject ]</a>
+              <a href="author.html#2765">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

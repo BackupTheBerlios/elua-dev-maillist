@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] What can I do?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3C005301cb9633%24209a6940%2461cf3bc0%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001774.html">
+   <LINK REL="Next"  HREF="001775.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] What can I do?</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3C005301cb9633%24209a6940%2461cf3bc0%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] What can I do?">john.hind at zen.co.uk
+       </A><BR>
+    <I>Tue Dec  7 18:21:04 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001774.html">[eLua-dev] Iterating the eLua Globals table/mbed port
+</A></li>
+        <LI>Next message: <A HREF="001775.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1772">[ date ]</a>
+              <a href="thread.html#1772">[ thread ]</a>
+              <a href="subject.html#1772">[ subject ]</a>
+              <a href="author.html#1772">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The things I need in the eLua mbed implementation for my own projects are as
+follows:
+
+ 
+
+1.       Ethernet support (not in James's mbed 'preliminary' port at the
+moment).
+
+2.       Support for USB MSD (flash drives and hard disks). There does not
+seem to be any USB work in eLua to date, so this is maybe breaking
+completely new ground. However it looks relatively straightforward to slot
+this in under the current FAT filesystem support for SD/MMC. Later I will
+need serial over USB and MSD device emulation as I want to replace the
+auxiliary JTAG chip on the mbed with an on-chip implementation.
+
+3.       Multi-threading support. Initially I thought of trying to put
+FreeRTOS or similar in under eLua, but on reflection that is likely to be
+too profligate with RAM as the Lua RAM overhead will then be per-thread.
+Then I read Patrick Rapin's &quot;Enhanced Coroutines in Lua&quot; chapter in &quot;Lua
+Programming Gems&quot;. Basically this suggests a coroutine scheduler with an
+enhanced yield method which yields back to the scheduler until some event
+occurs. For example you could yield for 100ms and the scheduler could resume
+some other coroutine or run other functions in the main thread during this
+time. This seems an ideal approach for microcontrollers as it allows a
+non-blocking wait for interrupt and cooperative multi-threading.
+
+4.       LIN networking support - this should be relatively easy to build on
+top of the current serial port support, perhaps could even be done in Lua.
+
+ 
+
+Is anyone already working on any of the above? I'm guessing at least 1 is
+already in train - is it likely to deliver within the next quarter? I will
+be happy to contribute anything I have to do myself back to the project or
+to help anyone already working on something.
+
+ 
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20101207/9bb5582c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20101207/9bb5582c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001774.html">[eLua-dev] Iterating the eLua Globals table/mbed port
+</A></li>
+	<LI>Next message: <A HREF="001775.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1772">[ date ]</a>
+              <a href="thread.html#1772">[ thread ]</a>
+              <a href="subject.html#1772">[ subject ]</a>
+              <a href="author.html#1772">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

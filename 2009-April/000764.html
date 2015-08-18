@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua and yielding with lua_yield() function
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl38JYq1215bee448b2509a2a8ac9%2C%0A%09jbsnyder%40fanplastic.org%2C%20281F077B-19CF-4600-970E-00A%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000763.html">
+   <LINK REL="Next"  HREF="000765.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua and yielding with lua_yield() function</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl38JYq1215bee448b2509a2a8ac9%2C%0A%09jbsnyder%40fanplastic.org%2C%20281F077B-19CF-4600-970E-00A%3E"
+       TITLE="[eLua-dev] eLua and yielding with lua_yield() function">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Apr 10 02:34:51 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000763.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+        <LI>Next message: <A HREF="000765.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#764">[ date ]</a>
+              <a href="thread.html#764">[ thread ]</a>
+              <a href="subject.html#764">[ subject ]</a>
+              <a href="author.html#764">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Apr 9, 2009, at 4:30 PM, Mike Thompson wrote:
+
+&gt;<i> James Snyder wrote:
+</I>&gt;&gt;<i> I see you've thought this through :-)  I think this would be  
+</I>&gt;&gt;<i> excellent
+</I>&gt;&gt;<i> to have as a general facility that's easy to hook into.  In recent  
+</I>&gt;&gt;<i> weeks
+</I>&gt;&gt;<i> I've been trying to think about how to couple things like the analog
+</I>&gt;&gt;<i> conversions with coroutines to make things more efficient than just
+</I>&gt;&gt;<i> constantly polling from the lua side.
+</I>&gt;<i>
+</I>&gt;<i> Hmmm, I haven't thought of making it a general purpose facility.  I'll
+</I>&gt;<i> need to think about that more as it would help evolve anything put
+</I>&gt;<i> together better than me working on my lonesome.
+</I>
+I'd be happy to chip in here.
+
+&gt;<i>
+</I>&gt;&gt;<i> I think, also, that Bogdan may be right about it being not hugely
+</I>&gt;&gt;<i> painful to get Coco working.  While it can use POSIX facilities for
+</I>&gt;&gt;<i> context switching, it looks like there are a number of other ways  
+</I>&gt;&gt;<i> to do
+</I>&gt;&gt;<i> that including inline assembler and setjmp, so that may be fairly  
+</I>&gt;&gt;<i> doable
+</I>&gt;&gt;<i> too.
+</I>&gt;<i>
+</I>&gt;<i> I only spent about 5 minutes looking at Coco so far, but it appeared  
+</I>&gt;<i> to
+</I>&gt;<i> me that it depended on OS features for implementation.
+</I>
+Being curious, I've already taken the coco patch and applied it to a  
+branch of eLua :-)
+
+It basically looks like _setjmp and _longjmp which save signals needs  
+to be set up or appropriately implemented.  I'm not sure if this would  
+be something that could be implemented with a small amount of code, or  
+if some sort of threading/ c-side coroutine library would be needed to  
+make this work.
+
+It's mentioned at one of the links below, but one of the alternatives  
+is to use the the resumable VM patch, which doesn't require platform  
+specific functionality.
+<A HREF="http://lua-users.org/wiki/ResumableVmPatch">http://lua-users.org/wiki/ResumableVmPatch</A>
+
+One unfortunate issue with that is the patch hasn't been updated for  
+5.1.4, and, at least to me, the fixes for the patch appear non-obvious  
+and would require some work...
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090409/674b0b8c/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090409/674b0b8c/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000763.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+	<LI>Next message: <A HREF="000765.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#764">[ date ]</a>
+              <a href="thread.html#764">[ thread ]</a>
+              <a href="subject.html#764">[ subject ]</a>
+              <a href="author.html#764">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,508 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua-dev Digest, Vol 35, Issue 31
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua-dev%20Digest%2C%20Vol%2035%2C%20Issue%2031&In-Reply-To=%3CBANLkTingG_M8TJC641hLb_YOfRLXUWW8DQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002503.html">
+   <LINK REL="Next"  HREF="002510.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua-dev Digest, Vol 35, Issue 31</H1>
+    <B>Raman Gopalan</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua-dev%20Digest%2C%20Vol%2035%2C%20Issue%2031&In-Reply-To=%3CBANLkTingG_M8TJC641hLb_YOfRLXUWW8DQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua-dev Digest, Vol 35, Issue 31">ramangopalan at gmail.com
+       </A><BR>
+    <I>Tue Jun 14 13:01:08 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002503.html">[eLua-dev] RPC_PROTOCOL_VERSION
+</A></li>
+        <LI>Next message: <A HREF="002510.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 31
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2509">[ date ]</a>
+              <a href="thread.html#2509">[ thread ]</a>
+              <a href="subject.html#2509">[ subject ]</a>
+              <a href="author.html#2509">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Jun 12, 2011 at 12:00 PM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-request at lists.berlios.de</A>&gt; wrote:
+
+&gt;<i> Send eLua-dev mailing list submissions to
+</I>&gt;<i>        <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i>
+</I>&gt;<i> To subscribe or unsubscribe via the World Wide Web, visit
+</I>&gt;<i>        <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> or, via email, send a message with subject or body 'help' to
+</I>&gt;<i>        <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-request at lists.berlios.de</A>
+</I>&gt;<i>
+</I>&gt;<i> You can reach the person managing the list at
+</I>&gt;<i>        <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-owner at lists.berlios.de</A>
+</I>&gt;<i>
+</I>&gt;<i> When replying, please edit your Subject line so it is more specific
+</I>&gt;<i> than &quot;Re: Contents of eLua-dev digest...&quot;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Today's Topics:
+</I>&gt;<i>
+</I>&gt;<i>   1. Problems with LuaRPC module (Raman Gopalan)
+</I>&gt;<i>   2. Re: Redefining the I2C Lua interface (was: I2C for LM3S
+</I>&gt;<i>      devices) (Martin Guy)
+</I>&gt;<i>   3. RPC_PROTOCOL_VERSION (Raman Gopalan)
+</I>&gt;<i>   4. Re: Problems with LuaRPC module (James Snyder)
+</I>&gt;<i>   5. Re: RPC_PROTOCOL_VERSION (James Snyder)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ----------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> Message: 1
+</I>&gt;<i> Date: Sat, 11 Jun 2011 16:30:10 +0530
+</I>&gt;<i> From: Raman Gopalan &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt;
+</I>&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> Subject: [eLua-dev] Problems with LuaRPC module
+</I>&gt;<i> Message-ID: &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">BANLkTiks1FEJqm33LkbWHchkNwDwgOEDYw at mail.gmail.com</A>&gt;
+</I>&gt;<i> Content-Type: text/plain; charset=&quot;iso-8859-1&quot;
+</I>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I seem to have problems with LuaRPC module. Just by running Elua on the
+</I>&gt;<i> target,
+</I>&gt;<i> a sample snippet such as slave, err = rpc.connect (&quot;COM11&quot;) throws
+</I>&gt;<i> me the error &quot;MY ERROR: no data received when attempting to read&quot;. (slave =
+</I>&gt;<i> nil)
+</I>&gt;<i>
+</I>&gt;<i> System configuration:
+</I>&gt;<i> Windows-7 + All the tools needed to burn the .bin file.
+</I>&gt;<i> (Have also tested it on Gnu/Linux, Ubuntu 10.04)
+</I>&gt;<i>
+</I>&gt;<i> Elua cross-compiled for:
+</I>&gt;<i> CPU: LM3S8962
+</I>&gt;<i> Micro-controller dev board: Luminary Micro, ARM Cortex M3
+</I>&gt;<i>
+</I>&gt;<i> I did however read through the source code to understand the protocol used
+</I>&gt;<i> while
+</I>&gt;<i> communicating with RPC.
+</I>&gt;<i>
+</I>&gt;<i> The files I have used for this problem definition:
+</I>&gt;<i> src/main.c, src/luarpc_elua_uart.c, src/modules/luarpc.c
+</I>&gt;<i>
+</I>&gt;<i> As mentioned earlier, just by cross compiling Elua for LM3S8962, the
+</I>&gt;<i> luarpc.exe
+</I>&gt;<i> throws me the error: &quot;MY ERROR: no data received when attempting to read&quot;
+</I>&gt;<i> on
+</I>&gt;<i> my PC console.
+</I>&gt;<i>
+</I>&gt;<i> luarpc.c:
+</I>&gt;<i>
+</I>&gt;<i> static int rpc_connect( lua_State *L ):
+</I>&gt;<i>
+</I>&gt;<i>    transport_write_u8( &amp;handle-&gt;tpt, RPC_CMD_CON );
+</I>&gt;<i>    client_negotiate( &amp;handle-&gt;tpt );
+</I>&gt;<i>
+</I>&gt;<i> At this point, we can expect the handshake between the micro and
+</I>&gt;<i> the PC through the luarpc.exe instance running on the PC.
+</I>&gt;<i>
+</I>&gt;<i> During the client_negotiate( &amp;handle-&gt;tpt ), it is supposed to send out the
+</I>&gt;<i> header &quot;LRPC(3)(default client config)&quot; ('3', for the RPC_PROTOCOL_VERSION,
+</I>&gt;<i> defined as an enum).
+</I>&gt;<i>
+</I>&gt;<i> I tweaked the boot_rpc() in src/main.c to check if the micro is receiving
+</I>&gt;<i> the header. I added the functions transport_read_buffer() and
+</I>&gt;<i> transport_write_buffer(). The micro receives junk values, a stream of '#'.
+</I>&gt;<i> Nonetheless, The UART module of the micro-controller works flawlessly.
+</I>&gt;<i>
+</I>&gt;<i> I have narrowed down on the source of the problem. I suspect that the
+</I>&gt;<i> luarpc.exe instance running on the PC isn't responsive.
+</I>&gt;<i>
+</I>&gt;<i> How do I proceed with the bug ? Please share your thoughts and give me a
+</I>&gt;<i> few
+</I>&gt;<i> suggestions.
+</I>&gt;<i>
+</I>&gt;<i> Also, it is given on the website that rpc.connect() returns a HANDLE to the
+</I>&gt;<i> slave. In the C definition of the same function, it returns an 'int'. Have
+</I>&gt;<i> I
+</I>&gt;<i> understood it correctly ?
+</I>&gt;<i>
+</I>&gt;<i> Raman, Student.
+</I>&gt;<i> -------------- next part --------------
+</I>&gt;<i> An HTML attachment was scrubbed...
+</I>&gt;<i> URL: &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110611/40fc205f/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110611/40fc205f/attachment-0001.html</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i>
+</I>&gt;<i> Message: 2
+</I>&gt;<i> Date: Sat, 11 Jun 2011 18:57:04 +0200
+</I>&gt;<i> From: Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;<i>        &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> Subject: Re: [eLua-dev] Redefining the I2C Lua interface (was: I2C for
+</I>&gt;<i>        LM3S    devices)
+</I>&gt;<i> Message-ID: &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">BANLkTinNsbqQ3xkXUW2P1cGegWWYKPXMTQ at mail.gmail.com</A>&gt;
+</I>&gt;<i> Content-Type: text/plain; charset=ISO-8859-1
+</I>&gt;<i>
+</I>&gt;<i> On 11 June 2011 11:37, Laurent Dufrechou &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">laurent.dufrechou at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; So we end with address inside write and read funtions??
+</I>&gt;<i> &gt; i2c.setspeed(id, speed)
+</I>&gt;<i> &gt; i2c.write(id, address, data)
+</I>&gt;<i> &gt; i2c.read(id, address, maxbytes)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; For repeated start case, I think there is no issue with such device,
+</I>&gt;<i> because
+</I>&gt;<i> &gt; repeated start is a trick to avoid to send a stop and thus permit to?
+</I>&gt;<i> keep
+</I>&gt;<i> &gt; the control in case of multiple master.
+</I>&gt;<i>
+</I>&gt;<i> No, that was just an idea for discussion (which never took place), and
+</I>&gt;<i> may be wrong.
+</I>&gt;<i> I don't understand I2C yet, so these ideas may be based on gross
+</I>&gt;<i> misunderstanding of I2C.
+</I>&gt;<i>
+</I>&gt;<i> In particular, I don't have an answer to the question &quot;Is repeated
+</I>&gt;<i> start an optional feature of an I2C impementation?&quot;
+</I>&gt;<i> The specification certainly doesn't say so.
+</I>&gt;<i>
+</I>&gt;<i> As was suggested (thanks!) I am now working from the I2C specification
+</I>&gt;<i> and it turns out that the Wikipedia entry is easier to understand
+</I>&gt;<i> because it is incomplete and imprecise.
+</I>&gt;<i>
+</I>&gt;<i> As yet, it is quite unclear to me what is needed. At present (to
+</I>&gt;<i> condense my long email) it seems to be a choice between something that
+</I>&gt;<i> is as simplistic as the rest of eLua but can't do I2C, or something
+</I>&gt;<i> that does I2C but is too complex for beginners to understand.  There
+</I>&gt;<i> may be some middle ground that satisfies both needs, but &quot;what&quot; is not
+</I>&gt;<i> clear to me yet.
+</I>&gt;<i>
+</I>&gt;<i> If you are in a hurry and want to get started, you could try
+</I>&gt;<i> implementing the above scheme in a Git fork and let us know how the
+</I>&gt;<i> attempt goes. Unfortunately, I need to understand things before I
+</I>&gt;<i> implement them, and I don't understand the problem well enough yet.
+</I>&gt;<i>
+</I>&gt;<i>    M
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i>
+</I>&gt;<i> Message: 3
+</I>&gt;<i> Date: Sat, 11 Jun 2011 20:38:59 +0200
+</I>&gt;<i> From: Raman Gopalan &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt;
+</I>&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> Subject: [eLua-dev] RPC_PROTOCOL_VERSION
+</I>&gt;<i> Message-ID: &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">BANLkTinES_Ey6YP64c+m33mMYV2WvAZ9EQ at mail.gmail.com</A>&gt;
+</I>&gt;<i> Content-Type: text/plain; charset=&quot;iso-8859-1&quot;
+</I>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I was going through the source code for LuaRPC. The function
+</I>&gt;<i> client_negotiate() defined in luarpc.c,
+</I>&gt;<i> uses RPC_PROTOCOL_VERSION which is defined in an enumeration. char header[
+</I>&gt;<i> 8
+</I>&gt;<i> ] (defined in the same
+</I>&gt;<i> function) holds this value to check for header validity before it can
+</I>&gt;<i> indicate e.errnum = ERR_HEADER; There
+</I>&gt;<i> is also no possible way to typecast this directly. The
+</I>&gt;<i> RPC_PROTOCOL_VERSIONcan be changed to a character.
+</I>&gt;<i>
+</I>&gt;<i> Please let me know if my observation is correct or if there's something I
+</I>&gt;<i> am
+</I>&gt;<i> overlooking.
+</I>&gt;<i>
+</I>&gt;<i> Raman, Student.
+</I>&gt;<i> -------------- next part --------------
+</I>&gt;<i> An HTML attachment was scrubbed...
+</I>&gt;<i> URL: &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110611/4b223b10/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110611/4b223b10/attachment-0001.html</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i>
+</I>&gt;<i> Message: 4
+</I>&gt;<i> Date: Sat, 11 Jun 2011 15:29:59 -0500
+</I>&gt;<i> From: James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;<i>        &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> Subject: Re: [eLua-dev] Problems with LuaRPC module
+</I>&gt;<i> Message-ID: &lt;BANLkTi=<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">BjU-nVtKPcngi3MqhFCsZZqB4sQ at mail.gmail.com</A>&gt;
+</I>&gt;<i> Content-Type: text/plain; charset=ISO-8859-1
+</I>&gt;<i>
+</I>&gt;<i> On Sat, Jun 11, 2011 at 6:00 AM, Raman Gopalan &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Hello,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I seem to have problems with LuaRPC module. Just by running Elua on the
+</I>&gt;<i> &gt; target,
+</I>&gt;<i> &gt; a sample snippet such as slave, err = rpc.connect (&quot;COM11&quot;) throws
+</I>&gt;<i> &gt; me the error &quot;MY ERROR: no data received when attempting to read&quot;. (slave
+</I>&gt;<i> =
+</I>&gt;<i> &gt; nil)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; System configuration:
+</I>&gt;<i> &gt; Windows-7 + All the tools needed to burn the .bin file.
+</I>&gt;<i> &gt; (Have also tested it on Gnu/Linux, Ubuntu 10.04)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Elua cross-compiled for:
+</I>&gt;<i> &gt; CPU: LM3S8962
+</I>&gt;<i> &gt; Micro-controller dev board: Luminary Micro, ARM Cortex M3
+</I>&gt;<i>
+</I>&gt;<i> Are you sure that you started the rpc server on eLua's side of the
+</I>&gt;<i> connection?  The simplest way to do this is to use the boot=luarpc
+</I>&gt;<i> build option, however you can also start lua on the mcu, then run
+</I>&gt;<i> rpc.server(&lt;timer_id&gt;,&lt;uart_id&gt;) and then disconnect and connect to
+</I>&gt;<i> the server using luarpc.  If the server isn't explicitly started using
+</I>&gt;<i> one of these methods LuaRPC on the desktop side is going to try and
+</I>&gt;<i> talk to the eLua &quot;shell&quot;.
+</I>&gt;<i>
+</I>
+Hello,
+
+Thanks for your reply.
+
+Yes, the RPC server is running and the boot=luarpc is enabled at build.
+I even tried starting the server with rpc.server() but it takes me to an
+infinite waiting state. It does not respond.
+
+&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I did however read through the source code to understand the protocol
+</I>&gt;<i> used
+</I>&gt;<i> &gt; while
+</I>&gt;<i> &gt; communicating with RPC.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The files I have used for this problem definition:
+</I>&gt;<i> &gt; src/main.c, src/luarpc_elua_uart.c, src/modules/luarpc.c
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; As mentioned earlier, just by cross compiling Elua for LM3S8962, the
+</I>&gt;<i> &gt; luarpc.exe
+</I>&gt;<i> &gt; throws me the error: &quot;MY ERROR: no data received when attempting to read&quot;
+</I>&gt;<i> on
+</I>&gt;<i> &gt; my PC console.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; luarpc.c:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; static int rpc_connect( lua_State *L ):
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; ??? transport_write_u8( &amp;handle-&gt;tpt, RPC_CMD_CON );
+</I>&gt;<i> &gt; ??? client_negotiate( &amp;handle-&gt;tpt );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; At this point, we can expect the handshake between the micro and
+</I>&gt;<i> &gt; the PC through the luarpc.exe instance running on the PC.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; During the client_negotiate( &amp;handle-&gt;tpt ), it is supposed to send out
+</I>&gt;<i> the
+</I>&gt;<i> &gt; header &quot;LRPC(3)(default client config)&quot; ('3', for the
+</I>&gt;<i> RPC_PROTOCOL_VERSION,
+</I>&gt;<i> &gt; defined as an enum).
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I tweaked the boot_rpc() in src/main.c to check if the micro is receiving
+</I>&gt;<i> &gt; the header. I added the functions transport_read_buffer() and
+</I>&gt;<i> &gt; transport_write_buffer(). The micro receives junk values, a stream of
+</I>&gt;<i> '#'.
+</I>&gt;<i> &gt; Nonetheless, The UART module of the micro-controller works flawlessly.
+</I>&gt;<i>
+</I>&gt;<i> Here it sounds like you are using the rpc boot mode, which has worked
+</I>&gt;<i> for me on Mac OS X, Win XP and Linux. I'm not sure why you would
+</I>&gt;<i> receive a stream of &quot;#&quot; values.
+</I>&gt;<i>
+</I>&gt;<i> Did you change any other parameters?  What compilers are you using,
+</I>&gt;<i> etc..?  I assume you're not using the multiplexer (mux) or anything
+</I>&gt;<i> like that and that you haven't modified the baud rates?
+</I>&gt;<i>
+</I>
+No. I haven't changed any parameters. I am running them on the default
+parameters. I am using the codesourcery toolchain to cross compile
+elua. The baud rate is set to 115200.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I have narrowed down on the source of the problem. I suspect that the
+</I>&gt;<i> &gt; luarpc.exe instance running on the PC isn't responsive.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; How do I proceed with the bug ? Please share your thoughts and give me a
+</I>&gt;<i> few
+</I>&gt;<i> &gt; suggestions.
+</I>&gt;<i>
+</I>&gt;<i> I suspect that maybe there's a configuration problem if you're having
+</I>&gt;<i> the issue on multiple platforms?  It's hard to know without knowing
+</I>&gt;<i> if/what you have or might have configured or adjusted.  To my
+</I>&gt;<i> knowledge the current code should work with boot=luarpc with proper
+</I>&gt;<i> platform configuration and compilation and if the desktop client
+</I>&gt;<i> builds correctly.  Knowing which build environment you're using on the
+</I>&gt;<i> desktop and perhaps any adjustments you've made might help.  One
+</I>&gt;<i> shortcoming of the way the desktop client works with serial
+</I>&gt;<i> connections is that it doesn't take a baud parameter and therefore
+</I>&gt;<i> just assumes that the connection will be at 115200, so if you've
+</I>&gt;<i> changed that it certainly won't pick it up.
+</I>&gt;<i>
+</I>I am using MinGW to build my desktop Lua, RPC enabled. I haven't modified
+the configuration.
+
+&gt;<i>
+</I>&gt;<i> Are you using the built-in FTDI-based virtual com port interface that
+</I>&gt;<i> the LM3S board provides?
+</I>&gt;<i>
+</I>Yes, I am using the FDTI based virtual com port interface provided in
+the disk that came along with the LM3S8962 dev-board. I have also
+checked the com port settings. It is configured to a baud of 115200
+with 8 data bits, no parity, 1 stop bit and no flow control.
+Is there anything else I must set in the FTDI setting ?
+
+Awaiting your response.
+
+&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Also, it is given on the website that rpc.connect() returns a HANDLE to
+</I>&gt;<i> the
+</I>&gt;<i> &gt; slave. In the C definition of the same function, it returns an 'int'.
+</I>&gt;<i> Have I
+</I>&gt;<i> &gt; understood it correctly ?
+</I>&gt;<i>
+</I>&gt;<i> Yes, the way the Lua API works is that you push values on the stack
+</I>&gt;<i> which you wish to return to the user and you return to the VM the
+</I>&gt;<i> number of results that are on the stack for it.
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Raman, Student.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i>
+</I>&gt;<i> Message: 5
+</I>&gt;<i> Date: Sat, 11 Jun 2011 16:01:07 -0500
+</I>&gt;<i> From: James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;<i>        &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> Subject: Re: [eLua-dev] RPC_PROTOCOL_VERSION
+</I>&gt;<i> Message-ID: &lt;BANLkTikFGgCpP-f7uQ=<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bjRPABuH7FBBTUA at mail.gmail.com</A>&gt;
+</I>&gt;<i> Content-Type: text/plain; charset=ISO-8859-1
+</I>&gt;<i>
+</I>&gt;<i> On Sat, Jun 11, 2011 at 1:38 PM, Raman Gopalan &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Hello,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I was going through the source code for LuaRPC. The function
+</I>&gt;<i> &gt; client_negotiate() defined in luarpc.c,
+</I>&gt;<i> &gt; uses RPC_PROTOCOL_VERSION which is defined in an enumeration. char
+</I>&gt;<i> header[ 8
+</I>&gt;<i> &gt; ] (defined in the same
+</I>&gt;<i> &gt; function) holds this value to check for header validity before it can
+</I>&gt;<i> &gt; indicate e.errnum = ERR_HEADER; There
+</I>&gt;<i> &gt; is also no possible way to typecast this directly. The
+</I>&gt;<i> RPC_PROTOCOL_VERSION
+</I>&gt;<i> &gt; can be changed to a character.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Please let me know if my observation is correct or if there's something I
+</I>&gt;<i> am
+</I>&gt;<i> &gt; overlooking.
+</I>&gt;<i>
+</I>&gt;<i> There's nothing special about char that prevents something that isn't
+</I>&gt;<i> a character from being stored in it that's a value between 0 and 255.
+</I>&gt;<i>
+</I>&gt;<i> &gt;From the C89 spec (not much different in C99):
+</I>&gt;<i> &quot;An object declared as type char is large enough to store any member
+</I>&gt;<i> of the basic execution character set.  If a member of the required
+</I>&gt;<i> source character set enumerated in $2.2.1 is stored in a char object,
+</I>&gt;<i> its value is guaranteed to be positive.  If other quantities are
+</I>&gt;<i> stored in a char object, the behavior is implementation-defined: the
+</I>&gt;<i> values are treated as either signed or nonnegative integers.&quot;
+</I>&gt;<i>
+</I>&gt;<i> Enumerated types are just integer constant values.
+</I>&gt;<i>
+</I>&gt;<i> Generally, I suppose, many platforms treat it as an unsigned 8-bit
+</I>&gt;<i> integer, so the enumerated value of 3 is perfectly small enough to fit
+</I>&gt;<i> within the range that would be large enough to store a member of the
+</I>&gt;<i> basic execution character set.
+</I>&gt;<i>
+</I>&gt;<i> Now, I suppose that it might not be a bad idea to make the cast
+</I>&gt;<i> explicit here to char for all of the parameters that are set in that
+</I>&gt;<i> function, but I'm not sure if I would consider the existing version
+</I>&gt;<i> broken or the source of the difficulties you're currently experiencing
+</I>&gt;<i> (unless the compiler you're using is behaving differently than the
+</I>&gt;<i> ones we've used previously :-) ).
+</I>&gt;<i>
+</I>&gt;<i> The LuaRPC headers actually bear some resemblance to the Lua headers
+</I>&gt;<i> used for compiled Lua files, and since that header generation code
+</I>&gt;<i> does include explicit casts, I'll probably add this on my next pass
+</I>&gt;<i> through the code since it's generally better to be explicit.
+</I>&gt;<i>
+</I>&gt;<i> Lua's ldump.c DumpHeader, 259:
+</I>&gt;<i> <A HREF="https://github.com/elua/elua/blob/master/src/lua/ldump.c">https://github.com/elua/elua/blob/master/src/lua/ldump.c</A>
+</I>&gt;<i>
+</I>
+Sure, thanks for the reply.
+
+&gt;<i>
+</I>&gt;<i> Best.
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Raman, Student.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> End of eLua-dev Digest, Vol 35, Issue 31
+</I>&gt;<i> ****************************************
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110614/abef9e1d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110614/abef9e1d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002503.html">[eLua-dev] RPC_PROTOCOL_VERSION
+</A></li>
+	<LI>Next message: <A HREF="002510.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 31
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2509">[ date ]</a>
+              <a href="thread.html#2509">[ thread ]</a>
+              <a href="subject.html#2509">[ subject ]</a>
+              <a href="author.html#2509">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

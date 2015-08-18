@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32F4
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4&In-Reply-To=%3C20131202171048.GE3052%40%28none%29%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004327.html">
+   <LINK REL="Next"  HREF="004316.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32F4</H1>
+    <B>Richard M&#246;hn</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4&In-Reply-To=%3C20131202171048.GE3052%40%28none%29%3E"
+       TITLE="[eLua-dev] STM32F4">richard.moehn at fu-berlin.de
+       </A><BR>
+    <I>Mon Dec  2 18:10:48 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004327.html">[eLua-dev] STM32F4
+</A></li>
+        <LI>Next message: <A HREF="004316.html">[eLua-dev] beginners question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4328">[ date ]</a>
+              <a href="thread.html#4328">[ thread ]</a>
+              <a href="subject.html#4328">[ subject ]</a>
+              <a href="author.html#4328">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Dec 02, 2013 at 10:58:57AM -0600, Bill wrote:
+&gt;<i> Am I limited to adding 1 module? I tried adding a second and it seemed to
+</I>&gt;<i> take only the last in the list. When I tried to create a group, it gave an
+</I>&gt;<i> error &quot;string expected, got table&quot;
+</I>
+
+I do not quite know what you mean with creating a group, but my
+build_config.lua looks like this:
+
+------------------------------------------------------------------------
+-- Return an array of all the available platform modules for the given cpu
+function get_platform_modules( board, cpu )
+  local mods = {
+    pio = {
+      lib   = '&quot;pio&quot;',
+      map   = &quot;stm32_pio_map&quot;,
+      open  = false
+    },
+    cpu = {
+      lib   = '&quot;cpu&quot;',
+      map   = &quot;stm32_cpu_map&quot;,
+      open  = &quot;luaopen_stm32_cpu&quot;
+    },
+  }
+
+  -- Register MSB-IOT platform modules
+  if board == 'msb-iot' then
+    mods.cc1101 = {
+      lib       = '&quot;cc1101&quot;',
+      map       = &quot;msbiot_cc1101_map&quot;,
+      open      = false
+    }
+    mods.scratch = {
+      lib       = '&quot;scratch&quot;',
+      map       = &quot;msbiot_scratch_map&quot;,
+      open      = false
+    }
+    mods.cc3000 = {
+      lib       = '&quot;cc3000&quot;',
+      map       = &quot;msbiot_cc3000_map&quot;,
+      open      = false
+    }
+  end
+
+  return mods
+end
+------------------------------------------------------------------------
+
+I hope you can make something out of this.
+
+Best,
+
+Richard
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004327.html">[eLua-dev] STM32F4
+</A></li>
+	<LI>Next message: <A HREF="004316.html">[eLua-dev] beginners question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4328">[ date ]</a>
+              <a href="thread.html#4328">[ thread ]</a>
+              <a href="subject.html#4328">[ subject ]</a>
+              <a href="author.html#4328">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

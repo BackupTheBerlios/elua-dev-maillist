@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] reducing rom size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20reducing%20rom%20size&In-Reply-To=%3C81fbe47d0901262308h7897fbdna3a78fc93b0b920%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000312.html">
+   <LINK REL="Next"  HREF="000291.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] reducing rom size</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20reducing%20rom%20size&In-Reply-To=%3C81fbe47d0901262308h7897fbdna3a78fc93b0b920%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] reducing rom size">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Jan 27 08:08:32 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000312.html">[eLua-dev] reducing rom size
+</A></li>
+        <LI>Next message: <A HREF="000291.html">[eLua-dev] disp.stringdraw
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#313">[ date ]</a>
+              <a href="thread.html#313">[ thread ]</a>
+              <a href="subject.html#313">[ subject ]</a>
+              <a href="author.html#313">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>You can try, don't make too many hopes though :) I'm actually curious
+to know how that goes.
+
+Best,
+Bogdan
+
+On Tue, Jan 27, 2009 at 1:34 AM, Alex Babkin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ababkin at gmail.com</A>&gt; wrote:
+&gt;<i> So does this mean i can now try compiling/running it on the STM32 with 20kb
+</I>&gt;<i> of ram and 128kb flash ?
+</I>&gt;<i> sweet!
+</I>&gt;<i>
+</I>&gt;<i> Alex
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jan 14, 2009 at 2:54 PM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; I'm undecided.  I don't know the .luac format yet, so I don't know if
+</I>&gt;&gt;<i> &gt; the receiver can determine the number of bytes to expect based on the
+</I>&gt;&gt;<i> &gt; contents of the data sent.  If .luac does indicate its length, I'll do
+</I>&gt;&gt;<i> &gt; raw UART; otherwise, I might use a super-simple protocol.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is a tricky one. All the terminal emulators I used pad the last
+</I>&gt;&gt;<i> XMODEM packet with EOF (0x1A) chars up to its maximum size (128
+</I>&gt;&gt;<i> bytes). Now, if I interpreted the &quot;no frills&quot; document correctly
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> (<A HREF="http://luaforge.net/docman/view.php/83/98/ANoFrillsIntroToLua51VMInstructions.pdf">http://luaforge.net/docman/view.php/83/98/ANoFrillsIntroToLua51VMInstructions.pdf</A>)
+</I>&gt;&gt;<i> a binary chunk can never end in a 0x1A, so we _should_ be safe (all
+</I>&gt;&gt;<i> you have to do is scan the last received XMODEM packet until no more
+</I>&gt;&gt;<i> 0x1A chars are found, like code in src/shell/shell_recv does) . But I
+</I>&gt;&gt;<i> need to check this more. FWIW all the tests I made with compiled
+</I>&gt;&gt;<i> bytecode over XMODEM worked flawlessly.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; I haven't studied how easy it is to insert into the build my own pre-
+</I>&gt;&gt;<i> &gt; compiled module without ROMFS.  If ROMFS is required for such things,
+</I>&gt;&gt;<i> &gt; I will put it back in.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Copy it to the ROMFS directory, then add it to your board-to-ROMFS
+</I>&gt;&gt;<i> list mapping. See the definition of &quot;romfs&quot; and &quot;file_list&quot; variables
+</I>&gt;&gt;<i> in SConstruct.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; With these items [un]defined:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; #define BUILD_XMODEM
+</I>&gt;&gt;<i> &gt; //#define BUILD_SHELL
+</I>&gt;&gt;<i> &gt; //#define BUILD_ROMFS
+</I>&gt;&gt;<i> &gt; //#define BUILD_TERM
+</I>&gt;&gt;<i> &gt; #define BUILD_CON_GENERIC
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; the build is
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; $ arm-elf-size elua_lualong_at91sam7s64.elf
+</I>&gt;&gt;<i> &gt;    text           data     bss     dec     hex filename
+</I>&gt;&gt;<i> &gt;   59920           2265     736   62921    f5c9
+</I>&gt;&gt;<i> &gt; elua_lualong_at91sam7s64.elf
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You can comment out BUILD_CON_GENERIC too. It's used only for standard
+</I>&gt;&gt;<i> I/O (stdio/stdout/stderr) over UART, and you don't seem to use that.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000312.html">[eLua-dev] reducing rom size
+</A></li>
+	<LI>Next message: <A HREF="000291.html">[eLua-dev] disp.stringdraw
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#313">[ date ]</a>
+              <a href="thread.html#313">[ thread ]</a>
+              <a href="subject.html#313">[ subject ]</a>
+              <a href="author.html#313">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

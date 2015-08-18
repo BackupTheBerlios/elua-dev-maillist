@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] /mmc
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20/mmc&In-Reply-To=%3Cd3b6d880902171448q1f838920m8e7d9772cf0b161d%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000503.html">
+   <LINK REL="Next"  HREF="000501.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] /mmc</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20/mmc&In-Reply-To=%3Cd3b6d880902171448q1f838920m8e7d9772cf0b161d%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] /mmc">dadosutter at gmail.com
+       </A><BR>
+    <I>Tue Feb 17 23:48:07 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000503.html">[eLua-dev] /mmc
+</A></li>
+        <LI>Next message: <A HREF="000501.html">[eLua-dev] /mmc
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#505">[ date ]</a>
+              <a href="thread.html#505">[ thread ]</a>
+              <a href="subject.html#505">[ subject ]</a>
+              <a href="author.html#505">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Sure!
+   When I said reformatting, I meant low-level formatting :)
+   And yes, I'll take care of sda :)
+
+Best
+Dado
+
+
+On Tue, Feb 17, 2009 at 19:37, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;wrote:
+
+&gt;<i> Actually, reformatting won't sweep away weird partitioning problems. Try to
+</I>&gt;<i> use fdisk (or cfdisk) from Ubuntu to repartition your card into a single FAT
+</I>&gt;<i> primary partition, THEN format it, then try again. This is how I got one of
+</I>&gt;<i> my cards working a while ago, because initially it had an extremely weird
+</I>&gt;<i> partitioning scheme.
+</I>&gt;<i> Careful with (c)fdisk though, you don't wanna mess up your HDD :)
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Feb 18, 2009 at 12:31 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Thank you guys,
+</I>&gt;&gt;<i>    Alvarez; my EK-LM3S8962 in an unmodified kit, so CS should be on PG_0
+</I>&gt;&gt;<i> but I'll double check it. The mini-SD I have here has 512MB. I'll reformat
+</I>&gt;&gt;<i> the card as FAT and test again.
+</I>&gt;&gt;<i>    James; reformating will sweep away other weird format/partition's
+</I>&gt;&gt;<i> problems.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Tks again
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Feb 17, 2009 at 19:16, Jesus Alvarez &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jalvarez at micromint.com</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Dado,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The EK-LM3S8962 should support microSD cards. The mmc.c file assumes the
+</I>&gt;&gt;&gt;<i> card chip select is on PG0 (see section &quot;GPIO for card chip select&quot;).
+</I>&gt;&gt;&gt;<i> Please
+</I>&gt;&gt;&gt;<i> confirm that is the case on your board. The EK-LM3S6965 uses PD0 and the
+</I>&gt;&gt;&gt;<i> Eagle-100 uses PG1 so that varies with the design of the board.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> If your card does not show any files with 'ls', I suspect the FatFs code
+</I>&gt;&gt;&gt;<i> is
+</I>&gt;&gt;&gt;<i> not able to read the directory.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I have not used FatFs with FAT32 cards, although the code does support
+</I>&gt;&gt;&gt;<i> them.
+</I>&gt;&gt;&gt;<i> If your card is 4 GB or less I would suggest formatting it using FAT
+</I>&gt;&gt;&gt;<i> instead
+</I>&gt;&gt;&gt;<i> of FAT32. The FatFs site refers to FAT32 mainly for cards &gt;4GB.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You do not need to use a special mkfs for the card. Formatting the card
+</I>&gt;&gt;&gt;<i> on a
+</I>&gt;&gt;&gt;<i> PC works fine.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Regards,
+</I>&gt;&gt;&gt;<i> Jesus Alvarez
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/8ae90789/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/8ae90789/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000503.html">[eLua-dev] /mmc
+</A></li>
+	<LI>Next message: <A HREF="000501.html">[eLua-dev] /mmc
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#505">[ date ]</a>
+              <a href="thread.html#505">[ thread ]</a>
+              <a href="subject.html#505">[ subject ]</a>
+              <a href="author.html#505">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

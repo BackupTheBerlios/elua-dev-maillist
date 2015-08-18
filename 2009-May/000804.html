@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GC Parameters &amp; Emergency Collection
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3CEMEWEMEW2_DELIMl4AA1k5f4389ffdc8a8b8d9f1f54%2C%0A%09jbsnyder%40fanplastic.org%2C%2055E72C09-0EAF-4C21-B0BA-FAF%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000801.html">
+   <LINK REL="Next"  HREF="000802.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GC Parameters &amp; Emergency Collection</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3CEMEWEMEW2_DELIMl4AA1k5f4389ffdc8a8b8d9f1f54%2C%0A%09jbsnyder%40fanplastic.org%2C%2055E72C09-0EAF-4C21-B0BA-FAF%3E"
+       TITLE="[eLua-dev] GC Parameters &amp; Emergency Collection">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon May 11 17:01:34 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000801.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+        <LI>Next message: <A HREF="000802.html">[eLua-dev] Device Manager
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#804">[ date ]</a>
+              <a href="thread.html#804">[ thread ]</a>
+              <a href="subject.html#804">[ subject ]</a>
+              <a href="author.html#804">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On May 11, 2009, at 12:54 AM, Bogdan Marinescu wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, May 11, 2009 at 6:34 AM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> Minimal testing seems to show it working and surviving through  
+</I>&gt;<i> conditions where previously it would run out of memory on STM32 w/  
+</I>&gt;<i> 64k SRAM.
+</I>&gt;<i>
+</I>&gt;<i> I didn't expect anything less from this patch. I tested it on a  
+</I>&gt;<i> &quot;simulated&quot; environment before starting to work on eLua, back when I  
+</I>&gt;<i> was checking if it was at all feasible to run Lua on system limited  
+</I>&gt;<i> to 64k of RAM and even less. And it performed very good. There is of  
+</I>&gt;<i> course a performance penalty, but I'd say that in practice the EGC  
+</I>&gt;<i> is extremely useful for thte vaste majority of applications. After  
+</I>&gt;<i> all, it's quite unlikely that someone would choose eLua to run  
+</I>&gt;<i> computationally intensive programs that would suffer from the  
+</I>&gt;<i> performance impact :)
+</I>
+I agree.  Does the performance hit only show up during a GC (emergency  
+or no)?  I've not clocked any of this yet.
+
+In practice I would say since we have a fixed amount of memory, it's  
+really undesirable to fail simply because a garbage collection event  
+wasn't called in time.  The other side is that if the penalty is only  
+at GC time, people could disable collection during time-critical  
+operations.  I haven't taken a deep look to understand how every part  
+of the patch works yet, but I see that it does provide a configurable  
+of a memory limit.  Maybe another interesting tunable might be how  
+many GC steps to take when an emergency GC is called (i.e.: just  
+enough for the allocation pending, full gc, or something else?)  I'm  
+also still curious about the idea of running GC in fixed timesteps,
+
+In the interests of pragmatism, I don't think I'd pursue anything more  
+detailed here unless I run up against some situation where it doesn't  
+work as desired. I think, overall, a default of sane incremental  
+collection (maybe with the GCPAUSE set to 110) and a backstop  
+emergency GC should be a good solution for most cases.
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/6af52506/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/6af52506/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/6af52506/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/6af52506/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000801.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+	<LI>Next message: <A HREF="000802.html">[eLua-dev] Device Manager
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#804">[ date ]</a>
+              <a href="thread.html#804">[ thread ]</a>
+              <a href="subject.html#804">[ subject ]</a>
+              <a href="author.html#804">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

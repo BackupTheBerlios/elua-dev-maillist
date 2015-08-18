@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] What can I do?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3C003c01cb96f8%248535c320%248fa14960%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001782.html">
+   <LINK REL="Next"  HREF="001784.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] What can I do?</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3C003c01cb96f8%248535c320%248fa14960%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] What can I do?">john.hind at zen.co.uk
+       </A><BR>
+    <I>Wed Dec  8 17:54:03 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001782.html">[eLua-dev] What can I do?
+</A></li>
+        <LI>Next message: <A HREF="001784.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1783">[ date ]</a>
+              <a href="thread.html#1783">[ thread ]</a>
+              <a href="subject.html#1783">[ subject ]</a>
+              <a href="author.html#1783">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> -----Original Message-----
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+</I>&gt;<i> Sent: 08 December 2010 14:22
+</I>
+
+&gt;<i> They are asynchronous in the sense that they can interrupt the regular
+</I>&gt;<i> Lua program flow at any time and execute another function (the
+</I>&gt;<i> interrupt handler) instead.
+</I>
+Surely not? Can you interrupt Lua code at any point, run a different Lua
+function and then return to the original Lua code where it left off? All in
+the same Lua State? I understand if you mean run a C interrupt handler
+asynchronously and then resume the interrupted Lua code. Point is that the
+Lua programmer cannot write a true asynchronous interrupt handler, only poll
+&quot;pre-cooked&quot; ones provided in the runtime. Any Lua code run as a result of
+an interrupt has to be serialised and can only run when the currently
+running code terminates. Or have I missed a trick?
+
+&gt;<i> I must confess that I don't fully understand this model yet. Oh well,
+</I>&gt;<i> another reason for me to order that book :) I should've done it a long
+</I>&gt;<i> time ago anyway.
+</I>
+Check your gmail - there should be a nice surprise! Rupin's approach is
+designed for operation in a multi-tasking operating system using native
+threads to run pre-cooked C routines. I'm suggesting these routines could be
+substituted by ISR code on a bare metal microcontroller implementation. The
+key point is that an enhanced &quot;yield&quot; method specifies to the scheduler the
+conditions under which the coroutine should be resumed.
+
+- John
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001782.html">[eLua-dev] What can I do?
+</A></li>
+	<LI>Next message: <A HREF="001784.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1783">[ date ]</a>
+              <a href="thread.html#1783">[ thread ]</a>
+              <a href="subject.html#1783">[ subject ]</a>
+              <a href="author.html#1783">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

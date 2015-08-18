@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] tiny ram patch and luac cross question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20tiny%20ram%20patch%20and%20luac%20cross%20question&In-Reply-To=%3C81fbe47d0901280029x38ed94b0jf43024a40d91e116%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000315.html">
+   <LINK REL="Next"  HREF="000326.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] tiny ram patch and luac cross question</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20tiny%20ram%20patch%20and%20luac%20cross%20question&In-Reply-To=%3C81fbe47d0901280029x38ed94b0jf43024a40d91e116%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] tiny ram patch and luac cross question">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Jan 28 09:29:42 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000315.html">[eLua-dev] tiny ram patch and luac cross question
+</A></li>
+        <LI>Next message: <A HREF="000326.html">[eLua-dev] tiny ram patch and luac cross question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#317">[ date ]</a>
+              <a href="thread.html#317">[ thread ]</a>
+              <a href="subject.html#317">[ subject ]</a>
+              <a href="author.html#317">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Interesting question, I didn't try this. It shouldn't matter at all,
+as the bytecode is exactly the same, only its interpretation differs
+with LTR. But of course, we need to test this first.
+As for the instructions on cross-lua.py, look at the attached file. It
+used to be in the docs/ subdirectory, but something wrong happened to
+it after we converted the docs (it's still in the PDF, only very well
+hidden and with a very bad formatting).
+
+Best,
+Bogdan
+
+On Wed, Jan 28, 2009 at 4:59 AM, Dean Hall &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dwhall256 at gmail.com</A>&gt; wrote:
+&gt;<i> Bogdan, I understand a little about how the tiny ram patch works, but
+</I>&gt;<i> not fully.  My question is, does the luac cross-compiler (luac) need
+</I>&gt;<i> to know about the tiny ram changes (my intuitions says yes)?  If so,
+</I>&gt;<i> the script cross-lua.py seems to be missing the new source files from
+</I>&gt;<i> the tiny ram patch that are in src/lua.  Also, I would appreciate it
+</I>&gt;<i> if you could explain how to use cross-lua.py.
+</I>&gt;<i>
+</I>&gt;<i> !!Dean
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+(NOTE: view this file with a monospaced font)
+
+Cross-compiling Lua programs
+================================================================================
+&quot;Cross compilation&quot; is the process of compiling a program on one system for a 
+different system. For example, the process of compiling the eLua binary image on
+a PC is cross-compiling. Lua can be cross-compiled, too. By cross-compiling Lua
+to bytecode on a PC and executing the resulting bytecode directly on your eLua
+board you have two advantages:
+
+- speed: the Lua interpreter on the eLua board doesn't have to compile your Lua
+  source code, it just executes the compiled bytecode
+- memory: this is more important. If you're exectuing bytecode directly, no more
+  memory is &quot;wasted&quot; on the eLua board for compiling the Lua code to bytecode.
+  Many times this could be a &quot;life saver&quot;. If you're trying to run Lua code
+  directly on your board and you're getting &quot;not enough memory&quot; errors, you 
+  might be able to overcome this by compiling the Lua program on the PC and 
+  running the bytecode instead.
+
+But for this cross-compilation to work, the two Lua targets must be compatible
+(they should have the same data types, with the same size, and the same memory
+representation). This isn't completely true for Intel and ARM targets, as gcc
+for ARM uses a very specific representation for double numbers (called FPA
+format) by default, which makes bytecode files generated on the PC useless on
+ARM boards. To overcome this, a &quot;Lua cross-compilation&quot; patch was posted on the
+Lua mailing list a while ago, and it was further modified as part of the eLua
+project to work with ARM targets. This is how to use it (the following 
+instructions were tested on Linux, not Windows, but they should work on Windows 
+too with little or no tweaking):
+
+- first, make sure that your PC has already a build system intalled (gcc,
+  binutils, libc, headers...). You'll also need &quot;scons&quot;. The good news is that 
+  you should have it already installed, since otherwise you won't be able to 
+  build even regular eLua.
+
+- from the eLua base directory, issue this command:
+
+  $ scons -f cross-lua.py
+
+  You should get a file called &quot;luac&quot; in the same directory after this.
+
+- to compile your Lua code (in &lt;source&gt;.lua), issue this command:
+
+  $ ./luac -s -ccn float_arm 64 -o &lt;source&gt;.luac &lt;source&gt;.lua
+  if you're using &quot;regular&quot; (floating point) Lua, or:
+
+  $ ./luac -s -ccn int 32 -o &lt;source&gt;.luac &lt;source&gt;.lua
+  if you're using int-ony Lua.
+
+- that's it! You can use the resulting file (&lt;source&gt;.luac) in two ways:
+
+  - &quot;recv&quot; it (docs/the_elua_shell.txt)
+  - copy it to the ROM file system (docs/the_rom_file_system.txt)
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000315.html">[eLua-dev] tiny ram patch and luac cross question
+</A></li>
+	<LI>Next message: <A HREF="000326.html">[eLua-dev] tiny ram patch and luac cross question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#317">[ date ]</a>
+              <a href="thread.html#317">[ thread ]</a>
+              <a href="subject.html#317">[ subject ]</a>
+              <a href="author.html#317">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

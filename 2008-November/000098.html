@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] I2C Platform interface suggestion.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20I2C%20Platform%20interface%20suggestion.&In-Reply-To=%3Cd3b6d880811180203x63022107t2951da72a93b40f1%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000097.html">
+   <LINK REL="Next"  HREF="000099.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] I2C Platform interface suggestion.</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20I2C%20Platform%20interface%20suggestion.&In-Reply-To=%3Cd3b6d880811180203x63022107t2951da72a93b40f1%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] I2C Platform interface suggestion.">dadosutter at gmail.com
+       </A><BR>
+    <I>Tue Nov 18 11:03:45 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000097.html">[eLua-dev] I2C Platform interface suggestion.
+</A></li>
+        <LI>Next message: <A HREF="000099.html">[eLua-dev] I2C Platform interface suggestion.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#98">[ date ]</a>
+              <a href="thread.html#98">[ thread ]</a>
+              <a href="subject.html#98">[ subject ]</a>
+              <a href="author.html#98">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello List,
+   Mike, thank you for the detailed explanation !!!
+   To allow long transfers in a simple call would indeed be welcome and the
+same idea has to be propagated to the Lua level.
+   It will be really nice to have I2C soon !
+   To keep the style used in some modules (ex: Lumina's OLED RIT driver),
+you could use platform_i2c_disable instead of platform_i2c_deinit but it
+really doesn't matter, as all low level modules have their own personality
+:<i>)  (they also have a weird RIT..._enable function, that does essentially
+</I>what RIT..._init does)
+   Aren't platform_i2c_data_t and platform_i2c_data exchanged in the code
+below ?
+   I really wish I had some more time now to learn more about I2C :( Things
+are going fast here and the little time I can use for coding is for easy and
+little things :( :(
+
+   Last saturday I wrote an ls command for the shell (and Bogdan has
+accepted it !! :) :). I will just polish it a little bit (adding column
+alignment for the byte length printing), sync with trunk and commit asap. I
+need to do the same for our RIT OLED driver bind/wrapper, that is working
+fine and I've extended some demo examples to include the display.
+
+   Also, about the PID module, fundamental for some projects and highly
+awaited by the robotic guys of PUC-Rio :), I would like Pedro to help us to
+detail one, together with your fine ideas.
+   The idea is to include two (small but important) filters on the module,
+that would be optionally activated and damp/filter some feedback behavior.
+Pedro is an expert in this stuff and the initial sugestion from Marco
+Meggiolaro&lt;<A HREF="http://www.google.com/search?ie=UTF-8&amp;oe=UTF-8&amp;sourceid=navclient&amp;gfns=1&amp;q=g+marco+meggiolaro+puc">http://www.google.com/search?ie=UTF-8&amp;oe=UTF-8&amp;sourceid=navclient&amp;gfns=1&amp;q=g+marco+meggiolaro+puc</A>&gt;
+.
+   Yesterday, another Eletrical Engineering teacher, R.
+Tancheit&lt;<A HREF="http://www.google.com/search?ie=UTF-8&amp;oe=UTF-8&amp;sourceid=navclient&amp;gfns=1&amp;q=g+Tanscheit+puc">http://www.google.com/search?ie=UTF-8&amp;oe=UTF-8&amp;sourceid=navclient&amp;gfns=1&amp;q=g+Tanscheit+puc</A>&gt;,
+suggested a Fuzzy Logic controller module, based on a &quot;simple&quot; method he has
+but this is already completely offtopic now :) :)
+
+Best
+Dado
+
+
+
+
+
+On Mon, Nov 17, 2008 at 1:25 PM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;wrote:
+
+&gt;<i> My suggestion would be to have a simple interface as follows:
+</I>&gt;<i>
+</I>&gt;<i> platform_i2c_init( int dev ); // Initialize an i2c interface
+</I>&gt;<i> platform_i2c_deinit( int dev ); // de-initialize (shutdown) an i2c
+</I>&gt;<i> interface
+</I>&gt;<i> platform_i2c_master_xfer( int dev, platform_i2c_xfer_t * xfer_info ); //
+</I>&gt;<i> Perform an I2C master transfer
+</I>&gt;<i>
+</I>&gt;<i> struct platform_i2c_xfer {
+</I>&gt;<i>   u16 addr  :7;    // Slave address, 10bit addressing not supported
+</I>&gt;<i>   u16 _RES:1;
+</I>&gt;<i>   u16 flags  :8;   // I2C flags, such as transfer speed (400KHz or 100KHz),
+</I>&gt;<i> or if this is just a probe transfer (no data)
+</I>&gt;<i>   u16 wdatalen; // Length of data to write
+</I>&gt;<i>   u8 * wdata;     // Pointer to data to write
+</I>&gt;<i>   u16 rdatalen;
+</I>&gt;<i>   u8 * rdata;
+</I>&gt;<i> } platform_i2c_xfer_t;
+</I>&gt;<i>
+</I>&gt;<i> The reason we want to have both read and write data in the transfer struct
+</I>&gt;<i> is quite a few I2C devices require a control byte (or bytes) write before a
+</I>&gt;<i> meaningfull read can be done, as an atomic I2C transfer if possible by doing
+</I>&gt;<i> a Start, Write, Repeated Start, Read, to a particular address.
+</I>&gt;<i>
+</I>&gt;<i> This particular method obviously only allows a single tranfer per call to a
+</I>&gt;<i> particular address, a simple modification can be done to address that issue,
+</I>&gt;<i> which would be to place the transfer data pointers and lengths in a data
+</I>&gt;<i> struct.
+</I>&gt;<i>
+</I>&gt;<i> It would look something like:
+</I>&gt;<i> struct platform_i2c_data {
+</I>&gt;<i>   u8 rdnwr :1; // 1 for read, 0 for write
+</I>&gt;<i>   u8 flags  :7; // TBD, will contain transfer status flags such as transfer
+</I>&gt;<i> failed, etc
+</I>&gt;<i>   u8 len;        // xfer len for this data block, set by user to the total
+</I>&gt;<i> length of the storage area pointed to below, set by I2C code to actual
+</I>&gt;<i> amount read or written after transfer complete.  If a transfer error occurs
+</I>&gt;<i> on this data block a flag will be set above and this will be set to the
+</I>&gt;<i> amount of data sent/recieved before the error occured.
+</I>&gt;<i>   u8 * data;   // pointer to data storage for this block
+</I>&gt;<i> } platform_i2c_data_t;
+</I>&gt;<i>
+</I>&gt;<i> If a data block generates a transfer error all further datablock tranfers
+</I>&gt;<i> will be aborted and the function will return an error.
+</I>&gt;<i>
+</I>&gt;<i> I hope all this makes sense.  Maybe I should just write the code, as code
+</I>&gt;<i> sometimes speaks louder then words! :)
+</I>&gt;<i>
+</I>&gt;<i> Mike
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081118/bd59e35c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081118/bd59e35c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000097.html">[eLua-dev] I2C Platform interface suggestion.
+</A></li>
+	<LI>Next message: <A HREF="000099.html">[eLua-dev] I2C Platform interface suggestion.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#98">[ date ]</a>
+              <a href="thread.html#98">[ thread ]</a>
+              <a href="subject.html#98">[ subject ]</a>
+              <a href="author.html#98">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Flexible RAM allocation
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FFlexible_RAM_allocation%3F%3D&In-Reply-To=%3C7a959c33c4995098d6b41b8339e85b98%40mail2.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002972.html">
+   <LINK REL="Next"  HREF="002976.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Flexible RAM allocation</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FFlexible_RAM_allocation%3F%3D&In-Reply-To=%3C7a959c33c4995098d6b41b8339e85b98%40mail2.volny.cz%3E"
+       TITLE="[eLua-dev] Flexible RAM allocation">pito at volna.cz
+       </A><BR>
+    <I>Fri Nov 18 16:37:25 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002972.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+        <LI>Next message: <A HREF="002976.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2973">[ date ]</a>
+              <a href="thread.html#2973">[ thread ]</a>
+              <a href="subject.html#2973">[ subject ]</a>
+              <a href="author.html#2973">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Well, I did some effort towards this and:
+
+1. in stm32.ld I did following
+..
+MEMORY
+{
+sram (W!RX) : ORIGIN = 0x10000000, LENGTH = 64K
+/* CCMRAM (xrw) : ORIGIN = 0x20000000 , LENGTH = 128K */
+flash (RX) : ORIGIN = 0x08000000, LENGTH = 1024K
+}
+as it does not want to take RAMSYS_BASE etc. as the constant, and
+..
+end = .;
+PROVIDE( _estack = 0x10010000 ); 
+
+as I do assume it is the top of eula stack (now in CCM). 
+Also I put the new defs around the allocator.
+
+2. It compiles, it runs smaller code, but when I run my biglife I
+get:
+[Hard fault handler]
+R0 = 2001fbc0
+R1 = 2001fcd7
+R2 = 2001fcd7
+R3 = 4f
+R12 = 0
+LR = 800f653
+PC = 800f654
+PSR = 61000000
+BFAR = 2d2d0a35
+CFSR = 8600
+HFSR = 40000000
+DFSR = 8
+AFSR = 0
+
+3. when I run my sieve.lua, I get the expected results, BUT IT SHOWS
+IT IS SLOWER:
+
+-- STM32F4 Discovery kit (168MHz MCU, eLua 0.8)
+-- SYS in SRAM
+-- Sieve 256, Count: 54, 1000x Iterations elapsed: 6.261334 secs
+-- SYS in CCM:
+-- Sieve 256, Count: 54, 1000x Iterations elapsed: 6.396253 secs
+
+This is a big surprise for me, though. Bigger than neutrino's speeds
+at Grand Sasso. But not sure everything is set up properly, somebody
+else has to confirm :) ..
+P.
+
+
+-- 
+V&#353;e o vztaz&#237;ch a sexu: z pohledu &#382;en! &#268;t&#283;te www.femina.cz
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002972.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+	<LI>Next message: <A HREF="002976.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2973">[ date ]</a>
+              <a href="thread.html#2973">[ thread ]</a>
+              <a href="subject.html#2973">[ subject ]</a>
+              <a href="author.html#2973">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] at91sam7x build issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20at91sam7x%20build%20issue&In-Reply-To=%3CBLU173-W3360B062CC49A8212437C9B6BC0%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="004048.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] at91sam7x build issue</H1>
+    <B>Ashu V.</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20at91sam7x%20build%20issue&In-Reply-To=%3CBLU173-W3360B062CC49A8212437C9B6BC0%40phx.gbl%3E"
+       TITLE="[eLua-dev] at91sam7x build issue">knowlog at hotmail.com
+       </A><BR>
+    <I>Wed May  1 20:48:11 CEST 2013</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="004048.html">[eLua-dev] at91sam7x build issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4047">[ date ]</a>
+              <a href="thread.html#4047">[ thread ]</a>
+              <a href="subject.html#4047">[ subject ]</a>
+              <a href="author.html#4047">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+Started exploring eLua since last couple of weeks, this is my first post to this list.
+Here's my development host setup:Ubuntu 12.04gcc-arm-none-eabi 4.7 (2012q4)Eclipse/Juno CDT, w/Sconsolidator plugin
+Trying to build standard eLua(v9) at91sam7x port as is, using -- scons cpu=at91sam7x512 progBuild process went well, no errorsExpecting to see eLua prompt over RS232 connection, Moserial terminal on host side set to 115200, 8n1no movement there, tried sending ENTER (0D hex) that didn't cause any response from the target either.So, launched Eclipse in debug mode. First re-built the image with comp.Append(CCFLAGS = ['-g']) andcomp.Append(CCFLAGS = ['-O2','-fomit-frame-pointer']) optimization changed from -Os to O2 thinking that would be better for debugging.  Again, build process went well, no errors
+However what I noticed that was disconcerting -- &quot;platform_conf.h&quot; that included in src/main.c seems to be coming from /src/platform/sim and not /src/platform/at91sam7x I would have expected, since build messages c/p below, clearly confirm that scons recognizes it's building for at91sam7x platform. *********************************Compiling eLua ...CPU:             AT91SAM7X512Board:           SAM7-EX256Platform:        at91sam7xAllocator:       newlibBoot Mode:       standardTarget:          luaToolchain:       codesourceryROMFS mode:      verbatimVersion:         unknown*********************************   What could be wrong here? I can easily fix this one path issue, but my concern is, based on this instance, if there may be other places where wrong platform files/ settings may be pulled in(?) perhaps, causing my image to not showing eLua prompt (via RS232). I see console, terminal and related settings are enabled by default in src/platform/at91sam7x/platform_conf.h 
+Any help will be greatly appreciated. Once past this, I intent to port eLua to at91sam7s; should be easy with 7x as reference. 
+Thanks for any timely help.
+Best,Ash
+ 		 	   		  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130501/43d18be4/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130501/43d18be4/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="004048.html">[eLua-dev] at91sam7x build issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4047">[ date ]</a>
+              <a href="thread.html#4047">[ thread ]</a>
+              <a href="subject.html#4047">[ subject ]</a>
+              <a href="author.html#4047">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

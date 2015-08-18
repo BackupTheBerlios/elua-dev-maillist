@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Extending MCU memory with SPI?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Extending%20MCU%20memory%20with%20SPI%3F&In-Reply-To=%3C13AFDEA9-F176-471C-897F-FAD18E9D8274%40rowley.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003535.html">
+   <LINK REL="Next"  HREF="003537.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Extending MCU memory with SPI?</H1>
+    <B>Paul Curtis</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Extending%20MCU%20memory%20with%20SPI%3F&In-Reply-To=%3C13AFDEA9-F176-471C-897F-FAD18E9D8274%40rowley.co.uk%3E"
+       TITLE="[eLua-dev] Extending MCU memory with SPI?">plc at rowley.co.uk
+       </A><BR>
+    <I>Tue Jun  5 17:56:28 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003535.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+        <LI>Next message: <A HREF="003537.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3536">[ date ]</a>
+              <a href="thread.html#3536">[ thread ]</a>
+              <a href="subject.html#3536">[ subject ]</a>
+              <a href="author.html#3536">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 5 Jun 2012, at 13:36, Patrick wrote:
+
+&gt;<i> I know next to nothing about SPI but I was wondering if SPI memory devices might be useful for the project?
+</I>&gt;<i> 
+</I>&gt;<i> I was thinking that if SPI devices could be used to add ROM and RAM, it might allow devices that would otherwise be underspec'd to the project.
+</I>&gt;<i> 
+</I>&gt;<i> Surely this would deeply complicate bootstraping and if the access times were too slow, this would be a dead end.
+</I>
+SPI SRAM/FRAM/EEPROM/flash is a mass storage medium with the different characteristics of the underlying physical technology exposed.  SPI SRAM (like that from Microchip) or MRAM (from Cypress) is not directly addressable in C code and can't be used as a generic &quot;add more RAM or flash&quot; mechanism. (*)
+
+&gt;<i> 
+</I>&gt;<i> I am learning Kicad now and have had a simple design fabricated. Maybe I will be able to prototype some boards some day soon. If it was a sensible thing to do, i could do an experiment.
+</I>&gt;<i> 
+</I>
+This is doomed to fail if you want to add &quot;more memory&quot; that isn't treated as mass storage.
+
+(*) There are microtrollers that can use quad SPI memory as general memory, like on a PC BIOS, but these are few.
+
+-- Paul.
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003535.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+	<LI>Next message: <A HREF="003537.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3536">[ date ]</a>
+              <a href="thread.html#3536">[ thread ]</a>
+              <a href="subject.html#3536">[ subject ]</a>
+              <a href="author.html#3536">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Nolua project proposal, good idea?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3CAANLkTik0ZSJ6VONf2VZRadFEbo%2BnOQH1UTC%2B4GzDokyJ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001903.html">
+   <LINK REL="Next"  HREF="001904.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Nolua project proposal, good idea?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3CAANLkTik0ZSJ6VONf2VZRadFEbo%2BnOQH1UTC%2B4GzDokyJ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Nolua project proposal, good idea?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jan 24 14:27:33 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001903.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+        <LI>Next message: <A HREF="001904.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1905">[ date ]</a>
+              <a href="thread.html#1905">[ thread ]</a>
+              <a href="subject.html#1905">[ subject ]</a>
+              <a href="author.html#1905">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jan 24, 2011 at 12:10 AM, Patrick Mc(avery
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">spell_gooder_now at spellingbeewinnars.org</A>&gt; wrote:
+&gt;<i> Hi James
+</I>&gt;<i>
+</I>&gt;<i> Thanks for offering direction on this.
+</I>&gt;<i>
+</I>&gt;<i> It seems like the response to this is luke warm at best, I wonder if my idea
+</I>&gt;<i> is based on faulty principles.
+</I>
+Don't let anybody (me included) discourage you. Just because me or
+others don't find this a good idea it doesn't mean it actually isn't a
+good idea :) If you'd like to work on something like this do it
+anyway. After all results are all that matters, so if you get good
+results you'll be able to prove your detractors wrong :) Just for the
+record I don't think the idea is bad, just strange in an interesting
+(but not very useful) way.
+
+&gt;<i> I know these benchmarks are not always accurate but according to this:
+</I>&gt;<i> <A HREF="http://shootout.alioth.debian.org/u32/which-programming-languages-are-fastest.php">http://shootout.alioth.debian.org/u32/which-programming-languages-are-fastest.php</A>
+</I>&gt;<i>
+</I>&gt;<i> Vanilla Lua is about 31X slower then C, which in itself does not make total
+</I>&gt;<i> sense as LuaJit is supposed to be 2X to 4X faster then Lua but is ranked on
+</I>&gt;<i> this list as only 2X slower then C, which ought to make it 15X faster then
+</I>&gt;<i> Lua.
+</I>
+Welcome to the wonderful world of
+benchmarks-which-many-times-aren't-relevant-in-the-real-world :)
+
+&gt;<i> Having said all this I would have expected that removing Lua from a
+</I>&gt;<i> final deployment would have speed things up at least 2X and offered a
+</I>&gt;<i> similar reduction in memory allow for the final program to be loaded on
+</I>&gt;<i> reduced hardware and in turn saving costs.
+</I>
+That actually makes sense. Eliminating the interpreter inner loop
+might have an actual (and observable) performance impact.
+
+&gt;<i> I have not done much with serialization but I was thinking about serializing
+</I>&gt;<i> the L state struct and trying to reload it back without including the lua
+</I>&gt;<i> files.
+</I>
+I can't say that I understood this part very well, but why don't you
+start with something like lua2c (mentioned on my previous e-mail) and
+build from there? It does exactly what you want: it turns Lua code
+into C code. And it doesn't require any modifications to Lua itself.
+If you're satisfied with the results you can work from there, removing
+the parser (the Lua distribution already has an example on how to do
+this) and maybe the bytecode interpreter and so on (note though that
+you'll have some issues if you do this, for example 'loadstring' won't
+work anymore). You don't have to start with modifying Lua itself. I
+can tell you this can become quite a bit challenging (especially
+something like modifying the Lua state structure which touches almost
+every part of the code).
+
+&gt;<i>I am not even sure if this would work at all but if it did it might
+</I>&gt;<i> give me some idea of the savings of just having what is contained in L which
+</I>&gt;<i> I am assuming is not all of Lua itself but just some function pointers, the
+</I>&gt;<i> API stack and a registry, enough to make the C API work.
+</I>&gt;<i>
+</I>&gt;<i> If this is all false could you rescue me from myself?
+</I>
+I don't know if modifying L is the first thing to think about.
+Depending on what you'll end up removing from standard Lua you might
+be able to come down with a stripped down version of L, although I
+doubt that this will have a significant impact. Understanding what
+parts of code you can remove/make smaller, on the other hand, might
+make a big difference and it might also be easier to implement.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001903.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+	<LI>Next message: <A HREF="001904.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1905">[ date ]</a>
+              <a href="thread.html#1905">[ thread ]</a>
+              <a href="subject.html#1905">[ subject ]</a>
+              <a href="author.html#1905">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

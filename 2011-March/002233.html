@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] [eLua-svn] error while building elua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BeLua-svn%5D%20error%20while%20building%20elua&In-Reply-To=%3CAANLkTi%3DdNgO7uNPeLb2hr9gJ7pQCjn-2YDZ_VzG3g4wN%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002232.html">
+   <LINK REL="Next"  HREF="002234.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] [eLua-svn] error while building elua</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BeLua-svn%5D%20error%20while%20building%20elua&In-Reply-To=%3CAANLkTi%3DdNgO7uNPeLb2hr9gJ7pQCjn-2YDZ_VzG3g4wN%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] [eLua-svn] error while building elua">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Mar 28 19:11:49 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002232.html">[eLua-dev] [eLua-svn] error while building elua
+</A></li>
+        <LI>Next message: <A HREF="002234.html">[eLua-dev] [eLua-svn] error while building elua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2233">[ date ]</a>
+              <a href="thread.html#2233">[ thread ]</a>
+              <a href="subject.html#2233">[ subject ]</a>
+              <a href="author.html#2233">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Could you perhaps check the version of the compiler in your path,
+maybe you have more than one and it's picking up a different one
+that's missing that header:
+ arm-none-eabi-gcc --version
+
+For the latest binary release of G++ Lite on Linux, I get:
+arm-none-eabi-gcc (Sourcery G++ Lite 2010.09-51) 4.5.1
+Copyright (C) 2010 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+And the scons incantation you listed works to build an image for me with that.
+
+On Mon, Mar 28, 2011 at 11:37 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Mar 28, 2011 at 7:31 PM, rogerb &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rjb at ripnet.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, 28 Mar 2011 19:29:07 +0300
+</I>&gt;&gt;<i> Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; On Mon, Mar 28, 2011 at 7:27 PM, rogerb &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rjb at ripnet.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &gt; On Mon, 28 Mar 2011 19:22:05 +0300
+</I>&gt;&gt;<i> &gt; &gt; Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; Hi,
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; On Mon, Mar 28, 2011 at 6:48 PM, rogerb &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rjb at ripnet.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; &gt; &#160; &#160; &#160; &#160;I'm getting this error
+</I>&gt;&gt;<i> &gt; &gt; &gt; &gt; inc/newlib/devman.h:7:19: fatal error: reent.h: No such file or
+</I>&gt;&gt;<i> &gt; &gt; &gt; &gt; directory compilation terminated.
+</I>&gt;&gt;<i> &gt; &gt; &gt; &gt; board=ET-STM32
+</I>&gt;&gt;<i> &gt; &gt; &gt; &gt; toolchain=codesourcer 10-9
+</I>&gt;&gt;<i> &gt; &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; What is &quot;10-9&quot;? What version of codesourcery are you using?
+</I>&gt;&gt;<i> &gt; &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; &gt; Thanks,
+</I>&gt;&gt;<i> &gt; &gt; &gt; Bogdan
+</I>&gt;&gt;<i> &gt; &gt; The last release Sept 2010
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; What is your exact command line ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> scons board=ET-STM32 toolchain=codesourcery allocator=simple prog
+</I>&gt;<i>
+</I>&gt;<i> I cannot reproduce this. Try to reinstall your toolchain.
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002232.html">[eLua-dev] [eLua-svn] error while building elua
+</A></li>
+	<LI>Next message: <A HREF="002234.html">[eLua-dev] [eLua-svn] error while building elua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2233">[ date ]</a>
+              <a href="thread.html#2233">[ thread ]</a>
+              <a href="subject.html#2233">[ subject ]</a>
+              <a href="author.html#2233">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

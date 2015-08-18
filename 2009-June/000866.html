@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3CEMEWEMEW2_DELIMl5LDg9493a546ea4564ad45fa5af%2C%0A%09jbsnyder%40fanplastic.org%2C%2084F8EF40-85F5-48E1-9924-7B4%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000865.html">
+   <LINK REL="Next"  HREF="000869.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3CEMEWEMEW2_DELIMl5LDg9493a546ea4564ad45fa5af%2C%0A%09jbsnyder%40fanplastic.org%2C%2084F8EF40-85F5-48E1-9924-7B4%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jun 22 20:42:15 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000865.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="000869.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#866">[ date ]</a>
+              <a href="thread.html#866">[ thread ]</a>
+              <a href="subject.html#866">[ subject ]</a>
+              <a href="author.html#866">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This is true, however I think the non-custom parts actually go a  
+pretty good distance towards what we're after.  Many of the chips on  
+these devel boards are kind-of &quot;kitchen sink&quot; chips that have way more  
+peripherals than are needed for any one single application.
+
+It seems like the problem is that we're asking for something that's  
+even a bit more general, but not that much more.  Since these general  
+parts already have most of the stuff we need and they're still not  
+much more than $10 by themselves, I think we should be able to find  
+something that meets a reasonable minimum set of peripherals, and,  
+maybe, requires one or two added external chips at the max.
+
+It might be a good idea to start by speccing out some sort of common  
+set of peripheral needs that would be satisfactory for a Lua stamp,  
+and then go from there?
+
+Here's what I, personally, would like:
+- somewhere near 40 pins out, most/all of which can be used for GPIO,  
+or configured for various peripherals
+- output pins are dip, compatible with standard-sized breadboards
+- 8+ A/D channels (10-bit, or 12-bit if possible)
+- 2+ D/A (10 or 12 bit)
+- Ethernet w/ PHY  or CAN
+- 2+ USART
+- 2+ I2C
+- can be powered over USB
+- 64+K of SRAM
+- 512+ K of Flash
+- optionally powered and programmed over a USB link
+
+I'd be happy with more, but I think this should work for a wide range  
+of applications.  My first inclination if any one particular thing  
+could be added would be: as much RAM as possible.
+
+-jsnyder
+
+On Jun 22, 2009, at 1:05 PM, Dado Sutter wrote:
+
+&gt;<i> Thank you Louie,
+</I>&gt;<i>    The truth, and I think you made it very clear in your message, is  
+</I>&gt;<i> that that chips are made to profitable targeted applications and not  
+</I>&gt;<i> to fullfill our dreams on a general-purpose complete and cheap  
+</I>&gt;<i> platform.
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Jun 22, 2009 at 12:21, Louis Mamakos &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">louie at transsys.com</A>&gt;  
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;<i> On Jun 22, 2009, at 10:34 AM, John Hind wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi Dado, you had me googling &#8220;gronwup embedded environment&#8221; before  
+</I>&gt;&gt;<i> realising it was a typo!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> My posting was more born of frustration that the ARM  
+</I>&gt;&gt;<i> microcontroller industry seems to have advanced so little in the  
+</I>&gt;&gt;<i> last six months compared to the rate the X86 market moves on. I was  
+</I>&gt;&gt;<i> really hoping someone would point me at some hope the next six  
+</I>&gt;&gt;<i> months would bring me what I was looking for. I do not want to give  
+</I>&gt;&gt;<i> up on distributed processing architectures yet, but it is hard when  
+</I>&gt;&gt;<i> just one processing node ends up nearly as expensive as a central  
+</I>&gt;&gt;<i> machine capable of handling the entire requirement!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It continues to baffle me that the industry does not get the market  
+</I>&gt;&gt;<i> for high-functionality, highly integrated, low pin-count devices &#8211;  
+</I>&gt;&gt;<i> this seems so obvious for intelligent sensors and actuators. Even  
+</I>&gt;&gt;<i> in the 8-bit field, Microchip makes lovely 6- and 8- pin chips  
+</I>&gt;&gt;<i> ideal for embedding in, for example, a single limit switch, but  
+</I>&gt;&gt;<i> they have no serial comms capability! You are up to 16 pin devices  
+</I>&gt;&gt;<i> before that starts to appear. In the ARM market, large on-chip  
+</I>&gt;&gt;<i> memory seems to go hand in hand with high pin-count and therefore  
+</I>&gt;&gt;<i> complex and expensive packages and PCBs.
+</I>&gt;<i>
+</I>&gt;<i> In the embedded space, parts get built to support specific  
+</I>&gt;<i> (hopefully volume) applications.  This is why you might not see  
+</I>&gt;<i> parts with a large number of on-chip peripherals, or lots of memory,  
+</I>&gt;<i> etc.  In a previous professional gig, we built VoIP devices that  
+</I>&gt;<i> shipped in moderate volume (1M-2M units/year).  This is a nice  
+</I>&gt;<i> &quot;sweet spot&quot; for a part manufacturer who would build a device  
+</I>&gt;<i> targeted to that application which also happens to be price  
+</I>&gt;<i> sensitive.  You don't want to ship parts out with unused peripherals  
+</I>&gt;<i> or lots of extra memory because an extra $2 of cost per unit turns  
+</I>&gt;<i> into a pretty noticeable numbers at 1,000,000 units shipped.
+</I>&gt;<i>
+</I>&gt;<i> If you're only talking about building a few hundred units, then the  
+</I>&gt;<i> extra cost isn't really as much of a consideration, especially when  
+</I>&gt;<i> you might be able to reduce the one-time engineering expense by  
+</I>&gt;<i> optimizing time spent vs. &quot;extra&quot; hardware.
+</I>&gt;<i>
+</I>&gt;<i> I think that Marvell is building some interesting  higher-end parts,  
+</I>&gt;<i> with perhaps a lack of GPIO I/O, A/D, etc. capability but with  
+</I>&gt;<i> networking, etc.  Otherwise, you're looking to repurpose devices  
+</I>&gt;<i> built for some targeted applications.
+</I>&gt;<i>
+</I>&gt;<i> louie
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000865.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="000869.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#866">[ date ]</a>
+              <a href="thread.html#866">[ thread ]</a>
+              <a href="subject.html#866">[ subject ]</a>
+              <a href="author.html#866">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

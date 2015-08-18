@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] SVN access to eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20SVN%20access%20to%20eLua&In-Reply-To=%3C49DE3A25.5040207%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000754.html">
+   <LINK REL="Next"  HREF="000752.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] SVN access to eLua</H1>
+    <B>Mike Thompson</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20SVN%20access%20to%20eLua&In-Reply-To=%3C49DE3A25.5040207%40gmail.com%3E"
+       TITLE="[eLua-dev] SVN access to eLua">mpthompson at gmail.com
+       </A><BR>
+    <I>Thu Apr  9 20:10:45 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000754.html">[eLua-dev] SVN access to eLua
+</A></li>
+        <LI>Next message: <A HREF="000752.html">[eLua-dev]  eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#761">[ date ]</a>
+              <a href="thread.html#761">[ thread ]</a>
+              <a href="subject.html#761">[ subject ]</a>
+              <a href="author.html#761">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Bogdan Marinescu wrote:
+&gt;<i> 
+</I>&gt;<i>     The code is split into two parts -- the top level file system code is
+</I>&gt;<i>     fairly generic and the bottom level code in a separate file which deals
+</I>&gt;<i>     directly with the AT91 embedded flash controller.  The code is really
+</I>&gt;<i>     green (just written a few days ago) so there is no urgent need to get it
+</I>&gt;<i>     in or anything.  I'll post a link to the files where others can examine
+</I>&gt;<i>     them (and make suggestions).  Over time, if others think the file system
+</I>&gt;<i>     would be useful it can be integrated in a way that makes it fairly
+</I>&gt;<i>     portable between platforms that may implement embedded nand flash memory
+</I>&gt;<i>     in different ways.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Excellent, this is exactly what we're looking for.
+</I>
+To make this discussion a little less theoretical, the code for my eLua 
+file system for embedded flash controller and NAND flash on the AT91 Arm 
+chips is included in the link below:
+
+<A HREF="http://home.comcast.net/~michael.p.thompson/elua/elua_efcfs.zip">http://home.comcast.net/~michael.p.thompson/elua/elua_efcfs.zip</A>
+
+This is something I wrote out of necessity fairly quickly after reading 
+about how other NAND file systems such as YAFFs work at a theoretical 
+level.  The top level portion in the file 'efcfs.c' implements the file 
+system and calls the five functions in the lower level file 'efcio.c' 
+which in turn use the efc/flashd library calls provided by Atmel for the 
+AT91 Arm MCUs (that code is not included in the zip file above).
+
+In a nutshell, the driver works as follows.  It uses the existing linker 
+symbols _efixed, _erelocate and _srelocate to determine the unused 
+portion of on-board flash memory.  These pages should be initialized to 
+all 0xFF -- something I do by adding the '--pad-to 0x00140000 --gap-fill 
+0xff' options to the arm-elf-objcopy command that creates the final 
+binary from the elf image.  For each 256 byte flash page I reserve 12 
+bytes for page usage including the page sequence, file id, file block 
+and file block size information -- 244 bytes for file data.  Writes to a 
+file handle are buffered in SRAM until the block needs to be flushed to 
+a page in flash.  Algorithms then kick in make sure that the write 
+occurs in a round robin fashion to the underlying pages in flash memory 
+so pages get used evenly.
+
+One aspect of this file system is that it currently exercises flash wear 
+leveling to the dynamic (unused) portion of the file system only -- not 
+to the static portion of the file system.  This means that if a file 
+consumes 50% of the file system only the pages in the other 50% of file 
+system be recycled in a round robin manner as other files are written 
+and deleted.  Changing things so that both the static and dynamic parts 
+of the file system are wear leveled at the cost of some additional I/O 
+shouldn't be hard, but I just haven't done it yet.
+
+Also, unlike other NAND file systems such as YAFFS, this file system 
+consumes very little SRAM overhead other than the required page buffers. 
+  Instead of keeping file system booking structures in SRAM my functions 
+simply scan the addressed NAND to determine the next free page to write 
+and such.  This doesn't make it fast, but with the limited flash on most 
+Arm processors making only a few hundred pages (128K to 256K typically) 
+at most available to the file system it seems plenty fast enough. 
+Finally, the file system only supports a root level directory and 
+filenames are limited to 32 characters with null termination (this can 
+be changed easily in a #define).
+
+I'm not familiar with how flash works on non-AT91SAM7 Arm processors, 
+but hopefully just changes to 'efcio.c' would be needed to support other 
+families of Arm processors with on-board flash.  External NAND chips 
+could possibly be supported, but that is beyond the scope of the 
+intentions for this simple file system.  In that case, YAFFs would be 
+much more suited as it covers error correction and will work with the 
+out-of-band data on each flash page.
+
+This code is pretty green right now and I would love to have feedback on 
+improvements that could be made.
+
+Mike Thompson
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000754.html">[eLua-dev] SVN access to eLua
+</A></li>
+	<LI>Next message: <A HREF="000752.html">[eLua-dev]  eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#761">[ date ]</a>
+              <a href="thread.html#761">[ thread ]</a>
+              <a href="subject.html#761">[ subject ]</a>
+              <a href="author.html#761">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

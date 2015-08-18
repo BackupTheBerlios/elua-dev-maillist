@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Yagarto vs Sourcery
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FYagarto_vs_Sourcery%3F%3D&In-Reply-To=%3C1f8c98bbc96106fb3f7acea1f21a1b8a%40mail3.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003642.html">
+   <LINK REL="Next"  HREF="003644.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Yagarto vs Sourcery</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FYagarto_vs_Sourcery%3F%3D&In-Reply-To=%3C1f8c98bbc96106fb3f7acea1f21a1b8a%40mail3.volny.cz%3E"
+       TITLE="[eLua-dev] Yagarto vs Sourcery">pito at volna.cz
+       </A><BR>
+    <I>Fri Jun 29 12:44:44 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003642.html">[eLua-dev] Yagarto vs Sourcery
+</A></li>
+        <LI>Next message: <A HREF="003644.html">[eLua-dev] Yagarto vs Sourcery
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3643">[ date ]</a>
+              <a href="thread.html#3643">[ thread ]</a>
+              <a href="subject.html#3643">[ subject ]</a>
+              <a href="author.html#3643">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hmm, I compiled the stm32f4discovery &quot;mp3 demo&quot; (see chibios) with
+Sourcery as well with Yagarto and it worked (it reads mp3 files from
+an sdcard)...p.
+
+----- P&#366;VODN&#205; ZPR&#193;VA -----
+Od: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+Komu: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+P&#345;edm&#283;t: Re: [eLua-dev] Yagarto vs Sourcery
+Datum: 29.6.2012 - 12:35:53
+
+&gt;<i> On Fri, Jun 29, 2012 at 1:23 PM, pito
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+</I>&gt;<i> &gt; So I replaced Yagarto (latest) with Sourcery
+</I>&gt;<i> &gt; (2011.09-69) and the
+</I>&gt;<i> &gt; &gt; stmf4disco works with the mmc fine:
+</I>&gt;<i> &gt; /mmc
+</I>&gt;<i> &gt; hanoi.lua &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;7954 bytes
+</I>&gt;<i> &gt; lifebig.lua &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;3431 bytes
+</I>&gt;<i> &gt; Total on /mmc: 11385 bytes
+</I>&gt;<i> &gt; eLua# cat /mmc/lifebig.lua
+</I>&gt;<i> &gt; -- life1.lua
+</I>&gt;<i> &gt; -- eLua version by Bogdan Marinescu,
+</I>&gt;<i> &gt; www.eluaproject.net
+</I>&gt;<i> &gt; &gt; -- original by..
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; So there is still an issue with Yagarto. I've
+</I>&gt;<i> &gt; used the
+</I>&gt;<i> &gt; &gt; toolchain=codesourcery with Yagarto so maybe
+</I>&gt;<i> &gt; there is a difference
+</I>&gt;<i> &gt; &gt; in compiler settings to be considered (see map
+</I>&gt;<i> &gt; files diff)..
+</I>&gt;<i> &gt; &gt; Enclosed pls find zip with both map files.
+</I>&gt;<i> 
+</I>&gt;<i> Then the problem is probably similar to what I've
+</I>&gt;<i> encounter a while
+</I>&gt;<i> ago with Yagarto. I don't remember all the details
+</I>&gt;<i> now, but basically
+</I>&gt;<i> Yagarto uses the _open_r and related functions in
+</I>&gt;<i> a different way, so
+</I>&gt;<i> our src/newlib/stubs.c file is mostly useless.
+</I>&gt;<i> This means that we
+</I>&gt;<i> can't do any file I/O from eLua with Yagarto (&quot;ls&quot;
+</I>&gt;<i> works because it's
+</I>&gt;<i> implemented in eLua). We could probably find a fix
+</I>&gt;<i> for this if we
+</I>&gt;<i> really tried :)
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> 
+</I>&gt;<i> &gt; p.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; - - Reklama - - - - - - - - - - - - - -
+</I>&gt;<i> &gt; Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice,
+</I>&gt;<i> &gt; diplomky... V&#353;e o z&#225;v&#283;ru
+</I>&gt;<i> &gt; &gt; studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te na
+</I>&gt;<i> &gt; port&#225;lu VOLN&#221;.cz na
+</I>&gt;<i> &gt; &gt; <A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>
+-- 
+- - Reklama - - - - - - - - - - - - - -
+Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice, diplomky... V&#353;e o z&#225;v&#283;ru
+studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te na port&#225;lu VOLN&#221;.cz na
+<A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003642.html">[eLua-dev] Yagarto vs Sourcery
+</A></li>
+	<LI>Next message: <A HREF="003644.html">[eLua-dev] Yagarto vs Sourcery
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3643">[ date ]</a>
+              <a href="thread.html#3643">[ thread ]</a>
+              <a href="subject.html#3643">[ subject ]</a>
+              <a href="author.html#3643">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

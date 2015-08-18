@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua vs Lua on RTOS
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs%20Lua%20on%20RTOS&In-Reply-To=%3C003001cbbed8%244839ec00%24d8adc400%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001926.html">
+   <LINK REL="Next"  HREF="001928.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua vs Lua on RTOS</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs%20Lua%20on%20RTOS&In-Reply-To=%3C003001cbbed8%244839ec00%24d8adc400%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] eLua vs Lua on RTOS">john.hind at zen.co.uk
+       </A><BR>
+    <I>Fri Jan 28 11:44:04 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001926.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+        <LI>Next message: <A HREF="001928.html">[eLua-dev] Moonlight
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1931">[ date ]</a>
+              <a href="thread.html#1931">[ thread ]</a>
+              <a href="subject.html#1931">[ subject ]</a>
+              <a href="author.html#1931">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE> 
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+Sent: 26 January 2011 17:02
+To: eLua Users and Development List (www.eluaproject.net)
+Subject: Re: [eLua-dev] eLua vs Lua on RTOS
+
+ 
+
+ Incidentally, I remember being very impressed that the BASIC-STAMP
+microcontroller had preemptive multitasking integrated with the
+(interpreted) Basic language, this on an 8-bit chip with only a few hundred
+*bytes* of RAM. I was able to write a really good serial comms handler for
+GPS using this, which would have been virtually impossible without. A good
+RTOS can actually save RAM by avoiding the need for large RAM buffers for
+incoming data.
+
+ 
+
+This is true in general, but probably not so much when running a virtual
+machine. A simple example for the GPS driver you mentioned ealier: take a
+serial port configured at 115200 baud. You receive a number of bytes on this
+serial port from a GPS. If you were to do this with eLua you'd have to call
+your serial interrupt handler 11520 times per second. Might be just a bit
+too much for eLua; it might or it might not be quick enough to get all the
+bytes (this is of course largely dependent on the platform and I can't make
+any estimation about the actual resources you'd need to acomplish this). Now
+imagine that you have a serial driver written in C that will call your Lua
+interrupt handler when an event happens: for example when a configurable
+number of bytes were received (like a FIFO) or when a certain character was
+received on the input stream. In our GPS case scenario we can use the second
+option: the C driver will send an interrupt when a '\n' is received (which
+ends the GPS sentence). In turn eLua will acknowledge this interrupt and
+read all the sentence (which is already stored in the C driver's buffers),
+then parse it and do whatever it needs with it. Of course the C driver is
+free to read the following GPS sentence while eLua processes the current
+sentence. Personally I find this model much more suitable for a system that
+runs around a VM and needs to handle real time data communication.
+
+ 
+
+[John Hind] Yes, a well designed com port driver can provide for the most
+common and simple packet designs such as fixed length or variable length
+with a terminating control code. But even with a GPS sentence, you need to
+provide a RAM buffer for a complete sentence while a byte-by-byte approach
+only requires buffering for the data you need in the application. In my
+case, I simply slowed the baud rate down until I could handle it
+byte-by-byte - no point in transferring one update per second in a
+microsecond! Also it is hard to cope with more complex cases of the sort
+than need a state-machine parser. If you have to write specialised device
+drivers and compile an application specific image for most applications, it
+severely reduces the appeal of the virtual machine approach.
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110128/8ff91e81/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110128/8ff91e81/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001926.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+	<LI>Next message: <A HREF="001928.html">[eLua-dev] Moonlight
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1931">[ date ]</a>
+              <a href="thread.html#1931">[ thread ]</a>
+              <a href="subject.html#1931">[ subject ]</a>
+              <a href="author.html#1931">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

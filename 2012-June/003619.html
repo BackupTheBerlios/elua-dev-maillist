@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] mbed RTC module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3Fmbed_RTC_module%3F%3D&In-Reply-To=%3Cd94a9d8f6731edd0eb08f47870293ed9%40mail1.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003618.html">
+   <LINK REL="Next"  HREF="003620.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] mbed RTC module</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3Fmbed_RTC_module%3F%3D&In-Reply-To=%3Cd94a9d8f6731edd0eb08f47870293ed9%40mail1.volny.cz%3E"
+       TITLE="[eLua-dev] mbed RTC module">pito at volna.cz
+       </A><BR>
+    <I>Sat Jun 23 14:52:42 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003618.html">[eLua-dev] mbed RTC module
+</A></li>
+        <LI>Next message: <A HREF="003620.html">[eLua-dev] mbed RTC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3619">[ date ]</a>
+              <a href="thread.html#3619">[ thread ]</a>
+              <a href="subject.html#3619">[ subject ]</a>
+              <a href="author.html#3619">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>from wikipedia:
+...In some newer operating systems, time_t has been widened to 64
+bits. In the negative direction, this goes back more than twenty
+times the age of the universe and in the positive direction for
+approximately 293 billion years...
+Let eLua be new!
+
+
+
+----- P&#366;VODN&#205; ZPR&#193;VA -----
+Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>,
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+P&#345;edm&#283;t: Re: [eLua-dev] mbed RTC module
+Datum: 23.6.2012 - 14:26:50
+
+&gt;<i> I think there is only one unix time in the unix
+</I>&gt;<i> epoch :)
+</I>&gt;<i> Moreover, you need only one eLua number to store
+</I>&gt;<i> the whole stuff -
+</I>&gt;<i> and - while we have a lot of spare bits within the
+</I>&gt;<i> number we may
+</I>&gt;<i> have a tick timer with better resolution as 1 sec.
+</I>&gt;<i> So internally - unix time - and the presentation
+</I>&gt;<i> level done via
+</I>&gt;<i> simple conversion routines if required. The only
+</I>&gt;<i> issue I see is 2038
+</I>&gt;<i> - but I am in doubt we will deal with eLua at that
+</I>&gt;<i> time :) (nono,
+</I>&gt;<i> just kidding - we will!).p.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;Bogdan Marinescu&quot;
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> Komu: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] mbed RTC module
+</I>&gt;<i> Datum: 23.6.2012 - 14:18:18
+</I>&gt;<i> 
+</I>&gt;<i> &gt; On Sat, Jun 23, 2012 at 2:54 PM, pito
+</I>&gt;<i> &gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+</I>&gt;<i> &gt; &gt;&gt; yyyy/mm/dd, simply because it's very easy
+</I>&gt;<i> &gt; &gt;&gt; (even
+</I>&gt;<i> &gt; &gt;&gt; &gt; &gt;&gt; natural) to order
+</I>&gt;<i> &gt; &gt;&gt; dates written in this format.
+</I>&gt;<i> &gt; &gt; Or you may use unix time :)
+</I>&gt;<i> &gt; &gt; Written on 1340452352
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; That's much hader to read, unfortunately. Plus,
+</I>&gt;<i> &gt; there is the epoch
+</I>&gt;<i> &gt; problem. That number is the time that has passed
+</I>&gt;<i> &gt; since a moment in the
+</I>&gt;<i> &gt; past, called &quot;epoch&quot;. Not all epoch dates are
+</I>&gt;<i> &gt; created equal:
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; <A HREF="http://en.wikipedia.org/wiki/Epoch_%28reference_date%29#Notable_epoch_dates_in_computing">http://en.wikipedia.org/wiki/Epoch_%28reference_date%29#Notable_epoch_dates_in_computing</A>
+</I>&gt;<i> &gt; &gt; &gt; &gt; &gt; 
+</I>&gt;<i> &gt; This can easily lead to confusion.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; &gt; p.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; --
+</I>&gt;<i> &gt; &gt; - - Reklama - - - - - - - - - - - - - -
+</I>&gt;<i> &gt; &gt; Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice,
+</I>&gt;<i> &gt; &gt; diplomky... V&#353;e o z&#225;v&#283;ru
+</I>&gt;<i> &gt; &gt; &gt; studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te
+</I>&gt;<i> &gt; &gt; &gt; na
+</I>&gt;<i> &gt; &gt; &gt; &gt; &gt; port&#225;lu VOLN&#221;.cz na
+</I>&gt;<i> &gt; &gt; &gt; <A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> - - Reklama - - - - - - - - - - - - - -
+</I>&gt;<i> Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice, diplomky...
+</I>&gt;<i> V&#353;e o z&#225;v&#283;ru
+</I>&gt;<i> studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te na
+</I>&gt;<i> port&#225;lu VOLN&#221;.cz na
+</I>&gt;<i> <A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+-- 
+- - Reklama - - - - - - - - - - - - - -
+Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice, diplomky... V&#353;e o z&#225;v&#283;ru
+studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te na port&#225;lu VOLN&#221;.cz na
+<A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003618.html">[eLua-dev] mbed RTC module
+</A></li>
+	<LI>Next message: <A HREF="003620.html">[eLua-dev] mbed RTC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3619">[ date ]</a>
+              <a href="thread.html#3619">[ thread ]</a>
+              <a href="subject.html#3619">[ subject ]</a>
+              <a href="author.html#3619">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

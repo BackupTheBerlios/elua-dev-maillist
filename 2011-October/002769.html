@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Out-of-bounds value policy question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Out-of-bounds%20value%20policy%20question&In-Reply-To=%3CCAL4-wQp%2B%2ByvvK1X3%2BCyJDWxfF54biAFbjybS%3Dytkq9zWgXtrZA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002763.html">
+   <LINK REL="Next"  HREF="002770.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Out-of-bounds value policy question</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Out-of-bounds%20value%20policy%20question&In-Reply-To=%3CCAL4-wQp%2B%2ByvvK1X3%2BCyJDWxfF54biAFbjybS%3Dytkq9zWgXtrZA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Out-of-bounds value policy question">martinwguy at gmail.com
+       </A><BR>
+    <I>Sat Oct  8 03:47:01 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002763.html">[eLua-dev] Server maintenance
+</A></li>
+        <LI>Next message: <A HREF="002770.html">[eLua-dev] Out-of-bounds value policy question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2769">[ date ]</a>
+              <a href="thread.html#2769">[ thread ]</a>
+              <a href="subject.html#2769">[ subject ]</a>
+              <a href="author.html#2769">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi!
+  What's the eLua policy for handling things like when they set
+frequencies of 0,
+negative duty cycles, pwm frequencies of zero and so on?
+   I see that duty&gt;100 is currently set to 100, whereas bogus values
+just do random things on different platforms
+For example, on AVR32, setting an I2C frequency of zero currently
+gives a bit-size of 71.5 seconds, which just happens to be when its
+32-bit timer wraps round at 60MHz.
+
+Should we quietly set, say, zero or negative frequencies to the lowest
+possible frequency (1Hz) so that thing &quot;just work&quot;, or should we give
+a run-time error?
+
+     M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002763.html">[eLua-dev] Server maintenance
+</A></li>
+	<LI>Next message: <A HREF="002770.html">[eLua-dev] Out-of-bounds value policy question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2769">[ date ]</a>
+              <a href="thread.html#2769">[ thread ]</a>
+              <a href="subject.html#2769">[ subject ]</a>
+              <a href="author.html#2769">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

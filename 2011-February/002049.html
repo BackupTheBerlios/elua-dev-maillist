@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Fwd:  network support on avr32
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Fwd%3A%20%20network%20support%20on%20avr32&In-Reply-To=%3CAANLkTimdBi4BHGv_%2Bn1NDwCK91ACCpD6-MUsQrBNytyt%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002048.html">
+   <LINK REL="Next"  HREF="002050.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Fwd:  network support on avr32</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Fwd%3A%20%20network%20support%20on%20avr32&In-Reply-To=%3CAANLkTimdBi4BHGv_%2Bn1NDwCK91ACCpD6-MUsQrBNytyt%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Fwd:  network support on avr32">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Feb 21 15:26:43 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002048.html">[eLua-dev] network support on avr32
+</A></li>
+        <LI>Next message: <A HREF="002050.html">[eLua-dev] doc help
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2049">[ date ]</a>
+              <a href="thread.html#2049">[ thread ]</a>
+              <a href="subject.html#2049">[ subject ]</a>
+              <a href="author.html#2049">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I hate 'reply all'. Forwarding ...
+
+---------- Forwarded message ----------
+From: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+Date: Mon, Feb 21, 2011 at 4:26 PM
+Subject: Re: [eLua-dev] network support on avr32
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">raciti.nuccio at gmail.com</A>
+
+
+On Sun, Feb 20, 2011 at 2:16 PM, Nuccio Raciti &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">raciti.nuccio at gmail.com</A>&gt; wrote:
+&gt;<i> Hi Bogdan,
+</I>&gt;<i>
+</I>&gt;<i> the &quot;macb&quot; device (of the avr32) is a sophisticated hardware able to
+</I>&gt;<i> receive packets from the network directly inside a pool of buffers
+</I>&gt;<i> (through a DMA), it is also able to send a buffer (up to 2048 bytes), by
+</I>&gt;<i> automatically including CRC and padding, once the buffer is full/ready.
+</I>&gt;<i> The problem is here:
+</I>&gt;<i>
+</I>&gt;<i> static void device_driver_send()
+</I>&gt;<i> {
+</I>&gt;<i> &#160;if( uip_len &lt;= TOTAL_HEADER_LENGTH )
+</I>&gt;<i> &#160; &#160;platform_eth_send_packet( uip_buf, uip_len);
+</I>&gt;<i> &#160;else
+</I>&gt;<i> &#160;{
+</I>&gt;<i> /******************************** HERE *******************************/
+</I>&gt;<i> &#160; &#160;platform_eth_send_packet( uip_buf, TOTAL_HEADER_LENGTH);
+</I>&gt;<i> &#160; &#160;platform_eth_send_packet( ( u8* )uip_appdata, uip_len -
+</I>&gt;<i> TOTAL_HEADER_LENGTH);
+</I>&gt;<i> /********************************************************************/
+</I>&gt;<i> &#160;}
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> the platform_eth_send_packet() can't know which is the call related to
+</I>&gt;<i> the full/ready buffer.
+</I>&gt;<i>
+</I>&gt;<i> I hope I was clear :-/
+</I>
+You were clear, however I rememeber that the two calls above were
+split for a reason. uip_appdata is actually part of uip_buf:
+
+uip_appdata = &amp;uip_buf[UIP_IPTCPH_LEN + UIP_LLH_LEN] (src/uip/uip.c)
+
+so in theory all data could be sent in a single call. Actually the two
+'platform_eth_send_packets' calls above were combined in a single call
+IIRC, but for some reason this actually managed to SLOW down the stack
+(don't ask why, I don't rememebr right now :) Something that had to do
+with delayed ACKs I think). This happened quite a while ago though so
+I'm not sure anymore. Probably some simple testing could clarify it.
+I _think_ that after the split was implemented one application that
+became much more responsive was 'telnet' (with console over TCP/IP, of
+course). This can be tested easily probably.
+
+Best,
+Bogdan
+
+&gt;<i> Il giorno dom, 20/02/2011 alle 02.18 +0200, Bogdan Marinescu ha
+</I>&gt;<i> scritto:
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sat, Feb 19, 2011 at 4:10 PM, Nuccio Raciti &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">raciti.nuccio at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; Hi all,
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I just run successful the lhttpd.lua example
+</I>&gt;&gt;<i> &gt; (<A HREF="http://wiki.eluaproject.net/lhttpd">http://wiki.eluaproject.net/lhttpd</A>)
+</I>&gt;&gt;<i> &gt; on evk1100 board.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is very good news! EVK1100 is the second board to get networking
+</I>&gt;&gt;<i> support in eLua. Congratulations!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; 1- I had an annoying problem using (as template) the &quot;uip-conf.h&quot; file
+</I>&gt;&gt;<i> &gt; coming from &quot;little endian&quot; architectures, they define
+</I>&gt;&gt;<i> &gt; UIP_CONF_BYTE_ORDER = LITTLE_ENDIAN,
+</I>&gt;&gt;<i> &gt; but the LITTLE_ENDIAN (as well the BIG_ENDIAN) doesn't
+</I>&gt;&gt;<i> &gt; exist inside uip/uipopt.h they should define
+</I>&gt;&gt;<i> &gt; UIP_CONF_BYTE_ORDER = UIP_LITTLE_ENDIAN instead.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks, I'll fix this.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; 2- I need to have an additional parameter for platform_eth_send_packet()
+</I>&gt;&gt;<i> &gt; function:
+</I>&gt;&gt;<i> &gt; eg.
+</I>&gt;&gt;<i> &gt; void platform_eth_send_packet( const void* src, u32 size, u8 endframe )
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Can you elaborate on why you need the additional parameter?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002048.html">[eLua-dev] network support on avr32
+</A></li>
+	<LI>Next message: <A HREF="002050.html">[eLua-dev] doc help
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2049">[ date ]</a>
+              <a href="thread.html#2049">[ thread ]</a>
+              <a href="subject.html#2049">[ subject ]</a>
+              <a href="author.html#2049">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua net module/UIP &amp; multiple connections
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module/UIP%20%26%20multiple%20connections&In-Reply-To=%3C4E7AF567.9060007%40sallaway.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002737.html">
+   <LINK REL="Next"  HREF="002741.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua net module/UIP &amp; multiple connections</H1>
+    <B>Michael Sallaway</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module/UIP%20%26%20multiple%20connections&In-Reply-To=%3C4E7AF567.9060007%40sallaway.com%3E"
+       TITLE="[eLua-dev] eLua net module/UIP &amp; multiple connections">michael at sallaway.com
+       </A><BR>
+    <I>Thu Sep 22 10:44:23 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002737.html">[eLua-dev] Getting Started
+</A></li>
+        <LI>Next message: <A HREF="002741.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2736">[ date ]</a>
+              <a href="thread.html#2736">[ thread ]</a>
+              <a href="subject.html#2736">[ subject ]</a>
+              <a href="author.html#2736">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+I've developed a board based on an LM3S6950, and added support for it to 
+eLua -- it's basically acting as a giant ethernet-&gt;RS485 converter, with 
+different streams for each of the 3 different UARTs.
+
+I've got most of it working -- it's running eLua on the platform, I've 
+got a console, and it's run the lhttpd test server fine, so I know all 
+the base components are working properly. However, when I run my script, 
+it's not accepting connections most of the time, and when it does, it 
+doesn't process any data.
+
+I've copied the relevant parts of my script below. I'm basically using 
+the timeout specifiers to the net.accept() and net.recv() calls to poll 
+for new connections, and then poll for data on each open socket. 
+However, I'm finding that when I initiate a connection from another 
+machine (using netcat to dump a fixed packet over the network to the dev 
+board), it's only accepted about 20% of the time (guesstimate), and when 
+it is accepted, it doesn't ever process any of the data.
+
+So, my question(s) are thus: for the networking implementation, does the 
+lua script have to be waiting/blocking in the net.accept() or net.recv() 
+call to actually receive or process any data? Or does the underlying 
+network system queue data until it's requested?  If so, then does anyone 
+have any suggestions as to what may be causing my problems?
+
+Thanks for any advice or comments anyone can give!
+
+Cheers,
+Michael
+
+
+
+
+while true do
+     -- check to see if there is anyone trying to connect (port 7474, 
+and use timer 2 to timeout after 10ms)
+     local sock, rip, acceptErr = net.accept(7474, 2, 10000)
+
+     -- if we got a connection, remember it
+     if (acceptErr == net.ERR_OK) then
+         local newEntry = { socket = sock, remoteip = rip }
+         table.insert(sockets, newEntry)
+         print(&quot;Got connection on socket: &quot;, sock)
+         print(&quot;Remote ip: &quot; .. net.unpackip(rip, &quot;*s&quot;))
+     end
+
+     -- iterate through all sockets, see if there's any data, and if so, 
+update the states as appropriate
+     for i,v in ipairs(sockets) do
+         local socket = v[&quot;socket&quot;]
+         local remoteip = v[&quot;remoteip&quot;]
+         local data = { }
+
+         -- listen for 10ms (on timer 2) for up to 2048 bytes from this 
+socket
+         data, readErr = net.recv(socket, 2048, 2, 10000)
+         if (readErr == net.ERR_OK) then
+             print(&quot;received data, processing # bytes: &quot;, #data)
+             processPacket(data);
+         elseif (readErr == net.ERR_CLOSED) then
+             -- close and forget the socket
+             print(&quot;socket closed, deleting: &quot;, socket)
+             net.close(socket)
+             table.remove(sockets, i)
+
+         elseif (readErr == net.ERR_ABORTED) then
+             print(&quot;error: socket read aborted:&quot;, socket)
+
+         elseif (readErr == net.ERR_OVERFLOW) then
+             print(&quot;error: socket read overflowed: &quot;, socket)
+
+         elseif (readErr == net.ERR_TIMEDOUT or readErr == 
+net.ERR_TIMEOUT) then
+             -- typo in the API; it can be either (TIMED or TIME)OUT.
+         else
+             print(&quot;error: don't know what the read result code was! 
+socket / resultCode: &quot;, socket, readErr)
+         end
+     end
+
+     for k,v in pairs(outputPackets) do
+         -- if the outputPackets table for this stream isn't empty, and 
+the UART Tx is empty, start a packet
+         if (next(v) ~= nil) then
+             if (lm3s.uart.txEmpty(k - 1)) then
+                 print(&quot;Empty Tx for UART, will start new packet: &quot;, k-1);
+                 uartTxInterrupt(k - 1);
+             end
+         end
+     end
+
+     collectgarbage('collect')
+end
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002737.html">[eLua-dev] Getting Started
+</A></li>
+	<LI>Next message: <A HREF="002741.html">[eLua-dev] eLua net module/UIP &amp; multiple connections
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2736">[ date ]</a>
+              <a href="thread.html#2736">[ thread ]</a>
+              <a href="subject.html#2736">[ subject ]</a>
+              <a href="author.html#2736">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

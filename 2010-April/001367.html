@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Try to build net supported LM3S8962K
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Try%20to%20build%20net%20supported%20LM3S8962K&In-Reply-To=%3Cg2p33644d3c1004271543w39bb4690h8fbd826b05517980%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001339.html">
+   <LINK REL="Next"  HREF="001340.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Try to build net supported LM3S8962K</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Try%20to%20build%20net%20supported%20LM3S8962K&In-Reply-To=%3Cg2p33644d3c1004271543w39bb4690h8fbd826b05517980%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Try to build net supported LM3S8962K">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Apr 28 00:43:10 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001339.html">[eLua-dev] Try to build net supported LM3S8962K
+</A></li>
+        <LI>Next message: <A HREF="001340.html">[eLua-dev] flash without proprietary IDE?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1367">[ date ]</a>
+              <a href="thread.html#1367">[ thread ]</a>
+              <a href="subject.html#1367">[ subject ]</a>
+              <a href="author.html#1367">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I think something like this will do it.  I'm not going to commit this
+though until some macros are made to cut down on all the ifdefs that
+are cropping up above LUA_PLATFORM_LIBS_ROM definition for the various
+lines though.
+
+The problem is that the term module requires some of the functions in
+the common term library.  The patch wraps the functions in
+modules/term.c in an ifdef checking for BUILD_TERM.  Also, the term
+entry for LUA_PLATFORM_LIBS_ROM is made optional, also dependent on
+BUILD_TERM.
+
+On Mon, Apr 19, 2010 at 2:59 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> Thanks for the report, I'll look into it .
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Apr 19, 2010 at 10:53 AM, Tze-Chien Chu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tzechienchu at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dear sir
+</I>&gt;&gt;<i> I try to build a net support version of &#160;LM3S8962K binary file and get the
+</I>&gt;&gt;<i> following error
+</I>&gt;&gt;<i> I change the LM3S's platform_conf.h componets define to following setting
+</I>&gt;&gt;<i> //#define BUILD_XMODEM
+</I>&gt;&gt;<i> #define BUILD_SHELL
+</I>&gt;&gt;<i> #define BUILD_ROMFS
+</I>&gt;&gt;<i> #define BUILD_MMCFS
+</I>&gt;&gt;<i> //#define BUILD_TERM
+</I>&gt;&gt;<i> #define BUILD_UIP
+</I>&gt;&gt;<i> #define BUILD_DHCPC
+</I>&gt;&gt;<i> #define BUILD_DNS
+</I>&gt;&gt;<i> //#define BUILD_CON_GENERIC
+</I>&gt;&gt;<i> #define BUILD_ADC
+</I>&gt;&gt;<i> #define BUILD_RPC
+</I>&gt;&gt;<i> #define BUILD_CON_TCP
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> then I rebuild the binary
+</I>&gt;&gt;<i> But the compiler get error about undefined reference to 'term_getch'
+</I>&gt;&gt;<i> 'term_get_cy' .....
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> any idea ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> View this message in context:
+</I>&gt;&gt;<i> <A HREF="http://n2.nabble.com/Try-to-build-net-supported-LM3S8962K-tp4923979p4923979.html">http://n2.nabble.com/Try-to-build-net-supported-LM3S8962K-tp4923979p4923979.html</A>
+</I>&gt;&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Simple-temporary-fix-for-term-issue-reported-by-TC-C.patch
+Type: application/octet-stream
+Size: 2761 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100427/536b9319/attachment.obj">https://lists.berlios.de/pipermail/elua-dev/attachments/20100427/536b9319/attachment.obj</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001339.html">[eLua-dev] Try to build net supported LM3S8962K
+</A></li>
+	<LI>Next message: <A HREF="001340.html">[eLua-dev] flash without proprietary IDE?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1367">[ date ]</a>
+              <a href="thread.html#1367">[ thread ]</a>
+              <a href="subject.html#1367">[ subject ]</a>
+              <a href="author.html#1367">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

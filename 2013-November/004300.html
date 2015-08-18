@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] assembling commands for SPI
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20assembling%20commands%20for%20SPI&In-Reply-To=%3C528E598C.20408%40rdg.cc%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004299.html">
+   <LINK REL="Next"  HREF="004301.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] assembling commands for SPI</H1>
+    <B>Richard Graham</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20assembling%20commands%20for%20SPI&In-Reply-To=%3C528E598C.20408%40rdg.cc%3E"
+       TITLE="[eLua-dev] assembling commands for SPI">richard at rdg.cc
+       </A><BR>
+    <I>Thu Nov 21 20:05:48 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004299.html">[eLua-dev] assembling commands for SPI
+</A></li>
+        <LI>Next message: <A HREF="004301.html">[eLua-dev] assembling commands for SPI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4300">[ date ]</a>
+              <a href="thread.html#4300">[ thread ]</a>
+              <a href="subject.html#4300">[ subject ]</a>
+              <a href="author.html#4300">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Thank you for your replies and the documentation. Looks like a useful
+package.
+
+Regarding using the luarpc for local development; I was able to build it
+fine and use the bit and pack modules; however I noticed it doesn't load
+any of the lua modules such as string and math. Is this by design? It
+seems the module code is compiled but can't be used. Anyway, I found I
+was able to hack my desktop_conf.h so that these are loaded and now it
+works fine. I can't imagine this is the best way to do it though.
+
+Thanks,
+--
+Richard Graham
+
+On 11/20/2013 11:13 PM, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A> wrote:
+&gt;<i> 
+</I>&gt;<i> For what it's worth, I drafted a little documentation for bitarray a while ago.
+</I>&gt;<i> (Not much more extensive than James' list below.)
+</I>&gt;<i> I just pushed it to my eLua repository, <A HREF="http://github.com/ecdr/elua">http://github.com/ecdr/elua</A>
+</I>&gt;<i> it is in the BitarrayDoc branch.
+</I>&gt;<i> (I have not tested it yet, i.e. have not set up document building tools to see
+</I>&gt;<i> if it will generate web page correctly.  Also haven't done spell check.)
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;&gt;<i> ----- Original Message -----
+</I>&gt;&gt;<i> From: James Snyder
+</I>&gt;&gt;<i> Sent: 11/19/13 03:40 PM
+</I>&gt;&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;&gt;<i> Subject: Re: [eLua-dev] assembling commands for SPI
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Nov 19, 2013 at 4:28 PM, Richard Graham &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks for that. I think I should be able to manage with just the bit
+</I>&gt;&gt;&gt;<i> module.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I didn't see the bitarrays module before. Looks like it might work,
+</I>&gt;&gt;&gt;<i> though I couldn't find any documentation about this and the source is
+</I>&gt;&gt;&gt;<i> not that easy to read at a quick look. Presumably this module is used
+</I>&gt;&gt;&gt;<i> internally somewhere?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Not sure if we use it internally anywhere, it may just not have gotten
+</I>&gt;&gt;<i> documented. Here's one example of its usage to take a binary image put it
+</I>&gt;&gt;<i> in a bit array and then rotate it to be shown on an OLED display:
+</I>&gt;&gt;<i> <A HREF="http://wiki.eluaproject.net/Logo">http://wiki.eluaproject.net/Logo</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Here's a first pass at the API just from skimming the source a bit:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> arrays are created either with a specific capacity, a source byte array
+</I>&gt;&gt;<i> (string) or an existing Lua array, packed into a uniform element size array
+</I>&gt;&gt;<i> // Lua: array = bitarray.new( capacity, [element_size_bits], [fill] ), or
+</I>&gt;&gt;<i> // array = bitarray.new( &quot;string&quot;, [element_size_bits] ), or
+</I>&gt;&gt;<i> // array = bitarray.new( lua_array, [element_size_bits] )
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> fields can be indexed like a lua table:
+</I>&gt;&gt;<i> // Lua: value = array[ idx ]
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> can be assigned like a table:
+</I>&gt;&gt;<i> // Lua: array[ key ] = value
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> get length similar to how one would do so for a string:
+</I>&gt;&gt;<i> // Lua : size = #array
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> arrays can be converted into a string. not sure what raw/seq means
+</I>&gt;&gt;<i> // Lua: string = bitarray.tostring( array, [&quot;raw&quot;|&quot;seq&quot;] )
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> or a table (again, not sure about raw/seq):
+</I>&gt;&gt;<i> // Lua: table = bitarray.totable( array, [&quot;raw&quot;|&quot;seq&quot;] )
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> And it looks like you can use bitarray.pairs which looks like it should
+</I>&gt;&gt;<i> behave like the built-in Lua pairs.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Another thing, I was wondering if anyone has compiled the elua modules
+</I>&gt;&gt;&gt;<i> so they can be used with lua on the desktop? I would prefer to do most
+</I>&gt;&gt;&gt;<i> of the development on the desktop but since some libraries are
+</I>&gt;&gt;&gt;<i> different, i.e. the bit and bitlib api that is not to easy.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> One quick way that should work is to build the luarpc desktop binary as
+</I>&gt;&gt;<i> described here:
+</I>&gt;&gt;<i> <A HREF="http://www.eluaproject.net/doc/master/en_using.html#rpc">http://www.eluaproject.net/doc/master/en_using.html#rpc</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If you already have the build environment for using the lua-based build
+</I>&gt;&gt;<i> system and you have compilers on your system to build native binaries you
+</I>&gt;&gt;<i> should be able to just run:
+</I>&gt;&gt;<i> lua rpc-lua.lua
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> When you run the resulting binary (luarpc) you'll get a Lua REPL and the
+</I>&gt;&gt;<i> binary should include the modules like bit/pack/bitarray.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -jsnyder
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i> 
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -- 
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> ph: (847) 448-0386
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004299.html">[eLua-dev] assembling commands for SPI
+</A></li>
+	<LI>Next message: <A HREF="004301.html">[eLua-dev] assembling commands for SPI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4300">[ date ]</a>
+              <a href="thread.html#4300">[ thread ]</a>
+              <a href="subject.html#4300">[ subject ]</a>
+              <a href="author.html#4300">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

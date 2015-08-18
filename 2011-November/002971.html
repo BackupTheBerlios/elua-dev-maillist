@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Flexible RAM allocation
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Flexible%20RAM%20allocation&In-Reply-To=%3CCANKDJfa5yrStbMj2noq7bog8MJHLyoGo4fhWi9yAhaXJjeg-SQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002970.html">
+   <LINK REL="Next"  HREF="002972.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Flexible RAM allocation</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Flexible%20RAM%20allocation&In-Reply-To=%3CCANKDJfa5yrStbMj2noq7bog8MJHLyoGo4fhWi9yAhaXJjeg-SQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Flexible RAM allocation">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Nov 18 13:14:26 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002970.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+        <LI>Next message: <A HREF="002972.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2971">[ date ]</a>
+              <a href="thread.html#2971">[ thread ]</a>
+              <a href="subject.html#2971">[ subject ]</a>
+              <a href="author.html#2971">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2011/11/18 pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+
+&gt;<i> To be more specific, for example (stm32f4) - we need to have this on
+</I>&gt;<i> one place:
+</I>&gt;<i> ..
+</I>&gt;<i> // MCU specific RAM regions defs
+</I>&gt;<i> #define CCMDATARAM_BASE   0x10000000
+</I>&gt;<i> #define CCMDATARAM_SIZE   ( 64 * 1024 )
+</I>&gt;<i> #define SRAM_BASE   0x20000000
+</I>&gt;<i> #define SRAM_SIZE   ( 128 * 1024 )
+</I>&gt;<i>
+</I>&gt;<i> // !! here we always place the system specific stuff
+</I>&gt;<i> #define RAMSYS_BASE   CCMDATARAM_BASE
+</I>&gt;<i> #define RAMSYS_SIZE   CCMDATARAM_SIZE
+</I>&gt;<i>
+</I>&gt;<i> // here are optional (slower) RAM regions
+</I>&gt;<i> #define RAM1_BASE   SRAM_BASE
+</I>&gt;<i> #define RAM1_SIZE   SRAM_SIZE
+</I>&gt;<i>
+</I>&gt;<i> // defs for the allocator
+</I>&gt;<i> #define RAMSYS_START  (void*)end
+</I>&gt;<i> #define RAMSYS_END  ( void* )( RAMSYS_BASE + RAMSYS_SIZE -
+</I>&gt;<i> STACK_SIZE_TOTAL - 1 )
+</I>&gt;<i> #define RAM1_START  (void*)(RAM1_BASE)
+</I>&gt;<i> #define RAM1_END  (void*)(RAM1_BASE + RAM1_SIZE - 1)
+</I>&gt;<i>
+</I>&gt;<i> and the allocator stuff then:
+</I>&gt;<i> ...
+</I>&gt;<i> // Allocator data: define your free memory zones here in two arrays
+</I>&gt;<i> // (start addresses and end addresses)
+</I>&gt;<i> #define MEM_START_ADDRESS       { RAMSYS_START, RAM1_START }
+</I>&gt;<i> #define MEM_END_ADDRESS         { RAMSYS_END, RAM1_END }
+</I>&gt;<i> ..
+</I>&gt;<i>
+</I>&gt;<i> The compiler must always compile the system stuff into RAMSYS_BASE
+</I>&gt;<i> region - needs to be set somewhere :).
+</I>&gt;<i>
+</I>
+That would be the linker script (src/platform/stm32/stm32.ld or whatever is
+used for STM32F4).
+
+Best,
+Bogdan
+
+
+&gt;<i> P.
+</I>&gt;<i>
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt;
+</I>&gt;<i> Komu: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> P&#345;edm&#283;t: [eLua-dev] Flexible RAM allocation
+</I>&gt;<i> Datum: 18.11.2011 - 11:59:06
+</I>&gt;<i>
+</I>&gt;<i> &gt; Hi, as the newest mcus have got more ram segments
+</I>&gt;<i> &gt; (e.g. stm32f4 has
+</I>&gt;<i> &gt; 2 ram segments) it would be interesting to tell to
+</I>&gt;<i> &gt; the allocator
+</I>&gt;<i> &gt; where to put the stack/system parts. For example:
+</I>&gt;<i> &gt; with stm32f4 the
+</I>&gt;<i> &gt; CCM memory (64kB) is fastest (0ws) so maybe we
+</I>&gt;<i> &gt; have to put there
+</I>&gt;<i> &gt; stack, heap, etc. I think this would require to
+</I>&gt;<i> &gt; have e.g.:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; #define RAMSYS_START  (void*)end
+</I>&gt;<i> &gt; #define RAMSYS_END
+</I>&gt;<i> &gt; (void*)(CCMstart+CCMSize-STACKSIZE-1)
+</I>&gt;<i> &gt; #define RAM1_START  (void*)(SRAMStart)
+</I>&gt;<i> &gt; #define RAM1_END  (void*)(SRAMStart + SRAMSize-1)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; and force the elua compiler to use
+</I>&gt;<i> &gt; RAMSYS_START/END.. to place
+</I>&gt;<i> &gt; &quot;system-like stuff&quot; where we want to have it. Is
+</I>&gt;<i> &gt; that possible?
+</I>&gt;<i> &gt; P.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; Videokurzy MS Office zdarma! Port&#225;l VOLN&#221;.cz
+</I>&gt;<i> &gt; p&#345;in&#225;&#353;&#237; online v&#253;ukov&#225;
+</I>&gt;<i> &gt; videa, kter&#225; v&#225;s rychle, n&#225;zorn&#283; a z&#225;bavnou formou
+</I>&gt;<i> &gt; nau&#269;&#237; ovl&#225;dat
+</I>&gt;<i> &gt; programy Excel, Word a PowerPoint. Seri&#225;l najdete
+</I>&gt;<i> &gt; na
+</I>&gt;<i> &gt; <A HREF="http://web.volny.cz/data/click.php?id=1293">http://web.volny.cz/data/click.php?id=1293</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> V&#353;e o vztaz&#237;ch a sexu: z pohledu &#382;en! &#268;t&#283;te www.femina.cz
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111118/95136274/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111118/95136274/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002970.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+	<LI>Next message: <A HREF="002972.html">[eLua-dev] Flexible RAM allocation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2971">[ date ]</a>
+              <a href="thread.html#2971">[ thread ]</a>
+              <a href="subject.html#2971">[ subject ]</a>
+              <a href="author.html#2971">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

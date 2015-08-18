@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Free ToolChain for CortexM3
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Free%20ToolChain%20for%20CortexM3&In-Reply-To=%3C4EBE6D19.1060001%40mailbarrier.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002920.html">
+   <LINK REL="Next"  HREF="002914.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Free ToolChain for CortexM3</H1>
+    <B>Gregor Rebel</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Free%20ToolChain%20for%20CortexM3&In-Reply-To=%3C4EBE6D19.1060001%40mailbarrier.de%3E"
+       TITLE="[eLua-dev] Free ToolChain for CortexM3">elua at mailbarrier.de
+       </A><BR>
+    <I>Sat Nov 12 13:56:57 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002920.html">[eLua-dev] How to port eLua to new platform (LPCXpresso	LPC1114)?
+</A></li>
+        <LI>Next message: <A HREF="002914.html">[eLua-dev] stm32f4DSKY - writing to mmc via xmodem issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2912">[ date ]</a>
+              <a href="thread.html#2912">[ thread ]</a>
+              <a href="subject.html#2912">[ subject ]</a>
+              <a href="author.html#2912">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I've found the GCC for Cortex M3 article on your webpage.
+( <A HREF="http://www.eluaproject.net/doc/master/en_tc_cortex.html">http://www.eluaproject.net/doc/master/en_tc_cortex.html</A>) &lt;<A HREF="http://www.eluaproject.net/doc/master/en_tc_cortex.html">http://www.eluaproject.net/doc/master/en_tc_cortex.html</A>&gt;
+
+I was bored by the fact, that no free ready to use CM3 toolchain exists for Linux.
+Therefore, I have written some scripts to automate toolchain building.
+
+One may find an assembled tarball at <A HREF="http://hlb-labor.de/cortexm3/">http://hlb-labor.de/cortexm3/</A>
+The installation can be started as follows:
+
+cd
+mkdir Source
+cd Source
+wget -c <A HREF="http://hlb-labor.de/projekte/cortexm3/ToolChain_STM32_current.tar.bz">http://hlb-labor.de/projekte/cortexm3/ToolChain_STM32_current.tar.bz</A>
+tar xjf ToolChain_STM32_current.tar.bz
+cd ToolChain_STM32/ToolChain/
+./installAll.sh
+
+
+This should download, patch, configure, compile and install some libraries and tools.
+The compiler used is currently based on binary tools from CodeSourcery, but will change to GCC soon.
+
+Installed Features:
++ ARM None EABI GCC from CodeSourcery
++ OpenOCD v0.5.0
++ Ready to compile framework with makefile providing
+    - Library FreeRTOS Multitasking Scheduler
+    - ST StandardPeripheralsLibrary
+    - Example Source LED heartbeat showing thread communication
+    - Example color LCD support for Olimex Protoboard STM32-LCD
+    - Example TCP/IP stack support (uIP) for Olimex Protoboard STM32-P107
+    - FixPoint Math Library (IQmath)
+
+I would be glad, if I could integrate eLua as an additional feature into the toolchain.
+Maybe you could test the toolchain and give me some feedbacks on it?
+
+regards,
+
+Gregor
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002920.html">[eLua-dev] How to port eLua to new platform (LPCXpresso	LPC1114)?
+</A></li>
+	<LI>Next message: <A HREF="002914.html">[eLua-dev] stm32f4DSKY - writing to mmc via xmodem issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2912">[ date ]</a>
+              <a href="thread.html#2912">[ thread ]</a>
+              <a href="subject.html#2912">[ subject ]</a>
+              <a href="author.html#2912">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

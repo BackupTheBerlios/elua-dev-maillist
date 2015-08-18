@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] reflashing board
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20reflashing%20board&In-Reply-To=%3CCAJ%3DY9Y1jAgS-jJOsryspkuiWx8hoP_6s4xBeHo32-OWWBDZPTQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003098.html">
+   <LINK REL="Next"  HREF="003100.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] reflashing board</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20reflashing%20board&In-Reply-To=%3CCAJ%3DY9Y1jAgS-jJOsryspkuiWx8hoP_6s4xBeHo32-OWWBDZPTQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] reflashing board">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sat Dec 10 22:46:18 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003098.html">[eLua-dev] reflashing board
+</A></li>
+        <LI>Next message: <A HREF="003100.html">[eLua-dev] reflashing board
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3099">[ date ]</a>
+              <a href="thread.html#3099">[ thread ]</a>
+              <a href="subject.html#3099">[ subject ]</a>
+              <a href="author.html#3099">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Dec 10, 2011 at 11:56 AM, Patrick
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">patrick at spellingbeewinnars.org</A>&gt; wrote:
+&gt;<i> Hi Everyone
+</I>&gt;<i>
+</I>&gt;<i> After not being able to participate in the project for about a year I am
+</I>&gt;<i> trying to catch up again. I have an elua image loaded on my luminary board
+</I>&gt;<i> but I can't even remember which one. It was several games that can be played
+</I>&gt;<i> if that helps.
+</I>&gt;<i>
+</I>&gt;<i> I am trying to reflash the board using the proprietary flash programmer that
+</I>&gt;<i> shipped with the board but I am getting this error:
+</I>&gt;<i>
+</I>&gt;<i> &quot;&quot;&quot; failed to synchonize baud rate with board!
+</I>&gt;<i> To program using the serial port(UART), the board must be programmed with
+</I>&gt;<i> the serial flash loader or properly configured bootloader.
+</I>&gt;<i>
+</I>&gt;<i> Luminary Micro's microcontrollers are shipped with the serial flash loader
+</I>&gt;<i> programmed in the the internal flash. [snip]
+</I>&gt;<i> &quot;&quot;&quot;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Have I done something stupid? Have I managed to overwrite the serial loader?
+</I>
+I'm not sure which might be exclusions to this or which board you
+have, but if you're using an eval kit, you're most likely connecting
+over USB and had to install some FTDI drivers
+(<A HREF="http://www.ti.com/tool/lm_ftdi_driver">http://www.ti.com/tool/lm_ftdi_driver</A>) to get a serial interface to
+the first UART?  If so, the onboard FTDI chip is set up to provide
+JTAG and a connection to the built-in first UART, and you can use the
+Flash Programmer tool to flash it:
+<A HREF="http://www.ti.com/tool/lmflashprogrammer">http://www.ti.com/tool/lmflashprogrammer</A>
+
+In this tool you can usually select the eval board you have from the
+top drop-down menu, and it should get the correct settings for
+flashing the device.
+
+Depending on which board you have, you'll probably also have a 20-pin
+JTAG connector on it that you can use for debugging other boards, so
+you can actually use your EK as a cheap ftdi-based JTAG interface for
+debugging other ARM MCUs.
+
+&gt;<i> Is there an easy solution for this? If not, I do want to get a jtag
+</I>&gt;<i> programmer and use the board under Linux, hopefully it will solve the issue.
+</I>
+You can also use OpenOCD under Linux to flash it, but the setup for
+that is a tad more complicated.  We have a guide for this, but it
+might be a bit outdated.  If you need help with this I can provide
+some instructions that at least work for the Luminary EKs I have.  I
+may try and update the guide we have in the near future as well if
+it's using an old version of OpenOCD.
+
+&gt;<i>
+</I>&gt;<i> Thanks for reading
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003098.html">[eLua-dev] reflashing board
+</A></li>
+	<LI>Next message: <A HREF="003100.html">[eLua-dev] reflashing board
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3099">[ date ]</a>
+              <a href="thread.html#3099">[ thread ]</a>
+              <a href="subject.html#3099">[ subject ]</a>
+              <a href="author.html#3099">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

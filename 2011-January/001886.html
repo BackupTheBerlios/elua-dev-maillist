@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Mizar32: Enable serial console input buffer by	default
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mizar32%3A%20Enable%20serial%20console%20input%20buffer%20by%0A%09default&In-Reply-To=%3CAANLkTinhmn9Mypy5qHc-Lbqr7-gwvZ7us1jaCoLxO6_M%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001885.html">
+   <LINK REL="Next"  HREF="001890.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Mizar32: Enable serial console input buffer by	default</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mizar32%3A%20Enable%20serial%20console%20input%20buffer%20by%0A%09default&In-Reply-To=%3CAANLkTinhmn9Mypy5qHc-Lbqr7-gwvZ7us1jaCoLxO6_M%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Mizar32: Enable serial console input buffer by	default">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sun Jan 16 19:09:59 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001885.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+        <LI>Next message: <A HREF="001890.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1886">[ date ]</a>
+              <a href="thread.html#1886">[ thread ]</a>
+              <a href="subject.html#1886">[ subject ]</a>
+              <a href="author.html#1886">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Changes commited to trunk (r885).
+
+Best,
+Bogdan
+
+On Sun, Jan 16, 2011 at 7:40 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;&gt;<i> Thanks. Here's an updated version of that patch for current svn using
+</I>&gt;&gt;<i> C interrupts
+</I>&gt;<i>
+</I>&gt;<i> Thanks. I already have a version and it's a bit different (for example
+</I>&gt;<i> you don't need the whole #defines for CON_UART_IRQ anymore) so I'll
+</I>&gt;<i> check that in.
+</I>&gt;<i>
+</I>&gt;&gt;<i> I only use optram=0 because it saves 1KB text and we have 32MB RAM
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &quot;size&quot; says
+</I>&gt;&gt;<i> &#160; text &#160; &#160;data &#160; &#160; bss &#160; &#160; dec &#160; &#160; hex filename
+</I>&gt;&gt;<i> &#160;119808 &#160; &#160;1364 &#160; &#160;1480 &#160;122652 &#160; 1df1c elua_lualong_at32uc3a0128.elf
+</I>&gt;&gt;<i> but in reality it writes 122652 bytes to the flash memory (limit 122880).
+</I>&gt;<i>
+</I>&gt;<i> That's wrong, it means that for some reason it also writes the .bss
+</I>&gt;<i> section which wastes 1480 bytes of flash. I have no idea why that
+</I>&gt;<i> happens. I don't think avr32-objcopy also copies the .bss section to
+</I>&gt;<i> the hex file, as it clearly doesn't do it if you switch its output
+</I>&gt;<i> from .hex to .bin (in which case the size of the resulting .bin is the
+</I>&gt;<i> size of .text + the size of .data which is the expected result). What
+</I>&gt;<i> tool are you using to write the image to flash ?
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001885.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+	<LI>Next message: <A HREF="001890.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1886">[ date ]</a>
+              <a href="thread.html#1886">[ thread ]</a>
+              <a href="subject.html#1886">[ subject ]</a>
+              <a href="author.html#1886">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

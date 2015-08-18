@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] USB support on eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20USB%20support%20on%20eLua&In-Reply-To=%3C1329502128.17676.YahooMailNeo%40web161206.mail.bf1.yahoo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003314.html">
+   <LINK REL="Next"  HREF="003317.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] USB support on eLua</H1>
+    <B>Tim michals</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20USB%20support%20on%20eLua&In-Reply-To=%3C1329502128.17676.YahooMailNeo%40web161206.mail.bf1.yahoo.com%3E"
+       TITLE="[eLua-dev] USB support on eLua">tcmichals at yahoo.com
+       </A><BR>
+    <I>Fri Feb 17 19:08:48 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003314.html">[eLua-dev] USB support on eLua
+</A></li>
+        <LI>Next message: <A HREF="003317.html">[eLua-dev] USB support on eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3315">[ date ]</a>
+              <a href="thread.html#3315">[ thread ]</a>
+              <a href="subject.html#3315">[ subject ]</a>
+              <a href="author.html#3315">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>the nxpUSBLibrary only supports NXP devices.
+This is taken from one of the files in the library:
+
+FYI: * LUFA Library is licensed from Dean Camera by NXP for NXP customers&#160; 
+* for use with NXPs LPC microcontrollers. 
+
+
+
+
+
+________________________________
+ From: Roger Critchlow &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rec at elf.org</A>&gt;
+To: eLua Users and Development List (www.eluaproject.net) &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt; 
+Sent: Friday, February 17, 2012 11:06 AM
+Subject: Re: [eLua-dev] USB support on eLua
+ 
+
+Hasn't some manufacturer taken the LUFA library from AVR to ARM? &#160;Possibly they needed to rewrite a lot of the low level code to make it work, but at least it works and provides a consistent higher level interface to target.
+
+
+-- rec --
+
+
+2012/2/17 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+
+On Fri, Feb 17, 2012 at 6:32 PM, Tom Freund &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">digysol at gmail.com</A>&gt; wrote:
+&gt;&gt;<i> Let me be more specific: USB stack on an ARM platform (Cortex M3 or M4).
+</I>&gt;<i>
+</I>&gt;<i>Same thing, unfortunately. Since USB hardware is different from
+</I>&gt;<i>manufacturer to manufacturer, making this into a generic subsystem
+</I>&gt;<i>would require quite a bit of work.
+</I>&gt;<i>
+</I>&gt;<i>Best,
+</I>&gt;<i>Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Fri, Feb 17, 2012 at 11:25 AM, Ivan - Omnima &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ivan at omnima.co.uk</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> We are planning to integrate STM32 support for eLua RPC over USB mass
+</I>&gt;&gt;&gt;<i> storage and USB-CDC for serial comms.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The STM USB framework is working ok on our hardware but the integration
+</I>&gt;&gt;&gt;<i> with eLua is taking a bit longer to complete
+</I>&gt;&gt;&gt;<i> mainly due to some issues with Scons vs the lua build.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The STM USB framework (once integrated with eLua) will be copied and
+</I>&gt;&gt;&gt;<i> appear alongside the standard framework directory. There aren't to many
+</I>&gt;&gt;&gt;<i> changes required to make it work.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Regards,
+</I>&gt;&gt;&gt;<i> Ivan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Omnima Limited
+</I>&gt;&gt;&gt;<i> Ivan Ignjatic
+</I>&gt;&gt;&gt;<i> 176 Kennington Road
+</I>&gt;&gt;&gt;<i> Oxford OX1 5PG
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Tel. 0845 8692601
+</I>&gt;&gt;&gt;<i> Fax. 01865 326421
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Web: www.omnima.co.uk
+</I>&gt;&gt;&gt;<i> Skype: omnimaautomation
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On 17/02/2012 15:08, Bogdan Marinescu wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Fri, Feb 17, 2012 at 12:53 AM, Tom Freund&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">digysol at gmail.com</A>&gt; &#160;wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Looking for info, links on USB stacks (Host, OTG, Device) under eLua.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Anyone aware of any ?
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Nope. Generic USB support is not an easy task and there's no effort to
+</I>&gt;&gt;&gt;&gt;<i> implement this at the moment. Platform specific development focused
+</I>&gt;&gt;&gt;&gt;<i> mainly on USB-CDC until now.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;&gt;<i> Tom Freund
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Digysol
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> &quot;Software and hardware
+</I>&gt;&gt;&gt;&gt;&gt;<i> enabling
+</I>&gt;&gt;&gt;&gt;&gt;<i> collective intelligence
+</I>&gt;&gt;&gt;&gt;&gt;<i> looking after
+</I>&gt;&gt;&gt;&gt;&gt;<i> infrastructure&quot;
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Voice - 860-232-1614
+</I>&gt;&gt;&gt;&gt;&gt;<i> Skype ID - digysol
+</I>&gt;&gt;&gt;&gt;&gt;<i> www.scguild.com/Resume/1149I.html
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://www.youtube.com/user/digysol">http://www.youtube.com/user/digysol</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Tom Freund
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Digysol
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &quot;Software and hardware
+</I>&gt;&gt;<i> enabling
+</I>&gt;&gt;<i> collective intelligence
+</I>&gt;&gt;<i> looking after
+</I>&gt;&gt;<i> infrastructure&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Voice - 860-232-1614
+</I>&gt;&gt;<i> Skype ID - digysol
+</I>&gt;&gt;<i> www.scguild.com/Resume/1149I.html
+</I>&gt;&gt;<i> <A HREF="http://www.youtube.com/user/digysol">http://www.youtube.com/user/digysol</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>_______________________________________________
+</I>&gt;<i>eLua-dev mailing list
+</I>&gt;<i><A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i><A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120217/8247e73e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120217/8247e73e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003314.html">[eLua-dev] USB support on eLua
+</A></li>
+	<LI>Next message: <A HREF="003317.html">[eLua-dev] USB support on eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3315">[ date ]</a>
+              <a href="thread.html#3315">[ thread ]</a>
+              <a href="subject.html#3315">[ subject ]</a>
+              <a href="author.html#3315">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

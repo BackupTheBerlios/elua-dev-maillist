@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Order of Parameter from Timer-Functions
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Order%20of%20Parameter%20from%20Timer-Functions&In-Reply-To=%3C1336139350745-7527150.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003495.html">
+   <LINK REL="Next"  HREF="003497.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Order of Parameter from Timer-Functions</H1>
+    <B>Stefan Baumann</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Order%20of%20Parameter%20from%20Timer-Functions&In-Reply-To=%3C1336139350745-7527150.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] Order of Parameter from Timer-Functions">steff_bau at yahoo.de
+       </A><BR>
+    <I>Fri May  4 15:49:10 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003495.html">[eLua-dev] Problema com cross-lua.py
+</A></li>
+        <LI>Next message: <A HREF="003497.html">[eLua-dev] Order of Parameter from Timer-Functions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3496">[ date ]</a>
+              <a href="thread.html#3496">[ thread ]</a>
+              <a href="subject.html#3496">[ subject ]</a>
+              <a href="author.html#3496">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I just cloned the actual master-Branch and saw that the Timer-Parameters are
+switched:
+tmr.gettimediff( id, tstart, tend)
+
+I have to switch tstart and tend to receive the correct value. The new
+function
+tmr.getdiffnow(id, tstart)
+
+returns the same wrong values.
+
+I saw that there was a Patch from Bogdan on Jan 21, 2012 witch should put
+these things in correct order. I found this problem because
+uart.read( id, format, [timeout], [timer_id] )
+
+doesnt work in the mode with a &quot;positive number&quot; to block with a timer or
+until the number of characters are received.
+
+
+I tested this with LM3S9B92 LM3S8962.
+
+Sample eLua Code:
+tstart = tmr.start( 0 )
+tmr.delay( 1, 1000000 )
+tend = tmr.read( 0 )
+
+print( tstart, tend, tmr.gettimediff( 0, tstart, tend ) )
+print( tstart, &quot;--&quot;, tmr.getdiffnow(0, tstart) )
+
+--&gt; 4294967295      4244958673      84899173
+--&gt; 4294967295      --                   84897392
+
+
+
+regards,
+Stefan
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/Order-of-Parameter-from-Timer-Functions-tp7527150.html">http://elua-development.2368040.n2.nabble.com/Order-of-Parameter-from-Timer-Functions-tp7527150.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003495.html">[eLua-dev] Problema com cross-lua.py
+</A></li>
+	<LI>Next message: <A HREF="003497.html">[eLua-dev] Order of Parameter from Timer-Functions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3496">[ date ]</a>
+              <a href="thread.html#3496">[ thread ]</a>
+              <a href="subject.html#3496">[ subject ]</a>
+              <a href="author.html#3496">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

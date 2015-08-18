@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Nolua project proposal, good idea?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3C4D3C1797.4020102%40spellingbeewinnars.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001869.html">
+   <LINK REL="Next"  HREF="001898.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Nolua project proposal, good idea?</H1>
+    <B>Patrick Mc(avery</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3C4D3C1797.4020102%40spellingbeewinnars.org%3E"
+       TITLE="[eLua-dev] Nolua project proposal, good idea?">spell_gooder_now at spellingbeewinnars.org
+       </A><BR>
+    <I>Sun Jan 23 12:57:11 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001869.html">[eLua-dev] Fix spurious output when BUILD_SHELL is not defined
+</A></li>
+        <LI>Next message: <A HREF="001898.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1897">[ date ]</a>
+              <a href="thread.html#1897">[ thread ]</a>
+              <a href="subject.html#1897">[ subject ]</a>
+              <a href="author.html#1897">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Guys
+
+I am sorry to say that since discovering the project I have had almost 
+no time to use it let alone contribute anything at all. I've been 
+working like crazy and now expect to be out of debt in the next two 
+weeks. After months of anxiety driven chest pains and breathing issues I 
+plan to slow my business down and have a bit of &quot;me&quot; time. What better 
+way then to do something with eLua :)
+
+Am I correct that the biggest strength of the project is as a rapid 
+development environment? Having Lua right on a device is great but there 
+is of course a cost of this. What if someone started out with Lua 
+scripts but then little by little moved all the Lua-Lua code into Lua C 
+modules and then eventually jettisoned Lua entirely for a significant 
+speed up and footprint reduction for final deployment.
+
+
+&quot;&quot;&quot;&quot;
+#include &quot;lua.h&quot;
+#include &quot;lauxlib.h&quot;
+#include &quot;lualib.h&quot;
+
+lua_State *L = luaL_newstate();
+
+&quot;&quot;&quot;
+In the above code I believe &quot;L&quot; is now a struct with both data and 
+function pointers. What about this:
+
+&quot;&quot;&quot;
+#include &quot;nolua.h&quot;
+
+lua_State *L = luaL_newstate();&quot;&quot;&quot;
+
+Where L is now a stripped down struct only containing enough 
+functionality to allow C modules to talk to each other, a stack, a 
+registry the required functions.
+
+If this dummy Lua state contained no parsing abilities for source/byte 
+code I would assume there would be a significant reduction in footprint 
+or am I the one in a dummy state!
+
+If this is not nuts I could make an attempt in February-March.
+
+Thanks-Pat
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001869.html">[eLua-dev] Fix spurious output when BUILD_SHELL is not defined
+</A></li>
+	<LI>Next message: <A HREF="001898.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1897">[ date ]</a>
+              <a href="thread.html#1897">[ thread ]</a>
+              <a href="subject.html#1897">[ subject ]</a>
+              <a href="author.html#1897">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

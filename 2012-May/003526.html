@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] configpin for lm3s
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20configpin%20for%20lm3s&In-Reply-To=%3C8B9F178360704B36A634064C715B0839%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003525.html">
+   <LINK REL="Next"  HREF="003528.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] configpin for lm3s</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20configpin%20for%20lm3s&In-Reply-To=%3C8B9F178360704B36A634064C715B0839%40fanplastic.org%3E"
+       TITLE="[eLua-dev] configpin for lm3s">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon May 21 21:05:34 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003525.html">[eLua-dev] configpin for lm3s
+</A></li>
+        <LI>Next message: <A HREF="003528.html">[eLua-dev] SAM3U4E port of Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3526">[ date ]</a>
+              <a href="thread.html#3526">[ thread ]</a>
+              <a href="subject.html#3526">[ subject ]</a>
+              <a href="author.html#3526">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+
+
+On Monday, May 21, 2012 at 1:33 PM, Marcelo Politzer wrote:
+
+&gt;<i> Hello, I'm about to start the implementation of the configpin function for lm3s but I have some questions.
+</I>&gt;<i> The only precious implementation that I've found was for lpc17xx on the docs here: <A HREF="http://www.eluaproject.net/doc/v0.8/en_refman_ps_mbed_pio.html#funcs">http://www.eluaproject.net/doc/v0.8/en_refman_ps_mbed_pio.html#funcs</A>
+</I>&gt;<i> 
+</I>&gt;<i> with the following syntax:&gt;&gt; mbed.pio.configpin( pin, function, mode, resistor)
+</I>&gt;<i> 
+</I>&gt;<i> The problem is that the lm3s LIB has a different approach. It configures a pin for a given target peripheral 
+</I>&gt;<i> with functions like:
+</I>&gt;<i> &gt; &gt; void GPIOPinTypeUART(unsigned long ulPort, unsigned char ucPins)
+</I>&gt;<i> &gt; 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> How should I proceed? The way it looks to me the syntax for mbed doesn't apply very well to the lm. 
+</I>&gt;<i> Something like this seems to make more sense:
+</I>&gt;<i> &gt; &gt; lm3s.pio.configpin( pin, function)
+</I>&gt;<i> &gt; 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Is it ok to have a completely diferent API for a diferent board? For the stand point of portability it 
+</I>&gt;<i> doesn't seem to have much of a diference.
+</I>
+
+There is also one for str9, which is similarly rather ad-hoc and platform specific, like the lpc17xx one.
+
+For LM3S, it is a bit different.  Note that it's actually a bit more than those functions like GPIOPinTypeXXX, there's also GPIOPinConfigure, which I is actually the one that switches the alternate functions on the pins so that the peripheral is available there.  The GPIOPinTypeXXX basically sets the direction and things like push-pull, input/output and current drive strength.
+
+Additionally, there's some added complexity in that certain pins can be used for certain functions, and things like alternate function 2 could mean PWM on some pins and SPI or CAN on another.
+
+For lpc17xx (I implemented this) and str9 (Bogdan, I think implemented this) we basically just exposed the raw functionality for the various options that could be configured for pins and left the details of what pins could do what in what state to the user.  I think ideally, in the long run, I'd like some sort of function that goes with the peripheral modules that allows one to just say, &quot;I want these pins configured to use with this peripheral&quot; and it would either do that for you (whatever alternate digital function &amp; in/out, pull-up/push-pull, etc..) or tell you that you can't use that peripheral on that pin by having the table of alternate functions internalized, but this is a decent amount of work and is specific to the MCU/package (board renaming of pins like on MBED notwithstanding, since those can be layered on top of getting the lower level right).
+
+In short, if you need the functionality, feel free to do it on a level similar to what we've done before, but if you'd like to do something more sophisticated I certainly don't have a problem with that :-)   At least for LM3S, it might be possible to fairly easily scrape pin_map.h to construct a configuration table for each package automatically since all the parameters for GPIOPinConfigure are defined in there and have consistent naming.
+
+Aside:
+The only platform I know of that has much more arbitrary pin configuration is SiLabs' SiM3 line which has a rather neat Crossbar design: <A HREF="http://www.silabs.com/products/mcu/Pages/crossbar-architecture.aspx">http://www.silabs.com/products/mcu/Pages/crossbar-architecture.aspx</A>
+
+There's a port in progress for that platform that will get merged when a bit more functionality is ready.  The main caveat with that platform is that the current parts are 32kB for SRAM (external SRAM is supported, but is of course pin hungry). I'd expect higher spec parts later.  I'm also quite hoping that they give some future parts the sort of 16-bit (SAR) and 24-bit (sigma delta) they've given to their 8051 line.
+ 
+&gt;<i> 
+</I>&gt;<i> Any thoughts about it?-- 
+</I>&gt;<i> Best,
+</I>&gt;<i> Marcelo
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> (mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>)
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003525.html">[eLua-dev] configpin for lm3s
+</A></li>
+	<LI>Next message: <A HREF="003528.html">[eLua-dev] SAM3U4E port of Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3526">[ date ]</a>
+              <a href="thread.html#3526">[ thread ]</a>
+              <a href="subject.html#3526">[ subject ]</a>
+              <a href="author.html#3526">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

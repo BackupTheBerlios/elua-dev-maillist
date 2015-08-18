@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GCC Versions
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GCC%20Versions&In-Reply-To=%3C00d801c99390%240be0b7e0%2423a227a0%24%40com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000580.html">
+   <LINK REL="Next"  HREF="000582.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GCC Versions</H1>
+    <B>Jesus Alvarez</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GCC%20Versions&In-Reply-To=%3C00d801c99390%240be0b7e0%2423a227a0%24%40com%3E"
+       TITLE="[eLua-dev] GCC Versions">jalvarez at micromint.com
+       </A><BR>
+    <I>Fri Feb 20 20:18:43 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000580.html">[eLua-dev] Toolchains
+</A></li>
+        <LI>Next message: <A HREF="000582.html">[eLua-dev] GCC Versions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#581">[ date ]</a>
+              <a href="thread.html#581">[ thread ]</a>
+              <a href="subject.html#581">[ subject ]</a>
+              <a href="author.html#581">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> One interesting thing I've noticed in all of this, however is
+</I>&gt;<i> that I tried using my build script with both GCC 4.3.3 and with
+</I>&gt;<i> the latest CodeSourcery G++ Lite sources, and they generate
+</I>&gt;<i> somewhat different code. &#160;Aside from some changes in instruction
+</I>&gt;<i> choices, I've noticed that the CodeSourcery version generates code
+</I>&gt;<i> that is 5-10% smaller than regular GCC with otherwise exactly the
+</I>&gt;<i> same options.
+</I>
+The CodeSourcery 2008q3 release is based on GCC 4.3.2 so there are
+differences with the GCC 4.3.3 from GNU. They do make changes to the
+baseline releases that take a few months to go into the general GNU
+distribution. The GCC 4.3.2 provided by CodeSourcery probably includes
+changes that are not part of the baseline GCC 4.3.3. Since ARM Holdings
+funds CodeSourcery's maintenance of the GNU toolchain for ARM, they do place
+significant resources in supporting ARM targets.
+
+For production work, it is generally better to use a cross toolchain that is
+tested and updated. You certainly tend to lose less sleep over compiler or
+linker issues. The CodeSourcery G++ Lite 2008q3 for ARM EABI is currently on
+build #66 using GCC 4.3.2 (e.g. 66 builds with that same compiler version).
+That means that they have made at least 66 changes to the general GNU
+distribution. It is unlikely that on your first build you will get a
+toolchain that is as reliable as a toolchain with 66 builds. Their installed
+base is also relatively large so they get much more feedback. Most people
+that do embedded development for a living have had incidents where they
+spend hours debugging a problem that turns out to be related to a compiler
+or linker problem (e.g. the sleep loss argument). Using a tested
+distribution reduces the likelihood of that.
+
+CodeSourcery G++ Lite is free so cost is not an issue. Yet redistribution
+requires an agreement with CodeSourcery so by definition it is not freely
+redistributable. If you need a freely redistributable GNU toolchain for ARM,
+one alternative is devkitARM. It is not as well tested and supported as
+CodeSourcery but it is updated periodically, can be freely redistributed and
+has builds for the more popular targets (Linux, Windows and Mac OS X).
+
+If code size is important for your project, the IAR EWARM compiler has
+significant advantages over GCC. The reduction depends on the project but it
+is common to see code size reductions of 10 to 20% with production
+applications. In some cases that could allow you to use a microcontroller
+with a smaller flash. If you use newlib, the reduction is generally more
+because the IAR C library for ARM is very optimized for that platform.
+
+Regards,
+Jesus Alvarez
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000580.html">[eLua-dev] Toolchains
+</A></li>
+	<LI>Next message: <A HREF="000582.html">[eLua-dev] GCC Versions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#581">[ date ]</a>
+              <a href="thread.html#581">[ thread ]</a>
+              <a href="subject.html#581">[ subject ]</a>
+              <a href="author.html#581">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

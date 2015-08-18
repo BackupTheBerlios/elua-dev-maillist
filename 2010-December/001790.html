@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] What can I do?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3C004301cb9862%2400683f40%240138bdc0%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001789.html">
+   <LINK REL="Next"  HREF="001791.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] What can I do?</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3C004301cb9862%2400683f40%240138bdc0%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] What can I do?">john.hind at zen.co.uk
+       </A><BR>
+    <I>Fri Dec 10 13:01:38 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001789.html">[eLua-dev] What can I do?
+</A></li>
+        <LI>Next message: <A HREF="001791.html">[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1790">[ date ]</a>
+              <a href="thread.html#1790">[ thread ]</a>
+              <a href="subject.html#1790">[ subject ]</a>
+              <a href="author.html#1790">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> -----Original Message-----
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of James Snyder
+</I>&gt;<i> Sent: 09 December 2010 19:06
+</I>
+
+&gt;<i> I'd have to think this through a bit further to be sure whether coco
+</I>&gt;<i> is needed.  That patch adds full stackful coroutines but I suspect
+</I>&gt;<i> what you're referring to here are the added abilities to yield in
+</I>&gt;<i> situations where the stock Lua won't. 5.2 adds some of this
+</I>&gt;<i> functionality as well, perhaps without the overhead of needing the
+</I>&gt;<i> extra stack spaces? .  This might present a good reason for us to look
+</I>&gt;<i> at 5.2 once there is a stable release :-)
+</I>
+I've investigated some more and I think the way to proceed is with an
+interpreter patch similar to Mark Tomczak's &quot;Interpreter Bailout Flag&quot;.
+There will be a flag in lua_State and when this is set, the interpreter will
+check if we are yieldable before each op code and if so, call lua_yield. I
+can copy the not-yieldable test (which is very simple) that normally raises
+an exception in lua_yield. Probably best to assign the flag in a byte and
+include Tomczak's bailout functionality (which excecutes RETURN opcodes
+repeatedly to cleanly terminate the Lua chunk) as another flag in the same
+byte. This way coco would not be needed and yes, the changes in 5.2 do look
+very interesting in this respect - also there are hints that (Lua) threads
+may be lighter on RAM as well!
+
+The idea is that ISR's will call a scheduler routine which will evaluate
+whether the currently running coroutine is still highest priority, if not
+the flag is set to force the running coroutine to yield ASAP. Rupin's method
+will also be available so a coroutine can voluntarily yield to wait on an
+interrupt event, and the next highest priority coroutine or function which
+is in a runnable state is then resumed or called. Interrupt-linked functions
+will be lighter in RAM than coroutines, but will not be preemptable - once
+started they will run to completion (as in the present system - I think?) so
+they need to be relatively short.
+
+-John
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001789.html">[eLua-dev] What can I do?
+</A></li>
+	<LI>Next message: <A HREF="001791.html">[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1790">[ date ]</a>
+              <a href="thread.html#1790">[ thread ]</a>
+              <a href="subject.html#1790">[ subject ]</a>
+              <a href="author.html#1790">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

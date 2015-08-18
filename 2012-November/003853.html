@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GPRS/GSM Lib
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GPRS/GSM%20Lib&In-Reply-To=%3C2122467069.355306.1353614576204.JavaMail.root%40agfirstbop.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003852.html">
+   <LINK REL="Next"  HREF="003854.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GPRS/GSM Lib</H1>
+    <B>Tim Van Der Hulst</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GPRS/GSM%20Lib&In-Reply-To=%3C2122467069.355306.1353614576204.JavaMail.root%40agfirstbop.co.nz%3E"
+       TITLE="[eLua-dev] GPRS/GSM Lib">tim at agfirstbop.co.nz
+       </A><BR>
+    <I>Thu Nov 22 21:02:56 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003852.html">[eLua-dev] GPRS/GSM Lib
+</A></li>
+        <LI>Next message: <A HREF="003854.html">[eLua-dev] GPRS/GSM Lib
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3853">[ date ]</a>
+              <a href="thread.html#3853">[ thread ]</a>
+              <a href="subject.html#3853">[ subject ]</a>
+              <a href="author.html#3853">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yup, AT commands through serial interface. If you look at the GSM libraries for Arduino (by way of example) they are very specific to each type of GSM device and also work at a very low level of abstraction, eg simple wrapper around common AT commands or tasks (collection of AT commands) with no support for handling unsolicited response codes, etc. Ie you need to manage the state of the device yourself, typically if something goes wrong rather than try to recover, the developer will simply abort the connection rather than falling back to a recovery state etc.
+
+Tech Notes - Connected Device Design Guidelines and Common AT Commands
+<A HREF="http://m2m.com/docs/DOC-1007">http://m2m.com/docs/DOC-1007</A>
+
+This document is a nice guide for the sort of state diagram that a good library should support to abstract out the low level details. But not sure if its entirely feasible on an embedded device that doesn't support threads. 
+
+Cheers, web guy..
+
+TiM
+
+
+
+----- Original Message -----
+From: &quot;Carlo Caratori&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">carlocaratori at gmail.com</A>&gt;
+To: &quot;eLua Users and Development List (www.eluaproject.net)&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+Sent: Friday, November 23, 2012 3:25:46 AM
+Subject: Re: [eLua-dev] GPRS/GSM Lib
+
+
+Hey Tim, thanks a lot for your help. 
+
+
+I'll take a look at the lib as soon as I can, thank you. 
+
+
+The other thing I am still struggling with is which GSM module to buy. Does any one have any suggestions? As I was looking around, it seemed to me that most modules communicate with external CPU through UART interface. Is that correct? 
+
+
+Thanks again, 
+Carlo 
+
+
+
+2012/11/21 Tim Van Der Hulst &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tim at agfirstbop.co.nz</A> &gt; 
+
+
+Hi Carlo, 
+
+I started a library and uploaded it to Elua mailing list here: <A HREF="http://elua-development.2368040.n2.nabble.com/GSM-Library-td7577593.html">http://elua-development.2368040.n2.nabble.com/GSM-Library-td7577593.html</A> 
+
+However, I am a web developer not an embedded guy so it's a bit heavy for eLua (well, on my STM32 board anyway) and uses tonnes of regex, oops and didnt get too far beyond the basics. Intention was to create a generic library for GSM but actually the specs only cover the basics and all the data stuff (eg tcp/ip,http) is not yet standardized :( 
+
+We have since moved to using a SimCom 52XX device which supports Lua 5.1 and has thread support etc so we have essentially cut out the need for a dedicated Microprocessor and are building our system entirely around this device. 
+
+
+TiM 
+
+
+
+
+
+----- Original Message ----- 
+From: &quot;Carlo Caratori&quot; &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">carlocaratori at gmail.com</A> &gt; 
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A> 
+Sent: Wednesday, November 21, 2012 3:52:04 PM 
+Subject: [eLua-dev] GPRS/GSM Lib 
+
+
+Hey guys, I am new here and I got a few questions. 
+
+
+I was wondering if any recent progress was made in the GPRS/GSM Library develpment. 
+There is a section in the projects page of eLua wiki but no actual links. 
+
+
+Also, I am planning on buying a EK-LM3S8962 to play around with, and wanted to buy a GSM module to work with it. Does anyone has any sugestions on which module is better? 
+
+
+Thanks in advance! 
+Carlo Caratori 
+_______________________________________________ 
+eLua-dev mailing list 
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> 
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+_______________________________________________ 
+eLua-dev mailing list 
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> 
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003852.html">[eLua-dev] GPRS/GSM Lib
+</A></li>
+	<LI>Next message: <A HREF="003854.html">[eLua-dev] GPRS/GSM Lib
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3853">[ date ]</a>
+              <a href="thread.html#3853">[ thread ]</a>
+              <a href="subject.html#3853">[ subject ]</a>
+              <a href="author.html#3853">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

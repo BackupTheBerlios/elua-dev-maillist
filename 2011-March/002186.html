@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Fwd%3A%20%5BGitHub%5D%20Decrease%20AVR32%20stack%20size%20from%208192%20to%0A%202048%2C%20the%20same%20as%20the%20other%20small%20%5Belua/elua%209a3abb6%5D&In-Reply-To=%3CAANLkTim3JWFNyhf3iShsAx5_wn2%2BwgCrAjSCxt%3D7oiY8%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002177.html">
+   <LINK REL="Next"  HREF="002189.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Fwd%3A%20%5BGitHub%5D%20Decrease%20AVR32%20stack%20size%20from%208192%20to%0A%202048%2C%20the%20same%20as%20the%20other%20small%20%5Belua/elua%209a3abb6%5D&In-Reply-To=%3CAANLkTim3JWFNyhf3iShsAx5_wn2%2BwgCrAjSCxt%3D7oiY8%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]">martinwguy at gmail.com
+       </A><BR>
+    <I>Wed Mar 16 00:23:04 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002177.html">[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+</A></li>
+        <LI>Next message: <A HREF="002189.html">[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2186">[ date ]</a>
+              <a href="thread.html#2186">[ thread ]</a>
+              <a href="subject.html#2186">[ subject ]</a>
+              <a href="author.html#2186">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 15 March 2011 20:51, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;&gt;&gt;<i> &gt; The Lua parser is definitely not going to like this. Setting the stack
+</I>&gt;&gt;&gt;<i> &gt; to
+</I>&gt;&gt;&gt;<i> anything less than 4K is asking for stack overflow trouble in my
+</I>&gt;&gt;&gt;<i> experience.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks. Do you have an example that demonstrates usage of stack &gt; 2K?
+</I>&gt;&gt;&gt;<i> I don't have any real figures or is this just a feeling?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The romfs/ directory used to contain a version of life.lua that I used
+</I>&gt;&gt;<i> precisely for stack-related tests. I'm not sure where it is now :) You can
+</I>&gt;&gt;<i> probably find it in older commits.
+</I>
+Confirmed. With stack of 2048 or 3072, life.lua either doesn't parse
+or doesn't run. 4096 seems to work for life.lua
+However, if it's a recursive descent parser, the amount of C stack
+that a piece of Lua code could require is potentially infinite.
+
+&gt;&gt;<i> I don't really
+</I>&gt;&gt;<i> understand the need for this much stack especially since I manually moved
+</I>&gt;&gt;<i> many of the Lua parser internal data structures from heap to stack.
+</I>
+&gt;<i>From Lua 5 onwards, calls from Lua functions to Lua functions are
+</I>&quot;stackless&quot;, i.e. do not consume any C stack.  There is just a hard
+limit of 20000 nested calls to trap infinite recursion.
+C stack is used in parsing (as you say) and, I gather from the
+following message, in calls from Lua to C functions that call back
+into Lua (sort, pcall...) but those should not be infinitely deep.
+<A HREF="http://comments.gmane.org/gmane.comp.lang.lua.general/6376">http://comments.gmane.org/gmane.comp.lang.lua.general/6376</A>
+
+&gt;&gt;<i> Sure. But the reason I'm trying to keep it small in other platforms (even
+</I>&gt;&gt;<i> with the risk of stack overflows) is the lack of memory. Mizar32 doesn't
+</I>&gt;&gt;<i> have this problem
+</I>
+With the speed difference of a factor of two between SRAM+SDRAM and
+only SDRAM for the Lua heap, I'd say it does.
+
+I confess I am confused by the assertion that simple and newlib can't
+use multiple memory blocks.
+Experience using SRAM, SRAM+SDRAM and just SDRAM, with simple and newlib is that
+- SRAM+SDRAM is markedly faster than just SDRAM: about 10% for 20
+generations of life.
+- You can allocate and access 100K of junk in a table when using
+SRAM+SDRAM in both allocators
+and inspection of the code seems to show that the newlib allocator in
+newlib/stubs.c, using newlib _sbrk_r is redefined to return memory
+from all blocks listed in MEM_{START,END}_ADDRESS, while the simple
+allocator also does this explicitly in its code.
+
+    M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002177.html">[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+</A></li>
+	<LI>Next message: <A HREF="002189.html">[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2186">[ date ]</a>
+              <a href="thread.html#2186">[ thread ]</a>
+              <a href="subject.html#2186">[ subject ]</a>
+              <a href="author.html#2186">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

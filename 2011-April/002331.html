@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Proposal re: timers
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Proposal%20re%3A%20timers&In-Reply-To=%3CBANLkTikCfxtNXo1ofKKHnE%3DR%3DTcq-BZrgQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002330.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Proposal re: timers</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Proposal%20re%3A%20timers&In-Reply-To=%3CBANLkTikCfxtNXo1ofKKHnE%3DR%3DTcq-BZrgQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Proposal re: timers">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Apr 29 19:41:05 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002330.html">[eLua-dev] Proposal re: timers
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2331">[ date ]</a>
+              <a href="thread.html#2331">[ thread ]</a>
+              <a href="subject.html#2331">[ subject ]</a>
+              <a href="author.html#2331">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Apr 29, 2011 at 11:37 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Apr 29, 2011 at 6:23 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Fri, Apr 29, 2011 at 11:00 AM, Bogdan Marinescu
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Fri, Apr 29, 2011 at 5:42 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> The other options, which I personally like better, is to move everything
+</I>&gt;&gt;&gt;&gt;<i> related to timer counter values out of the generic platform code. &#160;That is,
+</I>&gt;&gt;&gt;&gt;<i> the platform specific code already has to do work in microseconds (delay,
+</I>&gt;&gt;&gt;&gt;<i> for example). &#160;So, push all responsibility to convert from ticks to
+</I>&gt;&gt;&gt;&gt;<i> microseconds back to the platform specific code. &#160;I personally feel the
+</I>&gt;&gt;&gt;&gt;<i> timer should deal in the currency of time only.
+</I>&gt;&gt;&gt;&gt;<i> Code that uses&#160;platform_timer_get_diff_us could instead call something
+</I>&gt;&gt;&gt;&gt;<i> like platform_timer_get_elapsed_us which returns a us value.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> If I understand correctly, platform_timer_get_elapsed_us is automatically
+</I>&gt;&gt;&gt;<i> &quot;tied&quot; to the latest invocation of &quot;tmr.start&quot; or &quot;tmr.read&quot;. This breaks in
+</I>&gt;&gt;&gt;<i> a number of situations, for example if you want to check timeouts against a
+</I>&gt;&gt;&gt;<i> start time at different times in your program:
+</I>&gt;&gt;&gt;<i> local start_time = tmr.start(0)
+</I>&gt;&gt;&gt;<i> &lt;code here&gt;
+</I>&gt;&gt;&gt;<i> if tmr.gettimedif( 0, start_time, tmr.read(0)) then ....
+</I>&gt;&gt;&gt;<i> &lt;more time consuming code here&gt;
+</I>&gt;&gt;&gt;<i> if tmr.gettimediff( 0, start_time, tmr.read(0)) then ....
+</I>&gt;&gt;&gt;<i> The point is that you make an explicit reference implicit with your
+</I>&gt;&gt;&gt;<i> approach, which generally results in reduced functionality.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Fair enough. &#160;But we could achieve the explicit reference and still deal
+</I>&gt;&gt;<i> in us only. &#160;Perhaps, as a platform_timer_get_time instead of get_count.
+</I>&gt;<i>
+</I>&gt;<i> You mean change tmr.start() and tmr.read() to return the value of the timer
+</I>&gt;<i> counter's converted to us instead just the value of the timer itself?
+</I>&gt;<i> Interesting. I think I can live with this. I'll think about the implications
+</I>&gt;<i> a bit more, but I don't see anything wrong with it at this point. It
+</I>&gt;<i> shouldn't even break compatibility with previous eLua programs.
+</I>&gt;<i> Thanks for the idea!
+</I>
+This is something I've actually considered a few times as well, though
+I haven't gone through all the implications.  I suppose there are some
+downsides if the register value was providing resolution better than
+us, but in Lua going beyond that resolution is probably overly
+optimistic in terms of utility within the Lua VM unless the MCUs we're
+working with suddently are running a few orders of magnitude faster.
+
+Another comment going back to the u64 suggestion:  If we did want
+something like that to work Lua LNUM would help there. I think if one
+has both LNUM_DOUBLE and LNUM_INT64 defined you would at least get to
+keep 63-bits of integer precision I think.  I'm not sure exactly what
+decision it makes regarding precision when you perform operations on a
+64-bit int, though.  Still, I would worry that this might get
+complicated since presumably we'd have to bump up the minimum integer
+mode to 64-bit ints which would add to the overhead.
+
+LNUM also provides the LNUM_LDOUBLE which would give you an 80+ bit mantissa...
+
+While I'm not suggesting the above is a good or the right way to go, I
+did start merging the LNUM patch into eLua, though I haven't finished
+the last bits of it, nor have I tested it.  I think, however, it
+should be rather worthwhile for most of our platforms which don't have
+FPUs. For those unfamiliar: LNUM allows Lua's numeric type to support
+added precision and for it to degrade math operations to integer ones
+when doing full floating point calculations is unnecessary.  The
+author claims about 30% speed improvements for platforms without FPUs.
+
+&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Matt
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Fri, Apr 29, 2011 at 9:58 AM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Okay, something to think about. &#160;I'll take on adding the lua stuff as
+</I>&gt;&gt;&gt;&gt;&gt;<i> that will be a good learning experience.
+</I>&gt;&gt;&gt;&gt;&gt;<i> For the time being, I'm going to add stop and clear methods to the tmr
+</I>&gt;&gt;&gt;&gt;&gt;<i> table.
+</I>&gt;&gt;&gt;&gt;&gt;<i> Matt
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> On Fri, Apr 29, 2011 at 9:41 AM, Bogdan Marinescu
+</I>&gt;&gt;&gt;&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> On Fri, Apr 29, 2011 at 4:39 PM, Tim michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Maybe treat the timer value as a high and low value and use a lua
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> table to store the value.&#160; Have several helper functions to add, subtract,
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> divide, or any other math operations.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> This is a possibility, as is having an u64 as a special data type
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> (based on userdatum with metatables that implement methods such as __add,
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> __mul ...). A bit cumbersome to use probably, but doable.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> ________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> From: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Sent: Friday, April 29, 2011 8:27 AM
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Subject: Re: [eLua-dev] Proposal re: timers
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> On Fri, Apr 29, 2011 at 4:18 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Hi Folks,
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> I'd like to propose that some types used in the timer module be
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> 64-bits wide instead of 32. &#160;At first, I was hesitant about that, but I see
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> that u64 is used in that the platform module. &#160;The reason I propose this is
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> that, being selfish, my timer counter consists of two 32-bit registers
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> updated at 50 MHz. &#160;It doesn't take long for tmr.read(0) to just return a
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> saturated value (by my implementation).
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> The main problem with this is that you can't export the full value of
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> the counter to Lua. Lua uses doubles (by default) for its number type and
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> doubles can't represent the full range of an unsigned 64-bit integer. I
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> don't know of any good way to get around this.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002330.html">[eLua-dev] Proposal re: timers
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2331">[ date ]</a>
+              <a href="thread.html#2331">[ thread ]</a>
+              <a href="subject.html#2331">[ subject ]</a>
+              <a href="author.html#2331">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

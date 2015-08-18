@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] network support on avr32
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20network%20support%20on%20avr32&In-Reply-To=%3C1298124650.2427.41.camel%40nunzio-desktop%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002060.html">
+   <LINK REL="Next"  HREF="002047.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] network support on avr32</H1>
+    <B>Nuccio Raciti</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20network%20support%20on%20avr32&In-Reply-To=%3C1298124650.2427.41.camel%40nunzio-desktop%3E"
+       TITLE="[eLua-dev] network support on avr32">raciti.nuccio at gmail.com
+       </A><BR>
+    <I>Sat Feb 19 15:10:50 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002060.html">[eLua-dev] New Netduino
+</A></li>
+        <LI>Next message: <A HREF="002047.html">[eLua-dev] network support on avr32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2046">[ date ]</a>
+              <a href="thread.html#2046">[ thread ]</a>
+              <a href="subject.html#2046">[ subject ]</a>
+              <a href="author.html#2046">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+I just run successful the lhttpd.lua example
+(<A HREF="http://wiki.eluaproject.net/lhttpd">http://wiki.eluaproject.net/lhttpd</A>)
+on evk1100 board.
+
+Now I have  to test and optimise it, 
+in the meantime, I would like to make some comments:
+
+1- I had an annoying problem using (as template) the &quot;uip-conf.h&quot; file
+coming from &quot;little endian&quot; architectures, they define
+UIP_CONF_BYTE_ORDER = LITTLE_ENDIAN, 
+but the LITTLE_ENDIAN (as well the BIG_ENDIAN) doesn't 
+exist inside uip/uipopt.h they should define 
+UIP_CONF_BYTE_ORDER = UIP_LITTLE_ENDIAN instead.
+
+2- I need to have an additional parameter for platform_eth_send_packet()
+function:
+eg. 
+void platform_eth_send_packet( const void* src, u32 size, u8 endframe )
+
+the &quot;endframe&quot; could be a flag that indicate the last packet for the
+frame.
+Also the device_driver_send() function should become like this:
+
+static void device_driver_send()
+{
+  if( uip_len &lt;= TOTAL_HEADER_LENGTH )
+    platform_eth_send_packet( uip_buf, uip_len, TRUE);
+  else
+  {
+    platform_eth_send_packet( uip_buf, TOTAL_HEADER_LENGTH, FALSE );
+    platform_eth_send_packet( ( u8* )uip_appdata, uip_len -
+TOTAL_HEADER_LENGTH, TRUE );
+  }
+}
+
+Please let me know about.
+
+Best regards,
+nuccio
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002060.html">[eLua-dev] New Netduino
+</A></li>
+	<LI>Next message: <A HREF="002047.html">[eLua-dev] network support on avr32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2046">[ date ]</a>
+              <a href="thread.html#2046">[ thread ]</a>
+              <a href="subject.html#2046">[ subject ]</a>
+              <a href="author.html#2046">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

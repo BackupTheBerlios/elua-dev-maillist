@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Large ADC Commit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1GIkM1b854e50196940e69cb18d%2C%0A%09jbsnyder%40fanplastic.org%2C%208D72C0FA-D74E-4B53-B705-DC2%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000515.html">
+   <LINK REL="Next"  HREF="000519.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Large ADC Commit</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1GIkM1b854e50196940e69cb18d%2C%0A%09jbsnyder%40fanplastic.org%2C%208D72C0FA-D74E-4B53-B705-DC2%3E"
+       TITLE="[eLua-dev] Large ADC Commit">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 01:46:21 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000515.html">[eLua-dev] Large ADC Commit
+</A></li>
+        <LI>Next message: <A HREF="000519.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#516">[ date ]</a>
+              <a href="thread.html#516">[ thread ]</a>
+              <a href="subject.html#516">[ subject ]</a>
+              <a href="author.html#516">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 17, 2009, at 6:15 PM, Dado Sutter wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Feb 17, 2009 at 20:43, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> ........
+</I>&gt;<i> As far as vs the other option ( adcvals[i] = getsamples(v,1) ), this  
+</I>&gt;<i> will only work if getsamples would return integers in that case.
+</I>&gt;<i>
+</I>&gt;<i> Why ? adcvals would contain a result table for each chanel in my  
+</I>&gt;<i> example.
+</I>&gt;<i> And pls remember we prefer to have functions returning predictable  
+</I>&gt;<i> types too.
+</I>&gt;<i>
+</I>&gt;<i> I switched my local version over to return only tables regardless of  
+</I>&gt;<i> the count of returned samples.  You had mentioned this earlier, and  
+</I>&gt;<i> I agree, that having a function return different types depending on  
+</I>&gt;<i> situation could be problematic.
+</I>&gt;<i>
+</I>&gt;<i> Right and I have just mentioned it again (above) :) sorry :)
+</I>&gt;<i>
+</I>&gt;<i> If adc.getsamples only ever returns tables, you could do this:
+</I>&gt;<i>
+</I>&gt;<i> for i, v in ipairs(channels) do
+</I>&gt;<i>   adc.sample(v)
+</I>&gt;<i>   adcvals[i] = adc.getsamples(v,1)[1]
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i>  Or simply:
+</I>&gt;<i>
+</I>&gt;<i> for i, v in ipairs(channels) do
+</I>&gt;<i>   adc.sample(v)
+</I>&gt;<i>   adcvals[i] = adc.getsamples(v,1)
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> ... and adcvals would be a table keeping the chanels' sampled tables.
+</I>
+Ah, I get it now.  I think I misunderstood before.  I wasn't thinking  
+in terms of nesting tables.
+
+This still has the same issue with making new tables each time the  
+function is called, which Bogdan was referencing.  If I use this  
+approach in adcscope it takes around 510 us per cycle (4 channels).
+
+each time I do an assignment as follows:
+
+adcvals[i] = adc.getsamples(v,1)
+
+I displace the table at adcvals[i], and put a new one in its place.   
+This old table has to be garbage collected.  If we turn off, then  
+we'll run out of memory as we continuously sample.
+
+&gt;<i>
+</I>&gt;<i> But you still get a spray of tables coming out of the function that  
+</I>&gt;<i> GC has to clean up (AFAIK, but I could be wrong).  This approach  
+</I>&gt;<i> runs at about 430 us per cycle if 4 channels are having samples  
+</I>&gt;<i> requested and pulled out of the buffer in this fashion.
+</I>&gt;<i>
+</I>&gt;<i> Right.  GC can be tamed but RAM is still a precious good in the  
+</I>&gt;<i> current MCUs.
+</I>&gt;<i> I think we should try to move more functionality to the C level.
+</I>&gt;<i> But I really need to stop and take a more carefull look on the whole  
+</I>&gt;<i> adc API.  It seems too complex for simple (single channel, non  
+</I>&gt;<i> filtered, ....) sampling and we need to make it more &quot;generic&quot; too.
+</I>
+It certainly could be simpler, but there are tradeoffs.  I plan to  
+have a version that will work without buffering, so that you can just  
+do simple single sample, single channel acquisition (it still would  
+require issuing both adc.sample and adc.getsamples, though).  This  
+could be switched at compile time.
+
+As far as being generic is concerned, I think everything that's in  
+there is easily portable to any of the other architectures that have  
+ADC.  The only platform-specific functions that are needed are the  
+interrupt handler to put things in the buffer, a function to stop  
+burst mode, and the functions for setting up sample and burst.
+
+If you mean in the sense of the API and whatnot, that may be the  
+case.  Ideas are welcome :-)
+
+-jsnyder
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/cbf9df8f/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/cbf9df8f/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/cbf9df8f/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/cbf9df8f/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000515.html">[eLua-dev] Large ADC Commit
+</A></li>
+	<LI>Next message: <A HREF="000519.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#516">[ date ]</a>
+              <a href="thread.html#516">[ thread ]</a>
+              <a href="subject.html#516">[ subject ]</a>
+              <a href="author.html#516">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

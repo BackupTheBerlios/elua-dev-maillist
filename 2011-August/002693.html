@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LTR compatible wrappers with SWIG for eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LTR%20compatible%20wrappers%20with%20SWIG%20for%20eLua&In-Reply-To=%3CCAJ%3DY9Y3umZOCawghkPbOxR%2BmB0eK6gM2ZRcC14O%3DTes%3D7GHiAw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002712.html">
+   <LINK REL="Next"  HREF="002695.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LTR compatible wrappers with SWIG for eLua</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LTR%20compatible%20wrappers%20with%20SWIG%20for%20eLua&In-Reply-To=%3CCAJ%3DY9Y3umZOCawghkPbOxR%2BmB0eK6gM2ZRcC14O%3DTes%3D7GHiAw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] LTR compatible wrappers with SWIG for eLua">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Aug  1 23:06:28 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002712.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002695.html">[eLua-dev] LTR compatible wrappers with SWIG for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2693">[ date ]</a>
+              <a href="thread.html#2693">[ thread ]</a>
+              <a href="subject.html#2693">[ subject ]</a>
+              <a href="author.html#2693">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Very neat.  I haven't used SWIG a great deal, but have experimented
+with it for providing wrappers/interfaces for C libraries in Python.
+
+Is your primary intent to make it easier to generate interfaces for
+arbitrary C libraries you might want to link in, or so that we could
+generate interfaces for existing code in a programmatic way instead of
+hand-creating the wrapper code, or something else?
+
+I haven't thought about using SWIG with embedded targets, but I can
+see the value in perhaps making it easier to create modules that work
+with Lua as well as eLua without maintaining as much preprocessor to
+switch between LTR and non-LTR implementations.  I think I may give
+this a try for LuaRPC which exists both as a stand-alone module and as
+an eLua module and in order to support both I have to duplicate the
+binding code.
+
+Best.
+
+-jsnyder
+
+On Sat, Jul 30, 2011 at 9:28 AM, raman &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I have introduced two new language modules in SWIG&gt; elua and eluac. They can
+</I>&gt;<i> be used for automatic LTR compatible wrapper code generation for eLua which
+</I>&gt;<i> could
+</I>&gt;<i> be used for testing and prototyping of new eLua modules. For now, I have put
+</I>&gt;<i> the
+</I>&gt;<i> entire source tree on sourceforge. &#160;It's an unofficial SWIG-2.0.4 release
+</I>&gt;<i> with support
+</I>&gt;<i> for eLua. (<A HREF="http://sourceforge.net/projects/eluaswig/files/">http://sourceforge.net/projects/eluaswig/files/</A>)
+</I>&gt;<i>
+</I>&gt;<i> Working with elua and eluac is the same as working with the SWIG Lua module.
+</I>&gt;<i> No additional information is required. I have written a small wiki post on
+</I>&gt;<i> how -elua
+</I>&gt;<i> is different from -eluac. (<A HREF="http://sourceforge.net/p/eluaswig/wiki/Home/">http://sourceforge.net/p/eluaswig/wiki/Home/</A>).
+</I>&gt;<i>
+</I>&gt;<i> Please follow the instructions on the 'README' file to install eluaswig from
+</I>&gt;<i> source.
+</I>&gt;<i> My system configuration: Linux raman 2.6.39-ARCH #1 SMP PREEMPT GNU/Linux
+</I>&gt;<i> I use a Stellaris ARM Cortex-M3 luminary LM3S8962 as my standard board. All
+</I>&gt;<i> my
+</I>&gt;<i> wrapper code tests have worked fine.
+</I>&gt;<i>
+</I>&gt;<i> This version does not support compatibility with both optram = 0 and optram
+</I>&gt;<i> = 1
+</I>&gt;<i> (It is not very hard to get this done though). If we don't use LTR, we can
+</I>&gt;<i> always use
+</I>&gt;<i> -lua with SWIG for eLua.
+</I>&gt;<i>
+</I>&gt;<i> Once you get eluaswig installed, invoke SWIG with -elua/c switch from your
+</I>&gt;<i> favourite
+</I>&gt;<i> terminal and supply the SWIG interface file (extension '.i').
+</I>&gt;<i>
+</I>&gt;<i> The rotable we are interested in is 'swig_commands[]'. By default, -elua or
+</I>&gt;<i> -eluac will
+</I>&gt;<i> put all the macro symbolic named constants (Eg: #define PI 3.14) and enum
+</I>&gt;<i> values
+</I>&gt;<i> in a rotable called 'swig_constants[]'
+</I>&gt;<i>
+</I>&gt;<i> A sample wrapper file:
+</I>&gt;<i> const LUA_REG_TYPE swig_commands[] = {
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;new_int_array&quot;), LFUNCVAL(_wrap_new_int_array)},
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;delete_int_array&quot;), LFUNCVAL(_wrap_delete_int_array)},
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;int_array_getitem&quot;), LFUNCVAL(_wrap_int_array_getitem)},
+</I>&gt;<i> &#160; &#160; ....
+</I>&gt;<i> };
+</I>&gt;<i>
+</I>&gt;<i> const LUA_REG_TYPE mt[] = {
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;__index&quot;), LFUNCVAL(SWIG_Lua_module_get)},
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;__newindex&quot;), LFUNCVAL(SWIG_Lua_module_set)},
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;.get&quot;), LROVAL(dot_get)},
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;.set&quot;), LROVAL(dot_set)},
+</I>&gt;<i> &#160; &#160;{LNILKEY, LNILVAL}
+</I>&gt;<i> };
+</I>&gt;<i>
+</I>&gt;<i> const LUA_REG_TYPE swig_constants[] = {
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;PI&quot;), LNUMVAL(3.14)},
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;STRING&quot;), LSTRVAL(&quot;Free as in freedom, GNU-GPL V3&quot;)},
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;C&quot;), LNUMVAL(C)},
+</I>&gt;<i> &#160; &#160;{LSTRKEY(&quot;CPP&quot;), LNUMVAL(CPP)},
+</I>&gt;<i> &#160; &#160;...
+</I>&gt;<i> };
+</I>&gt;<i>
+</I>&gt;<i> Note that mt[] is only generated with the -elua switch. -eluac puts
+</I>&gt;<i> everything
+</I>&gt;<i> in one rotable, swig_commands.
+</I>&gt;<i>
+</I>&gt;<i> The wrapper introduces a new macro LSTRVAL, (just like LNUMVAL or LFUNCVAL)
+</I>&gt;<i> to
+</I>&gt;<i> handle macros like #define STR &quot;Free as in freedom&quot;. To access such
+</I>&gt;<i> constants from
+</I>&gt;<i> eLua, we can write: print(mod.const.PI) -- Will print 3.14. ('mod' is the
+</I>&gt;<i> module name)
+</I>&gt;<i>
+</I>&gt;<i> Please read the eLua/c section in the TODO file in the source directory for
+</I>&gt;<i> known
+</I>&gt;<i> issues.
+</I>&gt;<i>
+</I>&gt;<i> I can write a detailed documentation for hacking around the language modules
+</I>&gt;<i> if
+</I>&gt;<i> people are interested.
+</I>&gt;<i>
+</I>&gt;<i> Please try to get the source installed and test it out. Please give me
+</I>&gt;<i> suggestions on
+</I>&gt;<i> how to take this forward.
+</I>&gt;<i>
+</I>&gt;<i> Awaiting your response,
+</I>&gt;<i>
+</I>&gt;<i> Raman
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6636280.html">http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6636280.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002712.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002695.html">[eLua-dev] LTR compatible wrappers with SWIG for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2693">[ date ]</a>
+              <a href="thread.html#2693">[ thread ]</a>
+              <a href="subject.html#2693">[ subject ]</a>
+              <a href="author.html#2693">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

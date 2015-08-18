@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Online Help in eLua?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Online%20Help%20in%20eLua%3F&In-Reply-To=%3Cd3b6d880903101144t525da04dr12f1fc86aa3ffc7d%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000663.html">
+   <LINK REL="Next"  HREF="000665.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Online Help in eLua?</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Online%20Help%20in%20eLua%3F&In-Reply-To=%3Cd3b6d880903101144t525da04dr12f1fc86aa3ffc7d%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Online Help in eLua?">dadosutter at gmail.com
+       </A><BR>
+    <I>Tue Mar 10 19:44:11 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000663.html">[eLua-dev] Online Help in eLua?
+</A></li>
+        <LI>Next message: <A HREF="000665.html">[eLua-dev] Online Help in eLua?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#664">[ date ]</a>
+              <a href="thread.html#664">[ thread ]</a>
+              <a href="subject.html#664">[ subject ]</a>
+              <a href="author.html#664">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+   I had thought about a &quot;help module&quot; once. It would not depend on
+modules's metatables (to be implemented by each new module) but would be a
+separate module and have something like your help() function.
+   The problem is that, with our current main target boards, we just can't
+affoard so much ram and even flash. (Remember, some crazy guys are talking
+seriously about eLua on 8 bits :)
+   If architectured as an optional module, it could be interesting to have
+in the next generation of chips/boards, that promisse to come with plenty of
+space to play with. (they are actually out there already ! :)
+   We also want to concentrate the doc in a single place and the move we've
+made (comming on v0.6) to webbook proves that. But not all the project's
+&quot;doc&quot; is related to the modules, their functions or even the code
+implementation. This would be more of a &quot;Reference Manual&quot;, which is one of
+the sections of the new &quot;site/doc&quot;.
+   I'm not sure if Bogdan will care too much about documenting the core
+code, other than keeping it clear and &quot;self-documented&quot;. But it will be nice
+to hear some more opinions on this too.
+   Thanks for the thread Snyder.
+
+Best
+Dado
+
+
+
+
+
+On Tue, Mar 10, 2009 at 15:17, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+
+&gt;<i> I'm not suggesting this for the current release, but I was playing around
+</I>&gt;<i> with enumerating the tables for our hardware modules and it gave me a
+</I>&gt;<i> thought.
+</I>&gt;<i>
+</I>&gt;<i> Is there a plan or interest in using metatables to provide simple help
+</I>&gt;<i> information for module methods?  I know something like this could always
+</I>&gt;<i> quickly grow into something that consumes many kilobytes of space, but what
+</I>&gt;<i> about just optional really short descriptions, like the following:
+</I>&gt;<i>
+</I>&gt;<i> &gt; help(adc.setclock)
+</I>&gt;<i> setclock( id, clock, [timer_id] ) -- set clock and timer_id for channel id
+</I>&gt;<i>
+</I>&gt;<i> or even just the parameter list:
+</I>&gt;<i> &gt; help(adc.setclock)
+</I>&gt;<i> setclock( id, clock, [timer_id] )
+</I>&gt;<i>
+</I>&gt;<i> Doing some sort of programmatic generation of the list, I think, would be
+</I>&gt;<i> key to make it maintainable.
+</I>&gt;<i>
+</I>&gt;<i> Maybe this could even be extended so that the documentation could be kept
+</I>&gt;<i> inline in the module source and have a script that will take take these
+</I>&gt;<i> elements and populate the webbook docs.
+</I>&gt;<i>
+</I>&gt;<i> Just a thought :-)   I like the idea of only having to update documentation
+</I>&gt;<i> in one place and have it be usable in multiple contexts.  I'm not thinking
+</I>&gt;<i> it should be too rigid or have a million fields that need to be populated,
+</I>&gt;<i> more something that is as simple as possible.
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090310/20dbab45/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090310/20dbab45/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000663.html">[eLua-dev] Online Help in eLua?
+</A></li>
+	<LI>Next message: <A HREF="000665.html">[eLua-dev] Online Help in eLua?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#664">[ date ]</a>
+              <a href="thread.html#664">[ thread ]</a>
+              <a href="subject.html#664">[ subject ]</a>
+              <a href="author.html#664">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

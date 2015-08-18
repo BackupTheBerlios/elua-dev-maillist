@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] What can I do?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3CAANLkTimWhxfk%3D0bGLLP1jwZZkEJAdTZi%2BR9nB0tOqsMu%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001777.html">
+   <LINK REL="Next"  HREF="001779.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] What can I do?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3CAANLkTimWhxfk%3D0bGLLP1jwZZkEJAdTZi%2BR9nB0tOqsMu%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] What can I do?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Dec  8 12:10:56 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001777.html">[eLua-dev] What can I do?
+</A></li>
+        <LI>Next message: <A HREF="001779.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1778">[ date ]</a>
+              <a href="thread.html#1778">[ thread ]</a>
+              <a href="subject.html#1778">[ subject ]</a>
+              <a href="author.html#1778">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+&gt;<i> If we are satisfied with coroutine (cooperative) multitasking, I do not
+</I>&gt;<i> think any additional threading support would be needed.
+</I>
+I am generally satisfied with that, but of course this varies a lot
+with different application types.
+
+&gt;<i> The thread type
+</I>&gt;<i> which supports coroutines in standard Lua should be all we need, along with
+</I>&gt;<i> interrupt handlers (IH) written in C.
+</I>
+There is generic interrupt support in eLua now for both C and Lua (in
+trunk, will pe part of version 0.8 which is to be released soon).
+Besides interrupt support, a mechanism for polling different interrupt
+flags can be also implemented (think about a &quot;select&quot;-like call that
+works on interrupt flags instead of file descriptors). This might be
+just what you need in your coroutine. In would block in such a
+&quot;select&quot; call waiting for a number of interrupts, one of them being a
+timer expired interrupt (and it would yield if it receives this). This
+can be extended to support generic events, not only interrupts. I
+wouldn't do this &quot;event layer&quot; in C though, sounds more like a job for
+the Lua side.
+
+&gt;<i> The IH would set event flags and the
+</I>&gt;<i> scheduler would use these flags to determine which coroutines are candidates
+</I>&gt;<i> to be resumed. Rapin's basic idea is to enhance the yield method so it
+</I>&gt;<i> specifies resume criteria (on serial reception, after 100ms, when a pin
+</I>&gt;<i> changes state etc.). The scheduler (which as you suggest could be
+</I>&gt;<i> generalised and written in C) starts all coroutines, so coroutines always
+</I>&gt;<i> yield back to it. The scheduler could also be able to run Lua functions on
+</I>&gt;<i> the primary thread, so combining coroutine scheduling with a simple event
+</I>&gt;<i> handling paradigm (for example to hook up an LED to follow changing states
+</I>&gt;<i> on an input pin). So the event abstraction comprises a boolean flag and a
+</I>&gt;<i> list of functions and threads (coroutines). The flag can (optionally) be
+</I>&gt;<i> connected to a specified &quot;interrupt port&quot; in the runtime. When the flag
+</I>&gt;<i> becomes set (explicitly from Lua or by an IH), the scheduler executes the
+</I>&gt;<i> functions and resumes the coroutines sequentially.
+</I>
+I believe this can be implemented in eLua even now with a bit of
+coroutine/metamethod magic :) Except, of course, it will still be
+cooperative.
+
+&gt;<i> Very ambitiously, this scheme could perhaps even be extended to do hard
+</I>&gt;<i> real-time. All the code segments would be profiled for minimum and maximum
+</I>&gt;<i> execution time and the scheduler would use real-time critical path analysis
+</I>&gt;<i> to guarantee specified event response time requirements (or raise an
+</I>&gt;<i> exception if impossible). For this, the scheduler would have to take over
+</I>&gt;<i> managing the garbage collector as well.
+</I>
+Sure, everything is possible :) I genereally don't believe in hard
+real-time systems that are written in an interpreted language, most of
+the time they prove to be more or less soft real-time in my
+experience. That's not to say that it can't be done though.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001777.html">[eLua-dev] What can I do?
+</A></li>
+	<LI>Next message: <A HREF="001779.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1778">[ date ]</a>
+              <a href="thread.html#1778">[ thread ]</a>
+              <a href="subject.html#1778">[ subject ]</a>
+              <a href="author.html#1778">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

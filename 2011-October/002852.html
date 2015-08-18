@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] [IMPORTANT] New feature on the master branch: system	timer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BIMPORTANT%5D%20New%20feature%20on%20the%20master%20branch%3A%20system%0A%09timer&In-Reply-To=%3CCANKDJfb9H3MN5Wput%3DELL8HazHMk5BoktGp416VaxCXjs7_xWQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002822.html">
+   <LINK REL="Next"  HREF="002853.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] [IMPORTANT] New feature on the master branch: system	timer</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BIMPORTANT%5D%20New%20feature%20on%20the%20master%20branch%3A%20system%0A%09timer&In-Reply-To=%3CCANKDJfb9H3MN5Wput%3DELL8HazHMk5BoktGp416VaxCXjs7_xWQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] [IMPORTANT] New feature on the master branch: system	timer">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Oct 21 21:15:48 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002822.html">[eLua-dev] AVR32 SPI clock frequency bug?
+</A></li>
+        <LI>Next message: <A HREF="002853.html">[eLua-dev] [IMPORTANT] New feature on the master branch: system	timer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2852">[ date ]</a>
+              <a href="thread.html#2852">[ thread ]</a>
+              <a href="subject.html#2852">[ subject ]</a>
+              <a href="author.html#2852">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I have implemented (and merged into the master branch) a new eLua feature:
+the system timer. It attempts to fix one of the biggest flaws in the eLua
+design: timer management (I take full blame for this BTW). The documentation
+was updated (so you can read more about this in the official docs), but this
+is the summary: I was obviously wrong when I assumed that manual timer
+management can actually work in practice. It can (and most of the time will)
+become a nightmare for anything but the simplest applications. Having to
+manually track timers and their base frequencies is prone to failure and
+endless frustration. The system timer is my attempt to fix this. It is a
+timer with a *fixed, unmodifiable resolution on all platforms *(1us) and
+large counters:
+
+- 52 bits for floating point Lua and 64-bit integer only Lua (lualonglong, a
+new feature). In this mode the system timer overflows after about 142 *years
+*(I know this is hard to believe, so feel free to do the math yourselves :)
+)
+- 32 bits for 32-bit integer only Lua (lualong). In this mode the timer
+overflows after about 1 *hour* (yes, huge difference here).
+
+The eLua API was subsequently modified to take advantage of this new
+feature. I'll say this again: *part of the eLua API was modified to take
+advantage of the system timer, *so be sure to check the updated docs. You
+can find a list of the changes below):
+
+- the timeouts are specified in a much more unified manner across different
+eLua modules. Their general specification is now *[timeout],
+[timer_id]** *(note
+that the order of 'timeout' and 'timer_id' was changed in many modules) with
+the following semantics:
+
+Timeout                    |          Timer ID                |     Result
+=============================================================================================================
+0                          |   not relevant                   | no timeout
+(the function returns immediately).
+PLATFORM_TIMER_INF_TIMEOUT |   not relevant                   | the function
+returns whenever it's ready, it might block indefinitely
+A positive number          |   not specified                  | the system
+timer is used to measure the specified timeout
+A positive number          |   an actual timer ID             | the
+specified timer is used to measure the specified timeout
+
+As you can see,* the general idea is that you should be able to specify any
+timeout without having to worry about a timer ID*; if you don't specify a
+timer ID it will default to the system timer.
+The main modules affected by this change are *tmr, uart *and *net*.
+
+
+- you don't have to specify the various timer IDs (CON_TIMER_ID,
+RFS_TIMER_ID, RPC_TIMER_ID) in platform_conf.h now. If you don't specify
+them, they'll automatically default to the system timer. In fact you *
+shouldn't* specify them explicitly unless you have a very good reason to do
+so.
+- note the new *PLATFORM_TIMER_INF_TIMEOUT *constant used to specify an
+infinite timeout. This is an &quot;universal constant&quot; across eLua now; this
+means that different modules don't get to specify their own constants for
+infinite timeout anymore (as was the case, for example, with UART and its
+PLATFORM_UART_INFINITE_TIMEOUT constant); they must use
+PLATFORM_TIMER_INF_TIMEOUT instead.
+
+You can (and are encouraged to) use the system timer from C code too, not
+only from Lua code. You can reffer to the system timer with the
+*PLATFORM_TIMER_SYS_ID
+*constant. Unlike the Lua API, the C API (the platform interface) was only
+modified slightly (with the exception of the timers API that was enhanced
+quite a bit). In particular, the order of timeout and timer_id parameters
+was *not* changed in the C API.
+
+One important limitation of the system timer is that it *can't generate
+interrupts*.
+
+&gt;<i>From an implementation standpoint, this is how the system timer is
+</I>implemented on different platforms, in a nutshell:
+
+- all Cortex-M3 platforms use the SysTick timer for the system timer
+implementation. This has a minimum impact on the Lua code since the SysTick
+timer was not exported to Lua. This will also be applicable on M4 platforms.
+- AVR32 'steals' a PWM channel for the system timer implementation (since
+the timer block in AVR32 was simply too weak to implement this feature).
+- AT91SAM7X uses the PIT timer (again, minimal impact since this timer was
+not exported to Lua).
+- LPC24xx 'steals' one of its hardware timer for the system timer
+implementation
+- STR9 'steals' one of its hardware timers for the system timer
+implementation
+- i386, str7 and lpc288x do *not *implement a system timer. Note that since
+all timer IDs have a tendency to default to the system timer this might lead
+to problems (this was documented explicitly). These platforms are seldom
+used and will probably be declared obsolete in the near future, so the
+effort for implementing a system timer was not justifiable. If you actually
+use one of these platforms please contact me and I'll see what I can do.
+
+
+You can find a more in-depth overview of the system timer and its
+implementation in the documentation
+(arch_platform_timers.html#the_system_timer).
+I hope I'm not forgetting anything here. Please don't hesitate to contact me
+if you have questions. Also, I encourage all of you to test this new feature
+as much as possible, as it is still very much in beta.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111021/48a5f713/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111021/48a5f713/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002822.html">[eLua-dev] AVR32 SPI clock frequency bug?
+</A></li>
+	<LI>Next message: <A HREF="002853.html">[eLua-dev] [IMPORTANT] New feature on the master branch: system	timer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2852">[ date ]</a>
+              <a href="thread.html#2852">[ thread ]</a>
+              <a href="subject.html#2852">[ subject ]</a>
+              <a href="author.html#2852">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New to eLua and STM32F4xx
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20to%20eLua%20and%20STM32F4xx&In-Reply-To=%3CF97DD28E-4E40-428E-B862-900A89043F64%40bigpond.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004154.html">
+   <LINK REL="Next"  HREF="004153.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New to eLua and STM32F4xx</H1>
+    <B>Graham Henstridge</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20to%20eLua%20and%20STM32F4xx&In-Reply-To=%3CF97DD28E-4E40-428E-B862-900A89043F64%40bigpond.com%3E"
+       TITLE="[eLua-dev] New to eLua and STM32F4xx">grahamhenstridge at bigpond.com
+       </A><BR>
+    <I>Mon Jun 17 04:48:25 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004154.html">[eLua-dev] New to eLua and STM32F4xx
+</A></li>
+        <LI>Next message: <A HREF="004153.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4173">[ date ]</a>
+              <a href="thread.html#4173">[ thread ]</a>
+              <a href="subject.html#4173">[ subject ]</a>
+              <a href="author.html#4173">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 04/06/2013, at 6:29 AM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> On Mon, Jun 3, 2013 at 9:43 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Mon, Jun 3, 2013 at 1:22 PM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> On Mon, Jun 3, 2013 at 8:28 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Mon, Jun 3, 2013 at 2:03 AM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> 
+</I>&gt;<i> On Mon, Jun 3, 2013 at 4:49 AM, Graham Henstridge &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">graham at capgo.com</A>&gt; wrote:
+</I>&gt;<i> I have been following eLua for a while with the aim of deploying it on a custom STM32F4xx project. I have successfully built the STM32F407_Discovery image with the now obsolete &quot;scons&quot; based builder, but have not yet been successful with the new &quot;lake&quot; builder. I am not too worried about that at the moment as I have not spent much time on it. But I do have some basic questions to get a feel for where eLua is going:
+</I>&gt;<i> 
+</I>&gt;<i> 1. Lua 5.1 is specified for eLua. Using Lua 5.2 may be the cause of my present problems. Is Lua 5.2 supported and if not is it intended to do so soon? Moving to a total Lua build system makes sense, but staying at Lua 5.1 does not!
+</I>&gt;<i> 
+</I>&gt;<i> Lua 5.1 is far from being obsolete and a lot of projects centered around Lua still use Lua 5.1. There are plans to move eLua to 5.2 at some point, but nothing very clear at the moment.
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> 2. The STM32F4xx branch has been around for a while (although not on main git until very recently) and has not been merged with Master yet. Can anyone comment on its status?
+</I>&gt;<i> 
+</I>&gt;<i> Check the new 'stm32f4' branch on github, this is where the STM32F4 development is currently happening. After some testing, it will be merged to master.
+</I>&gt;<i> 
+</I>&gt;<i> On this front if you're using the discovery board you might need to use the bikeNomad-master branch or have one of us commit a fix to put the UART back on PB6/7 for that board (<A HREF="https://github.com/jsnyder/elua/tree/bikeNomad-master">https://github.com/jsnyder/elua/tree/bikeNomad-master</A>).  I'll try and put this fix in the 'stm32f4' branch and test it (on the board, PA9 is connected to VBUS for USB and an LED, not sure if it it can be used as a UART.
+</I>&gt;<i> 
+</I>&gt;<i> It's almost certainly unusable as an UART. 
+</I>&gt;<i> One thing we can do before eLua gets the proper uart_set_pins() function is to use the configurator and add a platform-specific configuration. Something like this:
+</I>&gt;<i> 
+</I>&gt;<i> -- Add specific configuration to the 'configs' table
+</I>&gt;<i> function add_platform_configs( t, board, cpu )
+</I>&gt;<i>   t.stm32f4_uart_pins = {
+</I>&gt;<i>     attrs = {
+</I>&gt;<i>       con_rx_port = at.int_attr( 'STM32F4_CON_RX_PORT', 0 ),
+</I>&gt;<i>       con_rx_pin = at.int_attr( 'STM32F4_CON_RX_PIN', 0 ),
+</I>&gt;<i>       con_tx_port = at.int_attr( 'STM32F4_CON_TX_PORT', 0 ),
+</I>&gt;<i>       con_tx_pin = at.int_attr( 'STM32F4_CON_TX_PIN', 0 )
+</I>&gt;<i>     },
+</I>&gt;<i>     required = { con_rx_port = 1, con_rx_pin = 7, con_tx_port = 1, con_tx_pin = 6 } -- this is the default configuration
+</I>&gt;<i>   }
+</I>&gt;<i> end
+</I>&gt;<i> 
+</I>&gt;<i> Then each board description file will be able to supply its own pin configuration for the console UART. Of course, this still needs support in platform.c, but that should be fairly easy. Let me know if you're OK with this solution.
+</I>&gt;<i> 
+</I>&gt;<i> That sounds good for now.
+</I>&gt;<i> 
+</I>&gt;<i> Done, check the latest commit on stm32f4. The configuration for stm32f4discovery needs to be updated accordingly, please update it if you can (and test it, of course).
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>  
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> Another thing might be if you switch to the stm32f4 branch it will try to build with hardware floating point, depending on your toolchain you might run into linking errors about VFP, depending on the toolchain you're using and if it includes the right libraries or multilibs. If you're using my Makefile (arm-eabi-toolchain), I have a version that seems to be working in a branch, but I haven't pushed it to master yet.
+</I>&gt;<i> 
+</I>&gt;<i> I recommend this:
+</I>&gt;<i> 
+</I>&gt;<i> <A HREF="https://launchpad.net/gcc-arm-embedded/+milestone/4.7-2012-q4-major">https://launchpad.net/gcc-arm-embedded/+milestone/4.7-2012-q4-major</A>
+</I>&gt;<i> 
+</I>&gt;<i> It works very well, the multilib configuration is complete and it has a Mac version. 
+</I>&gt;<i> 
+</I>&gt;<i> Yep.  That one looks like a nice option.  There's a blog article on ARM's site about it here by one of the maintainers describing some of what they've done:
+</I>&gt;<i> <A HREF="http://blogs.arm.com/embedded/879-shrink-your-mcu-code-size-with-gcc-arm-embedded-47/">http://blogs.arm.com/embedded/879-shrink-your-mcu-code-size-with-gcc-arm-embedded-47/</A>
+</I>&gt;<i>  
+</I>&gt;<i> I'm especially curious about what exactly they did in newlib-nano which is broken out here:
+</I>&gt;<i> <A HREF="https://github.com/32bitmicro/newlib-nano-1.0">https://github.com/32bitmicro/newlib-nano-1.0</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> 
+</I>&gt;<i>  
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> 3. My working platform is a Mac. Are there any known issues in building eLua on a Mac? So far I have not discovered any.
+</I>&gt;<i> 
+</I>&gt;<i> None that I know of, but personally I never tried to build eLua on a Mac.
+</I>&gt;<i> 
+</I>&gt;<i> It should be fine on Mac OS X.  That's what I use for development.
+</I>&gt;<i>  
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> 4. Present issue is with require&quot;lfs&quot; not accepting lfs.so. Paths are ok. Suspecting Lua versions. Comments anyone?
+</I>&gt;<i> 
+</I>&gt;<i> This is quite strange. How are you installing lfs on your machine? What is the value of your LUA_PATH environment variable?
+</I>&gt;<i> 
+</I>&gt;<i> You'll want to use 5.1 on your machine for building I think (as Bjorn was discussing what might happen with 5.2).  I don't know that any of us have tested the build system with 5.2.
+</I>&gt;<i> 
+</I>&gt;<i> I believe on my system I've got lua and luarocks installed out of Homebrew (which defaults to 5.1.x, <A HREF="https://github.com/mxcl/homebrew/">https://github.com/mxcl/homebrew/</A>) and then used luarocks to install the needed modules like lfs.  You can certainly install your own versions of lua/luarocks or use another method if you like.
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> Obviously much good work has gone into eLua by Bogdan and others for which I am grateful and hope to return some value in the coming months.
+</I>&gt;<i> 
+</I>&gt;<i> Graham
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 448-0386
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 448-0386
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+Bogdan, the recommended toolchain works like a breeze, where as the one 
+I was using had VFP associated linking problems as James thought likely.
+
+The stm32f4 commit seems ok, but I have yet to confirm terminal operation.
+My aim is to use the stm32f407-discovery board to familiarise with eLua
+in case some optimisations can be identified for a stm32f427vg board
+hardware design.
+
+Graham
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130617/ecf849f1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130617/ecf849f1/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004154.html">[eLua-dev] New to eLua and STM32F4xx
+</A></li>
+	<LI>Next message: <A HREF="004153.html">[eLua-dev] Running C task concurrently (in background) with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4173">[ date ]</a>
+              <a href="thread.html#4173">[ thread ]</a>
+              <a href="subject.html#4173">[ subject ]</a>
+              <a href="author.html#4173">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

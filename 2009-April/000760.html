@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Default device in device manager
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Default%20device%20in%20device%20manager&In-Reply-To=%3C49DE2D68.2070200%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000757.html">
+   <LINK REL="Next"  HREF="000749.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Default device in device manager</H1>
+    <B>Mike Thompson</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Default%20device%20in%20device%20manager&In-Reply-To=%3C49DE2D68.2070200%40gmail.com%3E"
+       TITLE="[eLua-dev] Default device in device manager">mpthompson at gmail.com
+       </A><BR>
+    <I>Thu Apr  9 19:16:24 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000757.html">[eLua-dev] Default device in device manager
+</A></li>
+        <LI>Next message: <A HREF="000749.html">[eLua-dev] SVN access to eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#760">[ date ]</a>
+              <a href="thread.html#760">[ thread ]</a>
+              <a href="subject.html#760">[ subject ]</a>
+              <a href="author.html#760">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dado Sutter wrote:
+&gt;<i> ZModem lighter than XModem ? :-o Really ? It will be great to have it 
+</I>&gt;<i> then ! :)
+</I>
+Well, the code compiles to a little over 2x that of xmodem, but the SRAM 
+footprint doesn't involve any buffers except for the 32 character 
+filename buffer and about a dozen single byte state variables.  These 
+can all be put into an allocated structure to even eliminate that fixed 
+overhead from the data segment.
+
+The eLua implementation of zmodem can be examined in the zip file linked 
+below:
+
+<A HREF="http://home.comcast.net/~michael.p.thompson/elua/elua_zmodem.zip">http://home.comcast.net/~michael.p.thompson/elua/elua_zmodem.zip</A>
+
+I'm using this with SecureCRT as my terminal program and it works great. 
+  I just type rz at the eLua shell prompt and my terminal program 
+prompts for the file(s) to be transferred.
+
+For my application, the benefits of zmodem outweigh the slightly larger 
+code size over the xmodem application.  In this specific code I'm 
+writing the files to a file system, but changing the code to work like 
+eLua's xmodem with a malloc'd buffer should be a simple matter.  Using 
+xmodem or zmodem could be a simple compile type BUILD_XMODEM or 
+BUILD_ZMODEM switch.
+
+Note, like xmodem, this is receive only.  The sending part does involve 
+a 1K buffer, but I stripped that out along with the rest of the sending 
+code as sending is not a requirement of mine.
+
+The original implementation came from the AVR Freaks site:
+
+<A HREF="http://www.avrfreaks.net/index.php?module=FreaksAcademy&amp;func=viewItem&amp;item_id=134&amp;item_type=project">http://www.avrfreaks.net/index.php?module=FreaksAcademy&amp;func=viewItem&amp;item_id=134&amp;item_type=project</A>
+
+Enjoy...
+
+Mike Thompson
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000757.html">[eLua-dev] Default device in device manager
+</A></li>
+	<LI>Next message: <A HREF="000749.html">[eLua-dev] SVN access to eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#760">[ date ]</a>
+              <a href="thread.html#760">[ thread ]</a>
+              <a href="subject.html#760">[ subject ]</a>
+              <a href="author.html#760">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

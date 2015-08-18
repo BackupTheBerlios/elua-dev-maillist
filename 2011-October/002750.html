@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STR9 GPIO INT
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STR9%20GPIO%20INT&In-Reply-To=%3CCAHDO%3Dv8nEFnCgw5g%3DyG_ufSjUjv2LAJem9t%2Bg_nxBWifJnn88Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002829.html">
+   <LINK REL="Next"  HREF="002783.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STR9 GPIO INT</H1>
+    <B>Marcelo Politzer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STR9%20GPIO%20INT&In-Reply-To=%3CCAHDO%3Dv8nEFnCgw5g%3DyG_ufSjUjv2LAJem9t%2Bg_nxBWifJnn88Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STR9 GPIO INT">mpolitzer.c at gmail.com
+       </A><BR>
+    <I>Tue Oct  4 22:46:03 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002829.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+        <LI>Next message: <A HREF="002783.html">[eLua-dev] STR9 GPIO INT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2750">[ date ]</a>
+              <a href="thread.html#2750">[ thread ]</a>
+              <a href="subject.html#2750">[ subject ]</a>
+              <a href="author.html#2750">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello, I've trying to put the gpio interrupt to work but without much success.
+
+The code turn the GPIO interrupt on, the pin as input and goes to a while 1.
+But it is never calling the __p function. Have any one used GPIO interrupts
+up to now?
+
+Here is a snippet of the code:
+-------------------------------------------------------------------------------------------------------------
+function __p()
+	print &quot;I'm a GPIO interrupt&quot;
+end
+
+pio.pin.setdir( pio.INPUT, pio.P7_6)
+
+cpu.set_int_handler( cpu.INT_GPIO_NEGEDGE, __p )
+cpu.sei( cpu.INT_GPIO_NEGEDGE, pio.P7_6 )
+
+function __test()
+	while true do
+		if uart.getchar( 0, 0 ) ~= &quot;&quot; then break end
+	end
+end
+
+__test()
+-------------------------------------------------------------------------------------------------------------
+
+-- 
+Best,
+Marcelo
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002829.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+	<LI>Next message: <A HREF="002783.html">[eLua-dev] STR9 GPIO INT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2750">[ date ]</a>
+              <a href="thread.html#2750">[ thread ]</a>
+              <a href="subject.html#2750">[ subject ]</a>
+              <a href="author.html#2750">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

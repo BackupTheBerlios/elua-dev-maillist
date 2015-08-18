@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] autorun
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20autorun&In-Reply-To=%3C029601c99079%2409e5fdc0%241db1f940%24%40com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000459.html">
+   <LINK REL="Next"  HREF="000462.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] autorun</H1>
+    <B>Jesus Alvarez</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20autorun&In-Reply-To=%3C029601c99079%2409e5fdc0%241db1f940%24%40com%3E"
+       TITLE="[eLua-dev] autorun">jalvarez at micromint.com
+       </A><BR>
+    <I>Mon Feb 16 21:56:21 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000459.html">[eLua-dev] autorun
+</A></li>
+        <LI>Next message: <A HREF="000462.html">[eLua-dev] autorun
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#460">[ date ]</a>
+              <a href="thread.html#460">[ thread ]</a>
+              <a href="subject.html#460">[ subject ]</a>
+              <a href="author.html#460">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Have you tried using the display and the SD card at the same time? I
+</I>recall on many
+&gt;<i> of the LM3S boards that they share the same SSI port, and that some
+</I>considerations
+&gt;<i> are needed to make sure that both can be used at the same time.
+</I>
+No. My testing is on the Micromint Eagle 100 which is based on the LM3S6918.
+The Eagle 100 is more oriented towards industrial applications so it has
+PC/104, character LCD and keypad interfaces instead of the RIT display
+interface used in the Luminary evaluation kits.
+
+But I have used multiple devices per SSI channel with LM3S processors. With
+the LM3S as the SSI master and using the microcontroller SSI registers (e.g.
+not implementing SSI by bit-banging), you should be able to use several
+devices in each SSI channel with no problems.
+ 
+The problem you are referring to may be a software issue. I have seen
+applications that switch the SSI chip select to a new device without
+checking if the SSI channel is done receiving or transmitting to the current
+device. That is not a good practice and would cause problems in many SSI
+implementations. If the SSI chip select does not have the proper
+arbitration, you will not get reliable I/O to multiple SSI devices.
+
+I'm working on a project at the moment but will upload the MMC/SD changes
+tonight so you can test them on your board.
+ 
+Regards,
+Jesus Alvarez
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000459.html">[eLua-dev] autorun
+</A></li>
+	<LI>Next message: <A HREF="000462.html">[eLua-dev] autorun
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#460">[ date ]</a>
+              <a href="thread.html#460">[ thread ]</a>
+              <a href="subject.html#460">[ subject ]</a>
+              <a href="author.html#460">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Elua-dev] eLua!
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BElua-dev%5D%20eLua%21&In-Reply-To=%3C81fbe47d0809210915p1aff7e79n1589b47218407fec%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000021.html">
+   <LINK REL="Next"  HREF="000022.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Elua-dev] eLua!</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BElua-dev%5D%20eLua%21&In-Reply-To=%3C81fbe47d0809210915p1aff7e79n1589b47218407fec%40mail.gmail.com%3E"
+       TITLE="[Elua-dev] eLua!">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sun Sep 21 18:15:27 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000021.html">[Elua-dev] eLua!
+</A></li>
+        <LI>Next message: <A HREF="000022.html">[Elua-dev] Fwd:  eLua!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#24">[ date ]</a>
+              <a href="thread.html#24">[ thread ]</a>
+              <a href="subject.html#24">[ subject ]</a>
+              <a href="author.html#24">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+FYI, I tried the first suggestion below (handle pio.PIOx_y and term.KC_xxxx
+via metamethods instead of adding them directly into the table) and the
+memory footprint was reduced.
+
+Before:
+
+eLua# lua -e &quot;print(collectgarbage'count')&quot;
+Press CTRL+Z to exit Lua
+25.03515625
+
+After:
+
+eLua# lua -e &quot;print(collectgarbage'count')&quot;
+Press CTRL+Z to exit Lua
+21.572265625
+
+About 3.5k of memory saved. Quite a save, given the fact that the newly
+introduced uIP port to eLua uses a buffer of only 1024 bytes :)
+The new code for the forementioned modules (pio and term) is in SVN.
+
+Best,
+Bogdan
+
+On Thu, Sep 11, 2008 at 10:12 AM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> You'll find my answers below.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> &gt; Just a quick email to ask if you could look over the RAM numbers we're
+</I>&gt;<i> &gt; getting and see if they are what you'd expect, and whether you had any
+</I>&gt;<i> &gt; thoughts on other variables/ways to get the RAM footprint down. Also,
+</I>&gt;<i> &gt; any thoughts on how much executing the script from flash would save (I
+</I>&gt;<i> &gt; assume it would just be the size of the plain text?).
+</I>&gt;<i> Yes, it would just be the size of the plain text.
+</I>&gt;<i>
+</I>&gt;<i> &gt; ---
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Standard lua, w/ elua libs (pio, uart, pd, timer, term, shell, xmodem,
+</I>&gt;<i> &gt; terminal, romfs):
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; eLua# lua -e 'print(collectgarbage(&quot;count&quot;)..&quot;\n&quot;)'
+</I>&gt;<i> &gt; Press CTRL+Z to exit Lua
+</I>&gt;<i> &gt; 23.0869140625
+</I>&gt;<i> Hmmm, 23k only for Lua + platfrom libs. Interesting, I didn't test
+</I>&gt;<i> this so far. Seems quite large.
+</I>&gt;<i>
+</I>&gt;<i> &gt; Standard lua, no elua libs (but still with shell)
+</I>&gt;<i> The shell itself uses very little RAM. The only part of the shell that
+</I>&gt;<i> uses more RAM (currently 4k) is the &quot;recv&quot; function, but it only
+</I>&gt;<i> allocates RAM on demand (that is, when &quot;recv&quot; is called) and frees it
+</I>&gt;<i> before returning from &quot;recv&quot;.
+</I>&gt;<i>
+</I>&gt;<i> &gt; eLua# lua -e 'print(collectgarbage(&quot;count&quot;)..&quot;\n&quot;)'
+</I>&gt;<i> &gt; Press CTRL+Z to exit Lua
+</I>&gt;<i> &gt; 16.80859375
+</I>&gt;<i> So, all the auxiliary libraries take about 6k of RAM. That's not so
+</I>&gt;<i> bad, but I think this could be improve (more on this later).
+</I>&gt;<i>
+</I>&gt;<i> &gt; Standard lua, no elua libs (but still with shell) + romfs
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; eLua# lua -e 'print(collectgarbage(&quot;count&quot;)..&quot;\n&quot;)'
+</I>&gt;<i> &gt; Press CTRL+Z to exit Lua
+</I>&gt;<i> &gt; 16.80859375
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; (so romfs makes no difference to initial RAM usage)
+</I>&gt;<i> It shouldn't, as it doesn't use buffers, it reads its data directly
+</I>&gt;<i> from the flash memory. When the buffered file systems will be in,
+</I>&gt;<i> things will change, unfortunately. Whatch it though, when you open a
+</I>&gt;<i> file from Lua, it calls &quot;fopen&quot;, which in turn creates a buffer for
+</I>&gt;<i> that file when you first access it (via fread/fwrite). This is how the
+</I>&gt;<i> standard fopen/fread/fwrite... functions work. To overcome this, you
+</I>&gt;<i> could find the implementation of the io.open function (somewhere in
+</I>&gt;<i> liolib.c) and add a call to &quot;setbuf( filepointer, NULL )&quot; after the
+</I>&gt;<i> &quot;fopen&quot; call, thus effectively removing any buffering on that file
+</I>&gt;<i> (eLua already does this for stdout/stderr, but not for stdin, because
+</I>&gt;<i> you need the buffer on that one).
+</I>&gt;<i>
+</I>&gt;<i> &gt; Integer-only lua, w/ elua libs (pio, uart, pd, timer, term, shell,
+</I>&gt;<i> &gt; xmodem, terminal, romfs):
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; eLua# lua -e 'print(collectgarbage(&quot;count&quot;)..&quot;\n&quot;)'
+</I>&gt;<i> &gt; Press CTRL+Z to exit Lua
+</I>&gt;<i> &gt; 17
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Integer-only lua, no elua libs (but still with shell)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; eLua# lua -e 'print(collectgarbage(&quot;count&quot;)..&quot;\n&quot;)'
+</I>&gt;<i> &gt; Press CTRL+Z to exit Lua
+</I>&gt;<i> &gt; 12
+</I>&gt;<i> &gt;
+</I>&gt;<i> So the difference between &quot;bare bones&quot; eLua (no libs, just the shell)
+</I>&gt;<i> in floating point mode and integer only mode is about 4k of memory.
+</I>&gt;<i> Now THIS is interesting, we need to figure out where this comes from
+</I>&gt;<i> and work on this.
+</I>&gt;<i> Now, finally, some ideas to improve RAM usage:
+</I>&gt;<i>
+</I>&gt;<i> - the constants in some of our modules (like PIO.Px_y, term.KC_xxxx)
+</I>&gt;<i> are now written explicitely, and thus consume RAM memory. We could use
+</I>&gt;<i> methamethods (index) instead to &quot;resolve&quot; these constants. This will
+</I>&gt;<i> of course add to the execution time, but I think it's a perfectly good
+</I>&gt;<i> compromise.
+</I>&gt;<i>
+</I>&gt;<i> - remove some of the modules that Lua preloads. The newly released
+</I>&gt;<i> 0.4.1 already removes the &quot;os&quot; and &quot;package&quot; modules, as they're not
+</I>&gt;<i> used anyway, and makes &quot;math&quot; configurable just like the platform
+</I>&gt;<i> modules.
+</I>&gt;<i>
+</I>&gt;<i> - implement &quot;emergency garbage collection&quot;
+</I>&gt;<i> (<A HREF="http://lua-users.org/wiki/EmergencyGarbageCollector">http://lua-users.org/wiki/EmergencyGarbageCollector</A>). I did some
+</I>&gt;<i> tests with this, and it has a very strong impact on the memory
+</I>&gt;<i> consumption (see
+</I>&gt;<i> <A HREF="http://lua-users.org/lists/lua-l/2008-05/threads.html#00023">http://lua-users.org/lists/lua-l/2008-05/threads.html#00023</A> for more
+</I>&gt;<i> details). Unfortunately, it has a very strong impact on the execution
+</I>&gt;<i> speed two (at least on its most aggressive working mode) but this
+</I>&gt;<i> compromise is something one must live with in programming. This is a
+</I>&gt;<i> &quot;must have&quot; for eLua 0.5.
+</I>&gt;<i>
+</I>&gt;<i> - use a memory allocator with a smaller overhead. dlmalloc/TLSF/other
+</I>&gt;<i> seggregated allocators use some sort of &quot;page tables&quot; (TLSF has even a
+</I>&gt;<i> two-level page table) that consumes memory (on TLSF the overhead is as
+</I>&gt;<i> large as 3k!). I have a very simple, very fragmentable, yet very low
+</I>&gt;<i> overhead chained allocator that I wrote myself, and I intend to
+</I>&gt;<i> include it in a future version (maybe 0.5, but I'm not sure at this
+</I>&gt;<i> point). Then again, in my tests, this allocator didn't perform all
+</I>&gt;<i> that well, but this is VERY dependent on the application.
+</I>&gt;<i>
+</I>&gt;<i> - figure out what I mentioned earlier: why the difference between
+</I>&gt;<i> &quot;bare bones&quot; Lua in floating point mode and integer only mode is that
+</I>&gt;<i> large. Obviously it can't be because of the math library, I can't
+</I>&gt;<i> imagine a math library with such a huge RAM consumption (and I should
+</I>&gt;<i> know, I worked on two different math emulation libraries in my past).
+</I>&gt;<i> Could it be just because we don't register the &quot;math&quot; module anymore?
+</I>&gt;<i> It still seems that 4k is a LOT of memory gained from just removing
+</I>&gt;<i> the &quot;math&quot; module. I don't know how to test this, unfortunately.
+</I>&gt;<i>
+</I>&gt;<i> Thanks a lot for this e-mail, I was working on some memory statistics
+</I>&gt;<i> myself, but never for a minute thought about running
+</I>&gt;<i> collectgarbage(&quot;count&quot;), as I completely forgot that collectgarbage
+</I>&gt;<i> can also return the ammount of memory used by Lua :)
+</I>&gt;<i> And, as a personal preference, could we continue this discussion on
+</I>&gt;<i> the elua-dev list?
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20080921/98945954/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20080921/98945954/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000021.html">[Elua-dev] eLua!
+</A></li>
+	<LI>Next message: <A HREF="000022.html">[Elua-dev] Fwd:  eLua!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#24">[ date ]</a>
+              <a href="thread.html#24">[ thread ]</a>
+              <a href="subject.html#24">[ subject ]</a>
+              <a href="author.html#24">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Enabling%20Lua%20Tiny%20Ram%20in%20custom%20Lua%20port&In-Reply-To=%3CCAJ%3DY9Y0jV4cWP7cmmJBZWuzW-NQFYViKFUta88u3MZ9OkTpoHQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003435.html">
+   <LINK REL="Next"  HREF="003437.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Enabling Lua Tiny Ram in custom Lua port</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Enabling%20Lua%20Tiny%20Ram%20in%20custom%20Lua%20port&In-Reply-To=%3CCAJ%3DY9Y0jV4cWP7cmmJBZWuzW-NQFYViKFUta88u3MZ9OkTpoHQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Enabling Lua Tiny Ram in custom Lua port">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Apr  3 03:43:58 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003435.html">[eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+</A></li>
+        <LI>Next message: <A HREF="003437.html">[eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3436">[ date ]</a>
+              <a href="thread.html#3436">[ thread ]</a>
+              <a href="subject.html#3436">[ subject ]</a>
+              <a href="author.html#3436">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Apr 2, 2012 at 12:29 PM, Brent Picasso &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">brent at autosportlabs.com</A>&gt; wrote:
+&gt;<i> Hi Martin,
+</I>&gt;<i>
+</I>&gt;<i> Did a bit more digging- looks like the patch you provided didn't contain all
+</I>&gt;<i> of the optimizations described on the elua LTR page.
+</I>&gt;<i>
+</I>&gt;<i> Specifically, there were quite a few differences in lrotable.c when
+</I>&gt;<i> comparing the patched file to what's currently in the elua project;
+</I>&gt;<i>
+</I>&gt;<i> for example, the references to enable explicit unions is missing:
+</I>&gt;<i>
+</I>&gt;<i> /* Return 1 if the given pointer is a rotable */
+</I>&gt;<i> #ifdef LUA_META_ROTABLES
+</I>&gt;<i> extern char stext[];
+</I>&gt;<i> extern char etext[];
+</I>&gt;<i> int luaR_isrotable(void *p) {
+</I>&gt;<i> &#160; return stext &lt;= ( char* )p &amp;&amp; ( char* )p &lt;= etext;
+</I>&gt;<i> }
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> The patch you provided for lua 5.1.4 - was it just an earlier version, or
+</I>&gt;<i> was it specifically limited for some reason?
+</I>
+The patch that was posted on the mailing list differs from what's now
+in our main repository.  I'm not sure if there's a convenient
+broken-out version of of what's currently applied.  Bogdan might be
+able to answer that one.
+
+If someone does manage to collect this, I'd be appreciative if it gets
+posted to the list as I wouldn't mind putting it on a branch on my Lua
+mirror repository:
+<A HREF="https://github.com/jsnyder/lua">https://github.com/jsnyder/lua</A>
+
+&gt;<i>
+</I>&gt;<i> Thanks for your help!
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Brent Picasso
+</I>&gt;<i> Autosport Labs
+</I>&gt;<i> Technology for Race and Street
+</I>&gt;<i> autosportlabs.com | twitter.com/AutosportLabs
+</I>&gt;<i>
+</I>&gt;<i> On 03/30/2012 03:33 PM, Brent Picasso wrote:
+</I>&gt;<i>
+</I>&gt;<i> Hi Martin,
+</I>&gt;<i>
+</I>&gt;<i> I made some progress on enabling LTR in my port.
+</I>&gt;<i>
+</I>&gt;<i> I got the patch applied and then attempted to register a test function using
+</I>&gt;<i> the instructions here:
+</I>&gt;<i> <A HREF="http://www.eluaproject.net/doc/v0.8/en_arch_ltr.html">http://www.eluaproject.net/doc/v0.8/en_arch_ltr.html</A>
+</I>&gt;<i>
+</I>&gt;<i> specifically, this code:
+</I>&gt;<i>
+</I>&gt;<i> const luaR_entry mod_map[] = // note: no static this time
+</I>&gt;<i> {
+</I>&gt;<i>   { LRO_STRKEY( &quot;f&quot; ), LRO_FUNCVAL( f_implementation ) },
+</I>&gt;<i>   { LRO_NILKEY, LRO_NILVAL }
+</I>&gt;<i> };
+</I>&gt;<i>
+</I>&gt;<i> // note: in this case the &quot;luaopen_mod&quot; function isn't really needed anymore
+</I>&gt;<i> LUALIB_API int luaopen_mod( lua_State *L )
+</I>&gt;<i> {
+</I>&gt;<i>   return 0;
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> declaring my function this way didn't seem to register it correctly with
+</I>&gt;<i> lua; I felt something was missing. So I dug into the implementation of
+</I>&gt;<i> luaI_openlib().
+</I>&gt;<i>
+</I>&gt;<i> Inspecting this function I then came up with a way to manually register
+</I>&gt;<i> functions in a 'light' way using the following macro:
+</I>&gt;<i>
+</I>&gt;<i> #define lua_registerlight(L,n,f) (lua_pushlightfunction(L, (f)),
+</I>&gt;<i> lua_setglobal(L, (n)))
+</I>&gt;<i>
+</I>&gt;<i> I have about 125 functions registered using the standard lua_register() ;
+</I>&gt;<i> switching to lua_registerlight()&#160; netted me a memory usage savings before
+</I>&gt;<i> LTR of
+</I>&gt;<i>
+</I>&gt;<i> 23K to 13K usage as reported by print(collectgarbage(&quot;count&quot;)).&#160; About 10K
+</I>&gt;<i> savings.
+</I>&gt;<i>
+</I>&gt;<i> However, I'm not sure if I'm really using the full capability of the LTR
+</I>&gt;<i> patch.
+</I>&gt;<i>
+</I>&gt;<i> Is the above approach still using RAM for each function registration? Is
+</I>&gt;<i> there a better way to register my C functions with no memory usage?
+</I>&gt;<i>
+</I>&gt;<i> Thank you,
+</I>&gt;<i>
+</I>&gt;<i> Brent Picasso
+</I>&gt;<i> Autosport Labs
+</I>&gt;<i> Technology for Race and Street
+</I>&gt;<i> autosportlabs.com | twitter.com/AutosportLabs
+</I>&gt;<i>
+</I>&gt;<i> On 03/30/2012 06:37 AM, Martin Guy wrote:
+</I>&gt;<i>
+</I>&gt;<i> hi
+</I>&gt;<i>   The Lua tiny ram patch as applicable to plain lua-5.1.4 is attached
+</I>&gt;<i>
+</I>&gt;<i>       M
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003435.html">[eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+</A></li>
+	<LI>Next message: <A HREF="003437.html">[eLua-dev] Enabling Lua Tiny Ram in custom Lua port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3436">[ date ]</a>
+              <a href="thread.html#3436">[ thread ]</a>
+              <a href="subject.html#3436">[ subject ]</a>
+              <a href="author.html#3436">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

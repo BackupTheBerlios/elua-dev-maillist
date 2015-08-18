@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GC Parameters &amp; Emergency Collection
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3C81fbe47d0905111444t62e71a53rfd1857d0915fc73a%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000828.html">
+   <LINK REL="Next"  HREF="000810.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GC Parameters &amp; Emergency Collection</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3C81fbe47d0905111444t62e71a53rfd1857d0915fc73a%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] GC Parameters &amp; Emergency Collection">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon May 11 23:44:49 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000828.html">[eLua-dev] New linux platform for eLua
+</A></li>
+        <LI>Next message: <A HREF="000810.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#807">[ date ]</a>
+              <a href="thread.html#807">[ thread ]</a>
+              <a href="subject.html#807">[ subject ]</a>
+              <a href="author.html#807">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> I agree.  Does the performance hit only show up during a GC (emergency or
+</I>&gt;<i> no)?  I've not clocked any of this yet.
+</I>&gt;<i>
+</I>
+Yes, the performance hit happens only during GC, which becomes a visible
+problem when GC is called too often. But hey, at least your program is
+running :)
+
+
+&gt;<i> In practice I would say since we have a fixed amount of memory, it's really
+</I>&gt;<i> undesirable to fail simply because a garbage collection event wasn't called
+</I>&gt;<i> in time.
+</I>&gt;<i>
+</I>
+Definitely.
+
+
+&gt;<i> The other side is that if the penalty is only at GC time, people could
+</I>&gt;<i> disable collection during time-critical operations.
+</I>&gt;<i>
+</I>
+Definitely, part II :)
+
+
+&gt;<i> I haven't taken a deep look to understand how every part of the patch works
+</I>&gt;<i> yet, but I see that it does provide a configurable of a memory limit.  Maybe
+</I>&gt;<i> another interesting tunable might be how many GC steps to take when an
+</I>&gt;<i> emergency GC is called (i.e.: just enough for the allocation pending, full
+</I>&gt;<i> gc, or something else?)  I'm also still curious about the idea of running GC
+</I>&gt;<i> in fixed timesteps,
+</I>&gt;<i>
+</I>
+I did quite a few tests with Robert's patch a while ago, I really need to
+look for my messages related to this subject on the Lua list and repost them
+here. They're quite interesting.
+
+
+
+&gt;<i> In the interests of pragmatism, I don't think I'd pursue anything more
+</I>&gt;<i> detailed here unless I run up against some situation where it doesn't work
+</I>&gt;<i> as desired. I think, overall, a default of sane incremental collection
+</I>&gt;<i> (maybe with the GCPAUSE set to 110) and a backstop emergency GC should be a
+</I>&gt;<i> good solution for most cases.
+</I>&gt;<i>
+</I>
+I'd say a configurable emergency GC should be a good solution for most
+cases. That is, the user should be able to define how the emergency GC will
+run, which will give him a choice between speed and memory usage. Not hard
+to do, fortunately. Again, things will probably be more clear after I post
+the results of Robert's patch here.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090512/bc131732/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090512/bc131732/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000828.html">[eLua-dev] New linux platform for eLua
+</A></li>
+	<LI>Next message: <A HREF="000810.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#807">[ date ]</a>
+              <a href="thread.html#807">[ thread ]</a>
+              <a href="subject.html#807">[ subject ]</a>
+              <a href="author.html#807">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

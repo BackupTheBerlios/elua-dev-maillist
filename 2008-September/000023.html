@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Elua-dev] eLua cross-compile support added
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BElua-dev%5D%20eLua%20cross-compile%20support%20added&In-Reply-To=%3C81fbe47d0809191420h1c4f6aa1gdd8aa6c8485a879f%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000022.html">
+   <LINK REL="Next"  HREF="000025.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Elua-dev] eLua cross-compile support added</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BElua-dev%5D%20eLua%20cross-compile%20support%20added&In-Reply-To=%3C81fbe47d0809191420h1c4f6aa1gdd8aa6c8485a879f%40mail.gmail.com%3E"
+       TITLE="[Elua-dev] eLua cross-compile support added">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Sep 19 23:20:10 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000022.html">[Elua-dev] Fwd:  eLua!
+</A></li>
+        <LI>Next message: <A HREF="000025.html">[Elua-dev] Site Problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#23">[ date ]</a>
+              <a href="thread.html#23">[ thread ]</a>
+              <a href="subject.html#23">[ subject ]</a>
+              <a href="author.html#23">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I added suppor for cross-compiling eLua source files (for those of you
+unfamiliar with the term, this means that you can compile Lua sources on PC
+and use the compiled binary directly on the target, something that was not
+possible until recently). The cross compiler is based on a patch posted on
+the Lua list recently, slightly modified to work with ARM doubles (which use
+a &quot;non-standard&quot; representaton by default).
+
+To use it:
+
+$ scons -f cross-lua.py
+
+This will build your cross compiler (luac) in the same directory. Then:
+
+$ ./luac -o &lt;out.lc&gt; -ccn float_arm 64 -s &lt;source.lua&gt;
+
+Then upload &lt;out.lc&gt; via XMODEM, or burnt it to the filesystem and use it
+from there. Enjoy :)
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20080920/b1702444/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20080920/b1702444/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000022.html">[Elua-dev] Fwd:  eLua!
+</A></li>
+	<LI>Next message: <A HREF="000025.html">[Elua-dev] Site Problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#23">[ date ]</a>
+              <a href="thread.html#23">[ thread ]</a>
+              <a href="subject.html#23">[ subject ]</a>
+              <a href="author.html#23">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

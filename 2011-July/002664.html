@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAL4-wQreaxFUNwq-Ooth_tKd5h8Xv8BHJbCBAP9vZYZNJMCYew%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002665.html">
+   <LINK REL="Next"  HREF="002667.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAL4-wQreaxFUNwq-Ooth_tKd5h8Xv8BHJbCBAP9vZYZNJMCYew%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">martinwguy at gmail.com
+       </A><BR>
+    <I>Mon Jul 18 19:45:06 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002665.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002667.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2664">[ date ]</a>
+              <a href="thread.html#2664">[ thread ]</a>
+              <a href="subject.html#2664">[ subject ]</a>
+              <a href="author.html#2664">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 13 July 2011 02:17, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> For example, the seismographs here on Mount Etna sample at the rate of
+</I>&gt;<i> 27.27Hz, for which a small solar-powered data collecting station would
+</I>&gt;<i> be perfect, but I don't see how to do this yet.
+</I>
+Ah, it can't be expressed in eLua because free-running ADC frequencies
+are currently integers at the C platform interface.
+
+Changing it to lua_Number and making the associated changes in each
+platform implementation would make this possible, but unfortunately
+six of the adc functions, including adc.setclock(), all go through
+platform_adc_op() which forces the parameters and return values of six
+different functions to be of the same type, u32, whereas in reality
+they are of different types:
+GET_MAXVAL takes nothing and returns an ADC conversion value
+SET_SMOOTHING takes a power-of-two filter length and returns nothing
+SET_BLOCKING takes a boolean and returns nothing
+IS_DONE takes nothing and returns a boolean
+SET_TIMER takes a timer ID and returns nothing
+SET_CLOCK takes a frequency in Hz and returns a frequency in Hz.
+
+The six module functions, adc_getmaxval() and so on, each do their own
+thing for their parameters, then call platform_asdc_op() with a
+different constant &quot;operation&quot; parameter, then platform_adc_op just
+examines the &quot;operation&quot; parameter and does six different, unrelated
+things.
+
+I can't see an advantage to uniting these six functions at the C
+platform interface and attach a patch to make them six separate
+functions, which also makes the documentation simpler and clearer. It
+should also be very slightly faster and saves 26 bytes of code :)
+
+If this seems like a good idea to other people, can someone review
+these changes and check that they work on a platform with a full ADC
+implementation?
+
+I also noticed that the SET_FREERUNNING primitive is undocumented and
+is never called from anywhere, although a lot of platform code checks
+the value of s-&gt;freerunning (which I guess is always 0).  Is this a
+work in progress awaiting completion?
+
+     M
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: elua-separate-adc-ops.patch
+Type: text/x-patch
+Size: 13823 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110718/521d9d40/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20110718/521d9d40/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002665.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002667.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2664">[ date ]</a>
+              <a href="thread.html#2664">[ thread ]</a>
+              <a href="subject.html#2664">[ subject ]</a>
+              <a href="author.html#2664">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4 discovery board?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4%20discovery%20board%3F&In-Reply-To=%3CCANKDJfZaxyscMz-gA0w10Gcxqz-G0Or481g1x6_PWOOgZKHv5w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002863.html">
+   <LINK REL="Next"  HREF="002865.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4 discovery board?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4%20discovery%20board%3F&In-Reply-To=%3CCANKDJfZaxyscMz-gA0w10Gcxqz-G0Or481g1x6_PWOOgZKHv5w%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] stm32f4 discovery board?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Oct 24 08:54:45 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002863.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+        <LI>Next message: <A HREF="002865.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2864">[ date ]</a>
+              <a href="thread.html#2864">[ thread ]</a>
+              <a href="subject.html#2864">[ subject ]</a>
+              <a href="author.html#2864">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Oct 24, 2011 at 6:44 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> OK, I've got it working locally for me with a secondary usb-&gt;serial
+</I>&gt;<i> adapter connected to PB6/PB7 (connected, respectively, to RXD/TXD on
+</I>&gt;<i> the FTDI link).  I took Ned's merge request and started working on
+</I>&gt;<i> integrating the new timer changes, which don't appear to be fully
+</I>&gt;<i> working yet, but it does boot to the shell.
+</I>&gt;<i>
+</I>&gt;<i> I've put my additional hackery based on Ned's pull request here:
+</I>&gt;<i> <A HREF="https://github.com/jsnyder/elua/tree/bikeNomad-master">https://github.com/jsnyder/elua/tree/bikeNomad-master</A>
+</I>&gt;<i>
+</I>&gt;<i> I'm able to get programming working when in DFU mode with
+</I>&gt;<i> dfuse-dfu-util with the following build then dfu-util commands:
+</I>&gt;<i> scons board=STM32F4DSCY prog
+</I>&gt;<i> dfu-util -d 0483:df11 -c 1 -i 0 -a 0 -s 0x08000000 -D
+</I>&gt;<i> elua_lua_stm32f407vg.bin
+</I>&gt;<i>
+</I>&gt;<i> I have not extensively looked at merging the ports into a common
+</I>&gt;<i> directory yet, this was just a first pass to get things booting for me
+</I>&gt;<i> and merged with trunk.  FYI: I did not attempt any merging of the
+</I>&gt;<i> STM32F2 work done by Zhanjun Dong towards using the new system timers
+</I>&gt;<i> so I suspect that doesn't build at the moment.
+</I>&gt;<i>
+</I>
+Just a quick note: the system timer should be easy to adapt. Make sure you
+have a working systick interrupt, then follow the implementation of any of
+the existing M3 platforms (LM3S, STM32, LPC1768). Since all the components
+involved here (the system timer and the interrupt system) are basically the
+same on all of them, you shouldn't have too much work to do.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> Thanks everyone for the various pieces :-)
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Oct 20, 2011 at 11:18 PM, Roger Critchlow &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rec at elf.org</A>&gt; wrote:
+</I>&gt;<i> &gt; And speaking of essential details about the dfuse-dfu-util package, this
+</I>&gt;<i> &gt; option
+</I>&gt;<i> &gt;   -s --dfuse-address address ST DfuSe mode, specify target address for
+</I>&gt;<i> &gt; raw file download or upload. Not applicable for
+</I>&gt;<i> &gt; DfuSe file (.dfu) downloads
+</I>&gt;<i> &gt; is required to download raw .bin files, and the error with it omitted
+</I>&gt;<i> &gt; doesn't help figure that out.
+</I>&gt;<i> &gt; -- rec --
+</I>&gt;<i> &gt; On Thu, Oct 20, 2011 at 8:43 PM, Roger Critchlow &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rec at elf.org</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Thu, Oct 20, 2011 at 8:25 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> &gt;&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; On Wed, Oct 19, 2011 at 1:23 AM, Roger Critchlow &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rec at elf.org</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt; &gt; Eureka, or almost.
+</I>&gt;<i> &gt;&gt;&gt; &gt; The stlink project doesn't write the flash.  The dfu-util project
+</I>&gt;<i> &gt;&gt;&gt; &gt; doesn't
+</I>&gt;<i> &gt;&gt;&gt; &gt; talk to the stm32, and I temporarily bricked my board when I tried
+</I>&gt;<i> &gt;&gt;&gt; &gt; hacking
+</I>&gt;<i> &gt;&gt;&gt; &gt; the protocol.
+</I>&gt;<i> &gt;&gt;&gt; &gt; But this
+</I>&gt;<i> &gt;&gt;&gt; &gt; project,
+</I>&gt;<i> <A HREF="http://gitorious.org/~tormod/unofficial-clones/dfuse-dfu-util,">http://gitorious.org/~tormod/unofficial-clones/dfuse-dfu-util,</A>
+</I>&gt;<i> &gt;&gt;&gt; &gt; just
+</I>&gt;<i> &gt;&gt;&gt; &gt; wrote the demonstration binary back onto the board, so my ex-brick is
+</I>&gt;<i> &gt;&gt;&gt; &gt; now
+</I>&gt;<i> &gt;&gt;&gt; &gt; flashing its leds again.  And it's willing to flash raw .bin files,
+</I>&gt;<i> &gt;&gt;&gt; &gt; too, as
+</I>&gt;<i> &gt;&gt;&gt; &gt; well as the ST v1.1a dfu suffixed files.
+</I>&gt;<i> &gt;&gt;&gt; &gt; My image doesn't work when flashed, but that will be easier to fix
+</I>&gt;<i> with
+</I>&gt;<i> &gt;&gt;&gt; &gt; a
+</I>&gt;<i> &gt;&gt;&gt; &gt; way to flash the image.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; I believe I have this working as well.  Of note for those who might
+</I>&gt;<i> &gt;&gt;&gt; plan to try this tool, for me at least I needed to use the
+</I>&gt;<i> &gt;&gt;&gt; &quot;dfuse-libusb-1.0&quot; branch from the above repo, otherwise it didn't
+</I>&gt;<i> &gt;&gt;&gt; like the dfu image from ST's firmware package.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; Sorry, I should have remembered to mention that essential detail.
+</I>&gt;<i> &gt;&gt; -- rec --
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111024/89f478d1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111024/89f478d1/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002863.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+	<LI>Next message: <A HREF="002865.html">[eLua-dev] stm32f4 discovery board?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2864">[ date ]</a>
+              <a href="thread.html#2864">[ thread ]</a>
+              <a href="subject.html#2864">[ subject ]</a>
+              <a href="author.html#2864">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

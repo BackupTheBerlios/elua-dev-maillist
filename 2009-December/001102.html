@@ -1,0 +1,289 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ##### instead of eLua # in Hyperterminal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%23%23%23%23%23%20instead%20of%20eLua%20%23%20in%20Hyperterminal&In-Reply-To=%3C33644d3c0912091315l3937054epd2af6660415d2c1e%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001100.html">
+   <LINK REL="Next"  HREF="001113.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ##### instead of eLua # in Hyperterminal</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%23%23%23%23%23%20instead%20of%20eLua%20%23%20in%20Hyperterminal&In-Reply-To=%3C33644d3c0912091315l3937054epd2af6660415d2c1e%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] ##### instead of eLua # in Hyperterminal">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Dec  9 22:15:53 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001100.html">[eLua-dev] ##### instead of eLua # in Hyperterminal
+</A></li>
+        <LI>Next message: <A HREF="001113.html">[eLua-dev] ##### instead of eLua # in Hyperterminal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1102">[ date ]</a>
+              <a href="thread.html#1102">[ thread ]</a>
+              <a href="subject.html#1102">[ subject ]</a>
+              <a href="author.html#1102">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Dec 9, 2009 at 8:39 AM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+&gt;<i> Hi, sorry for not replying earlier, I had some trouble with my mac, had to
+</I>&gt;<i> reinstall Mac OS and stuff like that....
+</I>&gt;<i> anyway, those commands gave me this:
+</I>&gt;<i> arm-eabi-gcc --version
+</I>&gt;<i> 4.3.3
+</I>&gt;<i> arm-eabi-gcc --print-multi-lib
+</I>&gt;<i> .;
+</I>&gt;<i> thumb;@mthumb
+</I>&gt;<i> in the folder&#160;$HOME/arm-cs-tools/lib/gcc/arm-eabi/4.3.3/
+</I>&gt;<i> I have a thumb folder, but no thumb2....
+</I>
+Strange.  I've not had this behavior before with this set of
+codesourcery sources.  It should list something like this for the
+multi-lib:
+.;
+thumb;@mthumb
+armv6-m;@<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mthumb at march</A>=armv6-m
+thumb2;@<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mthumb at march</A>=<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">armv7 at mfix-cortex-m3-ldrd</A>
+
+
+&gt;<i> also I should note that I installed gmp and mpfr&#160;through MacPorts....
+</I>&gt;<i> I tried to install using the makefile ( make install-deps ) but it gave me
+</I>&gt;<i> an error....
+</I>
+Hmm.. If you could let me know what error you got there, I can try and
+help.  I'm not sure if using the macports versions of those libraries
+would result in it giving up on doing a multilib build.  I would
+suspect it wouldn't, but I don't know enough about the internals and
+requirements of GCC.
+
+I'm currently wondering if perhaps there's an interaction with some
+environmental variables you have set for bash (or whichever shell
+you're using)?  You could try running through the instructions from a
+fresh user account that has appropriate privileges, or looking at
+environment variables that could change the build process (CFLAGS,
+LDFLAGS, etc..)
+
+&gt;<i>
+</I>&gt;<i> I'll test with the built toolchain that you sent the link.....
+</I>
+That should work, I think.  It's probably actually a 32-bit build
+since I did it before Snow Leopard, but I was using it for some time
+under 10.6 without trouble.
+
+&gt;<i> Best
+</I>&gt;<i> Thiago
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Dec 1, 2009 at 9:35 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Fresh build is working for me from downloading a new copy of 2009Q1
+</I>&gt;&gt;<i> through building.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Let me know what the output of those commands gives you.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Dec 1, 2009 at 4:31 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt; On Tue, Dec 1, 2009 at 1:31 PM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;
+</I>&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt; I built it with codesourcery 2009q1, just like the tutorial said and
+</I>&gt;&gt;<i> &gt;&gt; haven't
+</I>&gt;&gt;<i> &gt;&gt; modified anything...
+</I>&gt;&gt;<i> &gt;&gt; I built the eLua trunk revision 558...
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Just checking...
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; I'm sending the .elf too..
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Yep, it seems to be building for the wrong instruction set. &#160;I haven't
+</I>&gt;&gt;<i> &gt; had this problem with this particular toolchain version (had it with
+</I>&gt;&gt;<i> &gt; 2009Q3).
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I'm doing a fresh build now to double-check that it works from scratch
+</I>&gt;&gt;<i> &gt; for me.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Can you tell me whether there are thumb and/or thumb2 directories in
+</I>&gt;&gt;<i> &gt; this path:
+</I>&gt;&gt;<i> &gt; $HOME/arm-cs-tools/lib/gcc/arm-eabi/4.3.3/
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Also, if you if you could tell me the output of:
+</I>&gt;&gt;<i> &gt; arm-eabi-gcc --version
+</I>&gt;&gt;<i> &gt; arm-eabi-gcc --print-multi-lib
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Also, note, that I actually have a different target name than
+</I>&gt;&gt;<i> &gt; codesourcery's default, for elua you want to have
+</I>&gt;&gt;<i> &gt; toolchain=arm-eabi-gcc
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Lastly, if you want a pre-built version of the toolchain, I have a
+</I>&gt;&gt;<i> &gt; version here:
+</I>&gt;&gt;<i> &gt; <A HREF="http://fanplastic.org/files/arm-cs-tools.zip">http://fanplastic.org/files/arm-cs-tools.zip</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Best.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; -jsnyder
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; thx.
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; Best
+</I>&gt;&gt;<i> &gt;&gt; Thiago
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; On Tue, Dec 1, 2009 at 3:24 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;&gt;<i> &gt;&gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; That output on LM3S suggests that you've encountered a hard fault,
+</I>&gt;&gt;<i> &gt;&gt;&gt; which could be a couple of things.
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; I assume you're using the 2009q1 release of codesourcery's tools, from
+</I>&gt;&gt;<i> &gt;&gt;&gt; the guide?
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; What version of eLua are you attempting to build? Have you adjusted
+</I>&gt;&gt;<i> &gt;&gt;&gt; any configuration parameters or is this straight out of the
+</I>&gt;&gt;<i> &gt;&gt;&gt; repository?
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; Based on some recent experience, It may be that your compiler didn't
+</I>&gt;&gt;<i> &gt;&gt;&gt; build with multilib support properly enabled and is linking in thumb
+</I>&gt;&gt;<i> &gt;&gt;&gt; code instead of thumb2 code, but I believe 2009q1 should build
+</I>&gt;&gt;<i> &gt;&gt;&gt; correctly with the instructions that are currently up.
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; If you want to send me your .elf file from the build, I should be able
+</I>&gt;&gt;<i> &gt;&gt;&gt; to check if that's happening.
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; Best.
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; -jsnyder
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; On Tue, Dec 1, 2009 at 9:29 AM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; Hi,
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; I'm having some trouble trying to program an LM3S8962 ( in a
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; EK-LM3S8962
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; board from Luminary Micro ).
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; I'm using Mac OS X Snow Leopard to build eLua using the toolchain
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; from
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; this
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; site:
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; <A HREF="http://fanplastic.org/gcc-for-arm-eabi/">http://fanplastic.org/gcc-for-arm-eabi/</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; It builds OK, but when I flash it and the open Hyperterminal ( in a
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; Windows
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; XP VM in Parallels ) I get ##### instead of eLua # and it ignores
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; anything I
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; type...
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; Best
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; Thiago
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; Elua-dev mailing list
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; --
+</I>&gt;&gt;<i> &gt;&gt;&gt; James Snyder
+</I>&gt;&gt;<i> &gt;&gt;&gt; Biomedical Engineering
+</I>&gt;&gt;<i> &gt;&gt;&gt; Northwestern University
+</I>&gt;&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; Phone: (847) 448-0386
+</I>&gt;&gt;<i> &gt;&gt;&gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt;&gt; Elua-dev mailing list
+</I>&gt;&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt; Elua-dev mailing list
+</I>&gt;&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; --
+</I>&gt;&gt;<i> &gt; James Snyder
+</I>&gt;&gt;<i> &gt; Biomedical Engineering
+</I>&gt;&gt;<i> &gt; Northwestern University
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;&gt;<i> &gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> &gt; Phone: (847) 448-0386
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> Phone: (847) 448-0386
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001100.html">[eLua-dev] ##### instead of eLua # in Hyperterminal
+</A></li>
+	<LI>Next message: <A HREF="001113.html">[eLua-dev] ##### instead of eLua # in Hyperterminal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1102">[ date ]</a>
+              <a href="thread.html#1102">[ thread ]</a>
+              <a href="subject.html#1102">[ subject ]</a>
+              <a href="author.html#1102">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

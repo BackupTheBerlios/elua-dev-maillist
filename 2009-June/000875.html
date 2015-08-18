@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ARM Float Endianness
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ARM%20Float%20Endianness&In-Reply-To=%3CEMEWEMEW2_DELIMl5LNsxcc38277bca8d68e9d75f87%2C%0A%09jbsnyder%40fanplastic.org%2C%2025638013.611245732880351.J%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000874.html">
+   <LINK REL="Next"  HREF="000876.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ARM Float Endianness</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ARM%20Float%20Endianness&In-Reply-To=%3CEMEWEMEW2_DELIMl5LNsxcc38277bca8d68e9d75f87%2C%0A%09jbsnyder%40fanplastic.org%2C%2025638013.611245732880351.J%3E"
+       TITLE="[eLua-dev] ARM Float Endianness">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Jun 23 06:54:58 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000874.html">[eLua-dev] Quick Notes on LuaRPC
+</A></li>
+        <LI>Next message: <A HREF="000876.html">[eLua-dev] ARM Float Endianness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#875">[ date ]</a>
+              <a href="thread.html#875">[ thread ]</a>
+              <a href="subject.html#875">[ subject ]</a>
+              <a href="author.html#875">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I have a quick question about ARM float endianness, since I can't seem to find a concise listing of what devices &amp; compiler situations result in the four upper and lower bytes in an ARM float being flipped.
+
+I'm thinking about trying to include some sort of test for this, but I'd like to be able to use a configuration that has things flipped so that I can test things, and also know when to expect this behavior.
+
+It looks like, from the beta docs, that it simply depends on whether or not one is using an EABI or non-EABI compiler toolchain.  I believe I've heard elsewhere that it's related to device type, and therefore I'm now just unsure :-)
+
+I'm thinking that it would be nice to do something like the following for float enabled cases:
+1. set some float to a particular value
+2. use a union or cast to look at the individual bytes and determine what pattern it might match.
+
+Certainly there could also be some defines or something else to clue things in at compile time, but autodetection would be nice in the sense that it isn't dependent on the compiler defining something to clue the code in.  I'm not sure if there's fragility built into such an approach though.
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000874.html">[eLua-dev] Quick Notes on LuaRPC
+</A></li>
+	<LI>Next message: <A HREF="000876.html">[eLua-dev] ARM Float Endianness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#875">[ date ]</a>
+              <a href="thread.html#875">[ thread ]</a>
+              <a href="subject.html#875">[ subject ]</a>
+              <a href="author.html#875">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

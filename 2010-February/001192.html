@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua net module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module&In-Reply-To=%3C834ae5d11002121145n5163cbabxea7ae6942b877247%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001191.html">
+   <LINK REL="Next"  HREF="001200.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua net module</H1>
+    <B>T&#233;o Benjamin</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20net%20module&In-Reply-To=%3C834ae5d11002121145n5163cbabxea7ae6942b877247%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua net module">teo.benjamin at gmail.com
+       </A><BR>
+    <I>Fri Feb 12 20:45:23 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001191.html">[eLua-dev] eLua net module
+</A></li>
+        <LI>Next message: <A HREF="001200.html">[eLua-dev] eLua net module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1192">[ date ]</a>
+              <a href="thread.html#1192">[ thread ]</a>
+              <a href="subject.html#1192">[ subject ]</a>
+              <a href="author.html#1192">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've done that, but it did not work. The function net.send didn't send
+nothing at all.
+I really think I have to close the socket and use another one (in this case,
+it would be the same, but coming from another call of net.socket)
+
+On Fri, Feb 12, 2010 at 5:08 PM, Pedro Bittencourt &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+
+&gt;<i> I think that's the way it works
+</I>&gt;<i> net.close closes the connection of a socket, but the socket itself is still
+</I>&gt;<i> there. You may create a new connection on the same socket after closing
+</I>&gt;<i> another.
+</I>&gt;<i>
+</I>&gt;<i> something like:
+</I>&gt;<i>
+</I>&gt;<i> local sock = net.socket(0)
+</I>&gt;&gt;<i> err  = net.connect(sock,ip,port)
+</I>&gt;&gt;<i> ...do something (send stuff for exemple)
+</I>&gt;&gt;<i> net.close(sock)
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> now to connect with other host, do something like:
+</I>&gt;<i>
+</I>&gt;<i> net.connect(sock,anotherIp,anotherPort)
+</I>&gt;&gt;<i> ...do something
+</I>&gt;&gt;<i> net.close(sock)
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> with the same socket
+</I>&gt;<i>
+</I>&gt;<i> --Pedro Bittencourt
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Feb 12, 2010 at 4:42 PM, T&#233;o Benjamin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">teo.benjamin at gmail.com</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i> I think we have found a bug in the eLua net module.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> We were trying to use the net module to send messages to a local server
+</I>&gt;&gt;<i> here from a LM3S board.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The problem is: when we call  net.socket( net.SOCK_STREAM ), it works
+</I>&gt;&gt;<i> fine, giving us the socket 0. The second time we do it (after calling
+</I>&gt;&gt;<i> net.close( socket ), the function returns the socket 1 as the next avaiable
+</I>&gt;&gt;<i> socket. After that, it returns 2, 3 ... At some point, it return -1, because
+</I>&gt;&gt;<i> there are, supposedly, any free sockets left.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> After a lot of tests here, I think the function net.close( socket ) is not
+</I>&gt;&gt;<i> working fine. It seems to close the connection (apparently), but it don't
+</I>&gt;&gt;<i> free the socket.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Is there a bug in the eLua module or we just missunderstood the
+</I>&gt;&gt;<i> implementation?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Any guess?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks,
+</I>&gt;&gt;<i> T&#233;o
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100212/2d208296/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100212/2d208296/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001191.html">[eLua-dev] eLua net module
+</A></li>
+	<LI>Next message: <A HREF="001200.html">[eLua-dev] eLua net module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1192">[ date ]</a>
+              <a href="thread.html#1192">[ thread ]</a>
+              <a href="subject.html#1192">[ subject ]</a>
+              <a href="author.html#1192">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

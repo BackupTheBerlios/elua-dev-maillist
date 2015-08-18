@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Getting Started
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Getting%20Started&In-Reply-To=%3CCAJ%3DY9Y1-MgHEVwhner7wrXmjr1pBpmFhvidzWdrerO0t7rVz5A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002726.html">
+   <LINK REL="Next"  HREF="002729.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Getting Started</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Getting%20Started&In-Reply-To=%3CCAJ%3DY9Y1-MgHEVwhner7wrXmjr1pBpmFhvidzWdrerO0t7rVz5A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Getting Started">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Sep 20 20:30:44 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002726.html">[eLua-dev] Getting Started
+</A></li>
+        <LI>Next message: <A HREF="002729.html">[eLua-dev] Getting Started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2728">[ date ]</a>
+              <a href="thread.html#2728">[ thread ]</a>
+              <a href="subject.html#2728">[ subject ]</a>
+              <a href="author.html#2728">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Sep 20, 2011 at 9:50 AM,  &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">kyasi at gis.net</A>&gt; wrote:
+&gt;<i> Hello James
+</I>&gt;<i>
+</I>&gt;<i> Again, thank you for taking the time to help.
+</I>&gt;<i> I tried to load your &#160;generic elua files to my EVK1100 board.
+</I>&gt;<i> I had no problem programming or verifying the flash image, but i get
+</I>&gt;<i> no prompt's and it accepts no input.
+</I>&gt;<i> The best i can tell is i just get a null &#160;0x00 or BREAK sent out the
+</I>&gt;<i> serial port to the terminal emulator program.
+</I>&gt;<i>
+</I>&gt;<i> Maybe when you get some time you can just verify that it does work ok on
+</I>&gt;<i> your board and system. At least that will give me confidence that the
+</I>&gt;<i> image i have works on someones board.
+</I>
+I'll take a look at it tonight.  I thought I had built an image using
+the same toolchain and config options the day before, but perhaps I
+made a mistake.
+
+&gt;<i>
+</I>&gt;<i> Also just to make sure, i ran another app that uses the serial port on
+</I>&gt;<i> the EVK1100 and it works just fine, so there is no hardware issue that i
+</I>&gt;<i> can find on my end.
+</I>&gt;<i>
+</I>&gt;<i> I wonder if anyone has tried to create an AVR Studio 5 project using the
+</I>&gt;<i> elua source directory install ? This would make debugging a lot easier.
+</I>&gt;<i> Studio 5 lets you create links to existing files, so the download of the
+</I>&gt;<i> source directory structure could stay in tack, and a studio 5 project
+</I>&gt;<i> could link to all the revelent source files needed to build,run and
+</I>&gt;<i> debug the project for the AVR32 platform.
+</I>&gt;<i>
+</I>&gt;<i> I understand the need for a common build platform to support the many
+</I>&gt;<i> other platforms for eLua, but Since Studio 5 is free and it supports
+</I>&gt;<i> AVR32 and should be able to use the eLua source download as is, it would
+</I>&gt;<i> make things a lot easier.
+</I>
+I've not installed AVR Studio 5 before, but to my understanding it
+should contain avr32-gcc and much of the cross-compiling toolchain.
+To that you would likely just need to add Lua and maybe a native
+compiler for your platform depending on what you need to build (Python
+is somewhat optional now).  What platform are you on?
+
+Regarding making it into a Studio 5 project, I suppose you could just
+import all the headers and files into a project and compile, with some
+modifications to pass appropriate defines to the compiler and possibly
+some other things.  Some things definitely would not work though like
+dynamically constructing the romfs filesystem and some of our plans to
+overhaul the configuration system to make it a bit simpler to select
+compile-time options.
+
+&gt;<i>
+</I>&gt;<i> Once i understand eLua better maybe i will give it a try.
+</I>&gt;<i>
+</I>&gt;<i> Regarding the eLuawebserver, this sure has great potential but something
+</I>&gt;<i> is not working well on my system. Things like the Ajax demo that only
+</I>&gt;<i> changes a few parameters like &quot;Light&quot;, works really well, and is quite
+</I>&gt;<i> fast, but updating pages from sd card is very slow as described before,
+</I>&gt;<i> and if you let the webserver run for a while, it locks up and you have
+</I>&gt;<i> to reset the board to get things back. Not sure what that is.
+</I>
+Again, I can't speak much to that fork or expected performance with
+it.  When I experimented with it a bit, I experienced some similar
+difficulties.
+
+&gt;<i>
+</I>&gt;<i> Again, i very much appreciate your help in &quot;getting started &quot;
+</I>
+No problem.  I'm sorry there seem to be so many hurdles in getting the
+basics going.  I'll put up an image after I've checked that it's
+working on my EVK1100.
+
+Best.
+
+-jsnyder
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002726.html">[eLua-dev] Getting Started
+</A></li>
+	<LI>Next message: <A HREF="002729.html">[eLua-dev] Getting Started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2728">[ date ]</a>
+              <a href="thread.html#2728">[ thread ]</a>
+              <a href="subject.html#2728">[ subject ]</a>
+              <a href="author.html#2728">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

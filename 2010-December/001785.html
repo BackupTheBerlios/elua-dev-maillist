@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] What can I do?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3CAANLkTikCBFxzXWbMSh_YmQd4X8oef2%2BVWAYB4xQbst_7%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001784.html">
+   <LINK REL="Next"  HREF="001787.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] What can I do?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3CAANLkTikCBFxzXWbMSh_YmQd4X8oef2%2BVWAYB4xQbst_7%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] What can I do?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Dec  9 01:48:04 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001784.html">[eLua-dev] What can I do?
+</A></li>
+        <LI>Next message: <A HREF="001787.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1785">[ date ]</a>
+              <a href="thread.html#1785">[ thread ]</a>
+              <a href="subject.html#1785">[ subject ]</a>
+              <a href="author.html#1785">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Dec 8, 2010 at 4:02 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Wed, Dec 8, 2010 at 6:54 PM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> -----Original Message-----
+</I>&gt;&gt;&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+</I>&gt;&gt;&gt;<i> Sent: 08 December 2010 14:22
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> They are asynchronous in the sense that they can interrupt the regular
+</I>&gt;&gt;&gt;<i> Lua program flow at any time and execute another function (the
+</I>&gt;&gt;&gt;<i> interrupt handler) instead.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Surely not? Can you interrupt Lua code at any point, run a different Lua
+</I>&gt;&gt;<i> function and then return to the original Lua code where it left off? All in
+</I>&gt;&gt;<i> the same Lua State?
+</I>&gt;<i>
+</I>&gt;<i> You can interrupt it at almost any point using lua_sethook:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://pgl.yoyo.org/luai/i/lua_sethook">http://pgl.yoyo.org/luai/i/lua_sethook</A>
+</I>&gt;<i>
+</I>&gt;<i> This is what the Lua interrupt support is currently using: a count
+</I>&gt;<i> hook (LUA_MASKCOUNT) with count = 2 (to give the &quot;regular&quot; Lua code a
+</I>&gt;<i> chance to execute even if a &quot;storm&quot; of interrupts is received). So
+</I>&gt;<i> every 2 Lua VM instructions a hook function is executed, which in turn
+</I>&gt;<i> checks if any interrupt is queued and calls the corresponding handler
+</I>&gt;<i> if it is (src/elua_int.c:elua_int_hook).
+</I>&gt;<i>
+</I>&gt;&gt;<i> I understand if you mean run a C interrupt handler
+</I>&gt;&gt;<i> asynchronously and then resume the interrupted Lua code. Point is that the
+</I>&gt;&gt;<i> Lua programmer cannot write a true asynchronous interrupt handler, only poll
+</I>&gt;&gt;<i> &quot;pre-cooked&quot; ones provided in the runtime. Any Lua code run as a result of
+</I>&gt;&gt;<i> an interrupt has to be serialised and can only run when the currently
+</I>&gt;&gt;<i> running code terminates. Or have I missed a trick?
+</I>&gt;<i>
+</I>&gt;<i> The one above probably :)
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> I must confess that I don't fully understand this model yet. Oh well,
+</I>&gt;&gt;&gt;<i> another reason for me to order that book :) I should've done it a long
+</I>&gt;&gt;&gt;<i> time ago anyway.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Check your gmail - there should be a nice surprise!
+</I>&gt;<i>
+</I>&gt;<i> Thank you very much for the surprise!
+</I>&gt;<i>
+</I>&gt;&gt;<i> Rupin's approach is
+</I>&gt;&gt;<i> designed for operation in a multi-tasking operating system using native
+</I>&gt;&gt;<i> threads to run pre-cooked C routines. I'm suggesting these routines could be
+</I>&gt;&gt;<i> substituted by ISR code on a bare metal microcontroller implementation. The
+</I>&gt;&gt;<i> key point is that an enhanced &quot;yield&quot; method specifies to the scheduler the
+</I>&gt;&gt;<i> conditions under which the coroutine should be resumed.
+</I>&gt;<i>
+</I>&gt;<i> The problem here is that we don't have native threads yet. I was
+</I>&gt;<i> trying to avoid adding an OS to eLua, even a minimal one, but I'm
+</I>&gt;<i> currently reconsidering that position.
+</I>
+I think we can get away with not using real stack-needing threads for
+things like this.  I'm jumping back in to this conversation more than
+a few steps later than when I last chimed in, but I think there might
+be a way to meld these two concepts together.
+
+With eLua ISRs there isn't an explicit scheduler, just a queue that
+gets examined every two VM instructions.  This provides a coarse
+grained pre-emptive model for handling ISRs. This could be adapted to
+provide some of the functionality that John is describing by allowing
+for different types of events to trigger Lua ISR calls.  There is also
+the difference that John/Rupin's version makes use of coroutines
+instead of functions to allow for a given &quot;thread&quot; of execution to
+have points where it yields control, but expects to be resumed at a
+later time.  This has an advantage over pure function handlers in that
+when yielding the coroutine has its scope saved, which will come back
+when it gets resumed.  I presume you could get some of this by using
+closures with the current model, but there is something to be said for
+mixing these concepts together together so that if one knows a given
+thread won't be able to do something until new data comes in, it would
+be wasteful to have it sit in a loop polling for something and have
+that be pre-empted in order for anything else to happen, when instead
+you could have the ISR facility allow a coroutine to &quot;yield&quot; or
+&quot;select&quot; by asking the ISR facility to resume it when a given event
+comes in.
+
+Unless I've completely glossed over things, this would seem to provide
+the benefits of pre-emptive ISRs and select-like behavior under a
+single model?  Of course the Lua ISR system would need to be adapted
+to not only handle functions, but do the right thing with coroutines.
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001784.html">[eLua-dev] What can I do?
+</A></li>
+	<LI>Next message: <A HREF="001787.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1785">[ date ]</a>
+              <a href="thread.html#1785">[ thread ]</a>
+              <a href="subject.html#1785">[ subject ]</a>
+              <a href="author.html#1785">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

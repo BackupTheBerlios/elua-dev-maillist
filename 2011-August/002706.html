@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LTR compatible wrappers with SWIG for eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LTR%20compatible%20wrappers%20with%20SWIG%20for%20eLua&In-Reply-To=%3CCAOO8fwmdK8pOcE44zsX0pK6VnaSpO7uhWzjeW-HsL5dx_1FECA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002703.html">
+   <LINK REL="Next"  HREF="002699.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LTR compatible wrappers with SWIG for eLua</H1>
+    <B>raman</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LTR%20compatible%20wrappers%20with%20SWIG%20for%20eLua&In-Reply-To=%3CCAOO8fwmdK8pOcE44zsX0pK6VnaSpO7uhWzjeW-HsL5dx_1FECA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] LTR compatible wrappers with SWIG for eLua">ramangopalan at gmail.com
+       </A><BR>
+    <I>Mon Aug  8 19:47:38 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002703.html">[eLua-dev] LTR compatible wrappers with SWIG for eLua
+</A></li>
+        <LI>Next message: <A HREF="002699.html">[eLua-dev] Buy service customization (LPC2468)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2706">[ date ]</a>
+              <a href="thread.html#2706">[ thread ]</a>
+              <a href="subject.html#2706">[ subject ]</a>
+              <a href="author.html#2706">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I guess one question is, how monolithic is SWIG and its language modules?  I
+&gt;<i> presume they don't just work like plugins and that with the current
+</I>&gt;<i> implementation you'd end up having to maintain a patch against SWIG unless
+</I>&gt;<i> it gets integrated?
+</I>&gt;<i>
+</I>
+&gt;<i> Is there any way with SWIG to make some of the interface generation
+</I>&gt;<i> optional? I.e.: to kindof make the Lua support &quot;flavors&quot; of Lua? Or, does it
+</I>&gt;<i> pretty much have to generate code that would be compatible with both from a
+</I>&gt;<i> given interface file?  If SWIG doesn't have this as a feature, I wonder
+</I>&gt;<i> whether this might be useful for them?  We are getting into an age where
+</I>&gt;<i> languages have multiple implementations (Python, Ruby, Lua among others..),
+</I>&gt;<i> sometimes these implementations will have differing native C APIs I think as
+</I>&gt;<i> well?
+</I>&gt;<i>
+</I>
+Certainly. This is very much possible. We can support the eLua flavor on
+regular SWIG Lua. I have also implemented it.
+I have merged the language modules 'elua' and 'eluac' with SWIG Lua. This
+flavor of Lua can be accessed from command
+line with the switches '-lua -elua0.8' &amp; '-lua -eluac0.8'. (Issue swig -lua
+-help). For now, SWIG will support elua0.8. Since
+the LTR semantics may change in the future, a provision for compatibility
+with previous versions of eLua is thought of and
+is possible.The existing version can be modified to support the newer
+versions of eLua in the future. Please find the source
+tree on sourceforge:
+<A HREF="http://sourceforge.net/projects/eluaswig/files/eluaswig1.0.tar.gz/download">http://sourceforge.net/projects/eluaswig/files/eluaswig1.0.tar.gz/download</A>
+
+I'm not sure how much of your work might translate to other tools since I've
+&gt;<i> not implemented a language with SWIG before or delved into its inner
+</I>&gt;<i> workings.  There are some other Lua binding generators out there, like tolua
+</I>&gt;<i> (<A HREF="http://www.tecgraf.puc-rio.br/~celes/tolua/">http://www.tecgraf.puc-rio.br/~celes/tolua/</A>) which appears to be written
+</I>&gt;<i> in C and have similar functionality to what SWIG does.  There's also
+</I>&gt;<i> LuaNativeObjects (<A HREF="https://github.com/Neopallium/LuaNativeObjects">https://github.com/Neopallium/LuaNativeObjects</A>) which is
+</I>&gt;<i> written in Lua.
+</I>&gt;<i>
+</I>
+Yes, I have worked with tolua but like you said SWIG is matured and a well
+maintained project. Based on working experience,
+I was able to conclude that SWIG does a far superior job than tolua, 5.1.4
+
+&gt;<i>
+</I>&gt;<i> On the one hand it might be nice to be able to use something like SWIG
+</I>&gt;<i> which is a mature, well maintained project, but on the other hand.. if we're
+</I>&gt;<i> adding dependencies to our build system, it's also nice if we can implement
+</I>&gt;<i> it in pure Lua so that we don't actually have to add an external dependency.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+Yes, when it comes to dependencies, it will take a hit. :(
+
+
+&gt;<i> We also _do_ have a newer build system that Bogdan has worked on
+</I>&gt;<i> implemented in Lua that potentially something like this could be integrated
+</I>&gt;<i> into, since part of what we'd like to do there is auto-generate the
+</I>&gt;<i> platform_conf.h and move some of what we have in C preprocessor into Lua.
+</I>&gt;<i>
+</I>
+
+&gt;<i> Awesome :). That's very interesting
+</I>&gt;<i>
+</I>
+Awaiting your response.
+
+Raman
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> (P.S.: Sometimes Dave Beazley comes to the Python user group meetings where
+</I>&gt;<i> I am so if you need me to bug him about anything in person... :-) )
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Awaiting your response.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Raman
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> View this message in context:
+</I>&gt;&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6652705.html">http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6652705.html</A>
+</I>&gt;&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> [hidden email] &lt;<A HREF="http://user/SendEmail.jtp?type=node&amp;node=6655197&amp;i=1">http://user/SendEmail.jtp?type=node&amp;node=6655197&amp;i=1</A>&gt;
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> [hidden email] &lt;<A HREF="http://user/SendEmail.jtp?type=node&amp;node=6655197&amp;i=2">http://user/SendEmail.jtp?type=node&amp;node=6655197&amp;i=2</A>&gt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i>  If you reply to this email, your message will be added to the discussion
+</I>&gt;<i> below:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6655197.html">http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6655197.html</A>
+</I>&gt;<i>  To unsubscribe from LTR compatible wrappers with SWIG for eLua, click
+</I>&gt;<i> here&lt;<A HREF="http://elua-development.2368040.n2.nabble.com/template/NamlServlet.jtp?macro=unsubscribe_by_code&amp;node=6636280&amp;code=cmFtYW5nb3BhbGFuQGdtYWlsLmNvbXw2NjM2MjgwfC0xNzc4MjU3MDY2">http://elua-development.2368040.n2.nabble.com/template/NamlServlet.jtp?macro=unsubscribe_by_code&amp;node=6636280&amp;code=cmFtYW5nb3BhbGFuQGdtYWlsLmNvbXw2NjM2MjgwfC0xNzc4MjU3MDY2</A>&gt;.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6665214.html">http://elua-development.2368040.n2.nabble.com/LTR-compatible-wrappers-with-SWIG-for-eLua-tp6636280p6665214.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110808/ff9e1267/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110808/ff9e1267/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002703.html">[eLua-dev] LTR compatible wrappers with SWIG for eLua
+</A></li>
+	<LI>Next message: <A HREF="002699.html">[eLua-dev] Buy service customization (LPC2468)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2706">[ date ]</a>
+              <a href="thread.html#2706">[ thread ]</a>
+              <a href="subject.html#2706">[ subject ]</a>
+              <a href="author.html#2706">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

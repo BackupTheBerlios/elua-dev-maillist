@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] extreme small
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20extreme%20small&In-Reply-To=%3CCANKDJfbyodwhm8eE6bxpqb0Prih1LUFAcuQJyRwKbQwiWPvwUA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003749.html">
+   <LINK REL="Next"  HREF="003751.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] extreme small</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20extreme%20small&In-Reply-To=%3CCANKDJfbyodwhm8eE6bxpqb0Prih1LUFAcuQJyRwKbQwiWPvwUA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] extreme small">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Jul 27 10:06:11 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003749.html">[eLua-dev] extreme small
+</A></li>
+        <LI>Next message: <A HREF="003751.html">[eLua-dev] extreme small
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3750">[ date ]</a>
+              <a href="thread.html#3750">[ thread ]</a>
+              <a href="subject.html#3750">[ subject ]</a>
+              <a href="author.html#3750">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Fri, Jul 27, 2012 at 12:30 AM, Tim Van Der Hulst
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tim at agfirstbop.co.nz</A>&gt; wrote:
+&gt;<i> Hi Bogdan,
+</I>&gt;<i>
+</I>&gt;<i> Main problem is am getting out of memory errors. I assumed the VM would be smart enough to swap out unused memory so it didnt need to keep all my code in memory but that seems like an oversight on my part?
+</I>
+This probably needs some clarifications. What you're getting are out
+of memory errors for RAM. On the Lua side, this can come from:
+
+- the code. With the latest eLua patches to Lua, you can execute
+_bytecode_ (only bytecode!) directly from the Flash, without having to
+load it to RAM. To do that, you need to cross-compile your Lua code on
+the host side (<A HREF="http://www.eluaproject.net/doc/master/en_using.html#cross">http://www.eluaproject.net/doc/master/en_using.html#cross</A>)
+and upload the resulting bytecode file to your board using either
+ROMFS or WOFS. Please let me know if you need more details on this,
+I'm a bit busy at the moment and I can't get into much details.
+- the data. Each type in Lua is allocated on the heap (malloc and
+friends) (yes, even numbers). Unfortunately, this is something we
+can't really control much (although we have some patches here too,
+their effect isn't nearly as dramatic as the above &quot;bytecode from
+Flash&quot; optimization). I'm afraid the VM is unable to swap anything in
+the absence of a hardware MMU, which we don't have. You can also try
+to change the EGC patch with aggresive triggering, more about the
+subject here:
+
+<A HREF="http://www.eluaproject.net/doc/master/en_elua_egc.html">http://www.eluaproject.net/doc/master/en_elua_egc.html</A>
+
+(the most aggresive mode means enabling EGC_ON_ALLOC_FAILURE +
+EGC_ON_MEM_LIMIT + EGC_ALWAYS with a 'limit' parameter that suits your
+needs).
+
+&gt;<i> I would happily trade CPU cycles for extra memory. 99% of the time my app is going to be in sleep mode except when logging so speed is not important.
+</I>&gt;<i>
+</I>&gt;<i> I am also confused by the WOFS as it seems like its a one shot write to Flash and then when you write it again, does it update the same memory space or occupy more memory,
+</I>
+More memory. This is transparent though.
+
+&gt;<i> what happens if you write too often and run out of space, then you would have to flash the firmware again no?
+</I>
+No, you can use &quot;wofmt&quot; from the shell and this will clear the WOFS
+(and ONLY the WOFS) to a blank state (extremely similar to a 'format'
+(DOS) or 'mkfs' (UNIX) command). This is documented here:
+
+<A HREF="http://www.eluaproject.net/doc/master/en_arch_wofs.html">http://www.eluaproject.net/doc/master/en_arch_wofs.html</A>
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i>
+</I>&gt;<i> Martin, apologies, hijacked another/existing thread, sorry old habbits die hard :(
+</I>&gt;<i>
+</I>&gt;<i> TiM
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ----- Original Message -----
+</I>&gt;<i> From: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> Sent: Friday, July 27, 2012 8:33:01 AM
+</I>&gt;<i> Subject: Re: [eLua-dev] extreme small
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Jul 26, 2012 at 12:04 AM, Tim Van Der Hulst
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tim at agfirstbop.co.nz</A>&gt; wrote:
+</I>&gt;&gt;<i> Martin,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Some advise if you please. I am using STM32 (64K SRAM) and my project is built around 5 modules plus one additional module per sensor (in our case its soil moisture + weather station sensors (wind direction,rain,etc) which equates in KB to (20+6+8+2+2+ approx 1 K per sensor), Roughly 40K.
+</I>&gt;<i>
+</I>&gt;<i> That sounds like an extremely cool application.
+</I>&gt;<i>
+</I>&gt;&gt;<i> With precompiling several of the larger modules I can just manage to load the code from MMC and it runs fine day and night. If I put the modules on the ROM it seems to use about a 1/3 less memory however these modules are still a work in progress so even when we have some units in the field I intend to remotely upgrade them hence the only code (autorun.lua) I want on the ROM is a small bootstrap routine to load some config off the MMC and then kick off a script running on the MMC.
+</I>&gt;<i>
+</I>&gt;<i> Have you tried our new WOFS
+</I>&gt;<i> (<A HREF="http://www.eluaproject.net/doc/master/en_arch_wofs.html">http://www.eluaproject.net/doc/master/en_arch_wofs.html</A>) ? It seems
+</I>&gt;<i> to cover your needs nd it works currently on the STM32F1 subfamily
+</I>&gt;<i> (can be easily extended for other STM32 subfamilies)
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> My code is completely unoptimized so I am not worried as I can always give it a good squeeze if needed but I would rather not have to if it could be avoided. RAD, rather than performance being the name of the game at this stage..
+</I>&gt;<i>
+</I>&gt;<i> I'm sorry, I'm not sure I understand what exactly you need help for.
+</I>&gt;<i> What's the problem at the moment? Too much flash? Too much RAM?
+</I>&gt;<i> Something else?
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Any advice appreciated,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> TiM
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ----- Original Message -----
+</I>&gt;&gt;<i> From: &quot;Martin Guy&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;<i> Sent: Wednesday, July 25, 2012 9:37:56 PM
+</I>&gt;&gt;<i> Subject: Re: [eLua-dev] extreme small
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 24 July 2012 22:19, Karoly Molnar &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">molnarkaroly at hotmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> For anyone interested but not knowing about XMOS (www.xmos.com): It is
+</I>&gt;&gt;&gt;<i> running on 4 or 500MHz, single, dual or quad core, 8 real time threads per
+</I>&gt;&gt;&gt;<i> core, so it is fairly fast. Dev environment is free and low cost EVBs with
+</I>&gt;&gt;&gt;<i> JTAG debugging are available.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> But there is only 64K dedicated memory (RAM, actually) available for each
+</I>&gt;&gt;&gt;<i> core :-S (256K for quad core). It is possible to extend this with external
+</I>&gt;&gt;&gt;<i> SRAM but only by software emulation of data and address lines; so the
+</I>&gt;&gt;&gt;<i> extension would be slow, possibly enough for the script itself but not for
+</I>&gt;&gt;&gt;<i> the engine.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Elua is fine in 64KB, low RAM usage being one of its strong points,
+</I>&gt;&gt;<i> but is a single-threaded interpreter, so you would only get 1/8th (or
+</I>&gt;&gt;<i> 16th or 32nd) of the available CPU power.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>    M
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003749.html">[eLua-dev] extreme small
+</A></li>
+	<LI>Next message: <A HREF="003751.html">[eLua-dev] extreme small
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3750">[ date ]</a>
+              <a href="thread.html#3750">[ thread ]</a>
+              <a href="subject.html#3750">[ subject ]</a>
+              <a href="author.html#3750">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

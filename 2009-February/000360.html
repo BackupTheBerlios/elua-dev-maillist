@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua open hardware
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20open%20hardware&In-Reply-To=%3C81fbe47d0902120032q110218c4yf542a00d3c692239%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000432.html">
+   <LINK REL="Next"  HREF="000365.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua open hardware</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20open%20hardware&In-Reply-To=%3C81fbe47d0902120032q110218c4yf542a00d3c692239%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua open hardware">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Feb 12 09:32:04 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000432.html">[eLua-dev] eLua open hardware
+</A></li>
+        <LI>Next message: <A HREF="000365.html">[eLua-dev] eLua open hardware
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#360">[ date ]</a>
+              <a href="thread.html#360">[ thread ]</a>
+              <a href="subject.html#360">[ subject ]</a>
+              <a href="author.html#360">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> I am willing to bet that either Luminary or ST Micro will be the first out
+</I>&gt;<i> the gate with such a design.  In fact ST Micro has a new line of chips on
+</I>&gt;<i> the back burner to release some time this year I think, but you have to sign
+</I>&gt;<i> an NDA to see the product map, which I have not done so have no clue as to
+</I>&gt;<i> whats there.
+</I>&gt;<i>
+</I>
+The same thing happened to me with Luminary; they acknowledge the plans for
+Cortex MCUs with external memory bus, but they want an NDA to be signed if
+you want more details. I tried that, but couldn't get my hands on the NDA
+for some reason. In any case, the future does indeed look promising with
+these Cortex MCUs.
+
+I personally think that most peoples fears to soldering SMT parts is due to
+&gt;<i> them never having tried it.  Before I first started using SMT in my designs
+</I>&gt;<i> I thought the same thing.  One day I just broke down and used some SMT parts
+</I>&gt;<i> on a small design, one that would be ok to trash if I fudged it up.
+</I>&gt;<i> Soldering the board was much much easier then I first thought, even the
+</I>&gt;<i> QFP's! (It was an ATMega128 design).  Since then I have never wanted to go
+</I>&gt;<i> back to through hole parts, except for little pieces of free wired 'art'
+</I>&gt;<i> that I have made. :)
+</I>&gt;<i>
+</I>
+You're one of the lucky ones, I never seem to get along with QFPs properly.
+But I probably just need a bit more training :)
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Still, ARM MCUs are getting down in size; the STM32F103T8 has 20K RAM,
+</I>&gt;&gt;<i> 64K flash in a 36 pin QFN.  But to run Lua decently, you'll need at
+</I>&gt;&gt;<i> least a QFP80 (e.g. LPC1758 with 64K, ST STR911FAM4x with 96K SRAM).
+</I>&gt;&gt;<i> BTW, you always have to read the fine print; for example, in both the
+</I>&gt;&gt;<i> STR9 and LPC238x, the 96K SRAM is also used for the Ethernet buffers,
+</I>&gt;&gt;<i> so if you use the network, you won't actually have 96K available.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>Wow. I knew about the Cortex parts from NXP, just didn't expect to see them
+on the market so fast (well, not exactly on the market, since nobody seems
+to stock them, but I bet they're getting there). LPC17xx operates at 100MHz,
+something that can certainly gain my respect :) and I'm sure things will
+only get better from this point.
+
+
+&gt;<i> So very true.  All of the large ram NXP parts are like that.  They have a
+</I>&gt;<i> 64K main RAM area, and 2 16K buffer/DMA areas for the Ethernet and USB
+</I>&gt;<i> controllers.  Supposedly you can execute out of the DMA RAM, but I think
+</I>&gt;<i> some of the parts have eratta related to that...  And I would not hold my
+</I>&gt;<i> breath on the NXP Cortex-M3 parts, it took over a year between when some of
+</I>&gt;<i> the LPC24xx parts were 'released' and when they actually became available to
+</I>&gt;<i> purchase in any real quantities.  The LCD parts were the worst I believe,
+</I>&gt;<i> just becoming available around 2 months or so ago.
+</I>&gt;<i>
+</I>
+This is sad, but Atmel (for example) has problems that are even worse IMO,
+since some of their products are virtually impossible to find. Try buying
+certain models of AVR32 chips; basically there aren't stocked anywhere, and
+the factory lead time period is huge. Same thing for AT91SAM parts with 512k
+of Flash and 128k of RAM, I found it almost impossible to get them.
+
+I agree 100%!  I would love to continue this discussion.
+
+
+So, people ... what would be your ideal MPU for an open source eLua stamp?
+Right now, my money (sort of speaking :) ) is with the STR912FAW44 chip from
+ST (<A HREF="http://www.st.com/mcu/devicedocs-STR912FAW44.html">http://www.st.com/mcu/devicedocs-STR912FAW44.html</A>). Why is that?
+
+- ARM9 architecture core (the huge majority of ARM-based MCUs out there are
+ARM7) that can be clocked at 96MHz (which, needless to say, is Very Good).
+- 512k Flash / 96k RAM internal (which is plenty)
+- external memory interface ((P)SRAM, not SDRAM, which is good enough).
+- Ethernet/USB/CAN besides the &quot;usual&quot; interfaces
+- very flexible, software selectable peripheral-to-pin assignment
+- very small package (important for a stamp): LQFP128 at 14x14mm (although
+this means a pin pitch less than 0.5mm, but someone more skilled than me
+could probably solder it instantly :) ).
+
+This preference will probably change if a Cortex core with both external
+memory and built-in Ethernet (preferably the built-in Ethernet from
+Luminary, cause that includes both MAC AND PHY on-chip) appears on the
+market, but until then this is my chip of choice. Ideally the PCB would
+include space for an external memory (probably SRAM, since PSRAM comes only
+in BGA packages, which adds a lot to the manufacturing complexity) that
+would be _optionally_ equipped with an external SRAM (up to 1Mbyte SRAM,
+that should be quite enough, although we might stop at 512kbyte or even
+256kbyte for most applications).
+
+Allright, let's see what you got now :)
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090212/2a218490/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090212/2a218490/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000432.html">[eLua-dev] eLua open hardware
+</A></li>
+	<LI>Next message: <A HREF="000365.html">[eLua-dev] eLua open hardware
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#360">[ date ]</a>
+              <a href="thread.html#360">[ thread ]</a>
+              <a href="subject.html#360">[ subject ]</a>
+              <a href="author.html#360">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

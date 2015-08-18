@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ADC module on STR912
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20module%20on%20STR912&In-Reply-To=%3CAANLkTim6VV8vn_jWXoAYgVk3VtU7k%2B--LQApDRTri7rw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001676.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ADC module on STR912</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20module%20on%20STR912&In-Reply-To=%3CAANLkTim6VV8vn_jWXoAYgVk3VtU7k%2B--LQApDRTri7rw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] ADC module on STR912">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Oct 19 00:43:25 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001676.html">[eLua-dev] ADC module on STR912
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1677">[ date ]</a>
+              <a href="thread.html#1677">[ thread ]</a>
+              <a href="subject.html#1677">[ subject ]</a>
+              <a href="author.html#1677">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> I'm not sure I understand what you're saying here. &#160;I do understand
+</I>&gt;<i> that there are two revisions of ST parts for this, but I don't think
+</I>&gt;<i> there's an STR-E912 w/ an FAW part, unless I'm missing something:
+</I>&gt;<i> <A HREF="http://www.olimex.com/dev/str-e912.html">http://www.olimex.com/dev/str-e912.html</A>
+</I>
+You're not really missing anything,but the guys at Olimex are missing
+some information on their web page. In this particular case, for
+example, I bought the two boards myself :), and so I know for a fact
+that one of them comes with the FAW. Kind of a lottery when you order
+them though.
+
+&gt;<i> It would certainly be natural for them to replace the FW part with an
+</I>&gt;<i> FAW, especially if there's an equivalent FAW w/ the same footprint and
+</I>&gt;<i> pin configuration.
+</I>
+They have the exact same footprint and pin configuration. The story
+behind the FAW as I know it is that the FW had so many sillicon bugs
+and limitations that they completely forgot about it and launched the
+FAW instead. Other than that, there are no functional differences
+between them.
+
+&gt;<i> With the eLua interrupt support? &#160;Wouldn't this just be a matter of
+</I>&gt;<i> adding another interrupt slot for a timer in addition to the ones
+</I>&gt;<i> you've done before and having a handler that behaves similarly to the
+</I>&gt;<i> other existing handlers? &#160; Or are you thinking of something more
+</I>&gt;<i> elaborate?
+</I>
+There are always virtual timers ... :) Which screams for a more
+generic mechanism. And at this point, the current limitations of the
+interrupt support make it awkward to deal with situations like this.
+This is why I mentioned some while ago that I want to change the
+interrupt architecture &quot;a bit&quot;. For now though I can just implement a
+simple timer overflow interrupt as a temporary hack and be done with
+it.
+
+&gt;<i> Indeed. &#160;I have to look at the implementation before making a detailed
+</I>&gt;<i> plan, but my thought is that the C side should have some way of
+</I>&gt;<i> checking if a registered handler is a Lua handler or a C handler, and
+</I>&gt;<i> that if there's a C-side handler, instead of enqueuing the need to
+</I>&gt;<i> call a Lua function, it just calls the C handler. &#160;Perhaps there could
+</I>&gt;<i> also be some mechanism for it to tell Lua that a C-side hander was
+</I>&gt;<i> called, but I suspect that might not be needed.
+</I>
+I was thinking that they could be both. The interrupt handler would
+first call the C handler (if enabled), then the Lua handler (if
+enabled). A timer interrupt (for example) can benefit from an approach
+like this.
+
+&gt;<i> I don't mind if, for the moment, we don't even provide a Lua-side way
+</I>&gt;<i> to set such handlers (though Lua should be able to set/replace C side
+</I>&gt;<i> handlers with Lua ones if it wants).
+</I>
+I'd keep them separated: Lua sets Lua handlers, C sets C handlers.
+Easier to manage from this perspective.
+
+&gt;<i> I just feel that if we're adding
+</I>&gt;<i> an interrupt system to eLua it'd be better to plug into it and write
+</I>&gt;<i> some generalized code that would allow any platform with timer
+</I>&gt;<i> interrupts and ADC to suddenly be able to use this type of
+</I>&gt;<i> timer-driven conversion with only having written software-initiated
+</I>&gt;<i> conversions.
+</I>
+Precisely one of the main reasons I want to modify the interrupt
+support in eLua.
+
+&gt;<i> This will also give us a somewhat crude (latency-wise) way to trigger
+</I>&gt;<i> ADC conversions on digital input interrupts or any other interrupt
+</I>&gt;<i> which our system knows about. &#160;If users had need specific platforms
+</I>&gt;<i> could implement the functionality using hardware triggers as needed.
+</I>&gt;<i> I rather like having the generic versions be available, since doing
+</I>&gt;<i> platform specific implementations for every platform of this sort of
+</I>&gt;<i> thing would require quite a bit of work and might only be useful to a
+</I>&gt;<i> small number of individuals.
+</I>
+100% agreed.
+
+Best,
+Bogdan
+
+&gt;&gt;&gt;<i> On Mon, Oct 18, 2010 at 3:21 PM, Bogdan Marinescu
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i> Right.
+</I>&gt;&gt;&gt;&gt;&gt;<i> And this was done (by James Snyder) because some versions of the MCU chip do
+</I>&gt;&gt;&gt;&gt;&gt;<i> not generate the int on timer events. Apparently the newer ones do but he
+</I>&gt;&gt;&gt;&gt;&gt;<i> had to do it for stability purposes.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Ah, are you talking about the STR912FW44 versus the STR912FAW44? If
+</I>&gt;&gt;&gt;&gt;<i> so, you can probably use the timer feature (which I assume is
+</I>&gt;&gt;&gt;&gt;<i> available in the A version) safely, as the old (non-A version) was
+</I>&gt;&gt;&gt;&gt;<i> obsoleted by ST quite a while ago. I'm not even sure one can purchase
+</I>&gt;&gt;&gt;&gt;<i> non-A chips anymore, at least not from a large distributor. I know
+</I>&gt;&gt;&gt;&gt;<i> that one of your STR-E912 boards uses the non-A version, but that's a
+</I>&gt;&gt;&gt;&gt;<i> dinosaur already :)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Mauricio, I'm afraid you'll have to handle the conversion-on-timer you want,
+</I>&gt;&gt;&gt;&gt;&gt;<i> manually on the Lua ISR now available in eLua.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> If so, he needs support for timer interrupts. Mauricio, please let me
+</I>&gt;&gt;&gt;&gt;<i> know if this is the case.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> James Snyder
+</I>&gt;&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;&gt;&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;&gt;<i> Phone: (847) 448-0386
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> Phone: (847) 448-0386
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001676.html">[eLua-dev] ADC module on STR912
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1677">[ date ]</a>
+              <a href="thread.html#1677">[ thread ]</a>
+              <a href="subject.html#1677">[ subject ]</a>
+              <a href="author.html#1677">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

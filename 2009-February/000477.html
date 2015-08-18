@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Large ADC Commit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1G7VWc25114aa15a21d9486e927%2C%0A%09jbsnyder%40fanplastic.org%2C%2024772717.1071234877504529.J%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000476.html">
+   <LINK REL="Next"  HREF="000480.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Large ADC Commit</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1G7VWc25114aa15a21d9486e927%2C%0A%09jbsnyder%40fanplastic.org%2C%2024772717.1071234877504529.J%3E"
+       TITLE="[eLua-dev] Large ADC Commit">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Feb 17 14:31:31 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000476.html">[eLua-dev] Large ADC Commit
+</A></li>
+        <LI>Next message: <A HREF="000480.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#477">[ date ]</a>
+              <a href="thread.html#477">[ thread ]</a>
+              <a href="subject.html#477">[ subject ]</a>
+              <a href="author.html#477">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+----- &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote: 
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+
+
+&gt;<i> 
+</I>&gt;<i> True.. Are you anticipating use of higher or lower bit depth? There are certainly lower and higher ones out there, though I've not seen &gt;16-bit ones built-in to uCs. If we want to accomodate larger sizes, the return types for some things will need adjustment, perhaps by defining a type that reflects the maximum size that will be returned? This type would be selected at compile time depending on the maximum bits-per-sample one might want to work with? 
+</I>&gt;<i> 
+</I>&gt;<i> Something like: 
+</I>&gt;<i> 
+</I>&gt;<i> #if MAX_ADC_BIT_RESOLUTION &lt;= 8 
+</I>&gt;<i> typedef u8 t_adc_data 
+</I>&gt;<i> #elif MAX_ADC_BIT_RESOLUTION &lt;= 16 
+</I>&gt;<i> typedef u16 t_adc_data 
+</I>&gt;<i> #elif MAX_ADC_BIT_RESOLUTION &lt;= 32 
+</I>&gt;<i> typedef u32 t_adc_data 
+</I>&gt;<i> #else 
+</I>&gt;<i> #error &quot;No matching type for MAX_ADC_BIT_RESOLUTION, check your selected bit depth or add larger type&quot; 
+</I>&gt;<i> #endif 
+</I>
+&gt;<i> Something like this, but not at compile time, since one might have a system that uses both an (hypothetical) internal 8-bit ADC, and an external 16-bit SPI ADC. Let's keep it like this for now, seems to be generic enough for our needs. 
+</I>
+OK, I've not put this in yet, but I'll get it on a next pass. 
+
+&gt;<i> 
+</I>&gt;<i> 
+</I>
+
+
+&gt;<i> OK, sounds good. The one midly complicated thing to make this approach work with dynamic buffer sizing is to have buf_set handle increasing buffer size gracefully. I think the main case to handle is when wptr &lt; rptr. i.e. the write pointer has wrapped around to the beginning of the buffer, but the read ptr has not. If one just adds space in this case, the read pointer will start going into as yet unwritten space thinking it is picking up valid data. 
+</I>
+&gt;<i> Sorry, I don't understand the problem here. Why not just stop the ADC sequencer, call buf_set again with the new size, and restart it (which seems to be what you're doing now)? You want to change it with the ADC still running? I think this is way too complex for thte benefits it provides. Or maybe I'm missing the problem entirely? :) 
+</I>
+Well, this depends on what one wants. The buf starts with only 2 slots for ADC. If I only every use one or two slots and always pick up my samples, this is fine. If I instead want to capture 8 before I pull them in, perhaps I want my buffer a bit larger. This could be done by making the default buffer size larger, or by growing it a bit on the fly. The only major problem with growing on the fly is if the read pointer is further down the buffer than the write pointer. If the array grows before the read pointer has caught back up, then I might pull in newly allocated buffer space instead of the samples I expect. Here's an example: 
+
+buffer of length 8: 
+|<i> | | wptr | | | | rptr | | 
+</I>
+so there are 4 samples here that i can still pick up.. 
+
+if I want to grow this buffer to 16: 
+|<i> | | wptr | | | | rptr | | | | | | | | | | 
+</I>
+now I won't get what I expect, unless I copy the first couple samples from the old buffer into the new buffer space. 
+
+I don't think I would resize the buffer while the ADC is collecting samples, since that could get messy. I would only do resizing on sample requests. 
+
+That said, this isn't essential, and it may just be a bit of a luxury. It depends on how people might use it. Maybe I'm trying to make this too much like ADC one might expect on a desktop :-) 
+
+&gt;<i> 
+</I>&gt;<i> Also, for now, it seems that using the ADC automatically implies using buffers. This might be overkill for someone that just wants one ADC sample per call of adc_sample. Need to find a way to deal with this easier. 
+</I>
+I've thought about this issue, a bit. I'm planning on making a version that will do a single sample at a time that doesn't require the buffer. This will mean that burst wouldn't be available. 
+
+&gt;<i> 
+</I>&gt;<i> Best, 
+</I>&gt;<i> Bogdan 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+
+
+&gt;<i> 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Best, 
+</I>&gt;<i> &gt; Bogdan 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; On Mon, Feb 16, 2009 at 3:12 AM, James Snyder &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> &gt; wrote: 
+</I>&gt;<i> &gt; &gt; Hi - 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; I've dropped in another large ADC commit. I've mentioned most of what was done in the commit message, but here's a rundown: 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; - When samples are available from ADC, they're initially copied into an elua buf. 
+</I>&gt;<i> &gt; &gt; - buf length is adjusted according to number of expected samples coming in (when burst is requested, buf is resized to accomodate the number of burst samples, size is dropped back down when single samples are requested) 
+</I>&gt;<i> &gt; &gt; - if smoothing is enabled, and has no samples, smoothing buffer (not an elua buf) is filled first to warm up the filter, then samples begin to accumulate in the main buffer. 
+</I>&gt;<i> &gt; &gt; - a flush function has been added to manually clear out both smoothing and primary buffers in case one doesn't want old samples or old smoothing data being used for future measurements 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; Also, I forgot to mention one thing in the commit message: As per a discussion with Bogdan, the type checking on buf_write and buf_read have been pulled out. 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; One adjustment that I'd like to consider before the 0.6 freeze is to remove the option for blocking and non-blocking as it applies to sample and burst functions (used to initiate sampling) and to instead make these always non-blocking, and never have them return any samples (only errors, if needed). A separate function, say getsamples would pull in data collected using either mode. Right now, if one uses non-blocking mode, samples will always be returned for the last time you ran sample or burst. This means that if you want to get the data already requested, you also have to always request new samples, even if you don't want them. 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; I should be able to make this change with minimal code changes, but I haven't done it yet because it changes the pre-existing paradigm, and I wanted to get these changes in sooner rather than later :-) 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; I think it might just take me another hour or so to get adjustments along those lines working. There wouldn't be as long of a delay as this ADC commit. 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; Suggestions/comments are welcome :-) 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; -jsnyder 
+</I>&gt;<i> &gt; &gt; _______________________________________________ 
+</I>&gt;<i> &gt; &gt; Elua-dev mailing list 
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> 
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; _______________________________________________ Elua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> _______________________________________________ 
+</I>&gt;<i> Elua-dev mailing list 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________ Elua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/0a95a684/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/0a95a684/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000476.html">[eLua-dev] Large ADC Commit
+</A></li>
+	<LI>Next message: <A HREF="000480.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#477">[ date ]</a>
+              <a href="thread.html#477">[ thread ]</a>
+              <a href="subject.html#477">[ subject ]</a>
+              <a href="author.html#477">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

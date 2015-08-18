@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Microcontroller Filesystem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Microcontroller%20Filesystem&In-Reply-To=%3C013b01c9920a%2420cb4350%246261c9f0%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000534.html">
+   <LINK REL="Next"  HREF="000543.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Microcontroller Filesystem</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Microcontroller%20Filesystem&In-Reply-To=%3C013b01c9920a%2420cb4350%246261c9f0%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] Microcontroller Filesystem">john.hind at zen.co.uk
+       </A><BR>
+    <I>Wed Feb 18 21:47:35 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000534.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+        <LI>Next message: <A HREF="000543.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#546">[ date ]</a>
+              <a href="thread.html#546">[ thread ]</a>
+              <a href="subject.html#546">[ subject ]</a>
+              <a href="author.html#546">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for those links Andre, I will need to do some detailed reading!
+Certainly ALua is conceptually similar, and at about the same level of
+abstraction to what I'm suggesting. However I thing the concepts I've been
+developing make some improvements to the ALua model:
+
+1. The concept of the &quot;engram&quot; or distributed closure packages the messaging
+of a function together with the messaging of runtime variables such that the
+variables are scoped local to the function at the receiving end. This seems
+safer and more flexible than recreating them as global variables.
+
+2. ALua seems to transmit functions as source strings. I am suggesting the
+use of &quot;byte codes&quot; (I'll start calling these VM Codes as I am aware that in
+Lua they are actually 32 bits!). This avoids the need to hold message
+definitions as strings and to compile them more than once. Each time the
+message is sent, a new closure is created from the same compiled function. I
+would like to marshal tables as VM Codes also, so the message can be fully
+decoded using the existing chunk reader. The messages are also (maybe)
+shorter this way.
+
+3. The concept of effectively just storing a message as a persistence
+mechanism and playing it back when the processor node is restarted. (Didn't
+the earliest data stores work by delaying messages?)
+
+4. The concept of using this persistence as the sole application storage
+mechanism avoids the need for a general filing system (for saving scripts
+anyway) and unifies the runtime messaging architecture with the development
+architecture.
+
+I was more familiar with Rings. I do not really see the need for multiple
+Lua states in the microcontroller nodes - like with ALua, a single-threaded
+queued scheduler implemented in C but calling Lua event handlers seems
+adequate as long as the event handlers are kept brief, and coroutines can be
+used for heavier processing tasks. On PCs there would be (potentially)
+multiple &quot;virtual microcontroller&quot; nodes working exactly the same way - each
+node single threaded. This would be a &quot;share nothing&quot;
+multiprocessing/threading model and there'd be no problem implementing these
+with one OS thread or process per node.
+
+-----Original Message-----
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Andre Carregal
+Sent: 18 February 2009 18:26
+To: eLua Users and Development List
+Subject: Re: [eLua-dev] Microcontroller Filesystem
+
+On Wed, Feb 18, 2009 at 11:35 AM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+&gt;<i> Functionality is mapped as follows:
+</I>&gt;<i>
+</I>&gt;<i> - Application loading: Send some engrams to the node which create and
+</I>&gt;<i> persist other engrams.
+</I>&gt;<i> - Data persistence: Persist engrams and auto-load them on startup.
+</I>&gt;<i> - Messaging: Send an engram from one node to another whence it gets
+</I>&gt;<i> executed, possibly sending a response engram back.
+</I>&gt;<i> - Realtime: Run engrams according to a schedule or on hardware interrupts.
+</I>&gt;<i> - Multiprocessing: See Messaging!
+</I>&gt;<i>
+</I>&gt;<i> I am still thinking these ideas through, but I do have a feeling that
+</I>there
+&gt;<i> is maybe the possibility of doing something elegantly simple and yet
+</I>getting
+&gt;<i> a lot of power (like with Lua itself). As a countryman of mine once said
+</I>&gt;<i> (back in the time when educated Englishmen still spoke Latin) &quot;Non sunt
+</I>&gt;<i> multiplicanda entia praeter necessitate&quot;.
+</I>
+&quot;Pluralitas non est ponenda sine necessitate&quot; indeed... :o)
+
+Are you thinking in something like actor based messaging? Or are you
+talking about a lower level of interaction here?
+
+Have you checked Noemi's work with ALua?
+<A HREF="http://alua.inf.puc-rio.br/ftp/papers/alua_pdcs99.pdf">http://alua.inf.puc-rio.br/ftp/papers/alua_pdcs99.pdf</A>
+<A HREF="http://alua.inf.puc-rio.br/ftp/papers/alua_elsevier.pdf">http://alua.inf.puc-rio.br/ftp/papers/alua_elsevier.pdf</A>
+<A HREF="http://alua.inf.puc-rio.br/ftp/papers/alua_sbrc02.pdf">http://alua.inf.puc-rio.br/ftp/papers/alua_sbrc02.pdf</A>
+
+You may also want to check Rings if having a way to mix distributed
+and local nodes would be interesting. RIngs is for multiple local Lua
+states, but the idea could work as a base for distribution:
+<A HREF="http://www.keplerproject.org/rings">http://www.keplerproject.org/rings</A>
+
+Finally, me and F&#225;bio have been thinking in a way to sync distributed
+repositories using some messaging protocol (maybe XMPP), would it make
+sense to try something on this line of thought?
+
+Andr&#233;
+_______________________________________________
+Elua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3200 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/35e3b6e0/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/35e3b6e0/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000534.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+	<LI>Next message: <A HREF="000543.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#546">[ date ]</a>
+              <a href="thread.html#546">[ thread ]</a>
+              <a href="subject.html#546">[ subject ]</a>
+              <a href="author.html#546">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

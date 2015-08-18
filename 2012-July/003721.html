@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] mbed RTC module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20mbed%20RTC%20module&In-Reply-To=%3CCAMHCYBcxZoSD4MW4OKdgS7cOjGKJfPXZ6%3DRX1bD_gUyUQQ5F4A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003720.html">
+   <LINK REL="Next"  HREF="003722.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] mbed RTC module</H1>
+    <B>Thiago Naves</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20mbed%20RTC%20module&In-Reply-To=%3CCAMHCYBcxZoSD4MW4OKdgS7cOjGKJfPXZ6%3DRX1bD_gUyUQQ5F4A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] mbed RTC module">naves.thiago at gmail.com
+       </A><BR>
+    <I>Sat Jul 21 05:45:15 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003720.html">[eLua-dev] mbed RTC module
+</A></li>
+        <LI>Next message: <A HREF="003722.html">[eLua-dev] mbed RTC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3721">[ date ]</a>
+              <a href="thread.html#3721">[ thread ]</a>
+              <a href="subject.html#3721">[ subject ]</a>
+              <a href="author.html#3721">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I liked the last interface I implemented, with the formatting.
+I think I would just change the set function, so that the string
+format expected would be yyyy-mm-dd hh:mm:ss
+
+Best,
+Thiago
+
+On Fri, Jul 20, 2012 at 10:49 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> So, are you ready to come up with a proposal for a platform independet
+</I>&gt;<i> RTC module? Thiago, Martin, pito and whoever else is interested ...
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jun 27, 2012 at 9:30 PM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> So, I've added strftime formatting to the get function.
+</I>&gt;&gt;<i> I had to calc Day of Week and Day of Year in the get function ( probably not
+</I>&gt;&gt;<i> the best place for that ) in order to fill the C time struct ( or else
+</I>&gt;&gt;<i> strftime hangs ).
+</I>&gt;&gt;<i> The get() with no parameter returns strftime(&quot;%c&quot;) like lua formated as:
+</I>&gt;&gt;<i> Wed Jun 27 15:25:11 2012
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Now the get(&quot;*t&quot;) returns the table and get(&quot;something_else&quot;) returns a
+</I>&gt;&gt;<i> formatted string.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I've only added this for mbed. I'll update str9 when we decide an interface.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Thiago
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sat, Jun 23, 2012 at 5:35 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; We could add that as another function, like Lua's os.time
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Mmm. If there's space to reuse that module it would provide the same
+</I>&gt;&gt;&gt;<i> format strings that people know already from standard Lua, thereby
+</I>&gt;&gt;&gt;<i> leaving the decisions about date formats to the programmer and the C
+</I>&gt;&gt;&gt;<i> library in use (i.e. whatever the embedded C library's strftime() does
+</I>&gt;&gt;&gt;<i> by default in the case of the ambiguous %x and %c formats, presumably
+</I>&gt;&gt;&gt;<i> in the absence of locale and timezone settings)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>    M
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003720.html">[eLua-dev] mbed RTC module
+</A></li>
+	<LI>Next message: <A HREF="003722.html">[eLua-dev] mbed RTC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3721">[ date ]</a>
+              <a href="thread.html#3721">[ thread ]</a>
+              <a href="subject.html#3721">[ subject ]</a>
+              <a href="author.html#3721">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

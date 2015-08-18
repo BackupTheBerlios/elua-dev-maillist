@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] reducing rom size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20reducing%20rom%20size&In-Reply-To=%3C92058BAC-A7EE-4CE1-8BB2-591A4C02F26A%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000286.html">
+   <LINK REL="Next"  HREF="000288.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] reducing rom size</H1>
+    <B>Dean Hall</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20reducing%20rom%20size&In-Reply-To=%3C92058BAC-A7EE-4CE1-8BB2-591A4C02F26A%40gmail.com%3E"
+       TITLE="[eLua-dev] reducing rom size">dwhall256 at gmail.com
+       </A><BR>
+    <I>Wed Jan 14 20:29:41 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000286.html">[eLua-dev] reducing rom size
+</A></li>
+        <LI>Next message: <A HREF="000288.html">[eLua-dev] reducing rom size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#287">[ date ]</a>
+              <a href="thread.html#287">[ thread ]</a>
+              <a href="subject.html#287">[ subject ]</a>
+              <a href="author.html#287">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Jan 14, 2009, at 11:38 , Bogdan Marinescu wrote:
+
+&gt;<i> On Wed, Jan 14, 2009 at 6:31 PM, Dean Hall &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dwhall256 at gmail.com</A>&gt;  
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;<i> - Removed the shell (had to remove calls to shell funcs in src/main.c)
+</I>&gt;<i>
+</I>&gt;<i> Really? I just did a test: I commented out #define BUILD_SHELL in  
+</I>&gt;<i> src/platform/at91sam7x/platform_conf.h,and the whole thing compiled  
+</I>&gt;<i> just fine.
+</I>
+I was working from compiler errors and ignoring source (a.k.a. hatchet  
+job).  Your way is easier and cleaner.  I will switch to your way.
+
+&gt;<i>
+</I>&gt;<i> Will you use XMODEM, or just simply send the data via UART?
+</I>
+I'm undecided.  I don't know the .luac format yet, so I don't know if  
+the receiver can determine the number of bytes to expect based on the  
+contents of the data sent.  If .luac does indicate its length, I'll do  
+raw UART; otherwise, I might use a super-simple protocol.
+
+&gt;<i> Also, you might to crosscompile your Lua bytecode, although this  
+</I>&gt;<i> shouldn't be a problem for lualong, it's only important for  
+</I>&gt;<i> &quot;regular&quot; Lua. I'd give you a link to a page with more data on the  
+</I>&gt;<i> subject, but eluaproject.net seems to be going very slow right now  
+</I>&gt;<i> for some reason.
+</I>
+I think I remember reading something to that effect: that ARM uses a  
+different encoding for floating point values.  I'll look into it if it  
+becomes a problem, but like you say, I'm using lualong.
+
+I haven't studied how easy it is to insert into the build my own pre- 
+compiled module without ROMFS.  If ROMFS is required for such things,  
+I will put it back in.
+
+With these items [un]defined:
+
+#define BUILD_XMODEM
+//#define BUILD_SHELL
+//#define BUILD_ROMFS
+//#define BUILD_TERM
+#define BUILD_CON_GENERIC
+
+the build is
+
+$ arm-elf-size elua_lualong_at91sam7s64.elf
+    text	   data	    bss	    dec	    hex	filename
+   59920	   2265	    736	  62921	   f5c9	elua_lualong_at91sam7s64.elf
+
+!!Dean
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000286.html">[eLua-dev] reducing rom size
+</A></li>
+	<LI>Next message: <A HREF="000288.html">[eLua-dev] reducing rom size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#287">[ date ]</a>
+              <a href="thread.html#287">[ thread ]</a>
+              <a href="subject.html#287">[ subject ]</a>
+              <a href="author.html#287">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

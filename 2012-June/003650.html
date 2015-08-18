@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Xmodem transfer - issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Xmodem%20transfer%20-%20issue&In-Reply-To=%3CCANKDJfb%2B8mpiPeT8KPLzEZUU%3D8eUG3YJCd%3DvMkbqyOFaO2OVqQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003649.html">
+   <LINK REL="Next"  HREF="003651.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Xmodem transfer - issue</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Xmodem%20transfer%20-%20issue&In-Reply-To=%3CCANKDJfb%2B8mpiPeT8KPLzEZUU%3D8eUG3YJCd%3DvMkbqyOFaO2OVqQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Xmodem transfer - issue">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat Jun 30 08:31:58 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003649.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+        <LI>Next message: <A HREF="003651.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3650">[ date ]</a>
+              <a href="thread.html#3650">[ thread ]</a>
+              <a href="subject.html#3650">[ subject ]</a>
+              <a href="author.html#3650">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Thiago,
+
+On Sat, Jun 30, 2012 at 6:32 AM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+&gt;<i> We had that same issue @led-lab and after looking at the code I could see
+</I>&gt;<i> it's indeed an int16 overflow. The fix did not seem to be easy. There are
+</I>&gt;<i> various chucks of code doing bit manipulation with that file size. Changing
+</I>&gt;<i> the variable type to int32 does nothing.
+</I>&gt;<i> We don't have a fix, btw.
+</I>
+Do you remember where you spotted this problem in the code?
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Thiago
+</I>&gt;<i>
+</I>&gt;<i> On Jun 29, 2012 4:09 PM, &quot;pito&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I had 74880 limit as well, where I succesively changed the file size
+</I>&gt;&gt;<i> and ie 74675 was transfered ok. Waht is interesting is when you
+</I>&gt;&gt;<i> rebuild, reset, restart everything you may get another number. I've
+</I>&gt;&gt;<i> tried other files to transfer (ie binaries) but it stops at &#160;the
+</I>&gt;&gt;<i> same point. &#160;So not sure whether volume around ~65536 is the u16
+</I>&gt;&gt;<i> overflow indication
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;&gt;<i> Od: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;<i> Komu: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] Xmodem transfer - issue
+</I>&gt;&gt;<i> Datum: 29.6.2012 - 19:46:12
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; On Fri, Jun 29, 2012 at 8:37 PM, pito
+</I>&gt;&gt;<i> &gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; &gt; Hi, this has been discussed in past but let me
+</I>&gt;&gt;<i> &gt; &gt; ask again:
+</I>&gt;&gt;<i> &gt; &gt; &gt; When transfering ie text file (recv
+</I>&gt;&gt;<i> &gt; &gt; /mmc/test.txt), the transfer
+</I>&gt;&gt;<i> &gt; &gt; &gt; stops always at certain point ie: 65664bytes,
+</I>&gt;&gt;<i> &gt; &gt; packet#513. I tried
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt; The first thing that comes to mind immediately
+</I>&gt;&gt;<i> &gt; after this is an
+</I>&gt;&gt;<i> &gt; overflow on an u16 variable. Please open a bug on
+</I>&gt;&gt;<i> &gt; our tracker..
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Best,
+</I>&gt;&gt;<i> &gt; Bogdan
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &gt; with BT as well as rs232. I tackled the
+</I>&gt;&gt;<i> &gt; &gt; xmodemtimeout in xmodem.h,
+</I>&gt;&gt;<i> &gt; &gt; &gt; with large values the transfer does not start,
+</I>&gt;&gt;<i> &gt; &gt; but I did not found a
+</I>&gt;&gt;<i> &gt; &gt; &gt; magic value where it works over 60-70kbytes
+</I>&gt;&gt;<i> &gt; &gt; transferred. You may get
+</I>&gt;&gt;<i> &gt; &gt; &gt; other point where it stops. I did it at 115k
+</I>&gt;&gt;<i> &gt; &gt; 8n1, with teraterm,
+</I>&gt;&gt;<i> &gt; &gt; &gt; stm32f4discovery board, bike-nomad distro,
+</I>&gt;&gt;<i> &gt; &gt; codesourcery toolchain.
+</I>&gt;&gt;<i> &gt; &gt; &gt; Is there somebody who is able to transfer larger
+</I>&gt;&gt;<i> &gt; &gt; files
+</I>&gt;&gt;<i> &gt; &gt; &gt; successfully??
+</I>&gt;&gt;<i> &gt; &gt; p.
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; --
+</I>&gt;&gt;<i> &gt; &gt; - - Reklama - - - - - - - - - - - - - -
+</I>&gt;&gt;<i> &gt; &gt; Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice,
+</I>&gt;&gt;<i> &gt; &gt; diplomky... V&#353;e o z&#225;v&#283;ru
+</I>&gt;&gt;<i> &gt; &gt; &gt; studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te na
+</I>&gt;&gt;<i> &gt; &gt; port&#225;lu VOLN&#221;.cz na
+</I>&gt;&gt;<i> &gt; &gt; &gt; <A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> - - Reklama - - - - - - - - - - - - - -
+</I>&gt;&gt;<i> Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice, diplomky... V&#353;e o z&#225;v&#283;ru
+</I>&gt;&gt;<i> studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te na port&#225;lu VOLN&#221;.cz na
+</I>&gt;&gt;<i> <A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003649.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+	<LI>Next message: <A HREF="003651.html">[eLua-dev] Xmodem transfer - issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3650">[ date ]</a>
+              <a href="thread.html#3650">[ thread ]</a>
+              <a href="subject.html#3650">[ subject ]</a>
+              <a href="author.html#3650">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

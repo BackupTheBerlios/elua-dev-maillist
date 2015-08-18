@@ -1,0 +1,487 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua open hardware
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20open%20hardware&In-Reply-To=%3C007701c98d1e%248be9cb20%24a3bd6160%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000388.html">
+   <LINK REL="Next"  HREF="000372.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua open hardware</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20open%20hardware&In-Reply-To=%3C007701c98d1e%248be9cb20%24a3bd6160%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] eLua open hardware">john.hind at zen.co.uk
+       </A><BR>
+    <I>Thu Feb 12 15:31:09 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000388.html">[eLua-dev] Luminary Driver License
+</A></li>
+        <LI>Next message: <A HREF="000372.html">[eLua-dev] eLua open hardware
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#369">[ date ]</a>
+              <a href="thread.html#369">[ thread ]</a>
+              <a href="subject.html#369">[ subject ]</a>
+              <a href="author.html#369">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I agree - I do not see the point of this. If it has not got tables it is not
+Lua and surely it is tables that are driving the high RAM requirement? Most
+8 bit chips are address space limited even if you can add external RAM
+(which quickly loses you any advantage from the low end chip in the first
+place!) Even if you cross-compile you have the table basis of the language
+to cope with at run-time.
+
+ 
+
+However. Might there be scope for playing with the Lua internals to reduce
+RAM requirements (to tens of K rather than individual bytes though!)? I'm
+thinking of a facility to put objects like library functions, tables and
+strings into Flash memory rather than RAM.
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+Sent: 12 February 2009 11:55
+To: eLua Users and Development List
+Subject: Re: [eLua-dev] eLua open hardware
+
+ 
+
+ 
+
+I would not be interested in a crippled 8/16 bit Lua.
+
+
+I think it would make an interesting exercise. Not as part of eLua itself,
+but as a different project. More of an exercise in running Lua on crippled
+hardware :)
+ 
+
+It easily becomes a completely separate (sub)language, and
+I would see our efforts be best placed within the
+&quot;constraints&quot; of modern, full Lua.
+
+
+This is the idea of eLua, and will remain so.
+ 
+
+The approach of generating C or assembly language based on
+a Lua script is however a decent one. Lua is a
+magnificient preprocessing language, imho.  I would i.e.
+LOVE to design VHDL's using Lua as the description
+language (now, that's constraints, isn't it?). :)
+
+
+Ah, I'd _love_ to use eLua as a hardware description language, but my
+knowledge in this area is quite limited unfortunately.
+
+Best,
+Bogdan
+
+On Thu, 12 Feb 2009 13:11:14 +0200
+
+ Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> And on a related topic: on the Lua list I've seen some
+</I>&gt;<i>people that want Lua
+</I>&gt;<i> support on much &quot;lower end&quot; architectures, like 8-bit
+</I>&gt;<i>MCUs. As I see it
+</I>&gt;<i> right now, the way to go with this is to have a
+</I>&gt;<i>completely rewritten VM
+</I>&gt;<i> interpreter (probably with lots of restrictions) that
+</I>&gt;<i>would be able to run
+</I>&gt;<i> on these machines. But I'm curious, how many people
+</I>&gt;<i>would like to have even
+</I>&gt;<i> a (quite) restricted Lua running on low-to-medium end
+</I>&gt;<i>8/16-bit MCUs (with
+</I>&gt;<i> little Flash and RAM resources)?
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Feb 12, 2009 at 10:45 AM, Bogdan Marinescu &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I've asked Atmel to spare us some samples of their
+</I>&gt;&gt;<i>upcoming AT32UC3A3
+</I>&gt;&gt;&gt;<i> chip.  Hopefully we get full development kits, but maybe
+</I>&gt;&gt;&gt;<i>just chips.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> They're probably some very &quot;secret&quot; chips yet, I don't
+</I>&gt;&gt;<i>even see them on
+</I>&gt;&gt;<i> their AVR32 device list page.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Is there anyone else on the list that would have time
+</I>&gt;&gt;&gt;<i>and interest to
+</I>&gt;&gt;&gt;<i> take up such a package?  I am asking for two, and my
+</I>&gt;&gt;&gt;<i>thinking is we
+</I>&gt;&gt;&gt;<i> could &quot;shuffle&quot; them among each other as need, interest
+</I>&gt;&gt;&gt;<i>and available
+</I>&gt;&gt;&gt;<i> time varies. So they would be &quot;jointly&quot; owned by the
+</I>&gt;&gt;&gt;<i>eLua community.
+</I>&gt;&gt;&gt;<i> Good or bad?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Good, I think :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> There does not seem to be much public info on this chip,
+</I>&gt;&gt;&gt;<i>yet.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Here is what an Atmel friend wrote (guess this is
+</I>&gt;&gt;&gt;<i>public, he did not
+</I>&gt;&gt;&gt;<i> state otherwise):
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; Would the AT32UC3A be a good alternative for a stamp.
+</I>&gt;&gt;&gt;<i> &gt; This has networking on the chip.
+</I>&gt;&gt;&gt;<i> &gt; Code can be developed using the JTAGICE Mk II, which
+</I>&gt;&gt;&gt;<i> &gt; I bet is available to many people.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Well, it turns out that (surprisingly :) ) there aren't
+</I>&gt;&gt;<i>that many people
+</I>&gt;&gt;<i> with access to a JTAGICE. The AVR32 I'm working with has
+</I>&gt;&gt;<i>a DFU mode for
+</I>&gt;&gt;<i> software uploading, I guess they'll keep it in the new
+</I>&gt;&gt;<i>chips too, so this is
+</I>&gt;&gt;<i> fine, cause all you need to program it is an USB cable
+</I>&gt;&gt;<i>and the software from
+</I>&gt;&gt;<i> Atmel (which runs equally well on Windows and Linux).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; We will soon have the AT32UC3A3 with high speed USB
+</I>&gt;&gt;&gt;<i> &gt; as well as SD-Card controller.
+</I>&gt;&gt;&gt;<i> &gt; Built for MP3. It also has more SRAM (128 kB).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 128k of intermal SRAM is a Very Very Good Thing for eLua
+</I>&gt;&gt;:<i>)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Please say YEAH if you personally are interested.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> YEAH !!!! :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I've promised the Atmel guy that we'd craft an
+</I>&gt;&gt;&gt;<i>Application Note on how
+</I>&gt;&gt;&gt;<i> to use Lua on this chip.  I don't think that's too much
+</I>&gt;&gt;&gt;<i>to be asked,
+</I>&gt;&gt;&gt;<i> and it would further the cause of eLua, anyhow.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Sure, this would benefit everybody. I'll write the
+</I>&gt;&gt;<i>appnote if we get
+</I>&gt;&gt;<i> somewhere with this.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> - asko
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Bogdan Marinescu kirjoitti 12.2.2009 kello 10:07:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; Hi all,
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; There was recently a discussion on the Lua list about
+</I>&gt;&gt;&gt;<i>Lua on
+</I>&gt;&gt;&gt;<i> &gt; embedded devices, and thinks got pretty hot (in a good
+</I>&gt;&gt;&gt;<i>way :) ), so
+</I>&gt;&gt;&gt;<i> &gt; I invited all the people that wanted to continue that
+</I>&gt;&gt;&gt;<i>discussion to
+</I>&gt;&gt;&gt;<i> &gt; join this list (since the profile of the Lua list
+</I>&gt;&gt;&gt;<i>suggests that it's
+</I>&gt;&gt;&gt;<i> &gt; not the best place to discuss regular hardware). We
+</I>&gt;&gt;&gt;<i>had more than 10
+</I>&gt;&gt;&gt;<i> &gt; people joining the elua-dev list after this
+</I>&gt;&gt;&gt;<i>announcement, so I
+</I>&gt;&gt;&gt;<i> &gt; expect things to become pretty hot here too :) I'll
+</I>&gt;&gt;&gt;<i>try to resume
+</I>&gt;&gt;&gt;<i> &gt; the discussions by including the last relevent message
+</I>&gt;&gt;&gt;<i>from the Lua
+</I>&gt;&gt;&gt;<i> &gt; list (this message is from Mike Panetta):
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; ========================================
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; On Wed, Feb 11, 2009 at 12:22 PM, Tony Bauer
+</I>&gt;&gt;&gt;<i>&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">luatony at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt; More embedded notes (with some Lua content):
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Yes, the LPC2478 is pretty nice.  My brother was
+</I>&gt;&gt;&gt;<i>looking at using one
+</I>&gt;&gt;&gt;<i> &gt; at work (no Lua, though), but that project is
+</I>&gt;&gt;&gt;<i>currently on hold.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Somebody will make a Cortex M3 with an external bus.
+</I>&gt;&gt;&gt;<i> The NXP LPC17xx
+</I>&gt;&gt;&gt;<i> &gt; series (Cortex M3) looks pretty nice; the LPC1768 has
+</I>&gt;&gt;&gt;<i>64K RAM, 512K
+</I>&gt;&gt;&gt;<i> &gt; flash, MAC, USB OTG, 2xCAN, 4xUART, PWM, QEP, etc, but
+</I>&gt;&gt;&gt;<i>no external
+</I>&gt;&gt;&gt;<i> &gt; bus.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; I am willing to bet that either Luminary or ST Micro
+</I>&gt;&gt;&gt;<i>will be the
+</I>&gt;&gt;&gt;<i> &gt; first out the gate with such a design.  In fact ST
+</I>&gt;&gt;&gt;<i>Micro has a new
+</I>&gt;&gt;&gt;<i> &gt; line of chips on the back burner to release some time
+</I>&gt;&gt;&gt;<i>this year I
+</I>&gt;&gt;&gt;<i> &gt; think, but you have to sign an NDA to see the product
+</I>&gt;&gt;&gt;<i>map, which I
+</I>&gt;&gt;&gt;<i> &gt; have not done so have no clue as to whats there.  I
+</I>&gt;&gt;&gt;<i>personally think
+</I>&gt;&gt;&gt;<i> &gt; they may be waiting to pop right on the market with
+</I>&gt;&gt;&gt;<i>available
+</I>&gt;&gt;&gt;<i> &gt; product as soon as Luminary announces what it has up
+</I>&gt;&gt;&gt;<i>its sleeves.
+</I>&gt;&gt;&gt;<i> &gt; They seem to be in a tight heat with each other as far
+</I>&gt;&gt;&gt;<i>as parts
+</I>&gt;&gt;&gt;<i> &gt; competition goes.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; I agree its too bad that ST does not have a cortex
+</I>&gt;&gt;&gt;<i>part with
+</I>&gt;&gt;&gt;<i> &gt; Ethernet though, as they are the lowest price chip on
+</I>&gt;&gt;&gt;<i>the market
+</I>&gt;&gt;&gt;<i> &gt; right now with the STM32F103ZET6 (512K Flash, 64K RAM,
+</I>&gt;&gt;&gt;<i>CAN, USB, 8
+</I>&gt;&gt;&gt;<i> &gt; timers, 4 of which are capable of doing QEI, 2 of
+</I>&gt;&gt;&gt;<i>which are capable
+</I>&gt;&gt;&gt;<i> &gt; of doing motion PWM, 5 U(S)ARTS, 3 SPI, 2 I2C etc
+</I>&gt;&gt;&gt;<i>etc..... in an
+</I>&gt;&gt;&gt;<i> &gt; LQFP144) at $10.25 *IN SINGLES* at AVNET.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; I do not think that Luminary can compete with ST on
+</I>&gt;&gt;&gt;<i>price at the
+</I>&gt;&gt;&gt;<i> &gt; moment because of process size (smaller process size
+</I>&gt;&gt;&gt;<i>means more dice
+</I>&gt;&gt;&gt;<i> &gt; per wafer which means cheaper chips... but you already
+</I>&gt;&gt;&gt;<i>knew that :)
+</I>&gt;&gt;&gt;<i> &gt; Thats of course assuming that ST uses a smaller
+</I>&gt;&gt;&gt;<i>process then
+</I>&gt;&gt;&gt;<i> &gt; Luminary does (Isn't Luminary Fabless?).
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; One thing that has made me pro ST (besides the price)
+</I>&gt;&gt;&gt;<i>is that ST
+</I>&gt;&gt;&gt;<i> &gt; seems to characterize the power consumption of their
+</I>&gt;&gt;&gt;<i>chips better
+</I>&gt;&gt;&gt;<i> &gt; then Luminary does.  They also seem to use less power
+</I>&gt;&gt;&gt;<i>then either
+</I>&gt;&gt;&gt;<i> &gt; Luminary or NXP parts at the same clock.  However,
+</I>&gt;&gt;&gt;<i>that may be
+</I>&gt;&gt;&gt;<i> &gt; misleading as the Luminary parts have faster flash in
+</I>&gt;&gt;&gt;<i>them, so mips/
+</I>&gt;&gt;&gt;<i> &gt; watt may be less in the Luminary parts then in the ST
+</I>&gt;&gt;&gt;<i>ones when
+</I>&gt;&gt;&gt;<i> &gt; running from Flash, but I have no data to back that up
+</I>&gt;&gt;&gt;<i>(or dispute
+</I>&gt;&gt;&gt;<i> &gt; it).
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; In reality, all the really cool chips are BGA, but
+</I>&gt;&gt;&gt;<i>those make QFPs
+</I>&gt;&gt;&gt;<i> &gt; look easy to prototype.  There are companies selling
+</I>&gt;&gt;&gt;<i>products that
+</I>&gt;&gt;&gt;<i> &gt; claim to make prototyping with SMT parts easier, such
+</I>&gt;&gt;&gt;<i>as SchmartBoard,
+</I>&gt;&gt;&gt;<i> &gt; but I haven't tried them.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; QFP's (and QFN's) *ARE* easy to prototype with, esp if
+</I>&gt;&gt;&gt;<i>you designed
+</I>&gt;&gt;&gt;<i> &gt; the part footprint yourself. QFP's can be soldered in
+</I>&gt;&gt;&gt;<i>a jiffy with a
+</I>&gt;&gt;&gt;<i> &gt; rake soldering technique, and when you get good at it
+</I>&gt;&gt;&gt;<i>you won't even
+</I>&gt;&gt;&gt;<i> &gt; need to use solder braid to get the shorts out because
+</I>&gt;&gt;&gt;<i>there won't
+</I>&gt;&gt;&gt;<i> &gt; be any. QFN's take a little bit longer (the ones with
+</I>&gt;&gt;&gt;<i>a thermal pad
+</I>&gt;&gt;&gt;<i> &gt; on the bottom are easier IMO because you can fix them
+</I>&gt;&gt;&gt;<i>down with it)
+</I>&gt;&gt;&gt;<i> &gt; but are also a no brainer.  I designed a
+</I>&gt;&gt;&gt;<i>powersupply/LIPo charger
+</I>&gt;&gt;&gt;<i> &gt; with an LTC3556 USB power manager chip and hand
+</I>&gt;&gt;&gt;<i>soldered it. First
+</I>&gt;&gt;&gt;<i> &gt; proto worked perfectly, no bridges or anything.  It
+</I>&gt;&gt;&gt;<i>took me 2-3 hrs
+</I>&gt;&gt;&gt;<i> &gt; to complete the soldering job, all by hand.  My next
+</I>&gt;&gt;&gt;<i>protos will
+</I>&gt;&gt;&gt;<i> &gt; hopefully be done by toaster method, but I need to
+</I>&gt;&gt;&gt;<i>build a
+</I>&gt;&gt;&gt;<i> &gt; controller first.  Its kinda hard to get the parts
+</I>&gt;&gt;&gt;<i>when your
+</I>&gt;&gt;&gt;<i> &gt; unemployed :P
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; I personally think that most peoples fears to
+</I>&gt;&gt;&gt;<i>soldering SMT parts is
+</I>&gt;&gt;&gt;<i> &gt; due to them never having tried it.  Before I first
+</I>&gt;&gt;&gt;<i>started using SMT
+</I>&gt;&gt;&gt;<i> &gt; in my designs I thought the same thing.  One day I
+</I>&gt;&gt;&gt;<i>just broke down
+</I>&gt;&gt;&gt;<i> &gt; and used some SMT parts on a small design, one that
+</I>&gt;&gt;&gt;<i>would be ok to
+</I>&gt;&gt;&gt;<i> &gt; trash if I fudged it up.  Soldering the board was much
+</I>&gt;&gt;&gt;<i>much easier
+</I>&gt;&gt;&gt;<i> &gt; then I first thought, even the QFP's! (It was an
+</I>&gt;&gt;&gt;<i>ATMega128 design).
+</I>&gt;&gt;&gt;<i> &gt; Since then I have never wanted to go back to through
+</I>&gt;&gt;&gt;<i>hole parts,
+</I>&gt;&gt;&gt;<i> &gt; except for little pieces of free wired 'art' that I
+</I>&gt;&gt;&gt;<i>have made. :)
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Still, ARM MCUs are getting down in size; the
+</I>&gt;&gt;&gt;<i>STM32F103T8 has 20K RAM,
+</I>&gt;&gt;&gt;<i> &gt; 64K flash in a 36 pin QFN.  But to run Lua decently,
+</I>&gt;&gt;&gt;<i>you'll need at
+</I>&gt;&gt;&gt;<i> &gt; least a QFP80 (e.g. LPC1758 with 64K, ST STR911FAM4x
+</I>&gt;&gt;&gt;<i>with 96K SRAM).
+</I>&gt;&gt;&gt;<i> &gt; BTW, you always have to read the fine print; for
+</I>&gt;&gt;&gt;<i>example, in both the
+</I>&gt;&gt;&gt;<i> &gt; STR9 and LPC238x, the 96K SRAM is also used for the
+</I>&gt;&gt;&gt;<i>Ethernet buffers,
+</I>&gt;&gt;&gt;<i> &gt; so if you use the network, you won't actually have 96K
+</I>&gt;&gt;&gt;<i>available.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; So very true.  All of the large ram NXP parts are like
+</I>&gt;&gt;&gt;<i>that.  They
+</I>&gt;&gt;&gt;<i> &gt; have a 64K main RAM area, and 2 16K buffer/DMA areas
+</I>&gt;&gt;&gt;<i>for the
+</I>&gt;&gt;&gt;<i> &gt; Ethernet and USB controllers.  Supposedly you can
+</I>&gt;&gt;&gt;<i>execute out of the
+</I>&gt;&gt;&gt;<i> &gt; DMA RAM, but I think some of the parts have eratta
+</I>&gt;&gt;&gt;<i>related to
+</I>&gt;&gt;&gt;<i> &gt; that...  And I would not hold my breath on the NXP
+</I>&gt;&gt;&gt;<i>Cortex-M3 parts,
+</I>&gt;&gt;&gt;<i> &gt; it took over a year between when some of the LPC24xx
+</I>&gt;&gt;&gt;<i>parts were
+</I>&gt;&gt;&gt;<i> &gt; 'released' and when they actually became available to
+</I>&gt;&gt;&gt;<i>purchase in
+</I>&gt;&gt;&gt;<i> &gt; any real quantities.  The LCD parts were the worst I
+</I>&gt;&gt;&gt;<i>believe, just
+</I>&gt;&gt;&gt;<i> &gt; becoming available around 2 months or so ago.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Compilers &amp; DSPs: most DSPs need the manufacturer's
+</I>&gt;&gt;&gt;<i>compilers (I know
+</I>&gt;&gt;&gt;<i> &gt; TI's do); however, IIRC, the ADI Blackfin DSPs use
+</I>&gt;&gt;&gt;<i>gcc.  Someday I may
+</I>&gt;&gt;&gt;<i> &gt; try compiling Lua for a TI C6701 board, but that's not
+</I>&gt;&gt;&gt;<i>going to happen
+</I>&gt;&gt;&gt;<i> &gt; for a while.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; CAN is a 1Mbps network, so there's no way a UART will
+</I>&gt;&gt;&gt;<i>work.  You can
+</I>&gt;&gt;&gt;<i> &gt; add them externally, e.g. via a SPI port.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Meh, UARTS in some chips can go up to 4Mbps now.  I do
+</I>&gt;&gt;&gt;<i>agree that
+</I>&gt;&gt;&gt;<i> &gt; using SPI would be easier though, as Microchip has
+</I>&gt;&gt;&gt;<i>SPI-&gt;CAN bridge
+</I>&gt;&gt;&gt;<i> &gt; chips available.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Finally, because this bugs me, some terminology notes:
+</I>&gt;&gt;&gt;<i> &gt; SoC - System on a Chip.  So, a chip that integrates
+</I>&gt;&gt;&gt;<i>almost everything
+</I>&gt;&gt;&gt;<i> &gt; a piece of equipment (system) needs.  A good example
+</I>&gt;&gt;&gt;<i>is a highly
+</I>&gt;&gt;&gt;<i> &gt; integrated chip for MP3 players.
+</I>&gt;&gt;&gt;<i> &gt; SiP - System on a Package.
+</I>&gt;&gt;&gt;<i> &gt; MCU - Microcontroller.  A CPU that includes all its
+</I>&gt;&gt;&gt;<i>memory on chip.
+</I>&gt;&gt;&gt;<i> &gt; MCUs go back to the very early days, with such chips
+</I>&gt;&gt;&gt;<i>as the Intel
+</I>&gt;&gt;&gt;<i> &gt; 8042, before the term SoC was ever used.
+</I>&gt;&gt;&gt;<i> &gt; MPU - Microprocessor.  A CPU that needs external
+</I>&gt;&gt;&gt;<i>memory (e.g. x86,
+</I>&gt;&gt;&gt;<i> &gt; Atmel AT91RM9200)
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; If there really is enough interest, we should start
+</I>&gt;&gt;&gt;<i>thinking about
+</I>&gt;&gt;&gt;<i> &gt; starting a dedicated embedded processor Lua mailing
+</I>&gt;&gt;&gt;<i>list.  Then we can
+</I>&gt;&gt;&gt;<i> &gt; go off topic without fear!
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; I agree 100%!  I would love to continue this
+</I>&gt;&gt;&gt;<i>discussion.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; ========================================
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt; Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>
+_______________________________________________
+Elua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090212/6b5c0df5/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090212/6b5c0df5/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3200 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090212/6b5c0df5/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090212/6b5c0df5/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000388.html">[eLua-dev] Luminary Driver License
+</A></li>
+	<LI>Next message: <A HREF="000372.html">[eLua-dev] eLua open hardware
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#369">[ date ]</a>
+              <a href="thread.html#369">[ thread ]</a>
+              <a href="subject.html#369">[ subject ]</a>
+              <a href="author.html#369">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

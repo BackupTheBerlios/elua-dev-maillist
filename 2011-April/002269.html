@@ -1,0 +1,274 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua Peripheral Function Side Effects (was: eLua	design change to allow synchronized PWM channel start?)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Peripheral%20Function%20Side%20Effects%20%28was%3A%20eLua%0A%09design%20change%20to%20allow%20synchronized%20PWM%20channel%20start%3F%29&In-Reply-To=%3CPine.LNX.3.95.1110410130833.12787A-100000%40nei%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002259.html">
+   <LINK REL="Next"  HREF="002260.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua Peripheral Function Side Effects (was: eLua	design change to allow synchronized PWM channel start?)</H1>
+    <B>RHS Linux User</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Peripheral%20Function%20Side%20Effects%20%28was%3A%20eLua%0A%09design%20change%20to%20allow%20synchronized%20PWM%20channel%20start%3F%29&In-Reply-To=%3CPine.LNX.3.95.1110410130833.12787A-100000%40nei%3E"
+       TITLE="[eLua-dev] eLua Peripheral Function Side Effects (was: eLua	design change to allow synchronized PWM channel start?)">xxx at nei.mv.com
+       </A><BR>
+    <I>Sun Apr 10 19:15:08 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002259.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+        <LI>Next message: <A HREF="002260.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2269">[ date ]</a>
+              <a href="thread.html#2269">[ thread ]</a>
+              <a href="subject.html#2269">[ subject ]</a>
+              <a href="author.html#2269">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi All,
+
+   It seems to me that a model line TinyCore Linux is the right
+approach. VERY small kernel (RAM and ROM). Additions simple to 
+write, simple to link in.
+
+   BIG advantages: Kernel can be easily understood. No obtuse
+side effects.
+
+   Parts and pieces independent. Easy to write, debug, modify, etc.
+
+   EASY to configure of VERY small chips and very powerful for 
+large chips!
+
+   I have been working on moving lua to MIPS. What a pain!! Much
+to complex and HUGE.
+
+   So I have started writing my own MICRO-LUA like piece of code. Now its
+up and running :). Works pretty well. Just gotta write some drivers, etc.
+
+   Most lua programs seem to port pretty well :).
+
+   Only problem left is SMOP (Small Matter of Programming) ((Consultant's
+Joke)) :).
+
+   warm regards to all,
+   Wiz (pen name)
+
+
+On Thu, 7 Apr 2011, James Snyder wrote:
+
+&gt;<i> On Thu, Apr 7, 2011 at 10:46 AM, Bogdan Marinescu
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; On Thu, Apr 7, 2011 at 6:13 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; -1 for warning messages, partly because eLua is for embedded systems
+</I>&gt;<i> &gt;&gt; so should be essential, and partly because &quot;the users&quot; are embedded
+</I>&gt;<i> &gt;&gt; systems engineers
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Not really. A large part of the eLua audience are those people that are NOT
+</I>&gt;<i> &gt; embedded engineers but want to use the hardware anyway
+</I>&gt;<i> &gt; (see&#160;<A HREF="http://www.eluaproject.net/en_overview.html&#160;for">http://www.eluaproject.net/en_overview.html&#160;for</A> details). If I were one
+</I>&gt;<i> &gt; of them I'd really appreciate a feature like this. Hell, I'd appreciate
+</I>&gt;<i> &gt; something like this anyway because while I am quite familiar with embedded
+</I>&gt;<i> &gt; systems in general I am also extremely lazy :) so I'd like to have my tools
+</I>&gt;<i> &gt; outline my possible mistakes for me. Lazy or not this is likely to translate
+</I>&gt;<i> &gt; into better efficiency in the end.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; who do need to be familiar with the characteristics
+</I>&gt;<i> &gt;&gt; of device they are using, and need to know how to use eLua to achieve
+</I>&gt;<i> &gt;&gt; the exact effects they require. in short, they need good
+</I>&gt;<i> &gt;&gt; documentation.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; We can help them (and ourselves!) in this by documenting what the
+</I>&gt;<i> &gt;&gt; modules/platforms actually do with much more precision and detail
+</I>&gt;<i> &gt;&gt; (think of the precision of a datasheet: waveform characteristics,
+</I>&gt;<i> &gt;&gt; timing behaviour, mandatory initialization/use sequences of the
+</I>&gt;<i> &gt;&gt; primitives, bugs/defects in some scenarios) and we can make this task
+</I>&gt;<i> &gt;&gt; easier and more comprehensible by making the different ports behave in
+</I>&gt;<i> &gt;&gt; more similar ways.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Let me give an example: I couldn't find out what the behaviour of a
+</I>&gt;<i> &gt;&gt; PWM should be and don't have the other hardware platforms to be able
+</I>&gt;<i> &gt;&gt; to compare them so have just had to guess while implementing it for
+</I>&gt;<i> &gt;&gt; AVR32 and the result is the following:
+</I>&gt;<i> &gt;&gt; - each channel's pin is not driven until pwm.start() is called for it,
+</I>&gt;<i> &gt;&gt; at which point it becomes a driven output
+</I>&gt;<i> &gt;&gt; - after pwm.setup(), the output remains low (GND) until pwm.start() is
+</I>&gt;<i> &gt;&gt; called
+</I>&gt;<i> &gt;&gt; - it always outputs a complete number of cycles even if you call
+</I>&gt;<i> &gt;&gt; pwm.stop() immediately
+</I>&gt;<i> &gt;&gt; - you can call pwm.start() before pwm.setup() if you like and it still
+</I>&gt;<i> &gt;&gt; works
+</I>&gt;<i> &gt;&gt; - the actual frequency differs from the required frequency and is
+</I>&gt;<i> &gt;&gt; always &gt;= the requested frequency. The reported frequency differs from
+</I>&gt;<i> &gt;&gt; the actual frequency (because the real frequency is a floating point
+</I>&gt;<i> &gt;&gt; value while the primitives return an integer) and is &lt;= the actual
+</I>&gt;<i> &gt;&gt; frequency &#160;(so most often what is reported is the same as what was
+</I>&gt;<i> &gt;&gt; requested). (Yes, giving the nearest frequency would be better in both
+</I>&gt;<i> &gt;&gt; cases).
+</I>&gt;<i> &gt;&gt; - the output is high for approximately &quot;duty&quot; percent of the cycle
+</I>&gt;<i> &gt;&gt; (again, rounding and imprecision), and the high part is at the end of
+</I>&gt;<i> &gt;&gt; the cycle, not the beginning.
+</I>&gt;<i> &gt;&gt; - you can call pio.whatever() on the same pins to turn the PWM outputs
+</I>&gt;<i> &gt;&gt; into generic GPIOs like the others, even after having called calling
+</I>&gt;<i> &gt;&gt; pwm.*() functions or while they are running. You can than call
+</I>&gt;<i> &gt;&gt; pwm.setup to turn that GPIO pin back into a PWM output.
+</I>&gt;<i> &gt;&gt; - if you change the frequency or duty cycle, it currently just
+</I>&gt;<i> &gt;&gt; modifies them in the registers, so you probably get one cycle of junk
+</I>&gt;<i> &gt;&gt; when you do this.
+</I>&gt;<i> &gt;&gt; - platform-specific: there is a (currently disabled) mechanism to
+</I>&gt;<i> &gt;&gt; delay freq or duty updates until the end of a cycle, but this makes
+</I>&gt;<i> &gt;&gt; the &quot;set&quot; primitive delay up to one cycle if the frequency is changed.
+</I>&gt;<i> &gt;&gt; Worse, with this mechanism, if you change both the frequency and the
+</I>&gt;<i> &gt;&gt; length of the duty cycle in clocks, it can only update one of them at
+</I>&gt;<i> &gt;&gt; a time, so there is both a potential two-cycle delay and a compulsory
+</I>&gt;<i> &gt;&gt; intermediate cycle of junk, either at the old frequency and new duty
+</I>&gt;<i> &gt;&gt; period or vice versa, depending on the change.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; ... and probably a lot more that is only documented as comments in the
+</I>&gt;<i> &gt;&gt; code.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Impressive. Wow, I didn't know about most of the stuff you are talking about
+</I>&gt;<i> &gt; here :) While some of them are implementation errors (for example the PWM
+</I>&gt;<i> &gt; frequency being always higher than what you request) others are platform or
+</I>&gt;<i> &gt; implementation quirks that are best documented in text (which is a job for
+</I>&gt;<i> &gt; the wiki). I never intended to use the warnings system for very detailed
+</I>&gt;<i> &gt; things like this but rather for easy to make mistakes (like the ones
+</I>&gt;<i> &gt; outlined in my previous e-mail).
+</I>&gt;<i> 
+</I>&gt;<i> I would agree that where there's an example of an error, we should
+</I>&gt;<i> clearly fix that, and in no way am I suggesting that we don't lay down
+</I>&gt;<i> a bit more in the way of detailing expected behavior and deviations
+</I>&gt;<i> from it within documentation or on the wiki.
+</I>&gt;<i> 
+</I>&gt;<i> I can't speak for Bogdan, but I get the sense that we're thinking
+</I>&gt;<i> somewhat similarly here in that if there were a system like this it
+</I>&gt;<i> would be more for &quot;obvious&quot; side effects like settings applying to
+</I>&gt;<i> groups of ids when the user only asked to apply it to 1. I think that
+</I>&gt;<i> returning a different clock than requested is also a decent example.
+</I>&gt;<i> I'm really more thinking of this as a &quot;we or the hardware are going to
+</I>&gt;<i> make a non-obvious decision for you because we can't do exactly what
+</I>&gt;<i> you asked for, we're going to let you know about that&quot; (that said,
+</I>&gt;<i> documenting these quirks is also important).  Pin reassignments I
+</I>&gt;<i> think are different.  I think we can almost upfront state that if you
+</I>&gt;<i> use a pin on one peripheral mode then try to use it in another
+</I>&gt;<i> peripheral mode it A) might not work without reconfiguration B) if it
+</I>&gt;<i> does get reconfigured it's not going to work in the original
+</I>&gt;<i> peripheral mode until you switch it back.
+</I>&gt;<i> 
+</I>&gt;<i> On a related note, since the duty cycles are fractional, I would
+</I>&gt;<i> support some mechanism for letting the program or the user know about
+</I>&gt;<i> what the actual selected fraction ended up being, just like we return
+</I>&gt;<i> the actual frequency that was acquired even when we don't give the
+</I>&gt;<i> user exactly what they requested.  I think we could maybe set some
+</I>&gt;<i> minimum standards we use on implementations in order to make platforms
+</I>&gt;<i> more consistent, but they're always going to differ to some extent
+</I>&gt;<i> since they don't use the same clock dividers, register sizes,
+</I>&gt;<i> configuration models, etc..
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Another example I noticed in passing: if you ask for an SPI clock rate
+</I>&gt;<i> &gt;&gt; that is not supported, the code selects the arithmetically closest
+</I>&gt;<i> &gt;&gt; available clock rate, which may be higher, so if you try to initialise
+</I>&gt;<i> &gt;&gt; a device at its maximum rated transfer speed, the code can select a
+</I>&gt;<i> &gt;&gt; higher one that is out of spec.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; IMO this is exactly the kind of situation where a warning could make things
+</I>&gt;<i> &gt; much better. You set your clock in the program, eLua says &quot;hey, i can't give
+</I>&gt;<i> &gt; you that, i'm going to setup something a bit higher&quot; and you think &quot;oh wait,
+</I>&gt;<i> &gt; that's not good&quot; and try another clock. I simply can't think of a more
+</I>&gt;<i> &gt; convenient way to do it. Don't forget that one of the strongest point of
+</I>&gt;<i> &gt; eLua is that it makes (or is supposed to make :) ) prototyping very easy. I
+</I>&gt;<i> &gt; believe these kind of warnings are a very good tool for making this goal a
+</I>&gt;<i> &gt; reality.
+</I>&gt;<i> 
+</I>&gt;<i> Yep, although we do &quot;notify&quot; the user in the sense that we're supposed
+</I>&gt;<i> to return the frequency that actually got selected so at least they
+</I>&gt;<i> can look at their return parameter and decide if what they got was
+</I>&gt;<i> acceptable.  I could see this sort of model extending further to
+</I>&gt;<i> provide more details in return values on these types of decisions that
+</I>&gt;<i> are made for the user (i.e.: let the user know what pwm fraction in
+</I>&gt;<i> addition to clock was actually used when pwm.setup is called).  On the
+</I>&gt;<i> other hand some sort of error/warning channel of logging output is
+</I>&gt;<i> fairly simple and would be useful as well.
+</I>&gt;<i> 
+</I>&gt;<i> I could imagine this also working something like STDOUT and STDERR,
+</I>&gt;<i> which might work nicely with our mux implementation to prevent these
+</I>&gt;<i> types of messages from polluting the main interface stream.  In fact
+</I>&gt;<i> this might be a generally useful facility for us when
+</I>&gt;<i> testing/debugging to spit out messages on a separate stream.  We can
+</I>&gt;<i> already do this in an adhoc manner, but I suppose this could establish
+</I>&gt;<i> a standardized mechanism.
+</I>&gt;<i> 
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; I think that without this level of detail in the documentation (which
+</I>&gt;<i> &gt;&gt; becomes a specification) it is unlikely that an example program such
+</I>&gt;<i> &gt;&gt; as tvbgone.lua will work on any platform other than the one it was
+</I>&gt;<i> &gt;&gt; developed on due to the different timing characteristics and
+</I>&gt;<i> &gt;&gt; behaviour. &#160;This level of detail also helps us to ensure that the
+</I>&gt;<i> &gt;&gt; different implementations behave the same way.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Certainly. The more docs we have for a specific platform, the better.
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic..org</A>
+</I>&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> Phone: (847) 448-0386
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002259.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+	<LI>Next message: <A HREF="002260.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2269">[ date ]</a>
+              <a href="thread.html#2269">[ thread ]</a>
+              <a href="subject.html#2269">[ subject ]</a>
+              <a href="author.html#2269">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

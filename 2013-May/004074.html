@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Porting eLua to BegleBone Black
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Porting%20eLua%20to%20BegleBone%20Black&In-Reply-To=%3CCAG6%2B4SeM%3D-pRs1%2B8PqFOt8GpSRevpOK8UVBn9_uCFLjmofGdGA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004064.html">
+   <LINK REL="Next"  HREF="004065.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Porting eLua to BegleBone Black</H1>
+    <B>Tony</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Porting%20eLua%20to%20BegleBone%20Black&In-Reply-To=%3CCAG6%2B4SeM%3D-pRs1%2B8PqFOt8GpSRevpOK8UVBn9_uCFLjmofGdGA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Porting eLua to BegleBone Black">tony.elua at gmail.com
+       </A><BR>
+    <I>Wed May  8 23:00:32 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004064.html">[eLua-dev] Porting eLua to BegleBone Black
+</A></li>
+        <LI>Next message: <A HREF="004065.html">[eLua-dev] net.lookup locked
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4074">[ date ]</a>
+              <a href="thread.html#4074">[ thread ]</a>
+              <a href="subject.html#4074">[ subject ]</a>
+              <a href="author.html#4074">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've thought about it.  The BeagleBone has a great set of digital
+peripherals (external bus, comm ports, motion control, timing), better than
+most microcontrollers, at an incredible price (it's less expensive than an
+Arduino Due), and a developing cape ecosystem.
+
+On the other hand, I'm not interested writing Linux device drivers.  So I
+do think making the BeagleBone into a &quot;super Arduino&quot; without all the added
+complexity (e.g. of BoneScript, node.js, and Linux) but with the added
+power of Lua is a great idea.
+
+But I'm not sure a straight eLua port is the best approach for a system
+with 512M RAM, not 64K.  LuaJIT has already been ported to ARM Cortex A8.
+TI has StarterWare (peripheral drivers and libraries without OS) and
+SYS/BIOS (a small RTOS + StarterWare) ported to the BeagleBone processor
+(AM3358 or AM3359).
+
+So I'm thinking that the best approach might be SYS/BIOS + LuaJIT + eLua
+compatible (as far as possible) libraries for BeagleBone's peripherals.
+That would make it relatively easy to move code between systems, but still
+take advantage of the Beagle's processing power.  Unfortunately, this isn't
+high on my priorities yet, although I do plan on buying the BeagleBone
+Black within a month or two.
+
+--Tony
+
+
+On Mon, May 6, 2013 at 4:45 PM, hrh1818 &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">hrhan at att.net</A>&gt; wrote:
+
+&gt;<i> Has any thought been given to porting eLua to BeagleBone Black? With a
+</I>&gt;<i> price of $45.00 and 2 GB of flash it looks like a very promising candidate.
+</I>&gt;<i> See: &lt;
+</I>&gt;<i> <A HREF="http://www.digikey.com/product-highlights/us/en/texas-instruments-beagleboard/685?gclid=CPj1lYq5grcCFcdU4AodLn0ACQ&amp;WT.term=beaglebone+black&amp;WT.medium=cpc&amp;WT.campaign=Programmers%2C+Development+Systems&amp;WT.srch=1&amp;WT.content=text&amp;type=Exact&amp;WT.source=google&amp;network=g&amp;adpos=1t1&amp;WT.mc_id=Programmers%2C+Development+Systems&amp;cshift_ck=dbbe19f1-c16e-421e-849f-2a192d030df1csNGO1u4Zv">http://www.digikey.com/product-highlights/us/en/texas-instruments-beagleboard/685?gclid=CPj1lYq5grcCFcdU4AodLn0ACQ&amp;WT.term=beaglebone+black&amp;WT.medium=cpc&amp;WT.campaign=Programmers%2C+Development+Systems&amp;WT.srch=1&amp;WT.content=text&amp;type=Exact&amp;WT.source=google&amp;network=g&amp;adpos=1t1&amp;WT.mc_id=Programmers%2C+Development+Systems&amp;cshift_ck=dbbe19f1-c16e-421e-849f-2a192d030df1csNGO1u4Zv</A>&gt;
+</I>&gt;<i> hrh1818
+</I>&gt;<i> ------------------------------
+</I>&gt;<i> View this message in context: Porting eLua to BegleBone Black&lt;<A HREF="http://elua-development.2368040.n2.nabble.com/Porting-eLua-to-BegleBone-Black-tp7577958.html">http://elua-development.2368040.n2.nabble.com/Porting-eLua-to-BegleBone-Black-tp7577958.html</A>&gt;
+</I>&gt;<i> Sent from the eLua Development mailing list archive&lt;<A HREF="http://elua-development.2368040.n2.nabble.com/">http://elua-development.2368040.n2.nabble.com/</A>&gt;at Nabble.com.
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130508/971e76f6/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130508/971e76f6/attachment.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004064.html">[eLua-dev] Porting eLua to BegleBone Black
+</A></li>
+	<LI>Next message: <A HREF="004065.html">[eLua-dev] net.lookup locked
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4074">[ date ]</a>
+              <a href="thread.html#4074">[ thread ]</a>
+              <a href="subject.html#4074">[ subject ]</a>
+              <a href="author.html#4074">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ARM9 Embedded PLC
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ARM9%20Embedded%20PLC&In-Reply-To=%3C2012122175029.531908%40ZOE-WIN7%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003868.html">
+   <LINK REL="Next"  HREF="003870.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ARM9 Embedded PLC</H1>
+    <B>Quentin Barry</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ARM9%20Embedded%20PLC&In-Reply-To=%3C2012122175029.531908%40ZOE-WIN7%3E"
+       TITLE="[eLua-dev] ARM9 Embedded PLC">admin at promethius.info
+       </A><BR>
+    <I>Sun Dec  2 16:50:29 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003868.html">[eLua-dev] [SPAM] Re: ARM9 Embedded PLC
+</A></li>
+        <LI>Next message: <A HREF="003870.html">[eLua-dev] ARM9 Embedded PLC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3869">[ date ]</a>
+              <a href="thread.html#3869">[ thread ]</a>
+              <a href="subject.html#3869">[ subject ]</a>
+              <a href="author.html#3869">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Tom
+
+I was thinking of using the LM3S6965. I think that it has ample resources to suit my requirements.
+It comes with 64 KB of bit-banded SRAM and 256 KB of flash memory. It has the MAC and PHY built into the IC. All that one requires is the RJ45 connector. I think that this device was targeted for Ethernet to Serial bridges. There are detailed design and application notes on their website.
+
+Without a doubt one cannot deny that ST has the lion's share of the Cortex market. I do use their devices regularly too. However there are certain niche markets that other vendors target.
+
+Stellaris with their LM3S6965 for Ethernet
+NXP and Energy Micro for Graphics Displays - EmWin is a free download for these devices.
+Si-Labs have a highly configurable patented dual crossbar technology to define pinouts.
+
+I guess it all boils down to what the end application is.
+
+
+Regards
+
+Quentin
+
+
+That's OK, Quentin.
+
+
+A new look at an existing product line is always welcomed.
+
+
+Being that you are a hardware person, take a look at the W7200 in the Wiznet site.
+
+
+Notice that it uses STM32 IP with 128K Flash and 20K RAM. If you can come up with the equivalent using Stellaris IP with  512 K Flash (or better) and 64K RAM (or better), I can use that.
+ 
+
+
+On Sun, Dec 2, 2012 at 1:26 AM, Quentin Barry &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">admin at promethius.info</A>&gt; wrote:
+
+Thanks for the link.
+ 
+The issue here is that I am a hardware / embedded engineer. I don't want to buy someone else's solution - but want to design my own. You may call it re-inventing the wheel, but that is OK. I am planning on using one of the Luminary Micro / Stellaris Cortex M3 devices to implement the Ethernet to Serial bridge. I could simply have used a Tibbo module if I was so inclined.
+ 
+I have taken a look at the Microchip offerings but then you are tied in to their compiler and development environment. With the Stellaris solution everything is open source. One also has the flexibility to change and add things as well. For example I could add a CC1125 to the Cortex as well and then I would have an Ethernet and an ISM band device in one.
+ 
+Quentin
+ 
+Take a look at:
+
+
+
+<A HREF="http://www.wiznet.co.kr/Sub_Modules/en/">http://www.wiznet.co.kr/Sub_Modules/en/</A>
+
+
+
+
+
+
+On Thu, Nov 29, 2012 at 7:53 AM, Quentin Barry &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">admin at promethius.info</A>&gt; wrote:
+
+
+That would be great. I also have quite a hectic schedule for approximately the next 2 weeks and then I will be free. Being your own boss can kill you sometimes.
+ 
+I have all the PDF files for the PLC - where can I deposit them? If people are happy with what they see then I will upload all the Gerber files a bit later. All I need is a bit of guidance here on where to deposit the files without creating confusion. I guess a bit of moderator support is required at this junction.
+ 
+Quentin.
+ 
+I would be interested and willing to help you get eLua running on your PLC board. I am unlikely to have much time for the next two weeks due to a work project deliverable. After that I could spend some time on getting eLua running and working on some modules to interface to the various hardware peripherals.
+
+
+
+
+I also may be interested in your Ethernet gateway board, as I have a few projects where I plan on using eLua and will need Ethernet.
+
+
+
+
+-djd
+
+
+
+
+
+
+
+On Nov 28, 2012, at 11:58 PM, Quentin Barry wrote:
+
+
+
+Hello All
+
+
+
+If I was to design an Ethernet to serial gateway would there be any interest? Basically it would accept 10/100 Mb Ethernet and convert it to serial or SPI and vica-versa.
+
+
+
+I would make all the gerber files available. I think that a modular method is perhaps the best route to follow as main processor is then not burdened with these other tasks. All it has to do is to capture packets on the Serial or SPI layer, process them and reply if necessary.
+
+
+
+I also have a complete design for a small PLC using the STR912FAW47. It has:
+
+
+
+2 x 12 bit D/A converters on it, the outputs filtered and buffered 0- 5V,
+4 x 12 bit A/D channels
+2 x I2C channels for user expansion
+512K x 16 Static RAM
+32K x 8 FRAM or more depending on which IC you select
+1 x RS232 channel
+1 x RS485 channel
+1 x SPI port for user expansion
+1 x SIM900 GSM module
+4 x Optically isolated interrupt coupled digital inputs
+4 x Relay outputs
+1 x USB port
+1 x Onboard PSU which generates all the required voltage rails.
+
+Most of the low level drivers are written in C and have been battled tested. This is revision 2 of the board, so there are a few hardware changes and some of the drivers have to change, or still have to be written. Everything is interrupt driven.
+
+
+
+
+I have not yet had the time to implement eLua on it, but there is a port available for this CPU.
+Is anyone interested in working with me to get this up and going with eLua?
+
+
+
+Quentin_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+-- 
+Douglas Davenport
+
+
+
+
+
+
+
+
+
+_______________________________________________
+ eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+
+
+-- 
+Tom Freund
+
+Dig.y.SoL (TM)
+
+&quot;Systems overseeing 
+public and private
+infrastructure&quot;
+
+Voice - 860-232-1614
+Skype ID - digysol
+
+
+
+
+
+
+
+
+_______________________________________________
+ eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+
+-- 
+Tom Freund
+
+Dig.y.SoL (TM)
+
+&quot;Systems overseeing 
+public and private
+infrastructure&quot;
+
+Voice - 860-232-1614
+Skype ID - digysol
+
+
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20121202/b464b0d8/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20121202/b464b0d8/attachment-0001.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003868.html">[eLua-dev] [SPAM] Re: ARM9 Embedded PLC
+</A></li>
+	<LI>Next message: <A HREF="003870.html">[eLua-dev] ARM9 Embedded PLC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3869">[ date ]</a>
+              <a href="thread.html#3869">[ thread ]</a>
+              <a href="subject.html#3869">[ subject ]</a>
+              <a href="author.html#3869">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

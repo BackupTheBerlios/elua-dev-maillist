@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Large ADC Commit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1EKJ3f5b008eb55dd89fc79a1ae%2C%0A%09jbsnyder%40fanplastic.org%2C%2012634449.411234750751841.J%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000448.html">
+   <LINK REL="Next"  HREF="000450.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Large ADC Commit</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3CEMEWEMEW2_DELIMl1EKJ3f5b008eb55dd89fc79a1ae%2C%0A%09jbsnyder%40fanplastic.org%2C%2012634449.411234750751841.J%3E"
+       TITLE="[eLua-dev] Large ADC Commit">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Feb 16 03:19:02 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000448.html">[eLua-dev] Large ADC Commit
+</A></li>
+        <LI>Next message: <A HREF="000450.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#449">[ date ]</a>
+              <a href="thread.html#449">[ thread ]</a>
+              <a href="subject.html#449">[ subject ]</a>
+              <a href="author.html#449">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>One example is adcscope.lua in romfs. This, along with the current version of the module itself, only works on the LM3S platform at the moment, since that's what I've got. I'll make another example that outputs to the serial console shortly. 
+
+As far as usage goes, here's a quick reference: 
+
+channel_id refers to the adc channel being used (for lm3s this is 0-3) 
+timer_id refers to a timer to be used in cases where exact timing is necessary (for lm3s this can be 0-3) 
+frequency is in hertz 
+
+adc.sample(channel_id) - returns a single integer value from the ADC 
+adc.maxval(channel_id) - returns largest integer one can expect for this channel on a given platform (based on bit depth) 
+adc.dataready(channel_id) - if running in non-blocking mode, this will indicate if all of the samples requested from the last sample or burst have been acquired and are waiting in the buffer 
+adc.setmode(channel_id, mode) - mode: 0 sets mode to blocking (sample or burst will wait for requested samples to be captured before returning), 1 sets non-blocking 
+adc.setsmoothing(channel_id, length) - set the length of the smoothing filter, this must be a power of 2, currently between 0 and 128 
+adc.getsmoothing(channel_id) - get the current smoothing length in use 
+adc.burst( channel_id, count, timer_id, frequency) - request that (count) samples (limited to 128 total, also must be a power of 2) be requested from (channel_id), using (timer_id) at (frequency). results are returned as a table 
+
+I'm aware currently that when large smoothing buffer sizes are requested, sometimes it blows up. I'm investigating this, and I think I may have found a fix that's not in there yet. There may also be some other cases where it crashes. I'll run it through its paces as much as possible in the coming days to nail down most of these issues. 
+
+-jsnyder 
+
+----- &quot;Pedro Bittencourt&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote: 
+&gt;<i> Hi James, 
+</I>&gt;<i> 
+</I>&gt;<i> Could you provide some examples about ADC module usage? (maybe the programs used for testing) 
+</I>&gt;<i> 
+</I>--Pedro Bittencourt 
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Sun, Feb 15, 2009 at 10:12 PM, James Snyder &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> &gt; wrote: 
+</I>&gt;<i> 
+</I>
+
+
+
+&gt;<i> Hi - 
+</I>&gt;<i> 
+</I>&gt;<i> I've dropped in another large ADC commit. I've mentioned most of what was done in the commit message, but here's a rundown: 
+</I>&gt;<i> 
+</I>&gt;<i> - When samples are available from ADC, they're initially copied into an elua buf. 
+</I>&gt;<i> - buf length is adjusted according to number of expected samples coming in (when burst is requested, buf is resized to accomodate the number of burst samples, size is dropped back down when single samples are requested) 
+</I>&gt;<i> - if smoothing is enabled, and has no samples, smoothing buffer (not an elua buf) is filled first to warm up the filter, then samples begin to accumulate in the main buffer. 
+</I>&gt;<i> - a flush function has been added to manually clear out both smoothing and primary buffers in case one doesn't want old samples or old smoothing data being used for future measurements 
+</I>&gt;<i> 
+</I>&gt;<i> Also, I forgot to mention one thing in the commit message: As per a discussion with Bogdan, the type checking on buf_write and buf_read have been pulled out. 
+</I>&gt;<i> 
+</I>&gt;<i> One adjustment that I'd like to consider before the 0.6 freeze is to remove the option for blocking and non-blocking as it applies to sample and burst functions (used to initiate sampling) and to instead make these always non-blocking, and never have them return any samples (only errors, if needed). A separate function, say getsamples would pull in data collected using either mode. Right now, if one uses non-blocking mode, samples will always be returned for the last time you ran sample or burst. This means that if you want to get the data already requested, you also have to always request new samples, even if you don't want them. 
+</I>&gt;<i> 
+</I>&gt;<i> I should be able to make this change with minimal code changes, but I haven't done it yet because it changes the pre-existing paradigm, and I wanted to get these changes in sooner rather than later :-) 
+</I>&gt;<i> 
+</I>&gt;<i> I think it might just take me another hour or so to get adjustments along those lines working. There wouldn't be as long of a delay as this ADC commit. 
+</I>&gt;<i> 
+</I>&gt;<i> Suggestions/comments are welcome :-) 
+</I>&gt;<i> 
+</I>&gt;<i> -jsnyder 
+</I>&gt;<i> _______________________________________________ 
+</I>&gt;<i> Elua-dev mailing list 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________ Elua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090215/4161b6c9/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090215/4161b6c9/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000448.html">[eLua-dev] Large ADC Commit
+</A></li>
+	<LI>Next message: <A HREF="000450.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#449">[ date ]</a>
+              <a href="thread.html#449">[ thread ]</a>
+              <a href="subject.html#449">[ subject ]</a>
+              <a href="author.html#449">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

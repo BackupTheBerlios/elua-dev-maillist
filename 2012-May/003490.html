@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problem with net module in LM3S
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20with%20net%20module%20in%20LM3S&In-Reply-To=%3CCAL9ALcL%3DSNTaRf2%3DF4%3DNfkHfVuH24UobX2yER4zM6GaUUdzzcQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003487.html">
+   <LINK REL="Next"  HREF="003492.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problem with net module in LM3S</H1>
+    <B>Vagner nascimento</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20with%20net%20module%20in%20LM3S&In-Reply-To=%3CCAL9ALcL%3DSNTaRf2%3DF4%3DNfkHfVuH24UobX2yER4zM6GaUUdzzcQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Problem with net module in LM3S">vagnernascimento at gmail.com
+       </A><BR>
+    <I>Wed May  2 22:26:47 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003487.html">[eLua-dev] Problem with net module in LM3S
+</A></li>
+        <LI>Next message: <A HREF="003492.html">[eLua-dev] Problem with net module in LM3S
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3490">[ date ]</a>
+              <a href="thread.html#3490">[ thread ]</a>
+              <a href="subject.html#3490">[ subject ]</a>
+              <a href="author.html#3490">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Marcus, about WebBuilder problem, another user already notified the same
+issue and was fixed today, please check again and let me know.
+
+Thanks,
+Vagner
+
+On Wed, May 2, 2012 at 2:17 PM, Marcus Vinicius Costa &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">marcusvc.costa at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> I need help with the net module in LM3S8962, i try use this but i have an
+</I>&gt;<i> error to listen a port.
+</I>&gt;<i>
+</I>&gt;<i> I use in my code the source:
+</I>&gt;<i> *sock, remoteip, err = net.accept( 7474, 1, 10000 )*
+</I>&gt;<i>
+</I>&gt;<i> The function return in err variable a value -1, and never listen the port
+</I>&gt;<i>
+</I>&gt;<i> I checked the source file and found this code
+</I>&gt;<i>
+</I>&gt;<i> int elua_accept( u16 port, unsigned timer_id, timer_data_type to_us, elua_net_ip* pfrom )
+</I>&gt;<i>
+</I>&gt;<i> {
+</I>&gt;<i>   timer_data_type tmrstart = 0;
+</I>&gt;<i>   int old_status;
+</I>&gt;<i>
+</I>&gt;<i>   if( !elua_uip_configured )
+</I>&gt;<i>     return -1; ...
+</I>&gt;<i>
+</I>&gt;<i> I receiced -1 in err because the elua_uip_configured is false, but when i
+</I>&gt;<i> do this for true? I try generate another bin file in web builder with the
+</I>&gt;<i> DHCP and DNS active but not work too.
+</I>&gt;<i>
+</I>&gt;<i> When I ping the direct IP received by DHCP router the module response OK,
+</I>&gt;<i> but if I ping the host name elua the module is not found in the network.
+</I>&gt;<i>
+</I>&gt;<i> I try send data to test using this code:
+</I>&gt;<i>
+</I>&gt;<i>   *local ip = net.packip(192,168,0,104)
+</I>&gt;<i> *
+</I>&gt;<i> *            local socket = net.socket(net.SOCK_STREAM)
+</I>&gt;<i>             local err = net.connect(socket, ip, 7475, 1, 10000)
+</I>&gt;<i>             if(err == net.ERR_OK) then
+</I>&gt;<i>                 local res, err = net.send( socket, &quot;Send
+</I>&gt;<i> &quot;..tostring(countSend)..&quot;\n&quot;)
+</I>&gt;<i>             end
+</I>&gt;<i>             net.close(socket)*
+</I>&gt;<i>
+</I>&gt;<i> I open a server tcp/ip using hercules terminal and received the data
+</I>&gt;<i> normally, if i start the connection the module works fine, but to listen
+</I>&gt;<i> not work.
+</I>&gt;<i>
+</I>&gt;<i> Thanks for help
+</I>&gt;<i> Marcus Vinicius
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120502/3cca6507/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120502/3cca6507/attachment.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003487.html">[eLua-dev] Problem with net module in LM3S
+</A></li>
+	<LI>Next message: <A HREF="003492.html">[eLua-dev] Problem with net module in LM3S
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3490">[ date ]</a>
+              <a href="thread.html#3490">[ thread ]</a>
+              <a href="subject.html#3490">[ subject ]</a>
+              <a href="author.html#3490">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

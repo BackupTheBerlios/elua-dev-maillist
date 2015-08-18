@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GC Parameters &amp; Emergency Collection
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3C81fbe47d0905102254y5d4ddce8u383de78702994c7a%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000795.html">
+   <LINK REL="Next"  HREF="000804.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GC Parameters &amp; Emergency Collection</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3C81fbe47d0905102254y5d4ddce8u383de78702994c7a%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] GC Parameters &amp; Emergency Collection">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon May 11 07:54:23 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000795.html">[eLua-dev] Device Manager
+</A></li>
+        <LI>Next message: <A HREF="000804.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#801">[ date ]</a>
+              <a href="thread.html#801">[ thread ]</a>
+              <a href="subject.html#801">[ subject ]</a>
+              <a href="author.html#801">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, May 11, 2009 at 6:34 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> Minimal testing seems to show it working and surviving through conditions
+</I>&gt;<i> where previously it would run out of memory on STM32 w/ 64k SRAM.
+</I>&gt;<i>
+</I>
+I didn't expect anything less from this patch. I tested it on a &quot;simulated&quot;
+environment before starting to work on eLua, back when I was checking if it
+was at all feasible to run Lua on system limited to 64k of RAM and even
+less. And it performed very good. There is of course a performance penalty,
+but I'd say that in practice the EGC is extremely useful for thte vaste
+majority of applications. After all, it's quite unlikely that someone would
+choose eLua to run computationally intensive programs that would suffer from
+the performance impact :)
+
+Best,
+Bogdan
+
+
+&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i> On May 10, 2009, at 5:48 AM, Robert G. Jakabosky wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I finally got a working i686-elf toolchain compiled and eLua to boot in aVirualBox
+</I>&gt;<i> instance.
+</I>&gt;<i>
+</I>&gt;<i> Also I found out that eLua will not start when using the Lilo boot loader.
+</I>&gt;<i> I was trying Lilo first since it is smaller then grub and I thought it would
+</I>&gt;<i> be easier to install eLua on a floppy. Turned out that it was much easier
+</I>&gt;<i> to install grub on a floppy and there was enough room for eLua too.
+</I>&gt;<i>
+</I>&gt;<i> On Saturday 09, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> &gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt; Many, many thanks for this !!! I wanted to do this for quite a while
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt; now, but didn't find the time to do it. Your patch is excellent for
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt; eLua and its goals, so it's a Great Thing to have it running on our
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt; targets. Thanks again.
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> &gt; Ditto. Thanks for getting this up and going. I will do some testing
+</I>&gt;<i>
+</I>&gt;<i> &gt; with this, this weekend if I get a chance. I'm curious if this might
+</I>&gt;<i>
+</I>&gt;<i> &gt; allow pushing limits a bit more where we would previously run out of
+</I>&gt;<i>
+</I>&gt;<i> &gt; memory where the problem could be helped by emergency gc.
+</I>&gt;<i>
+</I>&gt;<i> With the patch you can now set a memory limit when starting a Lua script
+</I>&gt;<i> from the eLua shell.
+</I>&gt;<i>
+</I>&gt;<i> eLua# lua -m 51 /rom/life.lua
+</I>&gt;<i>
+</I>&gt;<i> The '-m' option lets you set the memory limit in Kbytes.
+</I>&gt;<i>
+</I>&gt;<i> 51Kbytes was the lowwest I was able to get life.lua to run at with eLua.
+</I>&gt;<i> On my linux host vanilla Lua with the EGC patch can only run life.lua with
+</I>&gt;<i> a minimal memory limit of 60Kbytes. Looks like the ROTables in eLua saved
+</I>&gt;<i> about 9Kbytes here.
+</I>&gt;<i>
+</I>&gt;<i> The attached patch is for stress testing the EGC only. It forces a full GCcycle on every allocation, so it is very slow (life.lua required over 30
+</I>&gt;<i> minutes to run, compared to 4 minutes). I was able to run all the Lua
+</I>&gt;<i> scripts that eLua includes by default with that stress testing enabled.
+</I>&gt;<i>
+</I>&gt;<i> Normally I would also run the stress testing under valgrind to test for any
+</I>&gt;<i> bad memory accesses, but that is only possible if eLua is run as an app.
+</I>&gt;<i> under a host OS.
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt; And I couldn't agree with you more, and this why I feel so excited
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt; for having EGC in eLua. I'll have to think of a good batch of tests
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt; for making your patch shine in its full potential :)
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> &gt; Would the torture tests for the egc patch work in really low memory
+</I>&gt;<i>
+</I>&gt;<i> &gt; conditions like with 64k of SRAM?
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> &gt; I think we should also have a general test suite for to simplify the
+</I>&gt;<i>
+</I>&gt;<i> &gt; verification of builds across our multiple platforms. I think I may
+</I>&gt;<i>
+</I>&gt;<i> &gt; start after luarpc is working with eLua.
+</I>&gt;<i>
+</I>&gt;<i> It should be possible to pick torture tests that will work with just 64k of
+</I>&gt;<i> memory.
+</I>&gt;<i>
+</I>&gt;<i> I normally run the Lua scripts from:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://shootout.alioth.debian.org/">http://shootout.alioth.debian.org/</A>
+</I>&gt;<i>
+</I>&gt;<i> when stress testing the EGC patch. Some of those scripts will require more
+</I>&gt;<i> then 64k for that dataset that they process.
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i>
+</I>&gt;<i> Robert G. Jakabosky
+</I>&gt;<i> &lt;full_gc_on_alloc.patch&gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>    --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 448-0386
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/bdeeaa31/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/bdeeaa31/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000795.html">[eLua-dev] Device Manager
+</A></li>
+	<LI>Next message: <A HREF="000804.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#801">[ date ]</a>
+              <a href="thread.html#801">[ thread ]</a>
+              <a href="subject.html#801">[ subject ]</a>
+              <a href="author.html#801">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

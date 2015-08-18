@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua-dev Digest, Vol 35, Issue 34
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua-dev%20Digest%2C%20Vol%2035%2C%20Issue%2034&In-Reply-To=%3CBANLkTim6e-PpT1ayjMhXUe%2Bf7MzoXJcA3A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002514.html">
+   <LINK REL="Next"  HREF="002537.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua-dev Digest, Vol 35, Issue 34</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua-dev%20Digest%2C%20Vol%2035%2C%20Issue%2034&In-Reply-To=%3CBANLkTim6e-PpT1ayjMhXUe%2Bf7MzoXJcA3A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua-dev Digest, Vol 35, Issue 34">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Jun 16 23:06:57 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002514.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 34
+</A></li>
+        <LI>Next message: <A HREF="002537.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 41
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2535">[ date ]</a>
+              <a href="thread.html#2535">[ thread ]</a>
+              <a href="subject.html#2535">[ subject ]</a>
+              <a href="author.html#2535">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Jun 15, 2011 at 5:32 AM, Raman Gopalan &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+&gt;<i> Thanks for your reply. Now that I know for sure that the bug has nothing
+</I>&gt;<i> to do with my platform setup, I will try to build up test cases to corner
+</I>&gt;<i> the
+</I>&gt;<i> bug. I will keep the posix vs win serial implementation in mind. If I
+</I>&gt;<i> stumble
+</I>&gt;<i> upon something interesting, I will certainly keep the community posted.
+</I>&gt;<i>
+</I>&gt;<i> Awaiting your update.
+</I>&gt;<i>
+</I>&gt;<i> Raman
+</I>
+What's odd here is that I did hook up a scope to both Rx and Tx lines
+and at least at the MCU it appears to be sending back the initial
+handshake reply.  What I can't figure out is why it never appears in
+the buffer in Windows.  There's plenty of buffer space allocated
+beforehand.  One difference I notice in timing between POSIX and
+Windows is that it seems to send the connection request byte and
+header as one &quot;packet&quot; whereas with windows there is a couple
+millisecond delay between the sending of the connection request byte
+and the 8 header bytes.  Additionally, there appears to be a longer
+delay in responding to the single 9 byte POSIX send vs the separated
+Windows 1 + 2ms + 8 byte send.  I haven't looked at timing on an STM32
+platform yet to see how it differs if at all but I wonder if this
+might be related to timing?
+
+It has definitely worked in the past on this platform.  I may start
+trying to find the last working version and then use git bisect to
+find what change caused the current problem.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002514.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 34
+</A></li>
+	<LI>Next message: <A HREF="002537.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 41
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2535">[ date ]</a>
+              <a href="thread.html#2535">[ thread ]</a>
+              <a href="subject.html#2535">[ subject ]</a>
+              <a href="author.html#2535">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

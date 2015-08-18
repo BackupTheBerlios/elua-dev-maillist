@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Out-of-bounds value policy question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Out-of-bounds%20value%20policy%20question&In-Reply-To=%3CC1839409-75E8-4231-8B73-CA7B0B7AC8B3%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002769.html">
+   <LINK REL="Next"  HREF="002771.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Out-of-bounds value policy question</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Out-of-bounds%20value%20policy%20question&In-Reply-To=%3CC1839409-75E8-4231-8B73-CA7B0B7AC8B3%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Out-of-bounds value policy question">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sat Oct  8 05:33:56 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002769.html">[eLua-dev] Out-of-bounds value policy question
+</A></li>
+        <LI>Next message: <A HREF="002771.html">[eLua-dev] Out-of-bounds value policy question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2770">[ date ]</a>
+              <a href="thread.html#2770">[ thread ]</a>
+              <a href="subject.html#2770">[ subject ]</a>
+              <a href="author.html#2770">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+On Oct 7, 2011, at 20:47, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi!
+</I>&gt;<i>  What's the eLua policy for handling things like when they set
+</I>&gt;<i> frequencies of 0,
+</I>&gt;<i> negative duty cycles, pwm frequencies of zero and so on?
+</I>&gt;<i>   I see that duty&gt;100 is currently set to 100, whereas bogus values
+</I>&gt;<i> just do random things on different platforms
+</I>&gt;<i> For example, on AVR32, setting an I2C frequency of zero currently
+</I>&gt;<i> gives a bit-size of 71.5 seconds, which just happens to be when its
+</I>&gt;<i> 32-bit timer wraps round at 60MHz.
+</I>&gt;<i> 
+</I>&gt;<i> Should we quietly set, say, zero or negative frequencies to the lowest
+</I>&gt;<i> possible frequency (1Hz) so that thing &quot;just work&quot;, or should we give
+</I>&gt;<i> a run-time error?
+</I>
+Hmm..  My initial thought might be to automatically clip things at the maximum and minimum, but another part of me hates silently correcting errors...
+
+Bogdan might disagree, but I think we should throw an error if the input is outside of specified bounds (i.e. for pwm). If bounds are unspecified and might be hardware limited I have less of a problem with automatic correction, although a warning wouldn't be unwarranted.
+
+I'm not sure what side of the fence you fall on, but I'd be happy with quickly establishing a policy on this front without going into an extended thread even if If the conclusion differs from the preference I suggested :)
+
+&gt;<i> 
+</I>&gt;<i>     M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002769.html">[eLua-dev] Out-of-bounds value policy question
+</A></li>
+	<LI>Next message: <A HREF="002771.html">[eLua-dev] Out-of-bounds value policy question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2770">[ date ]</a>
+              <a href="thread.html#2770">[ thread ]</a>
+              <a href="subject.html#2770">[ subject ]</a>
+              <a href="author.html#2770">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

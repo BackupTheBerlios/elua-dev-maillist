@@ -1,0 +1,327 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A Few Models For Dealing With ADC Samples
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1IBwD349e83f4c604765fae440d%2C%0A%09jbsnyder%40fanplastic.org%2C%2024E11D22-2731-44DD-B838-1CD%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000561.html">
+   <LINK REL="Next"  HREF="000562.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A Few Models For Dealing With ADC Samples</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1IBwD349e83f4c604765fae440d%2C%0A%09jbsnyder%40fanplastic.org%2C%2024E11D22-2731-44DD-B838-1CD%3E"
+       TITLE="[eLua-dev] A Few Models For Dealing With ADC Samples">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Feb 19 18:58:07 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000561.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+        <LI>Next message: <A HREF="000562.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#564">[ date ]</a>
+              <a href="thread.html#564">[ thread ]</a>
+              <a href="subject.html#564">[ subject ]</a>
+              <a href="author.html#564">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 19, 2009, at 4:48 AM, Bogdan Marinescu wrote:
+
+&gt;<i> Alright, a word of warning first: I'm not by any means a specialist  
+</I>&gt;<i> in ADCs, and I only used them in a buch of applications. That said,  
+</I>&gt;<i> I do have some ideas about how they work and what they're supposed  
+</I>&gt;<i> to do, and a few ideas of my own about the design of the module  
+</I>&gt;<i> itself. The basic principle here is KISS. I want the modules to  
+</I>&gt;<i> cover all the needed functionality, but no more than that. I  
+</I>&gt;<i> definitely don't want a full blown API, but rather to keep  
+</I>&gt;<i> everything as lightweight as possible. For example, you might have  
+</I>&gt;<i> noticed that none of the modules currently exported by eLua use the  
+</I>&gt;<i> &quot;object notation&quot;. This is intentional, as the &quot;standard&quot; notation  
+</I>&gt;<i> is still more widely used in different instances of embedded  
+</I>&gt;<i> programming, plus it keeps the implementation simpler. Of course,  
+</I>&gt;<i> keeping a good balance between a minimal API and a good  
+</I>&gt;<i> functionality is an art in itself, something that I don't pretend to  
+</I>&gt;<i> master (but I try anyway :) ).
+</I>&gt;<i> With that in mind, I think that our current ADC module does enough  
+</I>&gt;<i> to qualify as functional
+</I>&gt;<i>
+</I>&gt;<i> - single sampling
+</I>&gt;<i> - multiple sampling at a given frequency (which is very  
+</I>&gt;<i> deterministic, being handled in the backend with interrupts which  
+</I>&gt;<i> are quite accurate).
+</I>&gt;<i> - moving average filtering (quite important in real-life  
+</I>&gt;<i> applications).
+</I>&gt;<i>
+</I>&gt;<i> In the future, once interrupt handlers are implemented in eLua,  
+</I>&gt;<i> we'll also support double buffering, in that we'll have a circular  
+</I>&gt;<i> sample buffer, and an &quot;interrupt&quot; will be fired when that buffer is  
+</I>&gt;<i> half full. This would allow certain kind of applications (like data  
+</I>&gt;<i> loggers) to be written very easily. I think this is a very powerful  
+</I>&gt;<i> model.
+</I>&gt;<i>
+</I>&gt;<i> Please see below my other comment.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Single Function to Request and Return:
+</I>&gt;<i> 1. Simple Model
+</I>&gt;<i> call function to start sampling
+</I>&gt;<i> function waits for sampling to finish
+</I>&gt;<i> function returns samples
+</I>&gt;<i>
+</I>&gt;<i> Not acceptable if this is the only model, perfectly OK if it  
+</I>&gt;<i> coexists with other (asynchronous) models.\
+</I>&gt;<i>
+</I>&gt;<i> 2. Non-blocking Model (this was present in an earlier version of the  
+</I>&gt;<i> ADC module)
+</I>&gt;<i> call function to start sampling, function returns
+</I>&gt;<i> do some other stuff
+</I>&gt;<i> call function again to get samples from the sampling period, and  
+</I>&gt;<i> start next set of sampling
+</I>&gt;<i>
+</I>&gt;<i> Interesting, but let's see the next one.
+</I>&gt;<i>
+</I>&gt;<i> Separate Request &amp; Return Functions:
+</I>&gt;<i> 3. Separated Request/Return Model
+</I>&gt;<i> call function to start sampling, function returns
+</I>&gt;<i> do other work
+</I>&gt;<i> use another function to get samples in the buffer (this can be done  
+</I>&gt;<i> while sampling is still happening)
+</I>&gt;<i>
+</I>&gt;<i> I assume you're talking about a circular buffer here, and this is  
+</I>&gt;<i> perfectly OK with me. Add an overflow flag for those situations when  
+</I>&gt;<i> you don't collect the samples on time and you're all set (and it  
+</I>&gt;<i> also matches (to some extent) the interrupt model I was talking  
+</I>&gt;<i> about earlier. Maybe even add a function that would return &quot;true&quot;  
+</I>&gt;<i> when half (or an user-specified fraction of the buffer) is full).
+</I>
+This is, by far, the most common model I've seen for a lot of higher  
+level APIs (initiate sampling, samples buffer, pull samples out with  
+another function).  As an example, since I've worked with it before,  
+and the docs are online, here's an overview of how MATLAB deals with  
+the wide range of  ADC/DAC/GPIO devices it talks to:
+<A HREF="http://www.mathworks.com/access/helpdesk/help/toolbox/daq/index.html?/access/helpdesk/help/toolbox/daq/f14-17602.html&amp;http://www.mathworks.com/products/daq/">http://www.mathworks.com/access/helpdesk/help/toolbox/daq/index.html?/access/helpdesk/help/toolbox/daq/f14-17602.html&amp;http://www.mathworks.com/products/daq/</A>
+
+An overflow flag would be a good idea.  The partial filling flag is  
+interesting as well.  Currently we've got a function that will return  
+the number of samples available, so adding something to poll for a  
+specified number would be trivial.
+
+
+&gt;<i>
+</I>&gt;<i> This is the kind of funtionality I get from an Advantech acquisition  
+</I>&gt;<i> board on a PC (well, from its library API actually), and it was all  
+</I>&gt;<i> I needed to write a very precise acquisition application that  
+</I>&gt;<i> archives data over very long periods of time, plot real time graphs,  
+</I>&gt;<i> thinks like this. I'm sure the model would work equally well on  
+</I>&gt;<i> embedded.
+</I>
+Do you mean the flag/partial filling mechanism, or the two function  
+request/return model?  I'd be interested in hearing some general usage  
+case information from your application so that I can keep that in mind  
+while doing the implementation.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> - samples collected in the background, other work can be done while  
+</I>&gt;<i> samples are collected
+</I>&gt;<i> - samples collected using fairly deterministic timer-based interrupt  
+</I>&gt;<i> system
+</I>&gt;<i> - longer deterministic periods can be used where one can request 100  
+</I>&gt;<i> samples, but only pull in 5 at a time while sampling is happening,  
+</I>&gt;<i> while still getting low timing jitter
+</I>&gt;<i>
+</I>&gt;<i> For this situations, it might be a good idea to add a &quot;poll&quot;  
+</I>&gt;<i> function that would return 'true' each time a predefined number of  
+</I>&gt;<i> samples (6 in your example) are available. Kinda like the &quot;return  
+</I>&gt;<i> true when half of the buffer is full&quot; idea, but more generic.
+</I>
+Right, I was actually thinking of implementing the &quot;half-full&quot; thing  
+this way anyways.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> - could be extended to support indefinite periods of sampling with  
+</I>&gt;<i> buffer wrapping if samples aren't pulled out fast enough, but when  
+</I>&gt;<i> you do need samples you can pull out up to the length of the buffer  
+</I>&gt;<i> and they're still pretty well-timed
+</I>&gt;<i>
+</I>&gt;<i> Of course you can. You can't escape circular buffers. If your  
+</I>&gt;<i> process is slow enough, it's all you need for continuous  
+</I>&gt;<i> acquisition. If it's too fast, it doesn't matter how long your  
+</I>&gt;<i> buffers are, you will get into overflows at some point.
+</I>
+Right. Honestly to make it run continuously all I have to do is turn  
+off the function that tells the sequencer to stop once the number of  
+requested samples are collected.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> - more complicated, including dealing with buffer sizes
+</I>&gt;<i>
+</I>&gt;<i> Why is that? We already know how to specify buffer sizes.
+</I>
+I didn't mean much more complicated :-)  The complication here, at  
+least in terms of the way I'm thinking is if we want to minimize  
+buffer size as much as possible but be flexible if more samples are  
+coming in and we want to grow the buffer without destroying  
+uncollected samples.  I know this isn't essential, though :-) Right  
+now, buffers can be resized whenever all samples are pulled out, or  
+when a request is made that exceeds current buffer size (any samples  
+remaining in the buffer at these times will get nuked though).
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> - multiple commands needed to initiate/get samples
+</I>&gt;<i>
+</I>&gt;<i> That's not really a problem.
+</I>&gt;<i> In conclusion, this (3) would be my preffered model, with a catch:  
+</I>&gt;<i> let's not make it more complex than it needs to be.
+</I>
+Right, I'd be open to suggestions of where to pare things down.  But  
+before I do that, here are a few things that people have brought up or  
+have come up that might be useful to consider:
+
+1. Have a function that returns only one sample at a time from the  
+buffer (if available). Depending on whether we keep the &quot;amend/adjust  
+the table&quot; approach, this does make it so that if all I want is one  
+sample, I can do that without the overhead of creating a new table.   
+This could also be a function that could request the sample itself as  
+well.
+
+2. Locking multiple channels to a clock was discussed during the  
+object model discourse, so that one could have a bunch of channels  
+grab each sample in lock step.  Doing this without the object model is  
+less attractive, but I could see doing something like the following:
+
+adc.chain(0,3,8)
+
+Where any property modification or sampling request you make of one is  
+made of all of them, so if I then do:
+
+adc.setsmoothing(0,16)
+
+it is actually equivalent to:
+
+adc.setsmoothing(0,16)
+adc.setsmoothing(3,16)
+adc.setsmoothing(8,16)
+
+but more importantly, when I do adc.sample(0)
+
+they all fire off conversions sequentially on the C side where the  
+delay between conversions would be much more minimal than doing a loop  
+in lua.  I think I would keep the reads from each channel separate  
+though (not return all channels' results with one adc.getsamples(),  
+though that could be done too)
+
+If you do the same for burst requests, they all get triggered by the  
+same clock.
+
+If the idea of chaining seems a little unsavory, since it could make  
+code hard to interpret later if you miss the chaining command, we  
+could also accept a table of channel_ids as opposed to just single  
+channel ids for at least burst and sample.  So you might call  
+something like this:
+
+adc.burst({0, 3},16,0,5000)
+
+this would initiate sampling on channels 0 and 3 to collect 16  
+samples, using timer 0, at 5000 Hz...
+
+That doesn't even require a new function :-)
+
+3. Do we keep the modify-the-table approach? I think having number 1  
+above that returns single samples at least removes this need for  
+something that samples like adcscope.lua does.
+
+Table modification is a bit ugly in the API, but it could be done in a  
+limited fashion.  Either only appending could be allowed, or going  
+slightly more flexible, modifications could be made starting at an  
+offset, but only if the number of elements to modify were included.  I  
+think of this as sort a syntactically ugly version of using slices  
+(like in Python) to modify data :-)
+
+Or, we can just return new tables for now :-)  Any thoughts about what  
+to do in the immediate future with this?  We could have global tables  
+to represent returned samples, but I don't like that a huge amount.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> One alternative that I've not mentioned here is that there be two  
+</I>&gt;<i> functional models for getting samples.  If one wants, one could have  
+</I>&gt;<i> a simple getsamples method that follows model 1, and a second pair  
+</I>&gt;<i> that follows model 3. i.e.:
+</I>&gt;<i>
+</I>&gt;<i> channels = adc.channel(0, 3, 17, 21)
+</I>&gt;<i>
+</I>&gt;<i> -- Style 1: Simple Blocking Model
+</I>&gt;<i> a = channels:getsamples(count)
+</I>&gt;<i>
+</I>&gt;<i> -- Style 2: Separated Model
+</I>&gt;<i> channels:requestsamples(count, timer, frequency)
+</I>&gt;<i> channels:returnsamples(count)
+</I>&gt;<i>
+</I>&gt;<i> Let's go for option 3, the one that doesn't use an object notation  
+</I>&gt;<i> at all (for reasons I mentioned at the beginning of this thread).
+</I>
+I do like the syntax of the object model approach, but consistency is  
+a pretty good argument.  The other thing is that if one wanted to, one  
+could certainly build a lua-only object model implementation on top of  
+the simple API. :-)
+
+Best.
+
+-jsnyder
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/13dfeecf/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/13dfeecf/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/13dfeecf/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/13dfeecf/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000561.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+	<LI>Next message: <A HREF="000562.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#564">[ date ]</a>
+              <a href="thread.html#564">[ thread ]</a>
+              <a href="subject.html#564">[ subject ]</a>
+              <a href="author.html#564">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

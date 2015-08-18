@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua-RPC Coming
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua-RPC%20Coming&In-Reply-To=%3C81fbe47d0905091302t55e276c0o341f9a9149cf0163%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000793.html">
+   <LINK REL="Next"  HREF="000797.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua-RPC Coming</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua-RPC%20Coming&In-Reply-To=%3C81fbe47d0905091302t55e276c0o341f9a9149cf0163%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Lua-RPC Coming">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat May  9 22:02:49 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000793.html">[eLua-dev] Device Manager
+</A></li>
+        <LI>Next message: <A HREF="000797.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#794">[ date ]</a>
+              <a href="thread.html#794">[ thread ]</a>
+              <a href="subject.html#794">[ subject ]</a>
+              <a href="author.html#794">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, May 6, 2009 at 1:47 PM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+
+&gt;<i>  I am stuck in the &#8220;inhumanly boring&#8221; at the moment too &#8211; why will no one
+</I>&gt;<i> ever pay you to do anything interesting?
+</I>&gt;<i>
+</I>I'm starting to think this is some sort of conspiracy. But ssshhhhhh, they
+might hear us talking about it and get upset :)
+
+&gt;<i> I still think there has to be something elegant to be done with serialising
+</I>&gt;<i> **closures** complete with their upvalues. So you send a closure from A to
+</I>&gt;<i> B and it has the values it needs from A as upvalues. That gets executed
+</I>&gt;<i> (parameterless) on B and can access and modify B&#8217;s environment. If a reply
+</I>&gt;<i> is needed, the A-&gt;B closure creates a new closure on B and dispatches it
+</I>&gt;<i> back to A for execution. The protocol could be that if calling a remote
+</I>&gt;<i> closure&#8217;s function returns a closure the run-time will return that closure
+</I>&gt;<i> to the sender.
+</I>&gt;<i>
+</I>Elegant, for sure. But depending on how heavy weight the actual
+implementation of this proves to be in the end (and I really have no idea
+about this ATM), we'll consider if we want it or not. As usual, when torn
+between the beauty of having a full implementation that can do everything
+you throw at it, but which happens to be very heavy, and a not-so-complete
+implementation that is small and still covers most of the practical use
+scenarios, I'll automatically lean towards the practical side of the matter.
+This is how I'm built :) We can of course start with the smaller
+implementation, and build upon that if people want more.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> *From:* <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] *On Behalf Of *Bogdan Marinescu
+</I>&gt;<i> *Sent:* 06 May 2009 09:20
+</I>&gt;<i> *To:* eLua Users and Development List
+</I>&gt;<i> *Subject:* Re: [eLua-dev] Lua-RPC Coming
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> That sounds just abourt right. The main problem isn't sending the code I
+</I>&gt;<i> think, but rather serializing/deserializing the parameters/results, which I
+</I>&gt;<i> believe is also most of the work from Lua-RPC. I don't think we need to
+</I>&gt;<i> handle &quot;tricky stuff&quot; like recursive tables and such.
+</I>&gt;<i>
+</I>&gt;<i> Other ideas that I find interesting:*[JH] * .....
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090509/eedce36f/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090509/eedce36f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000793.html">[eLua-dev] Device Manager
+</A></li>
+	<LI>Next message: <A HREF="000797.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#794">[ date ]</a>
+              <a href="thread.html#794">[ thread ]</a>
+              <a href="subject.html#794">[ subject ]</a>
+              <a href="author.html#794">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

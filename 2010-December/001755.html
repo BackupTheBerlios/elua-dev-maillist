@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Reducing code size of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTimwQ95TN1i8%2BdSjukznCcjrpPuZvMNj8A4rSTdD%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001753.html">
+   <LINK REL="Next"  HREF="001756.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Reducing code size of eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Reducing%20code%20size%20of%20eLua&In-Reply-To=%3CAANLkTimwQ95TN1i8%2BdSjukznCcjrpPuZvMNj8A4rSTdD%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Reducing code size of eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Dec  1 21:07:12 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001753.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+        <LI>Next message: <A HREF="001756.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1755">[ date ]</a>
+              <a href="thread.html#1755">[ thread ]</a>
+              <a href="subject.html#1755">[ subject ]</a>
+              <a href="author.html#1755">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Heh, I found something else by mistake, or rather by side-effect.
+While disassembling the AVR32 eLua image to figure out where the
+floating point-related calls come from (in an integer-only
+configuration) I discovered that all C function calls were compiled to
+absolute calls, no relative calls whatsoever. This (besides completely
+killing my dreams of having loadable binary module support in AVR32)
+didn't really make sense to me, so I did a quick search for 'avr32 gcc
+options' and found Atmel AVR32006 appnote
+(www.atmel.com/dyn/resources/prod_documents/doc32074.pdf). It turns
+out that the compiler emits long calls and the linker doesn't try to
+optimize this by default, but it does if two options (--relax
+--direct-data) are added to its command line. With these new compiler
+flags and the patches I did yesterday I can actually compile the trunk
+version of eLua for mizar32 without having to fiddle with the
+configuration (which wasn't possible before this, the linker was still
+512 bytes short).
+I'll commit the fix right after I send this message, I wanted to
+explain what I did first. Martin, this will certainly help you, I just
+don't know how much, but it might be more than you expect :) The trunk
+version that I compiled has 112128 bytes in .text, a long way from
+&quot;region flash overflowed by 512 bytes&quot;.
+
+Best,
+Bogdan
+
+On Wed, Dec 1, 2010 at 4:58 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Wed, Dec 1, 2010 at 4:56 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> On Wed, Dec 1, 2010 at 12:25 AM, Bogdan Marinescu
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> One thing that I forgot about and that might make a large impact on
+</I>&gt;&gt;&gt;<i> the code size is a printf/scanf library without floating point
+</I>&gt;&gt;&gt;<i> support.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> eLua, when compiling for integers, already does this. See
+</I>&gt;&gt;<i> src/newlib/stubs.c and search &quot;printf&quot;
+</I>&gt;<i>
+</I>&gt;<i> LOL. Thanks, I completely forgot about that :) And of course I wrote
+</I>&gt;<i> that code myself ...
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001753.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+	<LI>Next message: <A HREF="001756.html">[eLua-dev] Reducing code size of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1755">[ date ]</a>
+              <a href="thread.html#1755">[ thread ]</a>
+              <a href="subject.html#1755">[ subject ]</a>
+              <a href="author.html#1755">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

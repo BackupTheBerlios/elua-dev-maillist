@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev]  eLua and yielding with lua_yield() function
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3C1239254349334-2609484.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000761.html">
+   <LINK REL="Next"  HREF="000753.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev]  eLua and yielding with lua_yield() function</H1>
+    <B>mpthompson</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3C1239254349334-2609484.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev]  eLua and yielding with lua_yield() function">mpthompson at gmail.com
+       </A><BR>
+    <I>Thu Apr  9 07:19:09 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000761.html">[eLua-dev] SVN access to eLua
+</A></li>
+        <LI>Next message: <A HREF="000753.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#752">[ date ]</a>
+              <a href="thread.html#752">[ thread ]</a>
+              <a href="subject.html#752">[ subject ]</a>
+              <a href="author.html#752">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+OK, working with eLua I'm now starting to get into the more esoteric details of Lua (at least for me) that I can really use some help with.
+
+Trying to start at a very simple level, I'm working on testing event driven aspects of Lua with the following C function which simply reports on a button press -- yielding with lua_yield() if it isn't pressed:
+
+-----------------------
+static int button_waitpressed( lua_State* L )
+{
+  unsigned id;
+  u32 res;
+  
+  id = luaL_checkinteger( L, 1 );
+  res = platform_button_pressed( id );
+  if (!res)
+    return lua_yield( L, 0 );
+  lua_pushinteger( L, res );
+  return 1;
+}
+-----------------------
+
+My Lua program to test this is:
+
+-----------------------
+function buttonloop(x)
+  local state
+  repeat
+    repeat
+      state = button.waitpressed(x)
+    until state == 1
+    print &quot;button pressed&quot;
+  until false
+end
+
+waitforbutton = coroutine.create(buttonloop(0))
+while button.pressed(1) == 0 do
+  coroutine.resume(waitforbutton)
+end
+-----------------------
+
+Following the examples in chapter 30, I believe the code above should work and report the string &quot;button pressed&quot; whenever the button is pressed, but instead I get the following error:
+
+attempt to yield across metamethod/C-call boundary
+
+It seems this error should occur when you call from Lua a C function which in turn invokes Lua code which yields -- something I'm pretty sure I'm not doing in this example as I'm yielding on the return.
+
+I suspect that there is something about the eLua environment that is different from running under an operating system.  I've found some references on the web that state Lua code called from pcall() trigger this error -- perhaps the lua interpreter under eLua is called with this.  I'll obviously have to do some digging.  However, I'm hoping that others more familiar with eLua might have some thoughts on where I can begin to understand this error further.
+
+Thanks,
+
+Mike Thompson
+
+
+-- 
+View this message in context: <A HREF="http://n2.nabble.com/eLua-and-yielding-with-lua_yield%28%29-function-tp2609484p2609484.html">http://n2.nabble.com/eLua-and-yielding-with-lua_yield%28%29-function-tp2609484p2609484.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000761.html">[eLua-dev] SVN access to eLua
+</A></li>
+	<LI>Next message: <A HREF="000753.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#752">[ date ]</a>
+              <a href="thread.html#752">[ thread ]</a>
+              <a href="subject.html#752">[ subject ]</a>
+              <a href="author.html#752">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

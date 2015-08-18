@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] External Libraries and Headers for eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20External%20Libraries%20and%20Headers%20for%20eLua&In-Reply-To=%3CAANLkTimVbZGHY3aUudxNWHdz0OGyi8NrZfqnknmTig6a%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002077.html">
+   <LINK REL="Next"  HREF="002081.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] External Libraries and Headers for eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20External%20Libraries%20and%20Headers%20for%20eLua&In-Reply-To=%3CAANLkTimVbZGHY3aUudxNWHdz0OGyi8NrZfqnknmTig6a%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] External Libraries and Headers for eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Feb 23 09:21:13 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002077.html">[eLua-dev] External Libraries and Headers for eLua
+</A></li>
+        <LI>Next message: <A HREF="002081.html">[eLua-dev]  AVR32 PX patch (again/still)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2082">[ date ]</a>
+              <a href="thread.html#2082">[ thread ]</a>
+              <a href="subject.html#2082">[ subject ]</a>
+              <a href="author.html#2082">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Feb 23, 2011 at 12:05 AM, Kevin Vermeer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">reemrevnivek at gmail.com</A>&gt; wrote:
+&gt;<i> Bogdan, you brought up a point which I thought merited forking the
+</I>&gt;<i> discussion.
+</I>&gt;<i>
+</I>&gt;<i> You wrote that the AVR32 port is currently the only eLua target that has
+</I>&gt;<i> external dependencies.&#160; You may soon have two such projects; the PIC32 port
+</I>&gt;<i> I'm working on will be most quickly accomplished if we use the Microchip
+</I>&gt;<i> libraries and headers.
+</I>
+Yes, that would be the second target with external dependencies.
+
+&gt;<i> Unfortunately, these libraries and headers include a lot of different
+</I>&gt;<i> license agreements; both MIPS copyrights and Microchip copyrights are
+</I>&gt;<i> asserted.&#160;&#160; If we work on the assumption that including them in the
+</I>&gt;<i> repository is not legally possible, then it seems that we're restricted to
+</I>&gt;<i> an external dependency (which seems to have caused problems for the AVR32
+</I>&gt;<i> port already), or re-writing them from scratch (which would slow the process
+</I>&gt;<i> down significantly).
+</I>&gt;<i>
+</I>&gt;<i> Aside from the two comments above, how well has the AVR32 port with its
+</I>&gt;<i> external dependencies worked?
+</I>&gt;<i>
+</I>&gt;<i> If the answer to the above wuestion isn't &quot;Fantastic!&quot; (and I doubt it is),
+</I>
+I believe Martin has responded to that already :) I do have something
+to add though: this is mostly my fault. This model should work well as
+long as the specific version of the external
+libraries/headers/whatever used to built eLua are clearly specified
+inside eLua. Even if they change the API might stay the same. What
+happened to AVR32 was an unfortunate incident and we learnt a few
+things from it. Mainly this one: specify the version of the external
+tools eLua uses to compile itself inside eLua.
+
+&gt;<i> then is it legally possible to include the PIC32 libraries and headers in
+</I>&gt;<i> eLua's source?
+</I>
+I seriously doubt.
+
+&gt;<i> I've attached the file MPLAB_C32_Compiler_License.rtf, which is distributed
+</I>&gt;<i> with the Microchip PIC32 toolchain, to help answer these questions.&#160;&#160; It
+</I>&gt;<i> covers the software (I'm not sure if that includes the source code) and
+</I>&gt;<i> documentation.&#160; The files themselves include a wide variety of BSD, GPL,
+</I>&gt;<i> modified BSD, Microchip, and MIPS licenses.&#160; Ugh.
+</I>
+Thank you, but I'm not even going to try to read it since I will not
+be able to understand it. I tried to understand lawyerish before and
+failed miserably. It's simply not my language. From what I could
+gather though I don't think t we can include any part of the Microchip
+toolchain in eLua. But once again, this shouldn't be necesary for the
+reasons outlined above.
+To recap: please continue working on porting eLua using the tools from
+Microchip, but start from the asumption that we won't be able to
+include any of these tools inside eLua. It's our job to take care of
+the rest in a manner that is as painless as possible. The most elegant
+solution that I have in mind is to add an explicit 'external_deps'
+target to the new build system that will show the external
+dependencies of the project. Something like this (off the top of my
+head):
+
+$ lua build_elua.lua board=pic32whatever external_deps
+The PIC32 build of eLua depends on the following 3rd party tools:
+- compiler version(s) : x, y, z
+- Microchip packge version(s) : x, y, z
+- libraries version(s) : x, y, z
+
+Make this as verbose as possible so people will understand what's
+going on. Checking the tool versions automatically is even a nicer
+idea but it might not be worth the trouble.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002077.html">[eLua-dev] External Libraries and Headers for eLua
+</A></li>
+	<LI>Next message: <A HREF="002081.html">[eLua-dev]  AVR32 PX patch (again/still)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2082">[ date ]</a>
+              <a href="thread.html#2082">[ thread ]</a>
+              <a href="subject.html#2082">[ subject ]</a>
+              <a href="author.html#2082">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Nolua project proposal, good idea?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3CAANLkTinW4S%3D%3DcmU1cL9FzEg-jEgm7YamT%3DSujyEONBKA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001904.html">
+   <LINK REL="Next"  HREF="001907.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Nolua project proposal, good idea?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3CAANLkTinW4S%3D%3DcmU1cL9FzEg-jEgm7YamT%3DSujyEONBKA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Nolua project proposal, good idea?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jan 24 14:31:20 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001904.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+        <LI>Next message: <A HREF="001907.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1906">[ date ]</a>
+              <a href="thread.html#1906">[ thread ]</a>
+              <a href="subject.html#1906">[ subject ]</a>
+              <a href="author.html#1906">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+&gt;<i> One performance problem with compiling Lua scripts to C using the C API is the
+</I>&gt;<i> use of C strings. &#160;When C code passes a C string to Lua it must be
+</I>&gt;<i> internalized before it can be used. &#160;This will slow down all table accesses
+</I>&gt;<i> where the key is a string. &#160;The only way around that is to create an upvalue
+</I>&gt;<i> for each const. C string used in the C code. &#160;The last time I checked lua2c
+</I>&gt;<i> didn't use upvalues for string constants. &#160;Also I think the Lua C API has
+</I>&gt;<i> more checks (overhead) then the VM core has when executing bytecodes.
+</I>
+Thanks for your insight. It always helps to have someone who's
+actually familiar with the Lua core around.
+
+&gt;<i> Some things could be made faster like loop counters (using integers instead of
+</I>&gt;<i> doubles). &#160;I had started porting my llvm-lua project over to a new slua [1]
+</I>&gt;<i> project that static compiles lua scripts/bytecode into C code that uses the
+</I>&gt;<i> same internal VM opcode instead of the Lua C API. &#160;The one big downside of
+</I>&gt;<i> using this method to compile script is that it requires some changes to the
+</I>&gt;<i> Lua VM core (not any major changes, just some hooks for static compiled Lua
+</I>&gt;<i> functions). &#160;slua can static compile a Lua script into a C source file that
+</I>&gt;<i> looks like a normal Lua C module, which can then be compiled with a standard
+</I>&gt;<i> C compiler.
+</I>
+Thank you very much! This sounds very interesting and useful for eLua.
+I don't have time right now to look at it but I definitely will.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001904.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+	<LI>Next message: <A HREF="001907.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1906">[ date ]</a>
+              <a href="thread.html#1906">[ thread ]</a>
+              <a href="subject.html#1906">[ subject ]</a>
+              <a href="author.html#1906">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

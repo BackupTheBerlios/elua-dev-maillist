@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Renaud's AVR32 EVK1100 and SPI patch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Renaud%27s%20AVR32%20EVK1100%20and%20SPI%20patch&In-Reply-To=%3CAANLkTi%3DmdZTb_5oVEay1wUvRtxprshvYBitcfF3hKSef%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001514.html">
+   <LINK REL="Next"  HREF="001516.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch</H1>
+    <B>Renaud</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Renaud%27s%20AVR32%20EVK1100%20and%20SPI%20patch&In-Reply-To=%3CAANLkTi%3DmdZTb_5oVEay1wUvRtxprshvYBitcfF3hKSef%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch">renaud at myboyfriendisageek.com
+       </A><BR>
+    <I>Tue Aug  3 09:08:05 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001514.html">[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch
+</A></li>
+        <LI>Next message: <A HREF="001516.html">[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1515">[ date ]</a>
+              <a href="thread.html#1515">[ thread ]</a>
+              <a href="subject.html#1515">[ subject ]</a>
+              <a href="author.html#1515">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Fully tested on EVK1101. Martin tested on EVK1100, right ?
+
+On Tue, Aug 3, 2010 at 9:05 AM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>
+&gt;<i> wrote:
+</I>
+&gt;<i> On Tue, Aug 3, 2010 at 3:52 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; Other than these issues, is this patch considered to be prepared for
+</I>&gt;<i> &gt; submission/inclusion?  I don't have an AVR32 platform to do any
+</I>&gt;<i> &gt; testing.
+</I>&gt;<i>
+</I>&gt;<i> Renaud already tested it, so I'd say it's ready. I was actually 100%
+</I>&gt;<i> sure that I already included it :), but it seems I forgot about that.
+</I>&gt;<i> Sorry, Renaud. I'll do it as soon as I'm back at home, where I have
+</I>&gt;<i> access to a decent Unix environment :)
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Mon, Aug 2, 2010 at 4:52 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt; Hello guys,
+</I>&gt;<i> &gt;&gt;    Thank you for the test reports and for the copyright note Martin.
+</I>&gt;<i> &gt;&gt;    eLua keeps every copyright notice in the original code it eventually
+</I>&gt;<i> uses
+</I>&gt;<i> &gt;&gt; and this is usually required by manufacturer's licences.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Best
+</I>&gt;<i> &gt;&gt; Dado
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Sun, Aug 1, 2010 at 06:14, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Hi Renaud
+</I>&gt;<i> &gt;&gt;&gt;   I've updated your patch to svn head and we've tested it on an
+</I>&gt;<i> EVK1100.
+</I>&gt;<i> &gt;&gt;&gt; It says:
+</I>&gt;<i> &gt;&gt;&gt; eLua#
+</I>&gt;<i> &gt;&gt;&gt; lua /rom/dataflash.lua
+</I>&gt;<i> &gt;&gt;&gt; Press CTRL+Z to exit
+</I>&gt;<i> &gt;&gt;&gt; Lua
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; JEDEC Manufacturer ID :         31
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; This single patch seems to do several separate things:
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; - add EKV1101 (and the at32uc3a0256 CPU part)
+</I>&gt;<i> &gt;&gt;&gt; - introduce a mechanism for having several avr32 boards, each with its
+</I>&gt;<i> &gt;&gt;&gt; pwn separate platform_conf.h file (in EVK1100/evk1100_conf.h etc)
+</I>&gt;<i> &gt;&gt;&gt; - add SPI for AVR32
+</I>&gt;<i> &gt;&gt;&gt; - add romfs/dataflash.lua script
+</I>&gt;<i> &gt;&gt;&gt; - fix a bug in existing flash size calculation for EVK1100:
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; +++ src/platform/avr32/at32uc3a0512.ld  (working copy)
+</I>&gt;<i> &gt;&gt;&gt; @@ -1,7 +1,7 @@
+</I>&gt;<i> &gt;&gt;&gt;  MEMORY
+</I>&gt;<i> &gt;&gt;&gt;  {
+</I>&gt;<i> &gt;&gt;&gt;     sram (W!RX) : ORIGIN = 0x00000004, LENGTH = 0x0000FFFC
+</I>&gt;<i> &gt;&gt;&gt; -    flash (RX) : ORIGIN = 0x80002000, LENGTH = 0x00080000
+</I>&gt;<i> &gt;&gt;&gt; +    flash (RX) : ORIGIN = 0x80002000, LENGTH = 0x00080000 - 0x2000
+</I>&gt;<i> &gt;&gt;&gt;  }
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Lastly, the code in spi.c and spi.h is obviously a derivative of the
+</I>&gt;<i> &gt;&gt;&gt; Atmel code in
+</I>&gt;<i> &gt;&gt;&gt; &quot;ATMEL AVR32-SoftwareFramework-AT32UC3-1.6.1 Release&quot; but the
+</I>&gt;<i> &gt;&gt;&gt; copyright boilerplate has been removed from the start of their file. I
+</I>&gt;<i> &gt;&gt;&gt; don't know what elua's copyright strategy is, but I attach the
+</I>&gt;<i> &gt;&gt;&gt; original notice in case eLua wants to keep it, maybe in a modified
+</I>&gt;<i> &gt;&gt;&gt; form.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Thanks again for these patches, which make my work much easier to
+</I>&gt;<i> &gt;&gt;&gt; complete.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;     M
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; James Snyder
+</I>&gt;<i> &gt; Biomedical Engineering
+</I>&gt;<i> &gt; Northwestern University
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> &gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> &gt; Phone: (847) 448-0386
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100803/a38850e3/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100803/a38850e3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001514.html">[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch
+</A></li>
+	<LI>Next message: <A HREF="001516.html">[eLua-dev] Renaud's AVR32 EVK1100 and SPI patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1515">[ date ]</a>
+              <a href="thread.html#1515">[ thread ]</a>
+              <a href="subject.html#1515">[ subject ]</a>
+              <a href="author.html#1515">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

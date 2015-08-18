@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Mixed arm and thumb code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mixed%20arm%20and%20thumb%20code&In-Reply-To=%3C81fbe47d0903260330pa76eb77i839f88b24dc21345%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000705.html">
+   <LINK REL="Next"  HREF="000710.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Mixed arm and thumb code</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mixed%20arm%20and%20thumb%20code&In-Reply-To=%3C81fbe47d0903260330pa76eb77i839f88b24dc21345%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Mixed arm and thumb code">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Mar 26 11:30:49 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000705.html">[eLua-dev]  Mixed arm and thumb code
+</A></li>
+        <LI>Next message: <A HREF="000710.html">[eLua-dev] Mixed arm and thumb code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#708">[ date ]</a>
+              <a href="thread.html#708">[ thread ]</a>
+              <a href="subject.html#708">[ subject ]</a>
+              <a href="author.html#708">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Mar 26, 2009 at 12:28 PM, mpthompson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpthompson at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> I'm starting to work with the Periodic Interval Timer on the AT91SAM7S and
+</I>&gt;<i> I believe I need to have the interrupt handlers be compiled as 32bit Arm
+</I>&gt;<i> instructions rather than 16bit Thumb instructions.  I'm not familiar with
+</I>&gt;<i> scons, but is there an easy way that I can pass custom options to specific C
+</I>&gt;<i> files to control whether the -mthumb option is passed?   Or, is the
+</I>&gt;<i> 'irqHandler' in the board_cstartup.s capable of calling the interrupt
+</I>&gt;<i> handler as thumb code?  As best I can tell this is not the case and any C
+</I>&gt;<i> code called from the 'irqHandler' must be 32 bit Arm code.
+</I>
+
+This questin haunted me for quite a while now, and the answer seems to be
+no, there's no easy way to do this in scons. I'm sure there's a harder way
+:<i>), but I just don't know how to do it. Check out
+</I>src/platform/at91sam7x/platform.c though, you'll find that your interrupts
+can work just fine in Thumb mode, provided that you write them properly
+(platform.c already has examples of timer interrupt and UART RX interrupt).
+
+Best,
+Bogdan
+
+
+&gt;<i> --
+</I>&gt;<i> View this message in context:
+</I>&gt;<i> <A HREF="http://n2.nabble.com/Mixed-arm-and-thumb-code-tp2537643p2537643.html">http://n2.nabble.com/Mixed-arm-and-thumb-code-tp2537643p2537643.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090326/d8f4809c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090326/d8f4809c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000705.html">[eLua-dev]  Mixed arm and thumb code
+</A></li>
+	<LI>Next message: <A HREF="000710.html">[eLua-dev] Mixed arm and thumb code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#708">[ date ]</a>
+              <a href="thread.html#708">[ thread ]</a>
+              <a href="subject.html#708">[ subject ]</a>
+              <a href="author.html#708">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

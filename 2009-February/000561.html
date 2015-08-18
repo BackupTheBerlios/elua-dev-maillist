@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A Few Models For Dealing With ADC Samples
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3C81fbe47d0902190248p777e402ew15de2882d6b05162%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000565.html">
+   <LINK REL="Next"  HREF="000564.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A Few Models For Dealing With ADC Samples</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3C81fbe47d0902190248p777e402ew15de2882d6b05162%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] A Few Models For Dealing With ADC Samples">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Feb 19 11:48:35 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000565.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+        <LI>Next message: <A HREF="000564.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#561">[ date ]</a>
+              <a href="thread.html#561">[ thread ]</a>
+              <a href="subject.html#561">[ subject ]</a>
+              <a href="author.html#561">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Alright, a word of warning first: I'm not by any means a specialist in ADCs,
+and I only used them in a buch of applications. That said, I do have some
+ideas about how they work and what they're supposed to do, and a few ideas
+of my own about the design of the module itself. The basic principle here is
+KISS. I want the modules to cover all the needed functionality, but no more
+than that. I definitely don't want a full blown API, but rather to keep
+everything as lightweight as possible. For example, you might have noticed
+that none of the modules currently exported by eLua use the &quot;object
+notation&quot;. This is intentional, as the &quot;standard&quot; notation is still more
+widely used in different instances of embedded programming, plus it keeps
+the implementation simpler. Of course, keeping a good balance between a
+minimal API and a good functionality is an art in itself, something that I
+don't pretend to master (but I try anyway :) ).
+With that in mind, I think that our current ADC module does enough to
+qualify as functional
+
+- single sampling
+- multiple sampling at a given frequency (which is very deterministic, being
+handled in the backend with interrupts which are quite accurate).
+- moving average filtering (quite important in real-life applications).
+
+In the future, once interrupt handlers are implemented in eLua, we'll also
+support double buffering, in that we'll have a circular sample buffer, and
+an &quot;interrupt&quot; will be fired when that buffer is half full. This would allow
+certain kind of applications (like data loggers) to be written very easily.
+I think this is a very powerful model.
+
+Please see below my other comment.
+
+
+Single Function to Request and Return:
+&gt;<i> 1. Simple Model
+</I>&gt;<i> call function to start sampling
+</I>&gt;<i> function waits for sampling to finish
+</I>&gt;<i> function returns samples
+</I>&gt;<i>
+</I>
+Not acceptable if this is the only model, perfectly OK if it coexists with
+other (asynchronous) models.\
+
+2. Non-blocking Model (this was present in an earlier version of the ADC
+&gt;<i> module)
+</I>&gt;<i> call function to start sampling, function returns
+</I>&gt;<i> do some other stuff
+</I>&gt;<i> call function again to get samples from the sampling period, and start next
+</I>&gt;<i> set of sampling
+</I>&gt;<i>
+</I>
+Interesting, but let's see the next one.
+
+Separate Request &amp; Return Functions:
+&gt;<i> 3. Separated Request/Return Model
+</I>&gt;<i> call function to start sampling, function returns
+</I>&gt;<i> do other work
+</I>&gt;<i> use another function to get samples in the buffer (this can be done while
+</I>&gt;<i> sampling is still happening)
+</I>&gt;<i>
+</I>
+I assume you're talking about a circular buffer here, and this is perfectly
+OK with me. Add an overflow flag for those situations when you don't collect
+the samples on time and you're all set (and it also matches (to some extent)
+the interrupt model I was talking about earlier. Maybe even add a function
+that would return &quot;true&quot; when half (or an user-specified fraction of the
+buffer) is full).
+This is the kind of funtionality I get from an Advantech acquisition board
+on a PC (well, from its library API actually), and it was all I needed to
+write a very precise acquisition application that archives data over very
+long periods of time, plot real time graphs, thinks like this. I'm sure the
+model would work equally well on embedded.
+
+- samples collected in the background, other work can be done while samples
+&gt;<i> are collected
+</I>&gt;<i> - samples collected using fairly deterministic timer-based interrupt system
+</I>&gt;<i> - longer deterministic periods can be used where one can request 100
+</I>&gt;<i> samples, but only pull in 5 at a time while sampling is happening, while
+</I>&gt;<i> still getting low timing jitter
+</I>&gt;<i>
+</I>
+For this situations, it might be a good idea to add a &quot;poll&quot; function that
+would return 'true' each time a predefined number of samples (6 in your
+example) are available. Kinda like the &quot;return true when half of the buffer
+is full&quot; idea, but more generic.
+
+- could be extended to support indefinite periods of sampling with buffer
+&gt;<i> wrapping if samples aren't pulled out fast enough, but when you do need
+</I>&gt;<i> samples you can pull out up to the length of the buffer and they're still
+</I>&gt;<i> pretty well-timed
+</I>&gt;<i>
+</I>
+Of course you can. You can't escape circular buffers. If your process is
+slow enough, it's all you need for continuous acquisition. If it's too fast,
+it doesn't matter how long your buffers are, you will get into overflows at
+some point.
+
+
+&gt;<i> - more complicated, including dealing with buffer sizes
+</I>&gt;<i>
+</I>
+Why is that? We already know how to specify buffer sizes.
+
+
+&gt;<i> - multiple commands needed to initiate/get samples
+</I>&gt;<i>
+</I>
+That's not really a problem.
+In conclusion, this (3) would be my preffered model, with a catch: let's not
+make it more complex than it needs to be.
+
+
+&gt;<i> One alternative that I've not mentioned here is that there be two
+</I>&gt;<i> functional models for getting samples.  If one wants, one could have a
+</I>&gt;<i> simple getsamples method that follows model 1, and a second pair that
+</I>&gt;<i> follows model 3. i.e.:
+</I>&gt;<i>
+</I>&gt;<i> channels = adc.channel(0, 3, 17, 21)
+</I>&gt;<i>
+</I>&gt;<i> -- Style 1: Simple Blocking Model
+</I>&gt;<i> a = channels:getsamples(count)
+</I>&gt;<i>
+</I>&gt;<i> -- Style 2: Separated Model
+</I>&gt;<i> channels:requestsamples(count, timer, frequency)
+</I>&gt;<i> channels:returnsamples(count)
+</I>&gt;<i>
+</I>
+Let's go for option 3, the one that doesn't use an object notation at all
+(for reasons I mentioned at the beginning of this thread).
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/24768332/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090219/24768332/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000565.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+	<LI>Next message: <A HREF="000564.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#561">[ date ]</a>
+              <a href="thread.html#561">[ thread ]</a>
+              <a href="subject.html#561">[ subject ]</a>
+              <a href="author.html#561">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

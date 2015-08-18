@@ -1,0 +1,220 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Panda Board status
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Panda%20Board%20status&In-Reply-To=%3CBANLkTi%3D0Gk%2Bq%3DDbKH35f-oED6AJv0D-3gA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002371.html">
+   <LINK REL="Next"  HREF="002351.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Panda Board status</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Panda%20Board%20status&In-Reply-To=%3CBANLkTi%3D0Gk%2Bq%3DDbKH35f-oED6AJv0D-3gA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Panda Board status">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri May  6 08:45:45 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002371.html">[eLua-dev] Panda Board status
+</A></li>
+        <LI>Next message: <A HREF="002351.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2372">[ date ]</a>
+              <a href="thread.html#2372">[ thread ]</a>
+              <a href="subject.html#2372">[ subject ]</a>
+              <a href="author.html#2372">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Fri, May 6, 2011 at 5:24 AM, Tim michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+
+&gt;<i> Is there some type of ISR/Thread safe lock, or ISR/Thread safe queue?
+</I>&gt;<i>
+</I>
+The buffers (src/buf.c) are ISR safe. And we don't have threads :)
+
+
+&gt;<i> For example using interrupts to transmit data on the serial port. The TX
+</I>&gt;<i> routine is transmitting 10 characters, a driver can queue the characters to
+</I>&gt;<i> a ISR/Thread safe queue and transmit them using an ISR.  If another transmit
+</I>&gt;<i> comes along, the driver attempts to queue more data, the queue must lock
+</I>&gt;<i> ISR/Thread.
+</I>&gt;<i>
+</I>
+I believe the buffers can do this. The locking solution is very brutal (they
+simply enable/disable global interrupts) but they should still be able to do
+this.
+
+
+&gt;<i> Looking at few of the CPU platform ports, TX routines are blocking waiting
+</I>&gt;<i> for transmits to complete?
+</I>&gt;<i>
+</I>
+Yes, currently all the TX routines are blocking on all platforms.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i> *From:* Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> *To:* Tim michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt;; eLua Users and Development List (
+</I>&gt;<i> www.eluaproject.net) &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> *Sent:* Thursday, May 5, 2011 12:04 PM
+</I>&gt;<i>
+</I>&gt;<i> *Subject:* Re: [eLua-dev] Panda Board status
+</I>&gt;<i>
+</I>&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On Thu, May 5, 2011 at 7:48 PM, Tim michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> Yes, I have BUF_ENABLE_UART enabled.  This is my understanding how the
+</I>&gt;<i> UART ISR buffering works
+</I>&gt;<i> The UART fires an interrupt, this invokes a common function handler,
+</I>&gt;<i> uart_rx_common_handler,
+</I>&gt;<i>
+</I>&gt;<i> static void uart_rx_common_handler( elua_int_resnum resnum )
+</I>&gt;<i> {
+</I>&gt;<i>   cmn_int_handler( INT_UART_RX, resnum );
+</I>&gt;<i>   VICVectAddr = 0;
+</I>&gt;<i> }
+</I>&gt;<i> cmn_int_handler calls the function below:
+</I>&gt;<i>
+</I>&gt;<i> #ifdef BUF_ENABLE_UART
+</I>&gt;<i> static elua_int_c_handler prev_uart_rx_handler;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+</I>&gt;<i> {
+</I>&gt;<i>   if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+</I>&gt;<i>     cmn_rx_handler( resnum, platform_s_uart_recv( resnum, 0 ) );
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Within the function platform_s_uart_recv is called,  returns only one
+</I>&gt;<i> character, USB can send a buffer of characters in one interrupt.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> My bad, you are absolutely right. I'll add that patch with a single
+</I>&gt;<i> modification: I'll make &quot;_data&quot; an int (you probably can see why :) ).
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i> *From:* Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i> *To:* eLua Users and Development List (www.eluaproject.net) &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> *Sent:* Wednesday, May 4, 2011 1:30 AM
+</I>&gt;<i>
+</I>&gt;<i> *Subject:* Re: [eLua-dev] Panda Board status
+</I>&gt;<i>
+</I>&gt;<i> Hi (and sorry for the late reply),
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Apr 29, 2011 at 8:08 AM, Tim Michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> I've created a fork and have basic serial ports and USB CDC serial working.
+</I>&gt;<i> Now just getting the data from the USB virtual serial port to the eLua
+</I>&gt;<i> framework.
+</I>&gt;<i> For example, the virtual serial port=1 +the last physical serial port.  So
+</I>&gt;<i> all of the UART functions are still used with a switch or if statement to
+</I>&gt;<i> make the physical Serial port+1 to USB virtual Serial.  Thoughts?
+</I>&gt;<i>
+</I>&gt;<i> Also, where the headache is it may not be connected with the code is
+</I>&gt;<i> running
+</I>&gt;<i> IE USB is disconnected... But the virtual UART functions will return -1 in
+</I>&gt;<i> this case.
+</I>&gt;<i>
+</I>&gt;<i> The main issue is the USB CDC Serial can send a packet of data, more then
+</I>&gt;<i> one character.  So, looking at the code I was thinking of changing the
+</I>&gt;<i> common_uart.c
+</I>&gt;<i>
+</I>&gt;<i> static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+</I>&gt;<i> {
+</I>&gt;<i>  if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+</I>&gt;<i>    cmn_rx_handler( resnum, platform_s_uart_recv( resnum, 0 ) );
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> to
+</I>&gt;<i> static void cmn_uart_rx_inthandler( elua_int_resnum resnum )
+</I>&gt;<i> {
+</I>&gt;<i>  if( buf_is_enabled( BUF_ID_UART, resnum ) || resnum == SERMUX_PHYS_ID )
+</I>&gt;<i> {
+</I>&gt;<i>    u8 _data;
+</I>&gt;<i>    while (-1 != (_data = platform_s_uart_recv( resnum, 0 ))
+</I>&gt;<i>      cmn_rx_handler( resnum, _data );
+</I>&gt;<i>
+</I>&gt;<i> So this way it just gets all of the data and buffers it etc, if not using
+</I>&gt;<i> ISR it uses the standard UART functions.  Enabling Interrupts on USB Serial
+</I>&gt;<i> is just a stub.
+</I>&gt;<i>
+</I>&gt;<i> Thoughts? OR just way off base? --
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Not way off base, but personally I think that the proper way to handle this
+</I>&gt;<i> would be to enable serial buffering (BUF_ENABLE_UART). This is exactly why
+</I>&gt;<i> we have buffers, they function as a &quot;bridge&quot; between two ends of a
+</I>&gt;<i> connection, one of which produces items and another consumes items,
+</I>&gt;<i> generally at different speeds. Please let me know if you need help with
+</I>&gt;<i> enabling the serial buffers.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110506/105d55d5/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110506/105d55d5/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002371.html">[eLua-dev] Panda Board status
+</A></li>
+	<LI>Next message: <A HREF="002351.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2372">[ date ]</a>
+              <a href="thread.html#2372">[ thread ]</a>
+              <a href="subject.html#2372">[ subject ]</a>
+              <a href="author.html#2372">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

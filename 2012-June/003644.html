@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Yagarto vs Sourcery
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Yagarto%20vs%20Sourcery&In-Reply-To=%3CCANKDJfbnjhZ0GR%3Dg3Q7tHU%2BWANMCRxDxTCLmkrXXPXGhi-6D9A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003643.html">
+   <LINK REL="Next"  HREF="003645.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Yagarto vs Sourcery</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Yagarto%20vs%20Sourcery&In-Reply-To=%3CCANKDJfbnjhZ0GR%3Dg3Q7tHU%2BWANMCRxDxTCLmkrXXPXGhi-6D9A%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Yagarto vs Sourcery">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Jun 29 12:52:06 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003643.html">[eLua-dev] Yagarto vs Sourcery
+</A></li>
+        <LI>Next message: <A HREF="003645.html">[eLua-dev] STM32F4discovery - bike nomad - small fixes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3644">[ date ]</a>
+              <a href="thread.html#3644">[ thread ]</a>
+              <a href="subject.html#3644">[ subject ]</a>
+              <a href="author.html#3644">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Jun 29, 2012 at 1:44 PM, pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+&gt;<i> Hmm, I compiled the stm32f4discovery &quot;mp3 demo&quot; (see chibios) with
+</I>&gt;<i> Sourcery as well with Yagarto and it worked (it reads mp3 files from
+</I>&gt;<i> an sdcard)...p.
+</I>
+It depends on the implementation. eLua &quot;plugs&quot; into the POSIX file API
+implementation in Newlib, so you can use standard calls (such as open,
+read, write, close) to access files (which also means you can use the
+buffered file API (fopen, fclose...)). This was one of the things that
+made the Lua port to embedded an easy task. It does that by overriding
+some Newlib functions (_open_r, _read_r...). Unfortunately, these
+calls are not always present in Newlib, it depends on how Newlib
+itself is compiled. This is most likely why Yagarto doesn't play well
+with eLua.
+I don't know the &quot;mp3 demo&quot;, but I'm guessing it uses its own file
+access functions.
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> Komu: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] Yagarto vs Sourcery
+</I>&gt;<i> Datum: 29.6.2012 - 12:35:53
+</I>&gt;<i>
+</I>&gt;&gt;<i> On Fri, Jun 29, 2012 at 1:23 PM, pito
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; So I replaced Yagarto (latest) with Sourcery
+</I>&gt;&gt;<i> &gt; (2011.09-69) and the
+</I>&gt;&gt;<i> &gt; &gt; stmf4disco works with the mmc fine:
+</I>&gt;&gt;<i> &gt; /mmc
+</I>&gt;&gt;<i> &gt; hanoi.lua &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;7954 bytes
+</I>&gt;&gt;<i> &gt; lifebig.lua &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;3431 bytes
+</I>&gt;&gt;<i> &gt; Total on /mmc: 11385 bytes
+</I>&gt;&gt;<i> &gt; eLua# cat /mmc/lifebig.lua
+</I>&gt;&gt;<i> &gt; -- life1.lua
+</I>&gt;&gt;<i> &gt; -- eLua version by Bogdan Marinescu,
+</I>&gt;&gt;<i> &gt; www.eluaproject.net
+</I>&gt;&gt;<i> &gt; &gt; -- original by..
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; So there is still an issue with Yagarto. I've
+</I>&gt;&gt;<i> &gt; used the
+</I>&gt;&gt;<i> &gt; &gt; toolchain=codesourcery with Yagarto so maybe
+</I>&gt;&gt;<i> &gt; there is a difference
+</I>&gt;&gt;<i> &gt; &gt; in compiler settings to be considered (see map
+</I>&gt;&gt;<i> &gt; files diff)..
+</I>&gt;&gt;<i> &gt; &gt; Enclosed pls find zip with both map files.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Then the problem is probably similar to what I've
+</I>&gt;&gt;<i> encounter a while
+</I>&gt;&gt;<i> ago with Yagarto. I don't remember all the details
+</I>&gt;&gt;<i> now, but basically
+</I>&gt;&gt;<i> Yagarto uses the _open_r and related functions in
+</I>&gt;&gt;<i> a different way, so
+</I>&gt;&gt;<i> our src/newlib/stubs.c file is mostly useless.
+</I>&gt;&gt;<i> This means that we
+</I>&gt;&gt;<i> can't do any file I/O from eLua with Yagarto (&quot;ls&quot;
+</I>&gt;&gt;<i> works because it's
+</I>&gt;&gt;<i> implemented in eLua). We could probably find a fix
+</I>&gt;&gt;<i> for this if we
+</I>&gt;&gt;<i> really tried :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; p.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; --
+</I>&gt;&gt;<i> &gt; - - Reklama - - - - - - - - - - - - - -
+</I>&gt;&gt;<i> &gt; Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice,
+</I>&gt;&gt;<i> &gt; diplomky... V&#353;e o z&#225;v&#283;ru
+</I>&gt;&gt;<i> &gt; &gt; studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te na
+</I>&gt;&gt;<i> &gt; port&#225;lu VOLN&#221;.cz na
+</I>&gt;&gt;<i> &gt; &gt; <A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> - - Reklama - - - - - - - - - - - - - -
+</I>&gt;<i> Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice, diplomky... V&#353;e o z&#225;v&#283;ru
+</I>&gt;<i> studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te na port&#225;lu VOLN&#221;.cz na
+</I>&gt;<i> <A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+</I>&gt;<i>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003643.html">[eLua-dev] Yagarto vs Sourcery
+</A></li>
+	<LI>Next message: <A HREF="003645.html">[eLua-dev] STM32F4discovery - bike nomad - small fixes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3644">[ date ]</a>
+              <a href="thread.html#3644">[ thread ]</a>
+              <a href="subject.html#3644">[ subject ]</a>
+              <a href="author.html#3644">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

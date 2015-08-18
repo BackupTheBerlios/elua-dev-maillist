@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] added a rm to eLua shell
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20added%20a%20rm%20to%20eLua%20shell&In-Reply-To=%3CCANKDJfYoEeeNe48KcLQ%3DQX4W40Oa0GA6cy6CgG8N5zQFjkXQZg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003507.html">
+   <LINK REL="Next"  HREF="003524.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] added a rm to eLua shell</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20added%20a%20rm%20to%20eLua%20shell&In-Reply-To=%3CCANKDJfYoEeeNe48KcLQ%3DQX4W40Oa0GA6cy6CgG8N5zQFjkXQZg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] added a rm to eLua shell">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu May 17 08:12:37 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003507.html">[eLua-dev] added a rm to eLua shell
+</A></li>
+        <LI>Next message: <A HREF="003524.html">[eLua-dev] added a rm to eLua shell
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3514">[ date ]</a>
+              <a href="thread.html#3514">[ thread ]</a>
+              <a href="subject.html#3514">[ subject ]</a>
+              <a href="author.html#3514">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Tue, May 15, 2012 at 2:02 AM, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt; wrote:
+&gt;<i> Simple patch that adds rm to eLua shell and adds a &quot;static&quot; to the
+</I>&gt;<i> boot_order.
+</I>&gt;<i> Best Marcelo.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> diff --git a/src/main.c b/src/main.c
+</I>&gt;<i> index 4ef1c1c..ccc3a3e 100644
+</I>&gt;<i> --- a/src/main.c
+</I>&gt;<i> +++ b/src/main.c
+</I>&gt;<i> @@ -27,7 +27,7 @@
+</I>&gt;<i>
+</I>&gt;<i>  // Define here your autorun/boot files,
+</I>&gt;<i>  // in the order you want eLua to search for them
+</I>&gt;<i> -char *boot_order[] = {
+</I>&gt;<i> +static char *boot_order[] = {
+</I>&gt;<i>  #if defined(BUILD_MMCFS)
+</I>&gt;<i>    &quot;/mmc/autorun.lua&quot;,
+</I>&gt;<i>    &quot;/mmc/autorun.lc&quot;,
+</I>&gt;<i> diff --git a/src/shell.c b/src/shell.c
+</I>&gt;<i> index 8647dcf..32279fd 100644
+</I>&gt;<i> --- a/src/shell.c
+</I>&gt;<i> +++ b/src/shell.c
+</I>&gt;<i> @@ -60,6 +60,7 @@ static void shell_help( char* args )
+</I>&gt;<i>            &quot;                there, otherwise run it.&quot;);
+</I>&gt;<i>    printf( &quot;  cp &lt;src&gt; &lt;dst&gt; - copy source file 'src' to 'dst'\n&quot; );
+</I>&gt;<i>    printf( &quot;  ver         - print eLua version\n&quot; );
+</I>&gt;<i> +  printf( &quot;  rm          - remove a file. (don't work for romfs)\n&quot; );
+</I>&gt;<i>  }
+</I>&gt;<i>
+</I>&gt;<i>  // 'lua' handler
+</I>&gt;<i> @@ -228,6 +229,14 @@ static void shell_ls( char* args )
+</I>&gt;<i>    printf( &quot;\n&quot; );
+</I>&gt;<i>  }
+</I>&gt;<i>
+</I>&gt;<i> +static void shell_rm( char *args )
+</I>&gt;<i> +{
+</I>&gt;<i> +  if( remove( args ) != 0 )
+</I>&gt;<i> +    perror( &quot;Error deleting file&quot; );
+</I>&gt;<i> +  else
+</I>&gt;<i> +    puts( &quot;File successfully deleted&quot; );
+</I>&gt;<i> +}
+</I>&gt;<i> +
+</I>&gt;<i>  // 'cat' and 'type' handler
+</I>&gt;<i>  static void shell_cat( char *args )
+</I>&gt;<i>  {
+</I>&gt;<i> @@ -338,6 +347,7 @@ static const SHELL_COMMAND shell_commands[] =
+</I>&gt;<i>    { &quot;cat&quot;, shell_cat },
+</I>&gt;<i>    { &quot;type&quot;, shell_cat },
+</I>&gt;<i>    { &quot;cp&quot;, shell_cp },
+</I>&gt;<i> +  { &quot;rm&quot;, shell_rm },
+</I>&gt;<i>    { NULL, NULL }
+</I>&gt;<i>  };
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+How about an implementation for &quot;rm&quot; for our various file systems? The
+FS operations are described in inc/newlib/devman.h:
+
+// A device structure with pointers to all the device functions
+typedef struct
+{
+  char name[ DM_MAX_DEV_NAME + 1 ];
+  int ( *p_open_r )( struct _reent *r, const char *path, int flags, int mode );
+  int ( *p_close_r )( struct _reent *r, int fd );
+  _ssize_t ( *p_write_r ) ( struct _reent *r, int fd, const void *ptr,
+size_t len );
+  _ssize_t ( *p_read_r )( struct _reent *r, int fd, void *ptr, size_t len );
+  off_t ( *p_lseek_r )( struct _reent *r, int fd, off_t off, int whence );
+  void* ( *p_opendir_r )( struct _reent *r, const char* name );
+  struct dm_dirent* ( *p_readdir_r )( struct _reent *r, void *dir );
+  int ( *p_closedir_r )( struct _reent *r, void* dir );
+  const char* ( *p_getaddr_r )( struct _reent *r, int fd );
+} DM_DEVICE;
+
+You'd need to add a &quot;rm&quot; and implement it for each file system. The
+ones that will support it will probably be MMCFS, RFS and SemiFS
+(mBED).
+Your patch is thus incomplete. I'm not even sure how it works in its
+current form, since it seems to completely bypass devman.c and
+probably just use the MMCFS code directly.
+
+Best,
+Bogdan
+
+&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003507.html">[eLua-dev] added a rm to eLua shell
+</A></li>
+	<LI>Next message: <A HREF="003524.html">[eLua-dev] added a rm to eLua shell
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3514">[ date ]</a>
+              <a href="thread.html#3514">[ thread ]</a>
+              <a href="subject.html#3514">[ subject ]</a>
+              <a href="author.html#3514">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

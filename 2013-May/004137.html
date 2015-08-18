@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] IMPORTANT: new build system in master
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20new%20build%20system%20in%20master&In-Reply-To=%3CCANKDJfaqZ2kX3MjEzVTPD84JdM2Wyp-%2BSz48aOUZR8svkgF0mA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004136.html">
+   <LINK REL="Next"  HREF="004138.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] IMPORTANT: new build system in master</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20new%20build%20system%20in%20master&In-Reply-To=%3CCANKDJfaqZ2kX3MjEzVTPD84JdM2Wyp-%2BSz48aOUZR8svkgF0mA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] IMPORTANT: new build system in master">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri May 31 18:41:18 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004136.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+        <LI>Next message: <A HREF="004138.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4137">[ date ]</a>
+              <a href="thread.html#4137">[ thread ]</a>
+              <a href="subject.html#4137">[ subject ]</a>
+              <a href="author.html#4137">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, May 31, 2013 at 6:41 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 31 May 2013 16:27, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; On Fri, May 31, 2013 at 4:25 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt; &gt; PS: I feel a bit sad about SConstruct - we won't have it any more :(
+</I>&gt;<i> &gt;&gt; Bogdan, can you summarise what advantages the &quot;new build system&quot;
+</I>&gt;<i> &gt;&gt; brings please, and how this affects developers.
+</I>&gt;<i>
+</I>&gt;<i> As you know, I'm no fan of changes to a working build system to a new
+</I>&gt;<i> and different build system unless it is the only solution to overcome
+</I>&gt;<i> specific technical obstacles.
+</I>&gt;<i>   For me, as an eLua developer, the new build system meant having to
+</I>&gt;<i> make the same changes twice in two files in two different languages,
+</I>&gt;<i> Python and Lua, hoping they remained in sync and having to test every
+</I>&gt;<i> change twice in every build configuration instead of once, doubling
+</I>&gt;<i> the work.
+</I>&gt;<i>
+</I>
+This is exactly why I decided to give up scons entirely. Having two build
+systems in parallel was a pain.
+
+
+&gt;<i>   The new has no parallel build option, taking twice as long to
+</I>&gt;<i> compile here during development, tripling it for testing.
+</I>&gt;<i>
+</I>
+I know, but this will be fixed soon (hopefully).
+
+
+&gt;<i>   In these tests with two biuld systems, I found that it generates not
+</I>&gt;<i> only different code, but larger code, using the same compiler with the
+</I>&gt;<i> same options. For my very tight 120K target that makes the difference
+</I>&gt;<i> between fitting in flash and overflowing it.
+</I>&gt;<i>
+</I>
+We talked about that and I suggested that you check for different compiler
+flags and different link order. If it's a compiler flags issue, that's an
+easy fix. If it's just a question of the build order, I guess we could
+change that too, but this feels like pushing it a bit too far. I understand
+that you're working on a very space-constrained target, but depending on a
+specific link order to make your image fit doesn't feel quite right.
+
+
+&gt;<i>   Apart from the specific technical shortcomings outlined above, the
+</I>&gt;<i> very fact of changing buld system has disadvantages to the eLua
+</I>&gt;<i> program because it distracts developer time and attention away from
+</I>&gt;<i> eLua itself, makes us maintain and debug two pieces of software
+</I>&gt;<i> instead of one (since bugs in the build system are as much fun as bugs
+</I>&gt;<i> in the compiler),
+</I>
+
+This will go away soon enough, once we switch to lake (because having an
+eLua specific build system doesn't make much sense indeed).
+
+
+&gt;<i> and it leaves incompatibility with the other 40
+</I>&gt;<i> branches and 50 forks of eLua, which would have to (but will not)
+</I>&gt;<i> rewrite all their changes to the build system.
+</I>&gt;<i>
+</I>
+I might be wrong about this, but I expect that most of the branches/forks
+that you're talking about didn't modify the build system too much; even if
+they did, there's a high chance that only a bunch of macros/flags were
+changed. If the change was more profound, I can help with the transition.
+
+
+&gt;<i> Half of builder.simplemachines.it stopped working when SConstruct
+</I>&gt;<i> disappeared from the master branch, the half that compiles the master
+</I>&gt;<i> branch instead of 0.8, which is the only 0.9 option it has at the
+</I>&gt;<i> moment, for users to have system timer, mizar32.rtc and all the rest
+</I>&gt;<i> of the good new things in elua0.9.
+</I>&gt;<i>
+</I>
+The builder is indeed an unfortunate collateral victim and I'm sorry this
+caused you so much trouble (our own builder suffered because of this too).
+I'll do what I can to help you transition to the new build system. Our
+builder was prepared to handle this change, but I simply didn't realise
+that you have a builder of your own (I never used it myself); if I did, you
+would've been notified about this change quite a while ago.
+
+
+&gt;<i> If SConstruct still works, is it too much to ask to put it back at
+</I>&gt;<i> least until I get round to fixing the SM web builder, which I didn't
+</I>&gt;<i> write and don't know how to fix yet?
+</I>&gt;<i>
+</I>
+I will try to put the old build system back on a branch (for AVR32 only).
+I'll get back to you as soon I'm done.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i>     M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130531/e51485af/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130531/e51485af/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004136.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+	<LI>Next message: <A HREF="004138.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4137">[ date ]</a>
+              <a href="thread.html#4137">[ thread ]</a>
+              <a href="subject.html#4137">[ subject ]</a>
+              <a href="author.html#4137">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

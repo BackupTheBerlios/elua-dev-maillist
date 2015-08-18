@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] help with networking issues
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20help%20with%20networking%20issues&In-Reply-To=%3CCAJ%3DY9Y3t3%2ByWV2%2BMEC6jQHK484_tAqfVz7wW-HppHQAspANQDQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002980.html">
+   <LINK REL="Next"  HREF="002983.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] help with networking issues</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20help%20with%20networking%20issues&In-Reply-To=%3CCAJ%3DY9Y3t3%2ByWV2%2BMEC6jQHK484_tAqfVz7wW-HppHQAspANQDQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] help with networking issues">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sun Nov 20 01:24:35 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002980.html">[eLua-dev] help with networking issues
+</A></li>
+        <LI>Next message: <A HREF="002983.html">[eLua-dev] help with networking issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2982">[ date ]</a>
+              <a href="thread.html#2982">[ thread ]</a>
+              <a href="subject.html#2982">[ subject ]</a>
+              <a href="author.html#2982">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Nov 19, 2011 at 11:39 AM, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+&gt;<i> I would like to ask some questions about setting up a networking connect to
+</I>&gt;<i> the ekc-lm3s9b92 board.
+</I>&gt;<i> this is not an elu specific question but i think its preventing elua from
+</I>&gt;<i> working correctly.
+</I>&gt;<i>
+</I>&gt;<i> i have dell 6400 laptop with a wireless card and a single ethernet connector
+</I>&gt;<i> in the back of the back
+</I>&gt;<i> of laptop. i have not to this date been able to establish a network connect
+</I>&gt;<i> to ekc-lm3s9b92 board
+</I>&gt;<i> buy connecting directly from the mcu to the laptop using the supplied spring
+</I>&gt;<i> loaded ether cable
+</I>&gt;<i> that came with the kit. i have also tried using a usb to ethernet adapter
+</I>&gt;<i> but that has not worked.
+</I>
+If you have a router handy that you can try plugging things into that
+will provide an IP address on a private subnet (i.e.: 10.x.x.x or
+192.x.x.x)?  This would be one way to double check any results since
+this should work in most cases as a solution.
+
+That said I'll provide at least a few comments here as far as
+possibilities are concerned:
+1) If you're plugging the cable directly from the MCU to the laptop,
+make sure you're at least getting a negotiated link.  I think that the
+MCU supports Auto-MDIX so the cross-over cable issue may be moot.  You
+can use something like ethtool under Linux (as I recall you're under
+Fedora?) to check on the link status.
+
+2) If there's a negotiated link, things get a little bit complicated
+in terms of Linux networking depending on what you want to do.  The
+image I generated for you earlier will look for a DHCP server, which
+Linux won't be running by default for you.  On Mac OS X or Windows the
+&quot;internet connection sharing&quot; features can be useful to configure a
+port so that a device that's plugged into it will see a DHCP server
+and then have any outgoing traffic NAT'd automatically. If your distro
+comes with some sort of similar feature that would allow you to share,
+say, an existing other wired connection or wireless connection with
+the MCU, it likely will work similarly to the feature on other
+platforms (run DHCP + NAT), otherwise it might be fairly involved to
+set this up. Something like this might work:
+<A HREF="http://www.techerator.com/2010/01/how-to-setup-internet-connection-sharing-in-fedora-12/">http://www.techerator.com/2010/01/how-to-setup-internet-connection-sharing-in-fedora-12/</A>
+
+That said, I don't know how it will configure its routing tables or
+what IP it will hand out to the MCU.
+
+Using &quot;arp -a&quot; might be useful?
+
+An easier alternative if that doesn't work would be:
+Configure a static ip/subnet on the port being used so that they match
+up with a similar static configuration on the MCU (so a static IP
+image might be easier to work with).  This should be fairly easy and
+is either doable through your distro's GUI tools for configuring
+network interfaces or on the command line.  You can probably just
+match everything that the MCU has for IP information except the actual
+IP address which you would want to differ for the desktop.
+Note: eLua won't have access to the internet through this configuration.
+
+You can also bridge the connection that the MCU is attached to another
+connection that would provide it with DHCP and internet, but this is
+also not perfectly straight forward to explain how to do if one isn't
+comfortable with mucking around with one's networking configuration
+:<i>-)
+</I>
+&gt;<i>
+</I>&gt;<i> i personally dont think the binary is at issue but some ethenet setting that
+</I>&gt;<i> is preventing connectivity.
+</I>&gt;<i> james
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002980.html">[eLua-dev] help with networking issues
+</A></li>
+	<LI>Next message: <A HREF="002983.html">[eLua-dev] help with networking issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2982">[ date ]</a>
+              <a href="thread.html#2982">[ thread ]</a>
+              <a href="subject.html#2982">[ subject ]</a>
+              <a href="author.html#2982">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

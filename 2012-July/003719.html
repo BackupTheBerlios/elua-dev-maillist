@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Ram usage with byte resolution
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Ram%20usage%20with%20byte%20resolution&In-Reply-To=%3CCAL4-wQriAtyR%2Bvt2H8Z5bCAGke-dnuZrchoBSLAdtOyPMmFXmQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003718.html">
+   <LINK REL="Next"  HREF="003720.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Ram usage with byte resolution</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Ram%20usage%20with%20byte%20resolution&In-Reply-To=%3CCAL4-wQriAtyR%2Bvt2H8Z5bCAGke-dnuZrchoBSLAdtOyPMmFXmQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Ram usage with byte resolution">martinwguy at gmail.com
+       </A><BR>
+    <I>Thu Jul 19 15:37:33 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003718.html">[eLua-dev] Ram usage with byte resolution
+</A></li>
+        <LI>Next message: <A HREF="003720.html">[eLua-dev] mbed RTC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3719">[ date ]</a>
+              <a href="thread.html#3719">[ thread ]</a>
+              <a href="subject.html#3719">[ subject ]</a>
+              <a href="author.html#3719">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 19 July 2012 15:22, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Thu, Jul 19, 2012 at 4:19 PM, agostain &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">agostino.difiglia at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Martin Guy wrote
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> is it possible to investigate the RAM usage of my lua program with byte
+</I>&gt;&gt;&gt;&gt;<i> resolution?
+</I>&gt;&gt;&gt;<i> If you are using floating point eLua, the return value has fractional
+</I>&gt;&gt;&gt;<i> bits.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> print (collectgarbage(&quot;count&quot;))
+</I>&gt;&gt;&gt;<i> 17.20703125
+</I>&gt;&gt;<i> That is not true. I dived into the code of the garbagecollector.  since
+</I>&gt;&gt;<i> lua_gc returns an int right shifted by 10 the garbagecollector function
+</I>&gt;&gt;<i> will never show me fractionals even if I compile as floating elua.
+</I>
+Ah, sorry, I was testing that under Unix Lua.
+
+&gt;<i> Then the easiest solution is to change the code to return the int
+</I>&gt;<i> without shifting by 10.
+</I>
+At teh Lua level it would be nice to return what standard Lua returns:
+N/1024.0 in fp Lua and, presumably, N&gt;&gt;10 in integer Lua
+
+Of course, for eLua, you could implement the Lua5.2 solution of
+returning two values, N/1024 and N%1024, since that would be
+backwards-compatible with the current behaviour: existing code would
+throw the 2nd return value away and get what it got before.
+... and those in the know could pick up the 2nd value...
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003718.html">[eLua-dev] Ram usage with byte resolution
+</A></li>
+	<LI>Next message: <A HREF="003720.html">[eLua-dev] mbed RTC module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3719">[ date ]</a>
+              <a href="thread.html#3719">[ thread ]</a>
+              <a href="subject.html#3719">[ subject ]</a>
+              <a href="author.html#3719">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

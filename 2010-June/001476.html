@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] require and Lua path
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20require%20and%20Lua%20path&In-Reply-To=%3CAANLkTimj-g-oJT-O8KXgLvj0-V_SJxfrpv2DM9JdjxEp%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001468.html">
+   <LINK REL="Next"  HREF="001443.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] require and Lua path</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20require%20and%20Lua%20path&In-Reply-To=%3CAANLkTimj-g-oJT-O8KXgLvj0-V_SJxfrpv2DM9JdjxEp%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] require and Lua path">dadosutter at gmail.com
+       </A><BR>
+    <I>Fri Jun 25 21:16:15 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001468.html">[eLua-dev] require and Lua path
+</A></li>
+        <LI>Next message: <A HREF="001443.html">[eLua-dev] EK-LM3S6965 File
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1476">[ date ]</a>
+              <a href="thread.html#1476">[ thread ]</a>
+              <a href="subject.html#1476">[ subject ]</a>
+              <a href="author.html#1476">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+   I could finally test it on a kit and require() is now working fine for
+modules on ROMFS and on MMC.
+   eLua first search the SD/MMC for filename.lua, then filename.lc (lua
+compiled bytecodes). Then this search is repeated for files on ROMFS.
+   The init.lua and init.lc is a Lua feature and eLua does not change it at
+all. For more information, see the
+PIL2&lt;<A HREF="http://www.amazon.com/Programming-Lua-Second-Roberto-Ierusalimschy/dp/8590379825/ref=sr_1_1/180-9399314-2886369?ie=UTF8&amp;s=books&amp;qid=1277493075&amp;sr=8-1">http://www.amazon.com/Programming-Lua-Second-Roberto-Ierusalimschy/dp/8590379825/ref=sr_1_1/180-9399314-2886369?ie=UTF8&amp;s=books&amp;qid=1277493075&amp;sr=8-1</A>&gt;,
+section 15.5, page 145.
+
+   Stepan seem to still have another problem with Pong though.
+   Could you explain it again, in another thread, if you haven't fixed it ?
+
+Best
+Dado
+
+
+
+On Tue, Jun 22, 2010 at 11:23, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Jun 22, 2010 at 02:02, Stefan Brantschen &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">stefan.brantschen at mac.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> ...................
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Problem persists. Shouldn't line 108 in src/lua/luaconf.h read ...........
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Yes Stefan. I had fixed it only on line 93 and this is also needed on line
+</I>&gt;<i> 108. I've already commited the fix so you can update your trunk and try
+</I>&gt;<i> again, if you haven't done it locally already.
+</I>&gt;<i>
+</I>&gt;<i>    Those #defines look a bit confusing to me, since we added the #ifdefs
+</I>&gt;<i> for LUA_RPC (and kept the original Lua checks for WIN32).
+</I>&gt;<i>    I don't know for example, why we need to keep searching the original
+</I>&gt;<i> (Lua) paths of /, /lua for .lua and .lc files and even for the init.lua
+</I>&gt;<i> file.
+</I>&gt;<i>    To respect the Lua feature of running an init.lua or init.lc file if
+</I>&gt;<i> found, we should instead add it to our /rom and /mmc search paths or to
+</I>&gt;<i> better merge this feature with our autorun right ?
+</I>&gt;<i>
+</I>&gt;<i> Tks for helping us to test it
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>  #define LUA_PATH_DEFAULT  &quot;/mmc/?.lua;/mmc/?.lc;/rom/?.lua;/rom/?.lc&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> in lieu of the current
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  #define LUA_PATH_DEFAULT  &quot;/rom/?.lua;/rom/?.lc&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Cheers
+</I>&gt;&gt;<i> -- Stefan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100625/6af952e1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100625/6af952e1/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001468.html">[eLua-dev] require and Lua path
+</A></li>
+	<LI>Next message: <A HREF="001443.html">[eLua-dev] EK-LM3S6965 File
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1476">[ date ]</a>
+              <a href="thread.html#1476">[ thread ]</a>
+              <a href="subject.html#1476">[ subject ]</a>
+              <a href="author.html#1476">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

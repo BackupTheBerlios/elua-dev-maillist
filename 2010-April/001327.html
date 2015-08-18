@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] dlmalloc version isn't current on eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20dlmalloc%20version%20isn%27t%20current%20on%20eLua&In-Reply-To=%3Cz2s81fbe47d1004061425vedd60e9bk982fb7666f2c01f0%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001326.html">
+   <LINK REL="Next"  HREF="001328.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] dlmalloc version isn't current on eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20dlmalloc%20version%20isn%27t%20current%20on%20eLua&In-Reply-To=%3Cz2s81fbe47d1004061425vedd60e9bk982fb7666f2c01f0%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] dlmalloc version isn't current on eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Apr  6 23:25:53 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001326.html">[eLua-dev] dlmalloc version isn't current on eLua
+</A></li>
+        <LI>Next message: <A HREF="001328.html">[eLua-dev] eLua interview today
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1327">[ date ]</a>
+              <a href="thread.html#1327">[ thread ]</a>
+              <a href="subject.html#1327">[ subject ]</a>
+              <a href="author.html#1327">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>We actually have two dlmalloc versions on eLua:
+
+1. the one in Newlib (don't know which one it is, as it depends on the
+Newlib version). This is the default, and we keep it the default because it
+is smaller than 2 below.
+2. another one in src/dlmalloc.c, which is more recent than what I've found
+in the different Newlibs eLua uses (don't know if it's the latest one
+though) and it is used by default on boards with multiple RAM zones (for
+example on-chip RAM + external RAM). It can be forced with
+&quot;allocator=multiple&quot; in the scons command line.
+
+I'll check if 2 above is the latest dlmalloc version, thanks for letting us
+know about this. I doubt it would make any significant difference, but one
+never knows for sure until one tries :)
+
+Best,
+Bogdan
+
+On Wed, Apr 7, 2010 at 12:18 AM, King, Mike &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">MKing at klmicrowave.com</A>&gt; wrote:
+
+&gt;<i> Just in case the developers are not aware, the version of dlmalloc that's
+</I>&gt;<i> used by eLua is not current.  Will eLua uses the newer version?  I don't
+</I>&gt;<i> know if it will offer any benefit to eLua.
+</I>&gt;<i>
+</I>&gt;<i> CONFIDENTIALITY NOTICE: This e-mail message, including any attachments, is
+</I>&gt;<i> for the sole use of the intended recipient(s) and may contain information
+</I>&gt;<i> that is confidential or proprietary to K&amp;L Microwave, Inc. Any unauthorized
+</I>&gt;<i> review, use, disclosure or distribution is prohibited.
+</I>&gt;<i> If this communication has been transmitted from a U.S. location it may also
+</I>&gt;<i> contain data subject to the International Traffic in Arms Regulations or
+</I>&gt;<i> U.S. Export Administration Regulations and, if so, cannot be disseminated,
+</I>&gt;<i> distributed or copied to foreign nationals, residing in the U.S. or abroad,
+</I>&gt;<i> without the prior approval of the U.S. Department of State or appropriate
+</I>&gt;<i> export licensing authority. If you have received this communication in
+</I>&gt;<i> error, please notify the sender by reply e-mail and delete or destroy all
+</I>&gt;<i> copies of this e-mail message and/or any file attachment(s).
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100407/b0047d08/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100407/b0047d08/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001326.html">[eLua-dev] dlmalloc version isn't current on eLua
+</A></li>
+	<LI>Next message: <A HREF="001328.html">[eLua-dev] eLua interview today
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1327">[ date ]</a>
+              <a href="thread.html#1327">[ thread ]</a>
+              <a href="subject.html#1327">[ subject ]</a>
+              <a href="author.html#1327">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

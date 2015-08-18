@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Low Power and WDT
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Low%20Power%20and%20WDT&In-Reply-To=%3CCA%2Bk0RGdM15awgWjh0aYtxBK28RsBM4MeUYda3Jv%2Bwg8MgmQArw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002858.html">
+   <LINK REL="Next"  HREF="002860.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Low Power and WDT</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Low%20Power%20and%20WDT&In-Reply-To=%3CCA%2Bk0RGdM15awgWjh0aYtxBK28RsBM4MeUYda3Jv%2Bwg8MgmQArw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Low Power and WDT">dadosutter at gmail.com
+       </A><BR>
+    <I>Sat Oct 22 03:19:07 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002858.html">[eLua-dev] Low Power and WDT
+</A></li>
+        <LI>Next message: <A HREF="002860.html">[eLua-dev] Low Power and WDT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2859">[ date ]</a>
+              <a href="thread.html#2859">[ thread ]</a>
+              <a href="subject.html#2859">[ subject ]</a>
+              <a href="author.html#2859">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Oct 21, 2011 at 23:04, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt;wrote:
+
+&gt;<i> 2011/10/21 Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Fri, Oct 21, 2011 at 22:00, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt;
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Hello, I've been using and developing some custom parts of eLua for a
+</I>&gt;<i> &gt;&gt; while:
+</I>&gt;<i> &gt;&gt; I did a ks0108b driver and a custom WDT driver, in C.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Anyhow, I'm here to discuss 2 things, firstly is any thought about
+</I>&gt;<i> &gt;&gt; lowpower inclusion in the near future?
+</I>&gt;<i> &gt;&gt; I'm going to work on it for str9, with a GPIO wakeup. Any comments
+</I>&gt;<i> &gt;&gt; about that are welcome.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; I did a simple WDT module also for str9 and was wondering about its
+</I>&gt;<i> &gt;&gt; inclusion on elua API as a generic
+</I>&gt;<i> &gt;&gt; module.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; The API I've used is the following:
+</I>&gt;<i> &gt;&gt; For Lua:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; wdt.init(ms)
+</I>&gt;<i> &gt;&gt; wdt.clear()
+</I>&gt;<i> &gt;&gt; wdt.stop()
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; For C:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; void platform_wdt_start(unsigned int ms);
+</I>&gt;<i> &gt;&gt; void platform_wdt_clear(void);
+</I>&gt;<i> &gt;&gt; void platform_wdt_stop(void);
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; There would be also necessary an extra cpu function that would give
+</I>&gt;<i> &gt;&gt; the reboot reason:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; cpu.REBOOT_NORMAL
+</I>&gt;<i> &gt;&gt; cpu.REBOOT_WDT
+</I>&gt;<i> &gt;&gt; = cpu.why_rebooted()
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; int platform_cpu_why_rebooted(void);
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Maybe a WDT restart could automatically queue an eLua (new) INT ?
+</I>&gt;<i>
+</I>&gt;<i> True, but I just can't see how this would be configured, because the
+</I>&gt;<i> wdt event would reset the handler to nil (along with all eLua env).
+</I>&gt;<i>
+</I>
+The WDT event would not persist during the reboot. But during the
+initializations, eLua can check the CPU status to see if it is ressurecting
+from a normal Restet, a WDT (maybe a Brownout in the future ....) and then
+queue an eLua INT.
+
+Also try to explain a user why the hell this INT keeps crapping his
+&gt;<i> variables :)
+</I>&gt;<i>
+</I>
+This wouldn't be too hard, as the default would still be to have WDT
+disabled. Thus, if a user gets an WDT INT, it would be because he's enabled
+it.
+
+Or maybe we should mimic the low level behavior and expect users to know a
+minimum about WDT, even if it is only to disable it at the start of his
+program (unfortunately a very common practise nowadays :). Pls note that on
+most MCUs (if not all), the WDT is active after a reset and the user has to
+handle it (or disable).
+
+It might be easier to stay with the first option above though.
+
+Best
+Dado
+
+
+
+
+
+
+&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Tks for the work !
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; --
+</I>&gt;<i> &gt;&gt; Best,
+</I>&gt;<i> &gt;&gt; Marcelo
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Best
+</I>&gt;<i> &gt; Dado
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> []s,
+</I>&gt;<i> Marcelo
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111021/dfbe6a34/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111021/dfbe6a34/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002858.html">[eLua-dev] Low Power and WDT
+</A></li>
+	<LI>Next message: <A HREF="002860.html">[eLua-dev] Low Power and WDT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2859">[ date ]</a>
+              <a href="thread.html#2859">[ thread ]</a>
+              <a href="subject.html#2859">[ subject ]</a>
+              <a href="author.html#2859">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

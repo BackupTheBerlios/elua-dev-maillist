@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua vs Python on Microcontrollers
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20vs%20Python%20on%20Microcontrollers&In-Reply-To=%3C81fbe47d0901240232q7ccd5009pacb9a6f4912b4a00%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000307.html">
+   <LINK REL="Next"  HREF="000309.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua vs Python on Microcontrollers</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20vs%20Python%20on%20Microcontrollers&In-Reply-To=%3C81fbe47d0901240232q7ccd5009pacb9a6f4912b4a00%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Lua vs Python on Microcontrollers">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat Jan 24 11:32:46 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000307.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+        <LI>Next message: <A HREF="000309.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#308">[ date ]</a>
+              <a href="thread.html#308">[ thread ]</a>
+              <a href="subject.html#308">[ subject ]</a>
+              <a href="author.html#308">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+A personal comment first: I _love_ it when people talk about different
+programming languages and their relative advantages and disadvantages using
+logical arguments and a civilized tone, without getting into religious wars
+like &quot;my language will kick the living **** out of your language. Why? Cause
+it DOES&quot;. Thanks for this, I really appreciate it.
+
+And now my thoughts: I've been looking for a good way to embedded an
+intepreted language into a microcontroller for a very long time now. For a
+long while I've been the C-only type of programmer, that annoying guy who
+thinks that everything but C (and maybe C++) is useless. Stupid, I know, but
+so was me :) Once I started to widen my perspective a bit, the very first
+thing I tried was Python, and it was a very pleasant experience for me. The
+kind of productivity (and fun) I got from using Python was mind blowing for
+someone that ate, dreamed and breathed C. I wrote a few large applications
+in Python, and for desktop programming Python is still my favorite language
+(and will probably remain so for a while). I explored others (Lua included),
+but Python is the kind of complete package that most programmers are looking
+for. I don't really care for the differences at the language level (while
+Lua is simpler than Python, it's still a complete language), so I'm looking
+at the libraries, and Python simply shines here.
+
+However, I never considered Python for embedding into a MCU, because I
+always though it was too 'heavy' for this task (this is why I find Dean's
+work extraordinary). I started looking at Forth, and the conclusion was that
+a &quot;regular&quot; user (maybe a non-programmer) wouldn't be crazy about the idea
+of manipulating a stack directly, or writing his programs in postfix. The
+same went for LISP. I find it interesting and challenging (although I only
+had minimal exposure to it), but most people probably wouldn't. I also
+considered different variants of BASIC (I was a big fan on BasicStamp when I
+first met with micros), but BASIC just didn't do it for me the end, probably
+because of my strong programming background that thought me a thing or two
+about programming languages in general. This is why I knew I hit gold when I
+found Lua. It was perfect for my needs in almost every way I could think of.
+
+
+&gt;<i> I'm sure there are some modifications that were necessary to make eLua
+</I>work in
+&gt;<i> these environments in the first place, but sounds as if it didn't require
+</I>&gt;<i> much shoe-horning :-)
+</I>You'll laugh, but the only thing I really needed to do in order to run the
+interpreter for the first time was to rename Lua' &quot;main&quot; function to
+&quot;lua_main&quot; and call it from my program. I had to take care of Newlib
+instead, providing it the proper stubs for the MCU. Lua uses only ANSI
+functions (and some POSIX in the OS library, which is normal) so it was
+extremely easy to port it. I did some tests (before starting the project)
+with some different memory allocators (dlmalloc, TLSF, chained versions) to
+see what are best for eLua. dlmalloc won the initial round :), so I was
+ready to go.
+
+&gt;<i>Right now PyMite (and a few developers) are begging me to develop PyMite to
+</I>run
+&gt;<i>on these devices with greater resources.
+</I>Well then, you give me no choice but to join their group :) I'd LOVE to have
+Python run on my ARMs.
+
+&gt;<i> Lua was designed from the very start to be embedded (into other
+</I>&gt;<i> programs as well as into smaller systems).  Python was designed for
+</I>&gt;<i> the desktop and is rather big.  Even if I grow PyMite to use 256 KB
+</I>&gt;<i> Flash and 64 KB SRAM, I don't think I'll be able to fit every Python
+</I>&gt;<i> feature into PyMite.  Whereas, just recently, I showed that the eLua
+</I>&gt;<i> interpreter (minus its parser/lexer) will fit in 64 KB Flash and 16 KB
+</I>&gt;<i> SRAM.  So, in this respect, I believe Lua has the edge for size.
+</I>&gt;<i> However, I believe that due to my focus on internal data structure
+</I>&gt;<i> size, a PyMite program will use less RAM during runtime (but I admit
+</I>&gt;<i> this is difficult to quantify).
+</I>You might be right, I didn't try that. One thing to keep in mind here is
+that eLua starts with all the standard Lua libraries included by default. It
+could take less RAM if you don't use the io library and loadlib (require and
+friends), they are the only standard libraries that I couldn't make fully
+ROMable. I'm thinking about reimplement at least the io library so it can
+become completely ROMable (at this point it uses userdata, which in turn
+uses the Lua registry, thus it takes some RAM). And loadlib might not be
+required at all in the application (although if this idea that keeps popping
+in my head is right, I'll be able to provide eLua with loadable C modules
+one day, just like on desktop). Many things to think about here ...
+I'm actually still trying to get the Lua memory usage right. The parser is
+recursive, so it will eat quite a bit of stack for non-trivial programs.
+I've tried to adress this by moving all the large parser structures from the
+stack to the heap and increasing the stack size to 2k (which is only an
+experimental value), and it seems to work fine for now, but I definitely
+need to get back to this with a more &quot;scientific&quot; approach.
+
+&gt;<i> I haven't diffed eLua's src/lua directory against the
+</I>&gt;<i> standard Lua source tree, but I don't believe them to be vastly
+</I>&gt;<i> different.  So eLua has a high fidelity to the  Lua language and a
+</I>&gt;<i> common code base (fewer defects).
+</I>
+These are the mods currently applied to Lua:
+
+- lualong, a patch that changes Lua's number type from double to integer.
+Quite safe, makes little to no modifications, unlikely to cause any
+problems.
+- my LTR. By far the most risky (and instrunsive) one, and likely to
+introduce incompatibilities (but not serious ones; incompatibilities like
+&quot;math is now a rotable, so you can't add new members to it&quot;. True, but you
+probably wouldn't do that in a real life program anyway).
+- some changes to the parser that move large structures from the stack to
+the heap (as specified above). A very safe change IMO.
+- some small tweaks in the standard luaconf.h files (maximum number of
+upvalues, maximum size of an input buffer, things like this) neede to
+decrease the memory consumption a bit.
+
+Best,
+Bogdan
+
+On Sat, Jan 24, 2009 at 1:56 AM, Dean Hall &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dwhall256 at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> On Jan 23, 2009, at 17:25 , Jesus Alvarez wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; Dean,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks for sharing your comments about PyMite and tinipy.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Coding a Python parser from scratch to target microcontrollers will
+</I>&gt;<i> &gt; certainly generate incompatibilities (or defects as you call them)
+</I>&gt;<i> &gt; versus
+</I>&gt;<i> &gt; the mainstream CPython implementation. Yet a Python subset could
+</I>&gt;<i> &gt; still be
+</I>&gt;<i> &gt; very useful in many applications, especially if language
+</I>&gt;<i> &gt; functionality is
+</I>&gt;<i> &gt; selected carefully. In most cases, people would not be porting a
+</I>&gt;<i> &gt; desktop
+</I>&gt;<i> &gt; application to the embedded system but rather developing new code
+</I>&gt;<i> &gt; for a
+</I>&gt;<i> &gt; specific embedded application. Besides, if a developer is proficient
+</I>&gt;<i> &gt; with
+</I>&gt;<i> &gt; Python it is much easier for he/she to code their embedded
+</I>&gt;<i> &gt; application with
+</I>&gt;<i> &gt; a Python subset than to learn a new language. The core of the
+</I>&gt;<i> &gt; language would
+</I>&gt;<i> &gt; need to be there; developers may be willing to work around a lack of
+</I>&gt;<i> &gt; multiple inheritance but they will resist changes to data
+</I>&gt;<i> &gt; structures, flow
+</I>&gt;<i> &gt; control, iterators and functions.
+</I>&gt;<i>
+</I>&gt;<i> That is roughly the state PyMite is in right now.  It can do all the
+</I>&gt;<i> basic things you'd expect: assignment, math and logic, control flow,
+</I>&gt;<i> datatype operations, functions and modules (no iterators, though).
+</I>&gt;<i>
+</I>&gt;<i> &gt; Lack of an interpreter mode would be a drawback. From your comments,
+</I>&gt;<i> &gt; it
+</I>&gt;<i> &gt; appears PyMite required compiling the code on the desktop and didn't
+</I>&gt;<i> &gt; implement an interpreter mode. Although most production code runs
+</I>&gt;<i> &gt; compiled,
+</I>&gt;<i> &gt; significant debugging and testing occurs in the interpreter. A
+</I>&gt;<i> &gt; possible
+</I>&gt;<i> &gt; workaround to avoid the parser/ compiler overhead would be to have a
+</I>&gt;<i> &gt; special
+</I>&gt;<i> &gt; &quot;Python terminal&quot; on the desktop acting as a remote interpreter
+</I>&gt;<i> &gt; console to
+</I>&gt;<i> &gt; the embedded system, recompiling code as the user enters it.
+</I>&gt;<i>
+</I>&gt;<i> I call this an interactive mode.  PyMite has an interactive mode where
+</I>&gt;<i> the desktop is the host and the target, but it hasn't been adapted to
+</I>&gt;<i> a microcontroller target yet (not enough RAM on my ATmega103).
+</I>&gt;<i>
+</I>&gt;<i> !!Dean
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090124/49e88ab5/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090124/49e88ab5/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000307.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+	<LI>Next message: <A HREF="000309.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#308">[ date ]</a>
+              <a href="thread.html#308">[ thread ]</a>
+              <a href="subject.html#308">[ subject ]</a>
+              <a href="author.html#308">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

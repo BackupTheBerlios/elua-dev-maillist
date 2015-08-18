@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] What can I do?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3C002001cb979e%2417b95540%24472bffc0%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001787.html">
+   <LINK REL="Next"  HREF="001788.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] What can I do?</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3C002001cb979e%2417b95540%24472bffc0%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] What can I do?">john.hind at zen.co.uk
+       </A><BR>
+    <I>Thu Dec  9 13:39:16 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001787.html">[eLua-dev] What can I do?
+</A></li>
+        <LI>Next message: <A HREF="001788.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1786">[ date ]</a>
+              <a href="thread.html#1786">[ thread ]</a>
+              <a href="subject.html#1786">[ subject ]</a>
+              <a href="author.html#1786">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> -----Original Message-----
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+</I>&gt;<i> Sent: 08 December 2010 22:03
+</I>
+
+&gt;<i> You can interrupt it at almost any point using lua_sethook:
+</I>&gt;<i> 
+</I>&gt;<i> <A HREF="http://pgl.yoyo.org/luai/i/lua_sethook">http://pgl.yoyo.org/luai/i/lua_sethook</A>
+</I>&gt;<i> 
+</I>&gt;<i> This is what the Lua interrupt support is currently using: a count
+</I>&gt;<i> hook (LUA_MASKCOUNT) with count = 2 (to give the &quot;regular&quot; Lua code a
+</I>&gt;<i> chance to execute even if a &quot;storm&quot; of interrupts is received). So
+</I>&gt;<i> every 2 Lua VM instructions a hook function is executed, which in turn
+</I>&gt;<i> checks if any interrupt is queued and calls the corresponding handler
+</I>&gt;<i> if it is (src/elua_int.c:elua_int_hook).
+</I>&gt;<i> 
+</I>
+Wow! I have used the debug hook function before, but never thought to use it
+as an interrupt mechanism in normal program execution. This suggests that a
+coroutine could be asynchronously forced to yield by an external event (just
+test a flag in the hook function and execute a yield if it is set). You have
+officially blown my mind: I will do some experimenting with this in my
+Windows runtime so I can get a decent 'C' debugger on the job.
+
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001787.html">[eLua-dev] What can I do?
+</A></li>
+	<LI>Next message: <A HREF="001788.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1786">[ date ]</a>
+              <a href="thread.html#1786">[ thread ]</a>
+              <a href="subject.html#1786">[ subject ]</a>
+              <a href="author.html#1786">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAL4-wQr_E5_UhUzWnvACNYB%2BS8DuJgQ4yVzuh9Lzs5iCFD_6Ew%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002705.html">
+   <LINK REL="Next"  HREF="002693.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAL4-wQr_E5_UhUzWnvACNYB%2BS8DuJgQ4yVzuh9Lzs5iCFD_6Ew%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">martinwguy at gmail.com
+       </A><BR>
+    <I>Mon Aug 29 19:02:59 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002705.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002693.html">[eLua-dev] LTR compatible wrappers with SWIG for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2712">[ date ]</a>
+              <a href="thread.html#2712">[ thread ]</a>
+              <a href="subject.html#2712">[ subject ]</a>
+              <a href="author.html#2712">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 5 August 2011 22:25, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+&gt;<i> Side note: is there some sort of pending or update flag that you could use
+</I>&gt;<i> to set the two sequentially then grind away in a loop watching a register
+</I>&gt;<i> for when that has been accepted, then you can change the other? Or can you
+</I>&gt;<i> just watch the counter? &#160;It certainly means burning extra time in the
+</I>&gt;<i> function, especially if the frequency is quite slow, but perhaps worth it?
+</I>
+There is a bit that tells you when the pending update has been flushed.
+For the moment, I'm just interested in getting the thing to work and
+not worried about the processing the application could do while the
+first update of the two is pending.
+
+&gt;<i> but audio applications would hold duty
+</I>&gt;<i> cycle constant (for the most part), but vary the frequency all over.
+</I>
+You mean organ-type audio.  Using PWM as a crude ADC would keep the
+frequency at a fixed high and vary the duty cycle to varu the output
+value.
+
+&gt;<i> With this, we would store duty and radix vales in the module, maybe with
+</I>&gt;<i> some sane defaults set initially for whichever value isn't being set, like
+</I>&gt;<i> 50% for duty, and 1 KHz or something for frequency?
+</I>
+I'm not sure there are any sane defaults. I'd prefer that, until they
+say what they want, we hold all output.  In my experience, arbitrary
+defaults like 1kHz tend to become a ball and chain when it comes to
+software maintenance in the future.
+
+&gt;&gt;<i> When evolving the Lua interfaces, should we keep the current Lua
+</I>&gt;&gt;<i> interfaces also, for example under
+</I>&gt;&gt;<i> #ifdef ELUA_0_8_COMPAT
+</I>&gt;&gt;<i> to allow existing Lua code to continue working, or do we just change
+</I>&gt;&gt;<i> things to keep the code simpler and more manageable?
+</I>&gt;<i>
+</I>&gt;<i> We haven't used deprecation in the past. I'd vote for keeping things simple
+</I>&gt;<i> for now. &#160;I'd say that would be something that maybe might be necessary for
+</I>&gt;<i> post-1.0 revisions to the API?
+</I>&gt;<i> We should go through and update examples we've published to the newer API
+</I>&gt;<i> and certainly make it clear in any release notes that updates are required
+</I>&gt;<i> for code using the older style.
+</I>
+OK. For me, maintaining backward compatibility is no problem - we just
+have to make sure we never make the old parameters take on different
+meanings, but that's a good defensive principle in any case. The only
+difference is in code size for the backward-compatible version.
+
+&gt;<i> I agree that there should be a mechanism to use interrupts to drive
+</I>&gt;<i> conversions, but that gets back into the whole issue of jitter and latency.
+</I>&gt;<i> &#160;I think it would be a mistake to not allow use of the built-in timers to
+</I>&gt;<i> trigger conversions since this is always going to be the most consistent,
+</I>&gt;<i> low-jitter way to start a conversion.
+</I>
+Right.  So what do we do for a Lua interface that can cope with
+hardware that had a built-in precise conversion rate and hardware
+where you have to fake it with timers, interrupts and kicking the ADC
+periodically?
+
+My feeling is to make a Lua interface that says &quot;sample at 100Hz&quot; and
+then let the platform-dependent code decide whether the underlying
+hardware has sample-at-100Hz hardware, or whether we need to fake that
+using timers, interrupts and stuff.
+
+I dunno. Being able to say &quot;give me 100 samples per second&quot; is nice,
+but optionally hijacking one of the timers on most platforms is nasty.
+Opinions?
+
+&gt;<i> ditching the buffering +
+</I>&gt;<i> smoothing and replicating that in pure Lua is going to be orders of
+</I>&gt;<i> magnitude slower
+</I>
+My main problem with the current &quot;smoothing&quot; is that it is a hack. It
+just averages a few of the previous samples.  On the one hand, this
+offends me as a DSP nerd, since &quot;smoothing&quot; should be a low-pass
+filter, with all the power math that finite-response filters involve,
+while averaging the last few samples is more of a distortion effect
+than a low-pass filter. It's something like a comb filter with a space
+between the peaks equal to the length of your averaging buffer.
+  My feeling is that, if you have a noisy input signal that jitters
+due to noise above the sampling frequency, you should be low-pass
+filtering it in hardware, with capacitors, resistors, inductore and
+the like, to get a clean analog signal to sample with no frequency
+components above 1/2 of the sampling frequency. Sampling a raw noisy
+signal and averaging it to hide the worst of the artifacts seems like
+a kludge by comparison.
+
+&gt;<i> (<A HREF="http://en.wikipedia.org/wiki/Newline">http://en.wikipedia.org/wiki/Newline</A>)
+</I>
+Thanks. That concludes the discussion on this point. LFCR does not
+exist, so we can dump this code and save a timer.
+
+&gt;<i> I think a lot of problems would be solved by having a system tick timer
+</I>&gt;<i> available as a resource for things like uarts, ethernet, mmcfs (which also
+</I>&gt;<i> wants timeouts), and anything that needs consistent but relatively
+</I>&gt;<i> coarse-grained timing intervals (running at a frequency between 10Hz and 1
+</I>&gt;<i> Khz, maybe?)
+</I>
+We have that as long as virtual timers are enabled.
+It would be better if system tick were not virtual timer-dependent,
+but existed independently, of which Vtimers would be one of the
+clients.
+Anyone who wants to refactor that in the code is very welcome.
+
+&gt;<i> &#160;Users could also get most of the timing functionality they
+</I>&gt;<i> would normally derive from timers from this common facility as well. &#160;Then
+</I>&gt;<i> the remainder of timers are available for the user to select what they might
+</I>&gt;<i> be consumed by: dedicated timing with the tmr module, periodic interrupts,
+</I>&gt;<i> initiating scans/conversions on ADC, etc...
+</I>
+Are you suggesting that we reserve one timer for internal purposes on
+all platforms? I'm not sure that would even be enough, since we want
+one for the system tick for coarse timing, another maybe to trigger
+arbitrary-frequency ADC conversions... should we allocate timers
+dynamically instead of presenting the user with a fixed number of
+them?  Hum, this is getting scary...
+
+   M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002705.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002693.html">[eLua-dev] LTR compatible wrappers with SWIG for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2712">[ date ]</a>
+              <a href="thread.html#2712">[ thread ]</a>
+              <a href="subject.html#2712">[ subject ]</a>
+              <a href="author.html#2712">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

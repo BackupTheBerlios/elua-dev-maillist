@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Any One Is Porting elau to stm32f107?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Any%20One%20Is%20Porting%20elau%20to%20stm32f107%3F&In-Reply-To=%3CAANLkTimE8-XQT9Dco%2BFoUcZuiMFKASab_i-0S41GKode%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001511.html">
+   <LINK REL="Next"  HREF="001513.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Any One Is Porting elau to stm32f107?</H1>
+    <B>Ronan Paix&#227;o</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Any%20One%20Is%20Porting%20elau%20to%20stm32f107%3F&In-Reply-To=%3CAANLkTimE8-XQT9Dco%2BFoUcZuiMFKASab_i-0S41GKode%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Any One Is Porting elau to stm32f107?">ronan at dapaixao.com.br
+       </A><BR>
+    <I>Tue Aug  3 04:43:22 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001511.html">[eLua-dev] Any One Is Porting elau to stm32f107?
+</A></li>
+        <LI>Next message: <A HREF="001513.html">[eLua-dev] Any One Is Porting elau to stm32f107?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1512">[ date ]</a>
+              <a href="thread.html#1512">[ thread ]</a>
+              <a href="subject.html#1512">[ subject ]</a>
+              <a href="author.html#1512">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Take a look at the ET-STM32 port. It's for a STM32F103, which is pretty much
+the same, except for the ethernet part.
+
+Ronan
+
+2010/8/2 Shiqiang &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">shiguiyuan at gmail.com</A>&gt;
+
+&gt;<i> Thanks James,  I am going to have a simple evaluation before porting.
+</I>&gt;<i> I will post questions if go into further development.
+</I>&gt;<i>
+</I>&gt;<i> Thanks and best regards!
+</I>&gt;<i> Andy
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2010/8/3 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;:
+</I>&gt;<i> &gt; You may find that porting to Keil MDK might take a bit of work, unless
+</I>&gt;<i> &gt; it would be using newlib as the C library.  The way we hook system
+</I>&gt;<i> &gt; calls differs between embedded C libraries, and we currently use
+</I>&gt;<i> &gt; newlib's style for this.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I believe getting it up and going on STM32F107 should be relatively
+</I>&gt;<i> &gt; simple, since I believe the version of the STM32 standard peripheral
+</I>&gt;<i> &gt; library we use includes STM32F107 support.  If I recall correctly,
+</I>&gt;<i> &gt; supporting this platform would likely only require some changes to
+</I>&gt;<i> &gt; platform_conf.h to reflect peripheral support.  Next conf.py will need
+</I>&gt;<i> &gt; to add a section that will turn on a define for &quot;STM32F10X_HD&quot; for the
+</I>&gt;<i> &gt; currently supported targets or &quot;STM32F10X_CL&quot; for the target you're
+</I>&gt;<i> &gt; wanting.  The startup code for GCC will need to be added and reflected
+</I>&gt;<i> &gt; in conf.py.  currently the &quot;startup_stm32f10x_hd.s&quot; is for the high
+</I>&gt;<i> &gt; density line, the stm32 standard peripheral library will have an
+</I>&gt;<i> &gt; equivalent file for the connectivity parts.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; There are a few other changes like adding the specific board/mcu to
+</I>&gt;<i> &gt; SConstruct, but that might be most of it.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Sun, Aug 1, 2010 at 4:53 AM, Shiqiang &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">shiguiyuan at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt; thanks Bogdan, I am new to eLua, what I want is implement the eLua
+</I>&gt;<i> &gt;&gt; into a STM32F107 controller with TCP/IP and FAT file system support. I
+</I>&gt;<i> &gt;&gt; am not familiar with GCC enviroment, I want to port the source code to
+</I>&gt;<i> &gt;&gt; Keil MDK project. anywhere can find a guidline or instructions? or
+</I>&gt;<i> &gt;&gt; some one has done similar porting?  thanks!
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Best regards!
+</I>&gt;<i> &gt;&gt; Andy Shi
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Thanks and best regards!
+</I>&gt;<i> &gt;&gt; Andy
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; 2010/7/30 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;:
+</I>&gt;<i> &gt;&gt;&gt; Not that I know of. Shouldn't be a large effort though.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Best,
+</I>&gt;<i> &gt;&gt;&gt; Bogdan
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; On Fri, Jul 30, 2010 at 6:40 AM, Shiqiang &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">shiguiyuan at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; James Snyder
+</I>&gt;<i> &gt; Biomedical Engineering
+</I>&gt;<i> &gt; Northwestern University
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> &gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> &gt; Phone: (847) 448-0386
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100802/8b501ae2/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100802/8b501ae2/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001511.html">[eLua-dev] Any One Is Porting elau to stm32f107?
+</A></li>
+	<LI>Next message: <A HREF="001513.html">[eLua-dev] Any One Is Porting elau to stm32f107?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1512">[ date ]</a>
+              <a href="thread.html#1512">[ thread ]</a>
+              <a href="subject.html#1512">[ subject ]</a>
+              <a href="author.html#1512">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

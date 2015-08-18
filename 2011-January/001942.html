@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Heap size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Heap%20size&In-Reply-To=%3CD2FB56F01E32F049BAAA64D7A7E2DE33732B1A%40moba-ex-lm.moba.intra%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001941.html">
+   <LINK REL="Next"  HREF="001943.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Heap size</H1>
+    <B>Michael65589</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Heap%20size&In-Reply-To=%3CD2FB56F01E32F049BAAA64D7A7E2DE33732B1A%40moba-ex-lm.moba.intra%3E"
+       TITLE="[eLua-dev] Heap size">mstahl at moba.de
+       </A><BR>
+    <I>Mon Jan 31 12:34:44 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001941.html">[eLua-dev] Heap size
+</A></li>
+        <LI>Next message: <A HREF="001943.html">[eLua-dev] Heap size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1942">[ date ]</a>
+              <a href="thread.html#1942">[ thread ]</a>
+              <a href="subject.html#1942">[ subject ]</a>
+              <a href="author.html#1942">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi Bogdan,
+
+ 
+
+thank you for the fast answer. 
+
+ 
+
+Map-file:
+
+                0x20000fd4                end = .
+
+                0x20010000                PROVIDE (_estack, 0x20010000)
+
+ 
+
+So my Heap starts at 0x20000fd8 and end at 0x20010000 - STACK_SIZE
+(2048) right?
+
+ 
+
+I have a problem with a realloc. After I start the elua project I enter
+LUA in the console. After that I write a array like:
+
+ 
+
+CRCTABLE =
+
+{
+
+[0] = 0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50A5, 0x60C6, 0x70E7,
+
+0x8108, 0x9129, 0xA14A, 0xB16B, 0xC18C, 0xD1AD, 0xE1CE, 0xF1EF,
+
+0x1231, 0x0210, 0x3273, 0x2252, 0x52B5, 0x4294, 0x72F7, 0x62D6,...
+
+ 
+
+512 Byte. After I write the array again a hardfault exception cause.
+
+ 
+
+The realloc pointer is 0x2000b6a0 but the heap_ptr is 0x68004000
+
+ 
+
+static void *l_alloc (void *ud, void *ptr, size_t osize, size_t nsize) {
+
+...
+
+  nptr = realloc(ptr, nsize);
+
+  if (nptr == NULL &amp;&amp; L != NULL &amp;&amp; (mode &amp; EGC_ON_ALLOC_FAILURE)) {
+
+    luaC_fullgc(L); /* emergency full collection. */
+
+    nptr = realloc(ptr, nsize); /* try allocation again */
+
+  }
+
+  return nptr;
+
+ 
+
+The first realloc gives a NULL pointer. Then luaC_fullgc(L) come back
+and the next realloc crashes.
+
+ 
+
+I do not now why.
+
+ 
+
+Von: BogdanM [via eLua Development]
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ml-node+5976808-1857093724-315789 at n2.nabble.com</A>] 
+Gesendet: Montag, 31. Januar 2011 12:22
+An: Stahl, Michael 
+Betreff: Re: Heap size
+
+ 
+
+Hi, 
+
+On Mon, Jan 31, 2011 at 11:56 AM, Michael65589 &lt;[hidden email]&gt; wrote: 
+&gt;<i> 
+</I>&gt;<i> Hello, 
+</I>&gt;<i> can anybody tell me where the HEAP-Size is defined in the elua
+</I>project? 
+
+It is not explicitly defined. It's rather what's left after the 
+startup code initialized the .data and .bss sections and the stack is 
+initialized (the stack size is defined in 
+src/paltform/&lt;platformname&gt;/stacks.h&quot;. 
+
+Best, 
+Bogdan 
+
+&gt;<i> View this message in context:
+</I><A HREF="http://elua-development.2368040.n2.nabble.com/Heap-size-tp5976627p597662">http://elua-development.2368040.n2.nabble.com/Heap-size-tp5976627p597662</A>
+7.html
+&lt;<A HREF="http://elua-development.2368040.n2.nabble.com/Heap-size-tp5976627p59766">http://elua-development.2368040.n2.nabble.com/Heap-size-tp5976627p59766</A>
+27.html?by-user=t&gt; 
+&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com. 
+</I>&gt;<i> _______________________________________________ 
+</I>&gt;<i> eLua-dev mailing list 
+</I>&gt;<i> [hidden email] 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>_______________________________________________ 
+eLua-dev mailing list 
+[hidden email] 
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+________________________________
+
+If you reply to this email, your message will be added to the discussion
+below:
+
+<A HREF="http://elua-development.2368040.n2.nabble.com/Heap-size-tp5976627p597680">http://elua-development.2368040.n2.nabble.com/Heap-size-tp5976627p597680</A>
+8.html 
+
+To unsubscribe from Heap size, click here
+&lt;<A HREF="http://elua-development.2368040.n2.nabble.com/template/NamlServlet.jtp?">http://elua-development.2368040.n2.nabble.com/template/NamlServlet.jtp?</A>
+macro=unsubscribe_by_code&amp;node=5976627&amp;code=bXN0YWhsQG1vYmEuZGV8NTk3NjYy
+N3wtNTUwMDg5MzIx&gt; . 
+
+
+-- 
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/Heap-size-tp5976627p5976837.html">http://elua-development.2368040.n2.nabble.com/Heap-size-tp5976627p5976837.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110131/6fe35fd2/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110131/6fe35fd2/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001941.html">[eLua-dev] Heap size
+</A></li>
+	<LI>Next message: <A HREF="001943.html">[eLua-dev] Heap size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1942">[ date ]</a>
+              <a href="thread.html#1942">[ thread ]</a>
+              <a href="subject.html#1942">[ subject ]</a>
+              <a href="author.html#1942">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

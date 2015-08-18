@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua and yielding with lua_yield() function
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl38AEMb2c73692a062cd979c2db3%2C%0A%09jbsnyder%40fanplastic.org%2C%20676548201.151631239290061743.Jav%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000756.html">
+   <LINK REL="Next"  HREF="000759.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua and yielding with lua_yield() function</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20and%20yielding%20with%20lua_yield%28%29%20function&In-Reply-To=%3CEMEWEMEW2_DELIMl38AEMb2c73692a062cd979c2db3%2C%0A%09jbsnyder%40fanplastic.org%2C%20676548201.151631239290061743.Jav%3E"
+       TITLE="[eLua-dev] eLua and yielding with lua_yield() function">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Apr  9 17:14:21 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000756.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+        <LI>Next message: <A HREF="000759.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#758">[ date ]</a>
+              <a href="thread.html#758">[ thread ]</a>
+              <a href="subject.html#758">[ subject ]</a>
+              <a href="author.html#758">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I suppose this again brings up the whole lua interrupt concept, but I'm wondering how this currently could work with hundreds of events.
+
+I assume that you still need some kind of dispatcher like the following: <A HREF="http://www.lua.org/pil/9.4.html">http://www.lua.org/pil/9.4.html</A>
+
+Is the advantage one might get from something like coco a reduction in overhead and bookkeeping, since you can resume something on the C side rather than resuming something on the Lua side that calls something in C?
+
+I suppose you could replace the Lua dispatcher with some sort of event coroutine that runs on the C side, and gives you an event type or message if something has happened that is registered to be reported.  I can see that sort of thing being fairly useful with a few other bits to handle what to do with the messages in lua.
+
+Am I off-track here?
+
+----- &quot;Mike Thompson&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpthompson at gmail.com</A>&gt; wrote:
+
+&gt;<i> mpthompson wrote:
+</I>&gt;<i>  &gt; OK, working with eLua I'm now starting to get into the more
+</I>&gt;<i>  &gt; esoteric details of Lua (at least for me) that I can really
+</I>&gt;<i>  &gt; use some help with.
+</I>&gt;<i> 
+</I>&gt;<i> Ooops, sorry for the false alarm.  I wish I could recall silly
+</I>&gt;<i> emails...
+</I>&gt;<i> 
+</I>&gt;<i> The problem was my attempt to call the function when creating the 
+</I>&gt;<i> coroutine.  The altered code below works perfectly as expected.
+</I>&gt;<i> 
+</I>&gt;<i> -----------------------------
+</I>&gt;<i> function buttonloop()
+</I>&gt;<i>    local state
+</I>&gt;<i>    repeat
+</I>&gt;<i>      repeat
+</I>&gt;<i>        state = button.waitpressed(0)
+</I>&gt;<i>      until state == 1
+</I>&gt;<i>      print &quot;button pressed&quot;
+</I>&gt;<i>    until false
+</I>&gt;<i> end
+</I>&gt;<i> 
+</I>&gt;<i> waitforbutton = coroutine.create(buttonloop)
+</I>&gt;<i> while button.pressed(1) == 0 do
+</I>&gt;<i>    coroutine.resume(waitforbutton)
+</I>&gt;<i> end
+</I>&gt;<i> -----------------------------
+</I>&gt;<i> 
+</I>&gt;<i> The button loop function yields correctly from C code to the main 
+</I>&gt;<i> routine until the button0 is pressed when it will start spitting out 
+</I>&gt;<i> &quot;button pressed&quot; until released.  Pressing button1 then stops the
+</I>&gt;<i> program.
+</I>&gt;<i> 
+</I>&gt;<i> I'm reason for doing this is in the kids programming IDE I'm creating
+</I>&gt;<i> 
+</I>&gt;<i> for the Lego NXT brick is &quot;highly&quot; event driven.  I'll likely have 
+</I>&gt;<i> scores, if not hundreds, of such routines waiting for events to happen
+</I>&gt;<i> 
+</I>&gt;<i> and snippets of code to be kicked off in response.  My interest will
+</I>&gt;<i> be 
+</I>&gt;<i> in making such event triggered constructs as efficient as possible so
+</I>&gt;<i> 
+</I>&gt;<i> that hundreds of events might be handled without too much overhead.
+</I>&gt;<i> 
+</I>&gt;<i> For efficiency I would like to keep all event handling code in C, but
+</I>&gt;<i> I 
+</I>&gt;<i> believe I'm limited by some architectural decisions behind Lua (which
+</I>&gt;<i> 
+</I>&gt;<i> are a good thing as it made things like eLua possible).  Getting Coco
+</I>&gt;<i> 
+</I>&gt;<i> running on eLua is probably asking too much, but it would allow true C
+</I>&gt;<i> 
+</I>&gt;<i> coroutine semantics so I can yield from a coroutine across a C call 
+</I>&gt;<i> boundary and resume back to it.
+</I>&gt;<i> 
+</I>&gt;<i> Mike Thompson
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000756.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+	<LI>Next message: <A HREF="000759.html">[eLua-dev] eLua and yielding with lua_yield() function
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#758">[ date ]</a>
+              <a href="thread.html#758">[ thread ]</a>
+              <a href="subject.html#758">[ subject ]</a>
+              <a href="author.html#758">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

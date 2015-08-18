@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] QEI Module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20QEI%20Module&In-Reply-To=%3CCAL4-wQpiLzCTTKhPrEWmhuL%3D2VxHHgEMfDj6tj1rv7XhHf%3D18Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003361.html">
+   <LINK REL="Next"  HREF="003368.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] QEI Module</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20QEI%20Module&In-Reply-To=%3CCAL4-wQpiLzCTTKhPrEWmhuL%3D2VxHHgEMfDj6tj1rv7XhHf%3D18Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] QEI Module">martinwguy at gmail.com
+       </A><BR>
+    <I>Tue Mar 20 00:06:06 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003361.html">[eLua-dev] QEI Module
+</A></li>
+        <LI>Next message: <A HREF="003368.html">[eLua-dev] QEI Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3363">[ date ]</a>
+              <a href="thread.html#3363">[ thread ]</a>
+              <a href="subject.html#3363">[ subject ]</a>
+              <a href="author.html#3363">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 19 March 2012 22:38, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Mon, Mar 19, 2012 at 5:05 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> On 19 March 2012 00:03, jrambo316 &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jrambo316 at yahoo.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> I tried:
+</I>&gt;&gt;&gt;<i> lm3s.qei.init( lm3s.qei.CH0, lm3s.qei.PHA, lm3s.qei.NO_SWAP,
+</I>&gt;&gt;&gt;<i> lm3s.qei.NO_INDEX, 10000 )
+</I>
+&gt;&gt;<i> qei.init(&quot;CH0&quot;, &quot;PHA&quot;, &quot;NO_SWAP&quot;, &quot;NO_INDEX&quot;. 10000)
+</I>
+&gt;&gt;<i> Not only is that more Lua-like and shorter to code, but it is also
+</I>&gt;&gt;<i> faster as these &quot;platform constants&quot; require several table lookups,
+</I>&gt;&gt;<i> whereas comparing strings is a single instruction.
+</I>&gt;<i>
+</I>&gt;<i> Sorry, I don't understand this part. A single instruction? You mean
+</I>&gt;<i> the hashes? They still have to be computed first, which isn't quite a
+</I>&gt;<i> single instruction.
+</I>&gt;<i>
+</I>&gt;<i> I'm still worried about the penalty introduced by
+</I>&gt;<i> string comparisons.
+</I>
+All strings in Lua are &quot;interned&quot;, i.e. they are hashed and stored
+when they are generated - in this case at compile-time - and if there
+are two copies of the same string they are always made into two
+references to the same internal copy, thereby saving memory.
+This also means that comparing two strings for equality is simply done
+by seeing if they both refer to the same internal copy - a single
+pointer comparison.
+
+That is aanother reason why building strings one character at a time
+is so incredibly slow, such as:
+s=&quot;&quot; for i=1,1000 do s = s .. &quot;U&quot; end
+Apart from the string copying at every step, each new string has to be
+hashed to see if there is another string with the same value. In this
+case, however it is a win.
+They recommend building a table and concatenating after:
+s={} for i=1,1000 do s[#s+1] = &quot;U&quot; end s=table.concat(s)
+If you change this in life.lua, the program runs 10 or 20 times faster.
+
+    M
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003361.html">[eLua-dev] QEI Module
+</A></li>
+	<LI>Next message: <A HREF="003368.html">[eLua-dev] QEI Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3363">[ date ]</a>
+              <a href="thread.html#3363">[ thread ]</a>
+              <a href="subject.html#3363">[ subject ]</a>
+              <a href="author.html#3363">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

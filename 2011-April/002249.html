@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua design change to allow synchronized PWM channel	start?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20design%20change%20to%20allow%20synchronized%20PWM%20channel%0A%09start%3F&In-Reply-To=%3CBANLkTim8%2BFa%3DBwhk2wezEYH-n21w71fn%3Dw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002247.html">
+   <LINK REL="Next"  HREF="002252.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua design change to allow synchronized PWM channel	start?</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20design%20change%20to%20allow%20synchronized%20PWM%20channel%0A%09start%3F&In-Reply-To=%3CBANLkTim8%2BFa%3DBwhk2wezEYH-n21w71fn%3Dw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua design change to allow synchronized PWM channel	start?">dadosutter at gmail.com
+       </A><BR>
+    <I>Wed Apr  6 16:58:16 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002247.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+        <LI>Next message: <A HREF="002252.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2249">[ date ]</a>
+              <a href="thread.html#2249">[ thread ]</a>
+              <a href="subject.html#2249">[ subject ]</a>
+              <a href="author.html#2249">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Apr 6, 2011 at 06:23, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 4 April 2011 21:08, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; Because of the large (and growing) number for supported platforms and
+</I>&gt;<i> &gt; architectures, the eLua platform-interface needs sometimes to be limited
+</I>&gt;<i> to
+</I>&gt;<i> &gt; what is common to all (or most).
+</I>&gt;<i> &gt; This doesn't mean we can extract the best from every target. For features
+</I>&gt;<i> &gt; found on some specific platforms, we have the Platform-Specific modules
+</I>&gt;<i> &gt; concept (See Platform Modules on our Main Menu options. Sorry, the
+</I>&gt;<i> sub-link
+</I>&gt;<i> &gt; system is not ideal {yet} to send you a link).
+</I>&gt;<i> &gt; I'm not sure if this is the case, as what you mentioned seem to exist in
+</I>&gt;<i> &gt; most platforms but, if not, you can write a module like avr32.pwm.  to
+</I>&gt;<i> &gt; include functions specific to this platform. We've done it already, for
+</I>&gt;<i> some
+</I>&gt;<i> &gt; weird initialization taks on mbed and str912, for the str912 Real Time
+</I>&gt;<i> Clock
+</I>&gt;<i> &gt; and for supporting the EK-LM3Sxxxx RIT OLED displays.
+</I>&gt;<i>
+</I>&gt;<i> Thanks for the thought. In fact, the AVR32 PWM has some extra stuff
+</I>&gt;<i> that people might need:
+</I>&gt;<i> - alignment: left-aligned waveform or centred (symmetrical) waveform
+</I>&gt;<i> - polarity: each cycle starts low then goes high, or starts hight then goes
+</I>&gt;<i> low
+</I>&gt;<i> - generating an interrupt at the end of each cycle of a waveform
+</I>&gt;<i> which I guess are not portable between platforms.
+</I>&gt;<i> However, for now I'm just trying to get something that works at all.
+</I>&gt;<i> These platform-specific refinements can happen in a second moment.
+</I>&gt;<i>
+</I>&gt;<i> Conversely, if some but not all of the platforms support some feature,
+</I>&gt;<i> say centre-aligned waveforms, then do we end up with
+</I>&gt;<i> at91.pwm.alignment() avr32.pwm.alignment() and
+</I>&gt;<i> other_board.pwm.alignment()?
+</I>&gt;<i>
+</I>
+Basically yes.
+With the new, more powerful and more and more specific peripheral beasts of
+today's MCUs, it becomes hard to support everything in a standard way. But
+we must try to extract the most from the possibly-portable features, even if
+they are not exactly the same and eventually loosing some functionality, and
+add support for platform-specific ones in modules like the ones you've
+mentioned.
+
+
+In the specific case we are talking about here, the API change to
+&gt;<i> start/stop (/configure?) several PWM outputs in one call seems
+</I>&gt;<i> orthogonal to the other modules, as well as being a more convenient
+</I>&gt;<i> syntax, and if a platform can't do it in reality, it can just start
+</I>&gt;<i> several channels in a for loop in C, which will stil be more closely
+</I>&gt;<i> aligned than doing it with a for loop in Lua.
+</I>&gt;<i>
+</I>
+Right.
+
+
+&gt;<i>  &gt; As Bogdan has mentioned, we don't mind (too much :) changing the API to
+</I>&gt;<i> &gt; support better models, even if this breaks some code and this is why we
+</I>&gt;<i> &gt; haven't called any of our versions a eLua 1.0 yet.
+</I>&gt;<i>
+</I>&gt;<i> Sometimes the API needs redesigning (or refining) in the light of
+</I>&gt;<i> practical experience, but given the small amount of code already
+</I>&gt;<i> written for eLua, we should be able to do this without too much pain.
+</I>&gt;<i>
+</I>
+Yep.
+Finished and working applications can continue to run on older versions too,
+just like it happens with lots of Lua apps.
+
+
+&gt;<i> It's kinder to users if we ensure that existing code that uses the old
+</I>&gt;<i> interface either continues working with some legacy interface, or
+</I>&gt;<i> fails to compile with an error.
+</I>&gt;<i>
+</I>
+Yes. We can offer legacy-interfaces modules (be it Lua-C binds or plain Lua
+massage code) if really needed. Usually, the growing clock speeds with time
+tend to absorb the extra performance penalties for these solutions.
+
+
+ &gt; But this should be done very carefully, not only to support one very used
+&gt;<i> &gt; platform but to make sure the changes will bring benefits to all. If not
+</I>&gt;<i> &gt; possible, there will always be the handy solution of creating
+</I>&gt;<i> &gt; platform-specific modules.
+</I>&gt;<i>
+</I>&gt;<i> Of course, although the API already contains stuff that cannot be
+</I>&gt;<i> implemented on all platforms.
+</I>&gt;<i> For example, the PWM interface thinks you can set the clock frequency
+</I>&gt;<i> independently for each channel, both at the Lua level and the C
+</I>&gt;<i> interface:
+</I>&gt;<i> but none of the platforms can do this.  Changing the clock of one
+</I>&gt;<i> channel changes it for all of the others (or &quot;some of the others&quot; in
+</I>&gt;<i> the AT91 case!) - something users need to be aware of while writing
+</I>&gt;<i> for a specific platform.
+</I>&gt;<i>
+</I>
+Humm, right and this doesn't sound too good for me.
+I'm not sure if there is a clear or really widely portable solution for this
+though.
+It would be nice to hear more thoughts on this.
+
+Already, platform-independent code is difficult in eLua.  Look at
+&gt;<i> led.lua for example.
+</I>&gt;<i>
+</I>
+Well, I think this is actually a nice example of platform-independend code.
+Of course, because of the pins assignments that may differ even within
+different models of the same family sometimes, there will always be a need
+for a code section to &quot;bind&quot; the program's I/O with the actual pins/ports
+used. This is easily and nicely done in simple structures in Lua, be it with
+the ugly big IF contruction of this example (done to make it simple for
+starters) or with nice Lua tables.
+Still, the rest of the code runs untouched among all supported platforms.
+For small applications like the tiny led.lua example, the size of this
+&quot;bind&quot; section can look big compared to the rest of the code. But for
+serious applications it disappears on a Lua table definition or even a small
+function to do the job.
+
+    M
+&gt;<i>
+</I>
+Best
+Dado
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110406/be23d097/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110406/be23d097/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002247.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+	<LI>Next message: <A HREF="002252.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2249">[ date ]</a>
+              <a href="thread.html#2249">[ thread ]</a>
+              <a href="subject.html#2249">[ subject ]</a>
+              <a href="author.html#2249">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

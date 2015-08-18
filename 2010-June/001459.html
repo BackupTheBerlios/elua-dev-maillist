@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] An alternative program architecture for embedded Lua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20An%20alternative%20program%20architecture%20for%20embedded%20Lua&In-Reply-To=%3CAANLkTimRmt7zKeGb4HIYh1-sU_qUC_MrNRoaPJDIY-95%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001458.html">
+   <LINK REL="Next"  HREF="001460.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] An alternative program architecture for embedded Lua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20An%20alternative%20program%20architecture%20for%20embedded%20Lua&In-Reply-To=%3CAANLkTimRmt7zKeGb4HIYh1-sU_qUC_MrNRoaPJDIY-95%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] An alternative program architecture for embedded Lua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jun 21 11:31:36 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001458.html">[eLua-dev] An alternative program architecture for embedded Lua
+</A></li>
+        <LI>Next message: <A HREF="001460.html">[eLua-dev] An alternative program architecture for embedded Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1459">[ date ]</a>
+              <a href="thread.html#1459">[ thread ]</a>
+              <a href="subject.html#1459">[ subject ]</a>
+              <a href="author.html#1459">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Mon, Jun 21, 2010 at 4:04 AM, Ned Konz &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ned at productcreationstudio.com</A>&gt;wrote:
+
+&gt;<i> Hello folks,
+</I>&gt;<i>
+</I>&gt;<i> I'd like to introduce myself. I'm new to Lua, but have been doing embedded
+</I>&gt;<i> system work since 1975 (on the MC6800 microprocessor). I'm now using
+</I>&gt;<i> Cortex-M3 processors, and have been thinking once more about the usefulness
+</I>&gt;<i> of a VM on such a chip.
+</I>&gt;<i>
+</I>
+Nice to meet you.
+
+
+&gt;<i> My own interests don't necessarily include a self-hosted language system
+</I>&gt;<i> (though it's nice to have, I don't know how much space the compiler
+</I>&gt;<i> requires); I'd prefer to spend the flash on system capabilities and extended
+</I>&gt;<i> domain-specific vocabularies.
+</I>&gt;<i>
+</I>
+Roughly, you can do fine with eLua in about 200k of Flash on Cortex-M3, or
+even less. tt depends on the components you choose to include in your build.
+I'm much more worried about RAM than Flash most of the time.
+
+The eLua VM looks attractive as a dynamic runtime engine, though.
+&gt;<i>
+</I>
+It's definitely the most atractive one I found. There is also a very good
+(and free) BASIC variant for micros, with source code and excellent
+documentation (the VM itself is documented quite nicely) at
+<A HREF="http://www.compuphase.com/pawn/pawn.htm.">http://www.compuphase.com/pawn/pawn.htm.</A> Yes, I know we're talking about
+BASIC :), but the VM was quite OK from what I can remember, and the
+documentation is outstanding.
+
+
+&gt;<i> However, the runtime architecture that eLua currently uses (which AFAICT is
+</I>&gt;<i> roughly the same as Lua on the desktop) has a several limitations that I'd
+</I>&gt;<i> like to change:
+</I>&gt;<i>
+</I>&gt;<i> * No way to do interesting work in Lua from interrupt handlers. Unless you
+</I>&gt;<i> want to use the peripherals the way the driver writer had provided for,
+</I>&gt;<i> you're out of luck.
+</I>&gt;<i>
+</I>
+We'll have interrupt support in eLua soon, although it won't be without
+limitations, as the Lua VM is not interruptible. I plan to implement it
+using standard Lua hooks (I actually have some proof on concept code that
+works quite nicely), which will be a huge problem if the VM remains stuck in
+a blocking function (I/O for example). But I don't know of a better way of
+doing this, at least not without using an OS with threading support.
+
+
+&gt;<i> * The Big Loop structure. The (Big Loop) + (interrupt handlers) scheme has
+</I>&gt;<i> proven to be inflexible and a poor match for the mostly event-driven needs
+</I>&gt;<i> of embedded systems, especially where concurrency is required. Existing
+</I>&gt;<i> threading schemes and primitives (especially semaphores!) are difficult to
+</I>&gt;<i> write reliable code with.
+</I>&gt;<i>
+</I>&gt;<i> A demonstration of the difficulties of this structure can be seen with the
+</I>&gt;<i> uIP demo code; uIP generates event notifications via callbacks, but the eLua
+</I>&gt;<i> HTTP server application is itself blocking in a Big Loop. So the &quot;impedance
+</I>&gt;<i> mismatch&quot; between the lightweight event notifications from uIP and the
+</I>&gt;<i> blocking socket interface in the server requires extra code and would be
+</I>&gt;<i> hard to multi-thread.
+</I>&gt;<i>
+</I>
+The eLua HTTP server is something hand-crafted in half a week-end, so not
+really a good reference :) It can be rewritten quite nicely using coroutines
+(once the network support in eLua gets better itself, because now it's not
+really usable for handling multiple connections).
+
+What I'd like to do instead is to implement a system using the eLua VM that
+&gt;<i> does this:
+</I>&gt;<i>
+</I>&gt;<i> * Allows for eLua peripheral control at a level equivalent to that
+</I>&gt;<i> currently done in C code. Once you get past the simple configuration of I/O
+</I>&gt;<i> ports, the complexity and richness of existing microcontroller peripherals
+</I>&gt;<i> makes it hard to fully use the capabilities of the chip. For instance, I can
+</I>&gt;<i> set up the STM32F10x peripherals so that the timer's input capture event
+</I>&gt;<i> triggers a DMA from a GPIO port to memory, at the same time that I'm using
+</I>&gt;<i> another DMA channel to transfer bytes from the I2C receive into memory, with
+</I>&gt;<i> interrupts at the beginning of each I2C transfer. It would be hard if not
+</I>&gt;<i> impossible to do that in eLua the way it stands now (I think; I'd love to
+</I>&gt;<i> hear that this would be possible to do).
+</I>&gt;<i>
+</I>
+It's not hard, it's just not imlemented yet. You'd need at least two things
+to implement the above:
+
+1. interrupt support directly in eLua (and we'll have this soon, as
+previously stated)
+2. a Lua module that implements the CPU specific functions needed for DMA,
+I2C and whatever else. We don't have that, but they can certainly be
+written, and they are perfectly inline with eLua's current architecture
+(they are called &quot;platform specific modules&quot; in the official documentation).
+We try to focus on the core eLua code + generic modules most of the time,
+and let people write their own platform specific modules for their platform
+of choice when there's a need for that.
+
+
+&gt;<i> * Allows eLua programs to be structured as one or more hierarchical state
+</I>&gt;<i> machines, each with its own runtime context and event queue.
+</I>&gt;<i>
+</I>&gt;<i> * Responds to interrupts by packaging up the minimal context (at least
+</I>&gt;<i> which interrupt occurred, and perhaps which of several interrupt sources
+</I>&gt;<i> caused it) into an event and delivering it to (subscribed or all) state
+</I>&gt;<i> machines.
+</I>&gt;<i>
+</I>&gt;<i> * Does cooperative multi-tasking by using a run-to-completion scheme: each
+</I>&gt;<i> state machine that is ready to run (i.e. has an event ready to react to)
+</I>&gt;<i> gets its current state's handler routine run with the next event; these are
+</I>&gt;<i> not preempted but rather do their work and return.
+</I>&gt;<i>
+</I>
+You mean cooperative multi-tasking at coroutine level? Or with an OS? If you
+mean multi-tasking at coroutine level, what you wrote above can probably be
+implemented directly in eLua (+interrupt handlers), without any need to
+modify the VM or any other part of the code. Please let me know if I'm
+missing something here :)
+
+
+&gt;<i> It seems to me that this would not require any kind of thread support in
+</I>&gt;<i> eLua itself (as the state machine executive is itself a single-threaded
+</I>&gt;<i> program), and that it would better match the needs of embedded systems.
+</I>&gt;<i>
+</I>
+I'm hesitant in naming a development methodology &quot;better&quot; than another in
+most cases. An event+state machine based model (as they are used together
+more often than not) is a great thing for particular classes of applications
+(protocol implementations being the first example that comes to mind), but
+it's hard to generalize this. Some applications are perfectly happy with the
+Big Loop structure (thanks, I didn't know this is the official name :) ),
+others can do all their work only in interrupt handlers without having to
+worry much about synchronization, and so on.
+
+
+&gt;<i> For a good example of how clean an equivalent embedded HTTP server demo can
+</I>&gt;<i> be (using the lwIP TCP/IP stack, which also uses callbacks like uIP), look
+</I>&gt;<i> at <A HREF="http://www.state-machine.com/lwip/">http://www.state-machine.com/lwip/</A> where Miro Samek has provided an
+</I>&gt;<i> example program that includes lwIP, an HTTP server with SSI and CGI
+</I>&gt;<i> capabilities, and the &quot;Dining Philosopher Problem&quot; demo (which is a
+</I>&gt;<i> multi-threaded simulation).
+</I>&gt;<i>
+</I>&gt;<i> I have ported the QP architecture (described at
+</I>&gt;<i> <A HREF="http://www.state-machine.com">http://www.state-machine.com</A>) to Ruby and Squeak Smalltalk, and have used
+</I>&gt;<i> it in C programs in embedded systems; I've found it to be very lightweight
+</I>&gt;<i> and a good way to write embedded programs. I would probably use a very
+</I>&gt;<i> similar scheme for eLua.
+</I>&gt;<i>
+</I>
+&gt;<i> What do you think?
+</I>&gt;<i>
+</I>
+I think this is a great idea for many applications, but not all of them. All
+in all, I'd be very interested to see something like this running in eLua :)
+One note though: QP seems to be GLPed, so not compatible with eLua (which is
+mostly MIT/BSD). So a direct port might not be possible.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100621/d54978a7/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100621/d54978a7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001458.html">[eLua-dev] An alternative program architecture for embedded Lua
+</A></li>
+	<LI>Next message: <A HREF="001460.html">[eLua-dev] An alternative program architecture for embedded Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1459">[ date ]</a>
+              <a href="thread.html#1459">[ thread ]</a>
+              <a href="subject.html#1459">[ subject ]</a>
+              <a href="author.html#1459">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

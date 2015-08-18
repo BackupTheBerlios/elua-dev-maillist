@@ -1,0 +1,516 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Building toolchain for arm cortex m3
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20toolchain%20for%20arm%20cortex%20m3&In-Reply-To=%3Cd3b6d880907060810s1937580ag8246eb354485bd53%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000918.html">
+   <LINK REL="Next"  HREF="000913.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Building toolchain for arm cortex m3</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20toolchain%20for%20arm%20cortex%20m3&In-Reply-To=%3Cd3b6d880907060810s1937580ag8246eb354485bd53%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Building toolchain for arm cortex m3">dadosutter at gmail.com
+       </A><BR>
+    <I>Mon Jul  6 17:10:28 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000918.html">[eLua-dev] Building toolchain for arm cortex m3
+</A></li>
+        <LI>Next message: <A HREF="000913.html">[eLua-dev] can.c missing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#919">[ date ]</a>
+              <a href="thread.html#919">[ thread ]</a>
+              <a href="subject.html#919">[ subject ]</a>
+              <a href="author.html#919">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>No need to change the approach (to root) here, although it is certainly
+easier to build this way.
+I really think that a simple extra export
+TOOLPATH=/usr/local/cross-cortex/bin at the right place, in one of the
+&quot;becoming sudoer&quot; step, will do the trick.
+
+Tks for the report Cesar !
+
+Dado
+
+
+
+On Mon, Jul 6, 2009 at 11:54, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;wrote:
+
+&gt;<i> Man, this is crazy. So many people reported having problems with the &quot;su&quot;
+</I>&gt;<i> approach that I'm actually considering changing the tutorials to &quot;do
+</I>&gt;<i> everything as root&quot;. But I'm still not quite ready to make this step :)
+</I>&gt;<i> I'm glad it worked for you in the end.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Jul 6, 2009 at 5:44 PM, C&#233;sar Ra&#250;l Mamani Choquehuanca &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesarmamani82 at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hello!!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I did building toolchain for cortex-m3 as root and i have successful, then
+</I>&gt;&gt;<i> i built and installed elua. now ill try work with LM3S8962.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thx for your help.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;&gt;<i> Estudante da Mestrado
+</I>&gt;&gt;<i> Pontificia Universidade Catolica
+</I>&gt;&gt;<i> Rio da Janeiro - Gavea
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2009/7/6 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm not 100% sure, but at least with the CodeSourcery sources, the process
+</I>&gt;&gt;&gt;<i> laid out in this guide of mine seems to work on OS X:
+</I>&gt;&gt;&gt;<i> <A HREF="http://fanplastic.org/gcc-for-arm-eabi/">http://fanplastic.org/gcc-for-arm-eabi/</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I think there might be some remaining issues on Linux at least for 64-bit
+</I>&gt;&gt;&gt;<i> installs of Ubuntu (last time I tried, it all compiled but something wasn't
+</I>&gt;&gt;&gt;<i> quite right with the binaries it generated).
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The Makefile that I included for the guide is a mixture of a guide posted
+</I>&gt;&gt;&gt;<i> some time ago on this elua-dev list, and some of the special flags used for
+</I>&gt;&gt;&gt;<i> the eLua build (minus certain ones that make it particular to one ARM
+</I>&gt;&gt;&gt;<i> architecture).
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> One other thing, however: if you just grab CodeSourcery G++ Lite for
+</I>&gt;&gt;&gt;<i> Linux, that might be less painful than building a toolchain from scratch,
+</I>&gt;&gt;&gt;<i> and it should work just fine:
+</I>&gt;&gt;&gt;<i> <A HREF="http://www.codesourcery.com/sgpp/lite/arm/portal/release830">http://www.codesourcery.com/sgpp/lite/arm/portal/release830</A>
+</I>&gt;&gt;&gt;<i> (not sure what packages are needed to use their 32-bit binaries on 64-bit
+</I>&gt;&gt;&gt;<i> builds of linux, but it shouldn't be too complicated)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'll try and check tomorrow if these CS toolchain instructions will work
+</I>&gt;&gt;&gt;<i> on some Ubuntu machines I've got, and check if the binaries the toolchain
+</I>&gt;&gt;&gt;<i> generates are functional.  I've not checked on the latest GCC 4.4 &amp;  related
+</I>&gt;&gt;&gt;<i> toolchain sources to see if they all still need the modifications and
+</I>&gt;&gt;&gt;<i> patches.  The CodeSourcery sources contain patches that are usually upstream
+</I>&gt;&gt;&gt;<i> from GCC &amp; related toolchain components, and usually take some time to work
+</I>&gt;&gt;&gt;<i> their way into project repositories.  They are sponsored by ARM, in part, to
+</I>&gt;&gt;&gt;<i> release the G++ Lite sources in order to provide a quality open source
+</I>&gt;&gt;&gt;<i> toolchain for ARM MCUs and CPUs.  As a result, they pretty much are the ones
+</I>&gt;&gt;&gt;<i> who maintain the GCC ARM port.  In my somewhat limited experience with them,
+</I>&gt;&gt;&gt;<i> they've given me slightly smaller binaries than the plain GCC toolchain and
+</I>&gt;&gt;&gt;<i> no tweaking is required to enable multilib (compile for many types of ARM
+</I>&gt;&gt;&gt;<i> MCUs &amp; CPUs) and EABI.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Side Note:
+</I>&gt;&gt;&gt;<i> I seem to recall that exporting the toolpath _before_ doing the configure
+</I>&gt;&gt;&gt;<i> for newlib has saved me in some cases without having to try and redefine the
+</I>&gt;&gt;&gt;<i> path when the sudo stage comes for installation.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Just my 2 US cents (or 0.038 Brazilian reais, according to Google...
+</I>&gt;&gt;&gt;<i> though that's a US idiom... not sure of the equivalent one anywhere else)
+</I>&gt;&gt;&gt;<i> :-)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> -jsnyder
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Jul 4, 2009, at 10:49 AM, Dado Sutter wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>  Hello,
+</I>&gt;&gt;&gt;&gt;<i>   The tutorial for the (gcc) toolchain building for arm-cortex works
+</I>&gt;&gt;&gt;&gt;<i> perfectly if I run it as root.
+</I>&gt;&gt;&gt;&gt;<i>   It is clear that the trouble lies on things like PATH and TOOLPATH,
+</I>&gt;&gt;&gt;&gt;<i> when we change from normal user to su, in several steps of the tutorial but
+</I>&gt;&gt;&gt;&gt;<i> I'm just too lazy right now to figure out where exactly it happens :) I hope
+</I>&gt;&gt;&gt;&gt;<i> to fix it in the doc soon.
+</I>&gt;&gt;&gt;&gt;<i>   Anyway, if anyone wants to build a toolchain for ARM Cortex M3, just
+</I>&gt;&gt;&gt;&gt;<i> make yourself root before and skip the su -s -H steps, as well as the export
+</I>&gt;&gt;&gt;&gt;<i> PATH= ... after you do it the first time.
+</I>&gt;&gt;&gt;&gt;<i>   If your PATH includes /usr/local/cross-cortex/bin and your
+</I>&gt;&gt;&gt;&gt;<i> TOOLPATH=/usr/local/cross-cortex, you should be able to build it too.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Best
+</I>&gt;&gt;&gt;&gt;<i> Dado
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Fri, Jul 3, 2009 at 16:19, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> Hello folks,
+</I>&gt;&gt;&gt;&gt;<i>   I am checking the same tutorial that Cesar used and indeed, I'm having
+</I>&gt;&gt;&gt;&gt;<i> the same error as he did.
+</I>&gt;&gt;&gt;&gt;<i>   Before that, on the step 4 of the newlib build (autoconf), I also had
+</I>&gt;&gt;&gt;&gt;<i> to fix on config/override.m4:
+</I>&gt;&gt;&gt;&gt;<i>  [m4_define([_GCC_AUTOCONF_VERSION], [2.59])])
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> but changing the version to 2.63, instead of the 2.59 stated on the
+</I>&gt;&gt;&gt;&gt;<i> text.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> For some reason, arm-elf-cc doesn't seem to be created by the previous
+</I>&gt;&gt;&gt;&gt;<i> build steps and my error is also:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> .......................................................
+</I>&gt;&gt;&gt;&gt;<i> make[3]: `configure.info' is up to date.
+</I>&gt;&gt;&gt;&gt;<i> make[3]: Leaving directory
+</I>&gt;&gt;&gt;&gt;<i> `/home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build/etc'
+</I>&gt;&gt;&gt;&gt;<i> /bin/bash ../../etc/../mkinstalldirs /usr/local/cross-cortex/share/info
+</I>&gt;&gt;&gt;&gt;<i> mkdir -p -- /usr/local/cross-cortex/share/info
+</I>&gt;&gt;&gt;&gt;<i> if test ! -f standards.info; then cd ../../etc; fi; \
+</I>&gt;&gt;&gt;&gt;<i>    if test -f standards.info; then \
+</I>&gt;&gt;&gt;&gt;<i>      for i in standards.info*; do \
+</I>&gt;&gt;&gt;&gt;<i>        /usr/bin/install -c -m 644 $i
+</I>&gt;&gt;&gt;&gt;<i> /usr/local/cross-cortex/share/info/$i; \
+</I>&gt;&gt;&gt;&gt;<i>      done; \
+</I>&gt;&gt;&gt;&gt;<i>    fi
+</I>&gt;&gt;&gt;&gt;<i> if test ! -f configure.info; then cd ../../etc; fi; \
+</I>&gt;&gt;&gt;&gt;<i>    if test -f configure.info; then \
+</I>&gt;&gt;&gt;&gt;<i>      for i in configure.info*; do \
+</I>&gt;&gt;&gt;&gt;<i>        /usr/bin/install -c -m 644 $i
+</I>&gt;&gt;&gt;&gt;<i> /usr/local/cross-cortex/share/info/$i; \
+</I>&gt;&gt;&gt;&gt;<i>      done; \
+</I>&gt;&gt;&gt;&gt;<i>    fi
+</I>&gt;&gt;&gt;&gt;<i> make[2]: Leaving directory
+</I>&gt;&gt;&gt;&gt;<i> `/home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build/etc'
+</I>&gt;&gt;&gt;&gt;<i> make[2]: Entering directory
+</I>&gt;&gt;&gt;&gt;<i> `/home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build/arm-elf/newlib'
+</I>&gt;&gt;&gt;&gt;<i> Making install in libc
+</I>&gt;&gt;&gt;&gt;<i> make[3]: Entering directory
+</I>&gt;&gt;&gt;&gt;<i> `/home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build/arm-elf/newlib/libc'
+</I>&gt;&gt;&gt;&gt;<i> Making install in argz
+</I>&gt;&gt;&gt;&gt;<i> make[4]: Entering directory
+</I>&gt;&gt;&gt;&gt;<i> `/home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build/arm-elf/newlib/libc/argz'
+</I>&gt;&gt;&gt;&gt;<i> arm-elf-cc
+</I>&gt;&gt;&gt;&gt;<i> -B/home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build/arm-elf/newlib/
+</I>&gt;&gt;&gt;&gt;<i> -isystem
+</I>&gt;&gt;&gt;&gt;<i> /home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build/arm-elf/newlib/targ-include
+</I>&gt;&gt;&gt;&gt;<i> -isystem
+</I>&gt;&gt;&gt;&gt;<i> /home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/newlib/libc/include
+</I>&gt;&gt;&gt;&gt;<i> -DPACKAGE_NAME=\&quot;newlib\&quot; -DPACKAGE_TARNAME=\&quot;newlib\&quot;
+</I>&gt;&gt;&gt;&gt;<i> -DPACKAGE_VERSION=\&quot;1.17.0\&quot; -DPACKAGE_STRING=\&quot;newlib\ 1.17.0\&quot;
+</I>&gt;&gt;&gt;&gt;<i> -DPACKAGE_BUGREPORT=\&quot;\&quot;  -I. -I../../../../../newlib/libc/argz -O2
+</I>&gt;&gt;&gt;&gt;<i> -D__NO_SYSCALLS__ -fno-builtin      -g -O2   -c -o lib_a-dummy.o `test -f
+</I>&gt;&gt;&gt;&gt;<i> 'dummy.c' || echo '../../../../../newlib/libc/argz/'`dummy.c
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> /bin/bash: arm-elf-cc: command not found
+</I>&gt;&gt;&gt;&gt;<i> make[4]: *** [lib_a-dummy.o] Error 127
+</I>&gt;&gt;&gt;&gt;<i> make[4]: Leaving directory
+</I>&gt;&gt;&gt;&gt;<i> `/home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build/arm-elf/newlib/libc/argz'
+</I>&gt;&gt;&gt;&gt;<i> make[3]: *** [install-recursive] Error 1
+</I>&gt;&gt;&gt;&gt;<i> make[3]: Leaving directory
+</I>&gt;&gt;&gt;&gt;<i> `/home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build/arm-elf/newlib/libc'
+</I>&gt;&gt;&gt;&gt;<i> make[2]: *** [install-recursive] Error 1
+</I>&gt;&gt;&gt;&gt;<i> make[2]: Leaving directory
+</I>&gt;&gt;&gt;&gt;<i> `/home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build/arm-elf/newlib'
+</I>&gt;&gt;&gt;&gt;<i> make[1]: *** [install-target-newlib] Error 2
+</I>&gt;&gt;&gt;&gt;<i> make[1]: Leaving directory
+</I>&gt;&gt;&gt;&gt;<i> `/home/dado/dev/elua/toolchains_building/cortexM3/newlib-1.17.0/build'
+</I>&gt;&gt;&gt;&gt;<i> make: *** [install] Error 2
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I'm running as a normal user and only sudoing when stated but I remember
+</I>&gt;&gt;&gt;&gt;<i> having some problems with this before.
+</I>&gt;&gt;&gt;&gt;<i> So I'll try again from the start, this time doing everything as root, as
+</I>&gt;&gt;&gt;&gt;<i> this was how I could build many time before, in Ubuntu Desktop 8.04. I'm in
+</I>&gt;&gt;&gt;&gt;<i> Ubuntu Desktop 9.04 now.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Best
+</I>&gt;&gt;&gt;&gt;<i> Dado
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Fri, Jul 3, 2009 at 11:58, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> Hello Cesar,
+</I>&gt;&gt;&gt;&gt;<i>   Don't forget to do a:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> scons board=EK-LM3S8962 prog -c
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> before a new:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> scons board=EK-LM3S8962 prog
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> This &quot;cleans&quot; the temporary files generated by the last build.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Best
+</I>&gt;&gt;&gt;&gt;<i> Dado
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Fri, Jul 3, 2009 at 11:24, C&#233;sar Ra&#250;l Mamani Choquehuanca &lt;
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesarmamani82 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> Hi James,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Thx for your answer. I cheked that and all is rigth (i think)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:/usr/local/cross-cortex/bin$ ls
+</I>&gt;&gt;&gt;&gt;<i> arm-elf-addr2line  arm-elf-cpp        arm-elf-gcov     arm-elf-objdump
+</I>&gt;&gt;&gt;&gt;<i>  arm-elf-strip
+</I>&gt;&gt;&gt;&gt;<i> arm-elf-ar         arm-elf-g++        arm-elf-gprof    arm-elf-ranlib
+</I>&gt;&gt;&gt;&gt;<i> cesar.c
+</I>&gt;&gt;&gt;&gt;<i> arm-elf-as         arm-elf-gcc        arm-elf-ld       arm-elf-readelf
+</I>&gt;&gt;&gt;&gt;<i> arm-elf-c++        arm-elf-gcc-4.3.3  arm-elf-nm       arm-elf-size
+</I>&gt;&gt;&gt;&gt;<i> arm-elf-c++filt    arm-elf-gccbug     arm-elf-objcopy  arm-elf-strings
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:/usr/local/cross-cortex/bin$
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> , so i redo all , again i have the next message when i try to do this
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> $ make CFLAGS_FOR_TARGET=&quot;-ffunction-sections -fdata-sections
+</I>&gt;&gt;&gt;&gt;<i> -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os
+</I>&gt;&gt;&gt;&gt;<i> -fomit-frame-pointer -mcpu=cortex-m3 -mthumb -D__thumb2__
+</I>&gt;&gt;&gt;&gt;<i> -D__BUFSIZ__=256&quot; CCASFLAGS=&quot;-mcpu=cortex-m3 -mthumb -D__thumb2__&quot;
+</I>&gt;&gt;&gt;&gt;<i> (I dont paste the before part)
+</I>&gt;&gt;&gt;&gt;<i> Checking multilib configuration for newlib...
+</I>&gt;&gt;&gt;&gt;<i> Configuring in arm-elf/newlib
+</I>&gt;&gt;&gt;&gt;<i> configure: loading cache ./config.cache
+</I>&gt;&gt;&gt;&gt;<i> configure: error: `CC' has changed since the previous run:
+</I>&gt;&gt;&gt;&gt;<i> configure:   former value:  arm-elf-cc
+</I>&gt;&gt;&gt;&gt;<i> -B/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/ -isystem
+</I>&gt;&gt;&gt;&gt;<i> /usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/targ-include
+</I>&gt;&gt;&gt;&gt;<i> -isystem /usr/local/cross-cortex/newlib-1.17.0/newlib/libc/include
+</I>&gt;&gt;&gt;&gt;<i> -B/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/libgloss/arm
+</I>&gt;&gt;&gt;&gt;<i> -L/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/libgloss/libnosys
+</I>&gt;&gt;&gt;&gt;<i> -L/usr/local/cross-cortex/newlib-1.17.0/libgloss/arm
+</I>&gt;&gt;&gt;&gt;<i> configure:   current value: arm-elf-cc
+</I>&gt;&gt;&gt;&gt;<i> -B/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/ -isystem
+</I>&gt;&gt;&gt;&gt;<i> /usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/targ-include
+</I>&gt;&gt;&gt;&gt;<i> -isystem /usr/local/cross-cortex/newlib-1.17.0/newlib/libc/include
+</I>&gt;&gt;&gt;&gt;<i> configure: error: `CFLAGS' has changed since the previous run:
+</I>&gt;&gt;&gt;&gt;<i> configure:   former value:  -ffunction-sections -fdata-sections
+</I>&gt;&gt;&gt;&gt;<i> -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer
+</I>&gt;&gt;&gt;&gt;<i> -mcpu=cortex-m3 -mthumb -D__thum2__ -D__BUFSIZ__=256
+</I>&gt;&gt;&gt;&gt;<i> configure:   current value: -ffunction-sections -fdata-sections
+</I>&gt;&gt;&gt;&gt;<i> -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer
+</I>&gt;&gt;&gt;&gt;<i> -mcpu=cortex-m3 -mthumb -D__thumb2__ -D__BUFSIZ__=256
+</I>&gt;&gt;&gt;&gt;<i> configure: error: changes in the environment can compromise the build
+</I>&gt;&gt;&gt;&gt;<i> configure: error: run `make distclean' and/or `rm ./config.cache' and
+</I>&gt;&gt;&gt;&gt;<i> start over
+</I>&gt;&gt;&gt;&gt;<i> make[1]: *** [configure-target-newlib] Error 1
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> make[1]: Leaving directory `/usr/local/cross-cortex/newlib-1.17.0/build'
+</I>&gt;&gt;&gt;&gt;<i> make: *** [all] Error 2
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:/usr/local/cross-cortex/newlib-1.17.0/build$
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> that item belong the tutorial for building tooltchain cortex in the STEP
+</I>&gt;&gt;&gt;&gt;<i> 3: NEWLIB
+</I>&gt;&gt;&gt;&gt;<i> $ mkdir build
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> $ cd build
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> $ ../configure --target=arm-elf --prefix=$TOOLPATH --enable-interwork
+</I>&gt;&gt;&gt;&gt;<i> --disable-newlib-supplied-syscalls --with-gnu-ld --with-gnu-as
+</I>&gt;&gt;&gt;&gt;<i> --disable-shared
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> $ make CFLAGS_FOR_TARGET=&quot;-ffunction-sections -fdata-sections
+</I>&gt;&gt;&gt;&gt;<i> -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer
+</I>&gt;&gt;&gt;&gt;<i> -mcpu=cortex-m3 -mthumb -D__thumb2__ -D__BUFSIZ__=256&quot;
+</I>&gt;&gt;&gt;&gt;<i> CCASFLAGS=&quot;-mcpu=cortex-m3 -mthumb -D__thumb2__&quot;
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> $ sudo -s -H
+</I>&gt;&gt;&gt;&gt;<i> # export PATH=/usr/local/cross-cortex/bin:$PATH
+</I>&gt;&gt;&gt;&gt;<i> # make install
+</I>&gt;&gt;&gt;&gt;<i> # exit
+</I>&gt;&gt;&gt;&gt;<i> $ cd ../..
+</I>&gt;&gt;&gt;&gt;<i> Best regards
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;&gt;&gt;&gt;<i> Estudante da Mestrado
+</I>&gt;&gt;&gt;&gt;<i> Pontificia Universidade Catolica
+</I>&gt;&gt;&gt;&gt;<i> Rio da Janeiro - Gavea
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> 2009/7/3 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> It sounds like you do not have arm-elf-gcc in your path (check if you
+</I>&gt;&gt;&gt;&gt;<i> can run that from the command line).
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Check if arm-elf-gcc exists in /usr/local/cross-cortex/bin
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> If you couldn't run it by just typing in the name, but it is in that
+</I>&gt;&gt;&gt;&gt;<i> directory above, make sure you do this, and then redo the ../configure stage
+</I>&gt;&gt;&gt;&gt;<i> for newlib.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hope that helps..
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> -jsnyder
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Jul 2, 2009, at 3:59 PM, C&#233;sar Ra&#250;l Mamani Choquehuanca wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> hi all
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I trying to building toolchain for arm cortex-m3 Im doing that with the
+</I>&gt;&gt;&gt;&gt;<i> tutorial for www.giga.puc-rio.br/elua. I have successful in BINTUTILS
+</I>&gt;&gt;&gt;&gt;<i> STEP 1 and BASIC GCC STEP 2 but in NEWLIB STEP 3 I have the next messagem
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> $ make CFLAGS_FOR_TARGET=&quot;-ffunction-sections -fdata-sections
+</I>&gt;&gt;&gt;&gt;<i> -DPREFER_SIZE_OVER_SPEED -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer
+</I>&gt;&gt;&gt;&gt;<i> -mcpu=cortex-m3 -mthumb -D__thumb2__ -D__BUFSIZ__=256&quot;
+</I>&gt;&gt;&gt;&gt;<i> CCASFLAGS=&quot;-mcpu=cortex-m3 -mthumb -D__thumb2__&quot;
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> /cross-cortex/newlib-1.17.0/libgloss/arm -DPACKAGE_NAME=\&quot;newlib\&quot;
+</I>&gt;&gt;&gt;&gt;<i> -DPACKAGE_TARNAME=\&quot;newlib\&quot; -DPACKAGE_VERSION=\&quot;1.17.0\&quot;
+</I>&gt;&gt;&gt;&gt;<i> -DPACKAGE_STRING=\&quot;newlib\ 1.17.0\&quot; -DPACKAGE_BUGREPORT=\&quot;\&quot;  -I.
+</I>&gt;&gt;&gt;&gt;<i> -I../../../../../newlib/libc/argz -O2 -D__NO_SYSCALLS__ -fno-builtin
+</I>&gt;&gt;&gt;&gt;<i>  -ffunction-sections -fdata-sections -DPREFER_SIZE_OVER_SPEED
+</I>&gt;&gt;&gt;&gt;<i> -D__OPTIMIZE_SIZE__ -Os -fomit-frame-pointer -mcpu=cortex-m3 -mthumb
+</I>&gt;&gt;&gt;&gt;<i> -D__thumb2__ -D__BUFSIZ__=256   -c -o lib_a-dummy.o `test -f 'dummy.c' ||
+</I>&gt;&gt;&gt;&gt;<i> echo '../../../../../newlib/libc/argz/'`dummy.c
+</I>&gt;&gt;&gt;&gt;<i> /bin/bash: arm-elf-cc: command not found
+</I>&gt;&gt;&gt;&gt;<i> make[5]: *** [lib_a-dummy.o] Error 127
+</I>&gt;&gt;&gt;&gt;<i> make[5]: Leaving directory
+</I>&gt;&gt;&gt;&gt;<i> `/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/libc/argz'
+</I>&gt;&gt;&gt;&gt;<i> make[4]: *** [all-recursive] Error 1
+</I>&gt;&gt;&gt;&gt;<i> make[4]: Leaving directory
+</I>&gt;&gt;&gt;&gt;<i> `/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib/libc'
+</I>&gt;&gt;&gt;&gt;<i> make[3]: *** [all-recursive] Error 1
+</I>&gt;&gt;&gt;&gt;<i> make[3]: Leaving directory
+</I>&gt;&gt;&gt;&gt;<i> `/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib'
+</I>&gt;&gt;&gt;&gt;<i> make[2]: *** [all] Error 2
+</I>&gt;&gt;&gt;&gt;<i> make[2]: Leaving directory
+</I>&gt;&gt;&gt;&gt;<i> `/usr/local/cross-cortex/newlib-1.17.0/build/arm-elf/newlib'
+</I>&gt;&gt;&gt;&gt;<i> make[1]: *** [all-target-newlib] Error 2
+</I>&gt;&gt;&gt;&gt;<i> make[1]: Leaving directory `/usr/local/cross-cortex/newlib-1.17.0/build'
+</I>&gt;&gt;&gt;&gt;<i> make: *** [all] Error 2
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:/usr/local/cross-cortex/newlib-1.17.0/build$
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I am a new ubuntu user and i dont know what happend
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> thx
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;&gt;&gt;&gt;<i> Estudante da Mestrado
+</I>&gt;&gt;&gt;&gt;<i> Pontificia Universidade Catolica
+</I>&gt;&gt;&gt;&gt;<i> Rio da Janeiro - Gavea
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;<i> James Snyder
+</I>&gt;&gt;&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;&gt;&gt;<i> ph: 847.448.0386
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> James Snyder
+</I>&gt;&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;&gt;<i> ph: 847.448.0386
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090706/4eee61bb/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090706/4eee61bb/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000918.html">[eLua-dev] Building toolchain for arm cortex m3
+</A></li>
+	<LI>Next message: <A HREF="000913.html">[eLua-dev] can.c missing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#919">[ date ]</a>
+              <a href="thread.html#919">[ thread ]</a>
+              <a href="subject.html#919">[ subject ]</a>
+              <a href="author.html#919">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

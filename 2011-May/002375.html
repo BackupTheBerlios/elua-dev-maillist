@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] NetDuino: Serial TX to board fails
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20NetDuino%3A%20Serial%20TX%20to%20board%20fails&In-Reply-To=%3C1304740250356-6339466.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002373.html">
+   <LINK REL="Next"  HREF="002376.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] NetDuino: Serial TX to board fails</H1>
+    <B>sweetlilmre</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20NetDuino%3A%20Serial%20TX%20to%20board%20fails&In-Reply-To=%3C1304740250356-6339466.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] NetDuino: Serial TX to board fails">sweetlilmre at gmail.com
+       </A><BR>
+    <I>Sat May  7 05:50:50 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002373.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+        <LI>Next message: <A HREF="002376.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2375">[ date ]</a>
+              <a href="thread.html#2375">[ thread ]</a>
+              <a href="subject.html#2375">[ subject ]</a>
+              <a href="author.html#2375">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Mike King wrote:
+&gt;<i> 
+</I>&gt;<i> You might want to check out my patch.  Bogdan said he will revert back
+</I>&gt;<i> to it for master.  It fixes the things listed below.
+</I>&gt;<i> 
+</I>&gt;<i> <A HREF="https://github.com/elua/elua/blob/1822ee1572e63ec033447d918b58466b36dba342/rfs_server_src/serial_win32.c">https://github.com/elua/elua/blob/1822ee1572e63ec033447d918b58466b36dba342/rfs_server_src/serial_win32.c</A>
+</I>&gt;<i> 
+</I>&gt;<i> *The function ser_open could leak memory on failure.
+</I>&gt;<i> *Forgot to initialize the DCBlength field of the DCB structure.
+</I>&gt;<i> *Forgot to initialize the OVERLAPPED structure in the ser_read function.
+</I>&gt;<i> *Initialized the OVERLAPPED structure in the ser_select_byte function
+</I>&gt;<i> without regard to whether or not an asynchronous read operation is in
+</I>&gt;<i> progress.
+</I>&gt;<i> *I/O cancellation is done synchronously when it could be done
+</I>&gt;<i> asynchronously.
+</I>&gt;<i> *The function ser_read will not update the dest buffer when the
+</I>&gt;<i> fWaitingOnRead flag is set.  This also affects the ser_read_byte
+</I>&gt;<i> function.
+</I>&gt;<i> 
+</I>
+Hi,
+
+I applied your patch and it seems to fix the issue! Brilliant stuff.
+The only change necessary was moving the declaration of dwRes to the top of
+ser_select_byte() so that it compiles under VS2010.
+
+Being a GIT noob I'm a little lost as to where your patch resides and the
+whole apply to master bit?
+Do I just need to wait and git pull to get this when its applied?
+
+Thanks
+-(e)
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/NetDuino-Serial-TX-to-board-fails-tp6323539p6339466.html">http://elua-development.2368040.n2.nabble.com/NetDuino-Serial-TX-to-board-fails-tp6323539p6339466.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002373.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+	<LI>Next message: <A HREF="002376.html">[eLua-dev] NetDuino: Serial TX to board fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2375">[ date ]</a>
+              <a href="thread.html#2375">[ thread ]</a>
+              <a href="subject.html#2375">[ subject ]</a>
+              <a href="author.html#2375">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

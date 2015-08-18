@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua vs Python on Microcontrollers
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20vs%20Python%20on%20Microcontrollers&In-Reply-To=%3C22777FC7-E323-41F2-BAEE-CBFA758269AE%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000301.html">
+   <LINK REL="Next"  HREF="000304.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua vs Python on Microcontrollers</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20vs%20Python%20on%20Microcontrollers&In-Reply-To=%3C22777FC7-E323-41F2-BAEE-CBFA758269AE%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Lua vs Python on Microcontrollers">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jan 23 19:36:42 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000301.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+        <LI>Next message: <A HREF="000304.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#303">[ date ]</a>
+              <a href="thread.html#303">[ thread ]</a>
+              <a href="subject.html#303">[ subject ]</a>
+              <a href="author.html#303">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>When I started looking around at interpreted languages on  
+microcontrollers I ran across not only eLua, but also PyMite (<A HREF="http://pymite.python-hosting.com/">http://pymite.python-hosting.com/</A> 
+), the author of which (Dean) is now currently on this list.
+
+I thought I would take this as an opportunity to strike up a little  
+discussion on the merits and difficulties associated with implementing  
+one language or the other (or any other interpreted languages, if it  
+might be useful) on these devices with rather limited resources.
+
+Lua seems naturally suited to limitations of an MCU, being pretty  
+friendly to low resource situations out of the box.  I'm sure there  
+are some modifications that were necessary to make eLua work in these  
+environments in the first place, but sounds as if it didn't require  
+much shoe-horning :-)
+
+Python, on the other hand, being a &quot;batteries included&quot; language is  
+quite large if you include all the standard modules and whatnot.  I  
+certainly wouldn't expect that all of these would fit in an  
+environment like the ones eLua or PyMite run on.  I would assume  
+however, that some subset of libraries, and maybe core features of the  
+language itself would fit reasonably (something like the array of  
+modules that come with Lua?).
+
+I'm wondering if those who have worked on implementing these  
+environments could speak more intelligently about what is or is not  
+reasonable, and maybe what some of the challenges are?  From my  
+understanding PyMite implements a stripped down (maybe re-implemented  
+from scratch?) version of Python's virtual machine.  I'm not sure if  
+some of the opcodes are stripped out, or not, but I'm pretty sure that  
+Python has way more opcodes than Lua does.  Also, lua makes use of a  
+register-based VM rather than a more traditional stack-based VM.  Do  
+these issues play a major role in how well these languages run and/or  
+fit on a microcontroller?  Any thoughts on how these might relate to  
+RAM, storage or CPU requirements?  On the python side, there is also  
+TinyPy, which is supposedly modeled after lua in terms of the VM (not  
+sure if it is register or stack based).  I've seen discussions on the  
+TinyPy list about the current situation on getting it to run on micros  
+(including needing to deal with filesystem ops for loading modules),  
+but I'm not sure if it is reasonable or not to think that it might be  
+a good solution.
+
+I come from a background in a variety of languages, but have been  
+using Python the most lately for desktop programming tasks.  I like it  
+quite a bit as a language, and it has replaced MATLAB, C and other  
+languages that I would have normally used otherwise to get something  
+done.  I don't imagine writing much Lua for the types of things I use  
+Python for on the desktop, but it sounds like it is better suited to  
+MCUs without having to carve out any large portions of functionality.   
+In particular, this means that the standard Lua documentation applies  
+broadly to eLua, and that one can pretty much copy and paste a  
+standard Lua script into eLua and have it work (so long as it doesn't  
+use external modules not provided, or if the MCU doesn't have enough  
+RAM).
+
+Thanks!
+
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090123/cc7bc5d2/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090123/cc7bc5d2/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090123/cc7bc5d2/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090123/cc7bc5d2/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000301.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+	<LI>Next message: <A HREF="000304.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#303">[ date ]</a>
+              <a href="thread.html#303">[ thread ]</a>
+              <a href="subject.html#303">[ subject ]</a>
+              <a href="author.html#303">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

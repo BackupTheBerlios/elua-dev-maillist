@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] beginners question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20beginners%20question&In-Reply-To=%3CCAK4o1Wz95o_6y2fVzojxzajNvZt%3DZOm-0tERdt%3D6%3DWFKtwhAWw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004324.html">
+   <LINK REL="Next"  HREF="004326.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] beginners question</H1>
+    <B>Justin Cormack</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20beginners%20question&In-Reply-To=%3CCAK4o1Wz95o_6y2fVzojxzajNvZt%3DZOm-0tERdt%3D6%3DWFKtwhAWw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] beginners question">justin at specialbusservice.com
+       </A><BR>
+    <I>Mon Dec  2 13:10:32 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004324.html">[eLua-dev] beginners question
+</A></li>
+        <LI>Next message: <A HREF="004326.html">[eLua-dev] beginners question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4325">[ date ]</a>
+              <a href="thread.html#4325">[ thread ]</a>
+              <a href="subject.html#4325">[ subject ]</a>
+              <a href="author.html#4325">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Dec 2, 2013 at 11:43 AM, Richard M&#246;hn
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard.moehn at fu-berlin.de</A>&gt; wrote:
+&gt;<i> On Mon, Dec 02, 2013 at 10:43:24AM +0000, Justin Cormack wrote:
+</I>&gt;&gt;<i> Ok, I am just using the default board file which has that uart
+</I>&gt;&gt;<i> setting, building with
+</I>&gt;&gt;<i> ./build_elua.lua board=stm32f4discovery  (codesourcery toolchain)
+</I>&gt;&gt;<i> then flashing with
+</I>&gt;&gt;<i> dfu-util -d 0483:df11 -c 1 -i 0 -a 0 -s 0x08000000 -D
+</I>&gt;&gt;<i> elua_lua_stm32f4discovery.elf
+</I>&gt;&gt;<i> (based on the wiki instructions; it does complain that this is not a
+</I>&gt;&gt;<i> dfu file though)
+</I>&gt;&gt;<i> Then removing the jumpers that put it into dfu mode and restarting.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So maybe eLua isn't booting? Or the above is not correct?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I haven't got any experience with DFU since I always flashed the board
+</I>&gt;<i> via ST-LINK. On my Debian system [1] works quite well for that. To find
+</I>&gt;<i> out whether eLua ist booting at all, you could turn on an LED by adding
+</I>&gt;<i> this at the end of platform_init() in src/platform/stm32f4/platform.c:
+</I>&gt;<i>
+</I>&gt;<i>     GPIO_InitTypeDef led;
+</I>&gt;<i>     led.GPIO_Pin   = GPIO_Pin_12;
+</I>&gt;<i>     led.GPIO_Mode  = GPIO_Mode_OUT;
+</I>&gt;<i>     led.GPIO_Speed = GPIO_Speed_25MHz;
+</I>&gt;<i>     led.GPIO_OType = GPIO_OType_PP;
+</I>&gt;<i>     led.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+</I>&gt;<i>
+</I>&gt;<i>     GPIO_Init(GPIOD, &amp;led);
+</I>&gt;<i>
+</I>&gt;<i>     GPIO_SetBits(GPIOD, GPIO_Pin_12);
+</I>&gt;<i>
+</I>&gt;<i> If eLua boots, the green LED (LD4) should be turned on, if not, not.
+</I>&gt;<i>
+</I>
+Looks like its not booting then... Certainly looks like it might be
+easier to diagnose on the st-link. What hardware do I need to connect
+to it?
+
+Justin
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004324.html">[eLua-dev] beginners question
+</A></li>
+	<LI>Next message: <A HREF="004326.html">[eLua-dev] beginners question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4325">[ date ]</a>
+              <a href="thread.html#4325">[ thread ]</a>
+              <a href="subject.html#4325">[ subject ]</a>
+              <a href="author.html#4325">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 Bootloader Flashing in Python
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Bootloader%20Flashing%20in%20Python&In-Reply-To=%3CEMEWEMEW2_DELIMl2HGMyd1386ae63e61ec4ad520d8%2C%0A%09jbsnyder%40fanplastic.org%2C%208A51343A-C8DC-40F3-A394-D27%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000671.html">
+   <LINK REL="Next"  HREF="000673.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 Bootloader Flashing in Python</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Bootloader%20Flashing%20in%20Python&In-Reply-To=%3CEMEWEMEW2_DELIMl2HGMyd1386ae63e61ec4ad520d8%2C%0A%09jbsnyder%40fanplastic.org%2C%208A51343A-C8DC-40F3-A394-D27%3E"
+       TITLE="[eLua-dev] STM32 Bootloader Flashing in Python">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Mar 18 22:22:53 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000671.html">[eLua-dev] Online Help in eLua?
+</A></li>
+        <LI>Next message: <A HREF="000673.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#672">[ date ]</a>
+              <a href="thread.html#672">[ thread ]</a>
+              <a href="subject.html#672">[ subject ]</a>
+              <a href="author.html#672">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Today while looking for the nth time for an alternative to the Windows- 
+based loader for STM32 bootloader based flashing, I ran across the  
+attached script, written in Python.
+
+The original project can be found here: <A HREF="http://tuxotronic.org/wiki/projects/stm32loader">http://tuxotronic.org/wiki/projects/stm32loader</A>
+
+I found it necessary to adjust the serial options slightly, I assume  
+the original author might have a different bootloader version, because  
+I've adjusted it to match the settings suggested in the docs.
+
+I've also set the serial port default to my own default, but you can  
+change that or pass options at the command line.
+
+./stm32loader.py -h provides an overview of usage.  I've been able to  
+program my STM32 stamp with it, and it boots into eLua afterwards.
+
+Between this and the new patches Bogdan committed for being agnostic  
+about line endings, I can now cut windows out of the loop for STM32  
+development :-)
+
+FYI: I have an ADC implementation for STM32 that should basically  
+work, but something is causing a hang on boot when I enable the ADC  
+peripheral clock on boot.  I'll commit that and some changes to  
+elua_adc that allow it to handle situations where a single interrupt  
+gives you values from a series of channels.
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: stm32loader.py
+Type: text/x-python-script
+Size: 12629 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090318/d63a0758/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090318/d63a0758/attachment.bin</A>&gt;
+-------------- next part --------------
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090318/d63a0758/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090318/d63a0758/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000671.html">[eLua-dev] Online Help in eLua?
+</A></li>
+	<LI>Next message: <A HREF="000673.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#672">[ date ]</a>
+              <a href="thread.html#672">[ thread ]</a>
+              <a href="subject.html#672">[ subject ]</a>
+              <a href="author.html#672">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

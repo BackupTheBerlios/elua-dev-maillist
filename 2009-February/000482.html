@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Virtual Timers &amp; tmr channels
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Virtual%20Timers%20%26%20tmr%20channels&In-Reply-To=%3C81fbe47d0902170603n27c6f7earfb6ad1a654b274bc%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000481.html">
+   <LINK REL="Next"  HREF="000483.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Virtual Timers &amp; tmr channels</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Virtual%20Timers%20%26%20tmr%20channels&In-Reply-To=%3C81fbe47d0902170603n27c6f7earfb6ad1a654b274bc%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Virtual Timers &amp; tmr channels">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Feb 17 15:03:58 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000481.html">[eLua-dev] Virtual Timers &amp; tmr channels
+</A></li>
+        <LI>Next message: <A HREF="000483.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#482">[ date ]</a>
+              <a href="thread.html#482">[ thread ]</a>
+              <a href="subject.html#482">[ subject ]</a>
+              <a href="author.html#482">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>
+</I>&gt;<i> Hello guys,
+</I>&gt;<i>    The tmr (Timer) module, recently introduced &quot;virtual timers&quot; and one of
+</I>&gt;<i> the benefits is that it frees more phisical/actual timer chanels for other
+</I>&gt;<i> uses.
+</I>&gt;<i>    I wrote a still-simply-and-not-tested cnt (Counter) module, to count
+</I>&gt;<i> external events.
+</I>&gt;<i>    I&#180;d like to know if the tmr modules makes exclusive use of any timer
+</I>&gt;<i> channel, if there are channels that are now &quot;always-free&quot; and also if even
+</I>&gt;<i> the timer channel used as a master tick for the virtual timers can be used
+</I>&gt;<i> as a counter if the tmr module is not used.
+</I>
+
+Yes, the tmr module makes exclusive use of one timer channel to implement
+virtual timers. You shouldn't play too much with it (in fact it shouldn't be
+available to the rest of the system at all, but this isn't implemented yet),
+but as long as you only do &quot;read-only operations&quot; (like checking the timer
+value), you should be fine.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/fbfc2f5d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/fbfc2f5d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000481.html">[eLua-dev] Virtual Timers &amp; tmr channels
+</A></li>
+	<LI>Next message: <A HREF="000483.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#482">[ date ]</a>
+              <a href="thread.html#482">[ thread ]</a>
+              <a href="subject.html#482">[ subject ]</a>
+              <a href="author.html#482">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

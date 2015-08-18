@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Maybe I found memory leak
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Maybe%20I%20found%20memory%20leak&In-Reply-To=%3CCANKDJfYrPyL%3DDacTXNrqRjkX6-Ot8EPrmegQuzZ2NDwtfknuwA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003592.html">
+   <LINK REL="Next"  HREF="003600.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Maybe I found memory leak</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Maybe%20I%20found%20memory%20leak&In-Reply-To=%3CCANKDJfYrPyL%3DDacTXNrqRjkX6-Ot8EPrmegQuzZ2NDwtfknuwA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Maybe I found memory leak">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Jun 13 22:09:00 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003592.html">[eLua-dev] Maybe I found memory leak
+</A></li>
+        <LI>Next message: <A HREF="003600.html">[eLua-dev] Maybe I found memory leak
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3593">[ date ]</a>
+              <a href="thread.html#3593">[ thread ]</a>
+              <a href="subject.html#3593">[ subject ]</a>
+              <a href="author.html#3593">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Wed, Jun 13, 2012 at 10:19 PM, framer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rasa at go2.pl</A>&gt; wrote:
+&gt;<i> I think the problem is in luaD_throw function. Probably luaD_throw function
+</I>&gt;<i> to launch longjmp function. When a &quot;non-local goto&quot; is executed via
+</I>&gt;<i> setjmp/longjmp, normal &quot;stack unwinding&quot; does not occur and therefore, any
+</I>&gt;<i> required cleanup actions such as closing file descriptors, flushing buffers,
+</I>&gt;<i> freeing heap-allocated memory, etc., do not occur.
+</I>
+Lua takes care of its allocated memory very carefully. It takes care
+of freeing all objects when the interpreter exits, thus things are
+safe on the Lua side. On the C side, if you're exporting modules with
+userdata that have a proper __gc metamethod, you're also safe.
+Something similar happens to file descriptors because they are not
+actual file descriptors, but &quot;managed&quot; file descriptors. If you look
+at liolib.c, you'll see that a file userdata (as returned by io.open)
+has an associated __gc metamethod that takes care of closing the file.
+That said, there are reasons to worry. Any C module that doesn't play
+nicely with __gc might leak resources when luaD_throw returns. The
+sockets in eLua (as returned by the net module) are one example.
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/Maybe-I-found-memory-leak-tp7577478p7577480.html">http://elua-development.2368040.n2.nabble.com/Maybe-I-found-memory-leak-tp7577478p7577480.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003592.html">[eLua-dev] Maybe I found memory leak
+</A></li>
+	<LI>Next message: <A HREF="003600.html">[eLua-dev] Maybe I found memory leak
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3593">[ date ]</a>
+              <a href="thread.html#3593">[ thread ]</a>
+              <a href="subject.html#3593">[ subject ]</a>
+              <a href="author.html#3593">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

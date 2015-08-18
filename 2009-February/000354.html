@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Building GCC for Cortex
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20GCC%20for%20Cortex&In-Reply-To=%3C81fbe47d0902042240o30b73d35mdbc27316a9360462%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000349.html">
+   <LINK REL="Next"  HREF="000357.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Building GCC for Cortex</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Building%20GCC%20for%20Cortex&In-Reply-To=%3C81fbe47d0902042240o30b73d35mdbc27316a9360462%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Building GCC for Cortex">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Feb  5 07:40:08 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000349.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+        <LI>Next message: <A HREF="000357.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#354">[ date ]</a>
+              <a href="thread.html#354">[ thread ]</a>
+              <a href="subject.html#354">[ subject ]</a>
+              <a href="author.html#354">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks, I'll take a closer look when I have some time. It would be really
+nice to actually _understand_ the build process, as opposed to using
+butt-ugly hacks like mine :)
+
+Best,
+Bogdan
+
+On Wed, Feb 4, 2009 at 9:38 PM, Rob Emanuele &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">poorarm at shoreis.com</A>&gt; wrote:
+
+&gt;<i> Greetings,
+</I>&gt;<i>
+</I>&gt;<i> You've put together a nice page for building GCC for the Cortex
+</I>&gt;<i> processors.  I think I can simplify your build process.
+</I>&gt;<i> <A HREF="http://eluaproject.dreamhosters.com/en/Building_GCC_for_Cortex">http://eluaproject.dreamhosters.com/en/Building_GCC_for_Cortex</A>
+</I>&gt;<i>
+</I>&gt;<i> I recently was on a thread about how to build gcc and newlib for
+</I>&gt;<i> thumb2 (my case was the cortex-m3 processor).
+</I>&gt;<i> <A HREF="http://gcc.gnu.org/ml/gcc-help/2009-02/msg00000.html">http://gcc.gnu.org/ml/gcc-help/2009-02/msg00000.html</A>
+</I>&gt;<i>
+</I>&gt;<i> In the end, all that is needed is a simple configuration patch to gcc.
+</I>&gt;<i> <A HREF="http://gcc.gnu.org/ml/gcc-help/2009-02/msg00033.html">http://gcc.gnu.org/ml/gcc-help/2009-02/msg00033.html</A>
+</I>&gt;<i>
+</I>&gt;<i> This is using binutils 2.19, gcc 4.3.3, and newlib 1.17.0. (gdb-6.8
+</I>&gt;<i> too if you wish)
+</I>&gt;<i>
+</I>&gt;<i> A simple make script like so can be used from the parent directory
+</I>&gt;<i> containing these tools' source.  Set $(TARGET) to arm-eabi and
+</I>&gt;<i> $(PREFIX) to where you want it installed.
+</I>&gt;<i>
+</I>&gt;<i> -- Rob Emanuele
+</I>&gt;<i>
+</I>&gt;<i> --------- begin make -------------
+</I>&gt;<i> all: cross-binutils cross-gcc cross-g++ cross-newlib cross-gdb
+</I>&gt;<i>
+</I>&gt;<i> cross-binutils:
+</I>&gt;<i>        mkdir -p build/binutils &amp;&amp; cd build/binutils &amp;&amp; \
+</I>&gt;<i>        (./config.status || ../../binutils/configure --prefix=$(PREFIX)
+</I>&gt;<i> --target=$(TARGET)) &amp;&amp; \
+</I>&gt;<i>        $(MAKE) -j$(PROCS)&amp;&amp; \
+</I>&gt;<i>        $(MAKE) install
+</I>&gt;<i>
+</I>&gt;<i> cross-gcc: cross-binutils
+</I>&gt;<i>        mkdir -p build/gcc &amp;&amp; cd build/gcc &amp;&amp; \
+</I>&gt;<i>        (./config.status || ../../gcc/configure --prefix=$(PREFIX)
+</I>&gt;<i> --target=$(TARGET) --enable-languages=&quot;c&quot; --with-gnu-ld --with-gnu-as
+</I>&gt;<i> --with-newlib --disable-libssp) &amp;&amp; \
+</I>&gt;<i>        $(MAKE) &amp;&amp; \
+</I>&gt;<i>        $(MAKE) install
+</I>&gt;<i>
+</I>&gt;<i> cross-g++: cross-binutils cross-gcc cross-newlib
+</I>&gt;<i>        mkdir -p build/g++ &amp;&amp; cd build/g++ &amp;&amp; \
+</I>&gt;<i>        (./config.status || ../../gcc/configure --prefix=$(PREFIX)
+</I>&gt;<i> --target=$(TARGET) --enable-languages=&quot;c++&quot; --with-gnu-ld
+</I>&gt;<i> --with-gnu-as --with-newlib --disable-libssp) &amp;&amp; \
+</I>&gt;<i>        $(MAKE) &amp;&amp; \
+</I>&gt;<i>        $(MAKE) install
+</I>&gt;<i>
+</I>&gt;<i> cross-newlib: cross-binutils cross-gcc
+</I>&gt;<i>        mkdir -p build/newlib &amp;&amp; cd build/newlib &amp;&amp; \
+</I>&gt;<i>        (./config.status || ../../newlib/configure --prefix=$(PREFIX)
+</I>&gt;<i> --target=$(TARGET) --disable-newlib-supplied-syscalls) &amp;&amp; \
+</I>&gt;<i>        $(MAKE) -j$(PROCS) &amp;&amp; \
+</I>&gt;<i>        $(MAKE) install
+</I>&gt;<i>
+</I>&gt;<i> cross-gdb:
+</I>&gt;<i>        mkdir -p build/gdb &amp;&amp; cd build/gdb &amp;&amp; \
+</I>&gt;<i>        (./config.status || ../../gdb/configure --prefix=$(PREFIX)
+</I>&gt;<i> --target=$(TARGET) --disable-werror) &amp;&amp; \
+</I>&gt;<i>        $(MAKE) -j$(PROCS) &amp;&amp; \
+</I>&gt;<i>        $(MAKE) install
+</I>&gt;<i>
+</I>&gt;<i> ------ end make -------
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090205/0479a66b/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090205/0479a66b/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000349.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+	<LI>Next message: <A HREF="000357.html">[eLua-dev] Building GCC for Cortex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#354">[ date ]</a>
+              <a href="thread.html#354">[ thread ]</a>
+              <a href="subject.html#354">[ subject ]</a>
+              <a href="author.html#354">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

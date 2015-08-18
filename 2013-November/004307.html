@@ -1,0 +1,282 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32F4
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4&In-Reply-To=%3CCAO4OGbmXc6QixAMsiFwcN40FvcLiKbQ8yuP9YRTq0v%2Be61if9Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004306.html">
+   <LINK REL="Next"  HREF="004308.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32F4</H1>
+    <B>Bill</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32F4&In-Reply-To=%3CCAO4OGbmXc6QixAMsiFwcN40FvcLiKbQ8yuP9YRTq0v%2Be61if9Q%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32F4">softlanding at gmail.com
+       </A><BR>
+    <I>Fri Nov 29 15:55:04 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004306.html">[eLua-dev] STM32F4
+</A></li>
+        <LI>Next message: <A HREF="004308.html">[eLua-dev] STM32F4
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4307">[ date ]</a>
+              <a href="thread.html#4307">[ thread ]</a>
+              <a href="subject.html#4307">[ subject ]</a>
+              <a href="author.html#4307">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>How does it know to call this function:
+// Register module
+LUALIB_API int stm32f4discovery_luaopen_comproto(lua_State *L)
+{
+    LREGISTER(L, &quot;comproto&quot;, stm32f4discovery_comproto_map);
+}
+
+
+On Fri, Nov 29, 2013 at 2:32 AM, Richard M&#246;hn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard.moehn at fu-berlin.de</A>&gt;wrote:
+
+&gt;<i> On Thu, Nov 28, 2013 at 03:33:22PM -0600, Bill wrote:
+</I>&gt;<i> &gt; I have a piece of hardware with a large communication protocol that
+</I>&gt;<i> exists
+</I>&gt;<i> &gt; in C that would be easier to just add a simple API for the user in elua.
+</I>&gt;<i> I
+</I>&gt;<i> &gt; would not want to have to support 2 versions of the protocol.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> That sounds a lot like what I did. Unfortunately, I am not sure whether
+</I>&gt;<i> I am allowed to share the code on github, but I'll try and explain.
+</I>&gt;<i> However, I found those things out by looking on the code. Therefore, if
+</I>&gt;<i> someone sees me doing something unidiomatic or wrong, please correct me.
+</I>&gt;<i>
+</I>&gt;<i> Suppose you have your C sources lying in
+</I>&gt;<i> src/platform/stm32f4/STM32F4DISCOVERY/ComProto/src with the headers in
+</I>&gt;<i> src/platform/stm32f4/STM32F4DISCOVERY/ComProto/inc.
+</I>&gt;<i>
+</I>&gt;<i> First thing you should do is add that code to the build. This is done in
+</I>&gt;<i> src/platforms/stm32f4/build_config.lua and I introduced an if-block to
+</I>&gt;<i> distinguish between the code needed for different boards:
+</I>&gt;<i>
+</I>&gt;<i> --- conf.lua ---
+</I>&gt;<i> local utils = require &quot;utils.utils&quot;
+</I>&gt;<i> local sf = string.format
+</I>&gt;<i>
+</I>&gt;<i> local src_with_platform = 'src/platform/' .. platform
+</I>&gt;<i>
+</I>&gt;<i> local boardname = comp.board:upper()
+</I>&gt;<i> local boardfiles = ''
+</I>&gt;<i>
+</I>&gt;<i> if boardname  == &quot;STM32F4DISCOVERY&quot; then
+</I>&gt;<i>   addi(src_with_platform .. '/STM32F4DISCOVERY/ComProto/inc')
+</I>&gt;<i>   boardfiles = utils.get_files(src_with_platform ..
+</I>&gt;<i>  '/STM32F4DISCOVERY/ComProto/src', &quot;.*%.c$&quot;)
+</I>&gt;<i> else
+</I>&gt;<i>   print( sf( &quot;Invalid board for %s platform (%s)&quot;, platform, comp.board ) )
+</I>&gt;<i>   os.exit( -1 )
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> addi( sf( 'src/platform/%s/FWLib/library/inc', platform ) )
+</I>&gt;<i> addi( sf( 'src/platform/%s/FWLib/USB/STM32_USB_OTG_Driver/inc', platform )
+</I>&gt;<i> )
+</I>&gt;<i> addi( sf(
+</I>&gt;<i> 'src/platform/%s/FWLib/USB/STM32_USB_Device_Library/Class/cdc/inc',
+</I>&gt;<i> platform ) )
+</I>&gt;<i> addi( sf( 'src/platform/%s/FWLib/USB/STM32_USB_Device_Library/Core/inc',
+</I>&gt;<i> platform ) )
+</I>&gt;<i> addi( sf( 'src/platform/%s/FWLib/USB/VCP/inc', platform ) )
+</I>&gt;<i>
+</I>&gt;<i> [...]
+</I>&gt;<i>
+</I>&gt;<i> specific_files = boardfiles .. &quot; &quot;
+</I>&gt;<i>                  .. fwlib_files .. &quot; &quot;
+</I>&gt;<i>                  .. utils.prepend_path( specific_files, &quot;src/platform/&quot; ..
+</I>&gt;<i> platform )
+</I>&gt;<i>
+</I>&gt;<i> [...]
+</I>&gt;<i> ----------------
+</I>&gt;<i>
+</I>&gt;<i> Then you add your platform module for interfacing between C and eLua.
+</I>&gt;<i> Suppose it's the file
+</I>&gt;<i>
+</I>&gt;<i> src/platform/stm32f4/STM32F4DISCOVERY/ComProto/src/stm32f4discovery_comproto.c.
+</I>&gt;<i> Documentation on C modules for Lua can be found in [1, section 3] and on
+</I>&gt;<i> C modules for eLua with the Lua Tiny RAM patch in [2].
+</I>&gt;<i>
+</I>&gt;<i> --- stm32f4discovery_comproto.c. ---
+</I>&gt;<i> #include &quot;&lt;what you like&gt;&quot;
+</I>&gt;<i>
+</I>&gt;<i> // for the Lua API
+</I>&gt;<i> #include &quot;lua.h&quot;
+</I>&gt;<i> #include &quot;lauxlib.h&quot;
+</I>&gt;<i>
+</I>&gt;<i> // for the Lua Tiny RAM patch
+</I>&gt;<i> #include &quot;lrotable.h&quot;
+</I>&gt;<i> #define MIN_OPT_LEVEL 2
+</I>&gt;<i> #include &quot;lrodefs.h&quot;
+</I>&gt;<i>
+</I>&gt;<i> // This is an example function that takes one parameter and returns an
+</I>&gt;<i> // arbitrary number of packets. Never mind the contents.
+</I>&gt;<i> /*
+</I>&gt;<i>  * Receive to_receive_cnt packets with the transceiver and return them.
+</I>&gt;<i>  *
+</I>&gt;<i>  * Parameters:
+</I>&gt;<i>  * 1   to_receive_cnt  number of packets to receive
+</I>&gt;<i>  *
+</I>&gt;<i>  * Returns:
+</I>&gt;<i>  *      to_receive_cnt   p_{to_receive_cnt}
+</I>&gt;<i>  *      ...
+</I>&gt;<i>  *      2                p_2
+</I>&gt;<i>  *      1                p_1
+</I>&gt;<i>  * or
+</I>&gt;<i>  *      nothing if there was an error
+</I>&gt;<i>  */
+</I>&gt;<i> static int stm32f4discovery_comproto_receive(lua_State *L)
+</I>&gt;<i> {
+</I>&gt;<i>     // Find out how many packets to receive
+</I>&gt;<i>     int to_receive_cnt = luaL_checkint(L, 1);
+</I>&gt;<i>     lua_pop(L, 1);
+</I>&gt;<i>
+</I>&gt;<i>     // Make sure the stack is large enough to hold that number of packets
+</I>&gt;<i>     if (!lua_checkstack(L, to_receive_cnt)) {
+</I>&gt;<i>         return 0;
+</I>&gt;<i>     }
+</I>&gt;<i>
+</I>&gt;<i>     // For every packet to receive
+</I>&gt;<i>     int r;
+</I>&gt;<i>     for (r = 0; r &lt; to_receive_cnt; ++r) {
+</I>&gt;<i>         // Get one packet
+</I>&gt;<i>         CC1100_Rx p = blocking_receive_Packet();
+</I>&gt;<i>
+</I>&gt;<i>         // Put a new table onto the stack
+</I>&gt;<i>         lua_createtable(L, 1, 4); // 1 data array, 4 metadata
+</I>&gt;<i>
+</I>&gt;<i>         // Put the metadata in the table
+</I>&gt;<i>         TABLESET_INT(L, PKG_SOURCE, p.source);
+</I>&gt;<i>         TABLESET_INT(L, PKG_DEST,   p.dest);
+</I>&gt;<i>         TABLESET_INT(L, PKG_RSSI,   p.RSSI);
+</I>&gt;<i>         TABLESET_INT(L, PKG_LENGTH, p.length);
+</I>&gt;<i>
+</I>&gt;<i>         // Put the data in the table
+</I>&gt;<i>         lua_pushlstring(L, p.data + 2, p.length - 2);
+</I>&gt;<i>             // First two chars are metadata
+</I>&gt;<i>         lua_setfield(L, -2, PKG_DATA);
+</I>&gt;<i>     }
+</I>&gt;<i>
+</I>&gt;<i>     return to_receive_cnt;
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> // Here you list the functions and constants to be exported by the
+</I>&gt;<i> // module.
+</I>&gt;<i> const LUA_REG_TYPE stm32f4discovery_comproto_map[] = {
+</I>&gt;<i>     { LSTRKEY(&quot;receive&quot;),   LFUNCVAL(stm32f4discovery_comproto_receive) },
+</I>&gt;<i>     // [...]
+</I>&gt;<i>     { LNILKEY,              LNILVAL                         },
+</I>&gt;<i> };
+</I>&gt;<i>
+</I>&gt;<i> // Register module
+</I>&gt;<i> LUALIB_API int stm32f4discovery_luaopen_comproto(lua_State *L)
+</I>&gt;<i> {
+</I>&gt;<i>     LREGISTER(L, &quot;comproto&quot;, stm32f4discovery_comproto_map);
+</I>&gt;<i> }
+</I>&gt;<i> ------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> Now you can add your module to the list of platform modules for the
+</I>&gt;<i> STM32F4DISCOVERY in src/platform/stm32f4/build_config.lua by modifying
+</I>&gt;<i> the function get_platform_modules. Again, I've introduced an if-block to
+</I>&gt;<i> distinguish between platforms:
+</I>&gt;<i>
+</I>&gt;<i> --- build_config.lua ---
+</I>&gt;<i> [...]
+</I>&gt;<i>
+</I>&gt;<i> -- Return an array of all the available platform modules for the given cpu
+</I>&gt;<i> function get_platform_modules( board, cpu )
+</I>&gt;<i>   local mods = {
+</I>&gt;<i>     pio = {
+</I>&gt;<i>       lib   = '&quot;pio&quot;',
+</I>&gt;<i>       map   = &quot;stm32_pio_map&quot;,
+</I>&gt;<i>       open  = false
+</I>&gt;<i>     },
+</I>&gt;<i>     cpu = {
+</I>&gt;<i>       lib   = '&quot;cpu&quot;',
+</I>&gt;<i>       map   = &quot;stm32_cpu_map&quot;,
+</I>&gt;<i>       open  = &quot;luaopen_stm32_cpu&quot;
+</I>&gt;<i>     },
+</I>&gt;<i>   }
+</I>&gt;<i>
+</I>&gt;<i>   -- Register MSB-IOT platform modules
+</I>&gt;<i>   if board:upper() == 'STM32F4DISCOVERY' then
+</I>&gt;<i>     mods.comproto = {
+</I>&gt;<i>       lib       = '&quot;comproto&quot;',
+</I>&gt;<i>       map       = &quot;stm32f4discovery_comproto_map&quot;,
+</I>&gt;<i>       open      = false
+</I>&gt;<i>     }
+</I>&gt;<i>   end
+</I>&gt;<i>
+</I>&gt;<i>   return mods
+</I>&gt;<i> end
+</I>&gt;<i> ------------------------
+</I>&gt;<i>
+</I>&gt;<i> Last thing you have to do is to set the platform name in the board
+</I>&gt;<i> configuration file:
+</I>&gt;<i>
+</I>&gt;<i> --- boards/known/stm32f4discovery.lua ---
+</I>&gt;<i> [...]
+</I>&gt;<i>
+</I>&gt;<i>   modules = {
+</I>&gt;<i>     generic = { 'all', &quot;-i2c&quot;, &quot;-net&quot; },
+</I>&gt;<i>     platform = 'all',
+</I>&gt;<i>     platform_name = 'stm32f4discovery',
+</I>&gt;<i>   },
+</I>&gt;<i> }
+</I>&gt;<i> -----------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> Then you can call our function as stm32f4discovery.comproto.receive().
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i>
+</I>&gt;<i> Richard
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> [1] <A HREF="http://www.lua.org/manual/5.1/">http://www.lua.org/manual/5.1/</A>
+</I>&gt;<i> [2] <A HREF="http://www.eluaproject.net/doc/master/en_arch_ltr.html">http://www.eluaproject.net/doc/master/en_arch_ltr.html</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20131129/9d3e6b96/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20131129/9d3e6b96/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004306.html">[eLua-dev] STM32F4
+</A></li>
+	<LI>Next message: <A HREF="004308.html">[eLua-dev] STM32F4
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4307">[ date ]</a>
+              <a href="thread.html#4307">[ thread ]</a>
+              <a href="subject.html#4307">[ subject ]</a>
+              <a href="author.html#4307">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

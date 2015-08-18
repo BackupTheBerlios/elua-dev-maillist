@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ADC module on STR912
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20module%20on%20STR912&In-Reply-To=%3CAANLkTikQ8bzgo-oDD75e%2BUMHQw6PpAvz%2BsjNQMSNwvSU%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001673.html">
+   <LINK REL="Next"  HREF="001675.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ADC module on STR912</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20module%20on%20STR912&In-Reply-To=%3CAANLkTikQ8bzgo-oDD75e%2BUMHQw6PpAvz%2BsjNQMSNwvSU%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] ADC module on STR912">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Oct 18 22:41:39 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001673.html">[eLua-dev] ADC module on STR912
+</A></li>
+        <LI>Next message: <A HREF="001675.html">[eLua-dev] ADC module on STR912
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1674">[ date ]</a>
+              <a href="thread.html#1674">[ thread ]</a>
+              <a href="subject.html#1674">[ subject ]</a>
+              <a href="author.html#1674">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The STR-E912 has the FW part, not the FAW part.  So, for an FAW, with
+some minor modification we could add support for using the timers.
+Really, even without timer triggering, we could use a timer interrupt
+to do this sort of thing for us, but we don't do that on other
+platforms so I didn't want to suck up another timer in this manner.
+
+For now, one could use the eLua interrupt support, however I have in
+no way tested this :-)  I'm planning to add to eLua interrupts to
+support C-side handlers for this sort of thing (that wouldn't need to
+wait on the interpreter), but I haven't yet done any implementation
+planning or experimentation.
+
+-jsnyder
+
+On Mon, Oct 18, 2010 at 3:21 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;&gt;<i> Right.
+</I>&gt;&gt;<i> And this was done (by James Snyder) because some versions of the MCU chip do
+</I>&gt;&gt;<i> not generate the int on timer events. Apparently the newer ones do but he
+</I>&gt;&gt;<i> had to do it for stability purposes.
+</I>&gt;<i>
+</I>&gt;<i> Ah, are you talking about the STR912FW44 versus the STR912FAW44? If
+</I>&gt;<i> so, you can probably use the timer feature (which I assume is
+</I>&gt;<i> available in the A version) safely, as the old (non-A version) was
+</I>&gt;<i> obsoleted by ST quite a while ago. I'm not even sure one can purchase
+</I>&gt;<i> non-A chips anymore, at least not from a large distributor. I know
+</I>&gt;<i> that one of your STR-E912 boards uses the non-A version, but that's a
+</I>&gt;<i> dinosaur already :)
+</I>&gt;<i>
+</I>&gt;&gt;<i> Mauricio, I'm afraid you'll have to handle the conversion-on-timer you want,
+</I>&gt;&gt;<i> manually on the Lua ISR now available in eLua.
+</I>&gt;<i>
+</I>&gt;<i> If so, he needs support for timer interrupts. Mauricio, please let me
+</I>&gt;<i> know if this is the case.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001673.html">[eLua-dev] ADC module on STR912
+</A></li>
+	<LI>Next message: <A HREF="001675.html">[eLua-dev] ADC module on STR912
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1674">[ date ]</a>
+              <a href="thread.html#1674">[ thread ]</a>
+              <a href="subject.html#1674">[ subject ]</a>
+              <a href="author.html#1674">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

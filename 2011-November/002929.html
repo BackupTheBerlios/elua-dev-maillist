@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Path and binary locations to build elua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Path%20and%20binary%20locations%20to%20build%20elua&In-Reply-To=%3CCANKDJfYX1tPFb0whXJxZGpT_zVL4jQgBS98wWK7UTB%2BEbfoP5w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002928.html">
+   <LINK REL="Next"  HREF="002935.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Path and binary locations to build elua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Path%20and%20binary%20locations%20to%20build%20elua&In-Reply-To=%3CCANKDJfYX1tPFb0whXJxZGpT_zVL4jQgBS98wWK7UTB%2BEbfoP5w%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Path and binary locations to build elua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sun Nov 13 16:40:53 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002928.html">[eLua-dev] Path and binary locations to build elua
+</A></li>
+        <LI>Next message: <A HREF="002935.html">[eLua-dev] I2C commands example please
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2929">[ date ]</a>
+              <a href="thread.html#2929">[ thread ]</a>
+              <a href="subject.html#2929">[ subject ]</a>
+              <a href="author.html#2929">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Nov 13, 2011 at 5:37 PM, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+
+&gt;<i> I am using fedora linux.
+</I>&gt;<i> And the code sourcery
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://sourcery.mentor.com/sgpp/lite/arm/portal/package8736/public/arm-none-eabi/arm-2011.03-42-arm-none-eabi.bin">https://sourcery.mentor.com/sgpp/lite/arm/portal/package8736/public/arm-none-eabi/arm-2011.03-42-arm-none-eabi.bin</A>
+</I>
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I installed it at $HOME/local/.
+</I>&gt;<i>
+</I>
+That's very weird. Try this:
+
+1. put your toolchain's bin/ directory in your $PATH
+2. copy/paste the program below as 'test.c':
+
+#include &lt;stdio.h&gt;
+
+int main()
+{
+  printf( &quot;test\n&quot; );
+  return 0;
+}
+
+3. $ arm-none-eabi-gcc -c test.c
+
+If this doesn't work, I confess that I have no idea what's wrong.
+
+Best,
+Bogdan
+
+
+&gt;<i> James
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sun, Nov 13, 2011 at 9:31 AM, Bogdan Marinescu &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sun, Nov 13, 2011 at 5:28 PM, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I would like to build elua using the Code Sourcery toolchain.
+</I>&gt;&gt;&gt;<i> Is there a prefered location to install this at?
+</I>&gt;&gt;&gt;<i> Also what do i need to do the setup the path?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> What OS are you using?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I modified my path to include to location of the arm toolchain
+</I>&gt;&gt;&gt;<i> but it failed to find stdio.h file when I ran scons.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> That never happened to me, there's probably something wrong with your
+</I>&gt;&gt;<i> setup. What CS version are you using?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> James.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111113/308f7859/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111113/308f7859/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002928.html">[eLua-dev] Path and binary locations to build elua
+</A></li>
+	<LI>Next message: <A HREF="002935.html">[eLua-dev] I2C commands example please
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2929">[ date ]</a>
+              <a href="thread.html#2929">[ thread ]</a>
+              <a href="subject.html#2929">[ subject ]</a>
+              <a href="author.html#2929">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

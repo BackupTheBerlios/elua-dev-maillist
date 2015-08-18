@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua design change to allow synchronized PWM channel	start?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20design%20change%20to%20allow%20synchronized%20PWM%20channel%0A%09start%3F&In-Reply-To=%3CBANLkTik9fbC4QgAbr7TrhK1BrDvTLqF3uw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002242.html">
+   <LINK REL="Next"  HREF="002244.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua design change to allow synchronized PWM channel	start?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20design%20change%20to%20allow%20synchronized%20PWM%20channel%0A%09start%3F&In-Reply-To=%3CBANLkTik9fbC4QgAbr7TrhK1BrDvTLqF3uw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua design change to allow synchronized PWM channel	start?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Apr  4 12:46:51 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002242.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+        <LI>Next message: <A HREF="002244.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2243">[ date ]</a>
+              <a href="thread.html#2243">[ thread ]</a>
+              <a href="subject.html#2243">[ subject ]</a>
+              <a href="author.html#2243">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Mon, Apr 4, 2011 at 12:02 AM, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt;wrote:
+
+&gt;<i> 2011/4/3 Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;:
+</I>&gt;<i> &gt; Hi
+</I>&gt;<i> &gt;   I'm looking at the AVR32 PWM stuff, and one thing that strikes me
+</I>&gt;<i> &gt; is that the platform allows synchronized starting of several PWM
+</I>&gt;<i> &gt; channels, but the eLua module interface to pwm forces you to start
+</I>&gt;<i> &gt; them one by one.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Other eLua module functions can apply to a variable list of things,
+</I>&gt;<i> &gt; for example the functions of the pio.* module which can set/clear a
+</I>&gt;<i> &gt; range of pins in one operation.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I thought it would be best to discuss this here first, since it is a
+</I>&gt;<i> &gt; change to the eLua API.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; To avoid breaking existing code, this can be applied to functions
+</I>&gt;<i> &gt; where the PWM channel id is the last (or only) parameter.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; This is fine for pwm.start(id) and pwm_stop(id). pwm_start() is
+</I>&gt;<i> &gt; exactly the one that makes an operational difference, since doing
+</I>&gt;<i> &gt; synchronized starting is impossible at present.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; pwm.setup(id, freq, duty) cannot be extended in this way unless it
+</I>&gt;<i> &gt; accepts a number id or a table of ids as the first parameter, but it
+</I>&gt;<i> &gt; seems a bit strange.
+</I>&gt;<i> &gt; Is changing the frequency and/or duty cycle of several PWM output
+</I>&gt;<i> &gt; synchronously (or as close to synchronously as can be achieved in
+</I>&gt;<i> &gt; practice) a useful thing to be able to do?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; That only leaves pwm.setclock( id, frequency ) and pwm.getclock( id )
+</I>&gt;<i> &gt; - I doubt that extending these is useful. Anyway all the existing
+</I>&gt;<i> &gt; platforms except one have a common base clock frequency for all PWM
+</I>&gt;<i> &gt; channels.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thoughts?  Sorry, I've never used PWM in practice so only see what is
+</I>&gt;<i> &gt; possible, not what is actually useful in practice.
+</I>&gt;<i>
+</I>&gt;<i> Well, For motor control you sure want the PWMs to be in sync, at leas 2 of
+</I>&gt;<i> them
+</I>&gt;<i> for brushed DC. Even thou it doesn't seem a typical eLua application
+</I>&gt;<i> might be handy
+</I>&gt;<i> to someone.
+</I>&gt;<i>
+</I>
+If people feel a need for this we can definitely extend pwm.stat() and
+pwm.stop() to accept more than one ID, this is simple.
+I agree the API is not consistent at times. Most of it was born out of
+pragmatic reasons; I saw a good reason for a number of GPIO pins to change
+their state at the same time so I implemented that. We are still before 1.0
+so the API can change unexpectedly.
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;    M
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> []s,
+</I>&gt;<i> Marcelo
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110404/f4cea4f8/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110404/f4cea4f8/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002242.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+	<LI>Next message: <A HREF="002244.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2243">[ date ]</a>
+              <a href="thread.html#2243">[ thread ]</a>
+              <a href="subject.html#2243">[ subject ]</a>
+              <a href="author.html#2243">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

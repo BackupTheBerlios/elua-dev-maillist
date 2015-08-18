@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New Board with eLua Support - Micromint Eagle 50
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20Board%20with%20eLua%20Support%20-%20Micromint%20Eagle%2050&In-Reply-To=%3C81fbe47d0908120942r519b9f1as3a6e819f87fe794d%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000990.html">
+   <LINK REL="Next"  HREF="000996.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New Board with eLua Support - Micromint Eagle 50</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20Board%20with%20eLua%20Support%20-%20Micromint%20Eagle%2050&In-Reply-To=%3C81fbe47d0908120942r519b9f1as3a6e819f87fe794d%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] New Board with eLua Support - Micromint Eagle 50">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Aug 12 18:42:45 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000990.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+        <LI>Next message: <A HREF="000996.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#993">[ date ]</a>
+              <a href="thread.html#993">[ thread ]</a>
+              <a href="subject.html#993">[ subject ]</a>
+              <a href="author.html#993">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Aug 12, 2009 at 7:27 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> Noting this issue, I'm wondering if anyone has attempted to strip Lua or
+</I>&gt;<i> eLua down to a bare minimum to see how small it can get?
+</I>
+
+That's one of my next steps. I bet I can make it run properly in 128k of
+Flash, but with quite a few tweaks:
+
+- (obviously) strip out any unneeded libraries
+- remove the parser and run your LuaRPC that will only execute bytecode
+- maybe replace the (part of) libc with our implementation
+- remove everything related to floating point (not only the math lib, but
+also the floating point emulation library itself).
+
+I already got a very small, inexpensive AT91SAM7X128 header bord and I'll
+work with that.
+
+
+&gt;<i> For situations where one may have prototyped on a device with either
+</I>&gt;<i> external flash, or more built-in flash and then wants to deploy with a less
+</I>&gt;<i> expensive part, it would be interesting to see how large eLua is when the
+</I>&gt;<i> compiler and other components that are non-essential for just running
+</I>&gt;<i> bytecode are removed?
+</I>
+
+Ah, OK, so we're following the same path of thought here :)
+
+
+&gt;<i> It should even be possible to still do interactive development with the
+</I>&gt;<i> compiler removed using the RPC code (similar to the tethered interactive
+</I>&gt;<i> mode supported by Python on a Chip).
+</I>
+
+OK, I swear that I wrote the first paragraph without reading your ideas :)
+Once again, nice to see that we're following the same path.
+
+
+&gt;<i> Another thing I've personally wondered about is whether inexpensive code or
+</I>&gt;<i> data compression algorithms might be usable?
+</I>
+
+They're kinda useless in this case, I think, as you need to decompress your
+code somewhere. If you need to decompress to internal Flash, you made the
+problem worse, since you now have less space because of your compressed
+firmware. If you have external Flash and/or RAM, you probably don't have a
+space problem in the first place :) If you have external Flash you can
+execute from there, and the case of RAM &gt; Flash is quite rare in practice.
+
+Best,
+Bogdan
+
+
+&gt;<i> On Aug 12, 2009, at 8:39 AM, John Hind wrote:
+</I>&gt;<i>
+</I>&gt;<i>  Thanks - yes, both good products! However there is an enormous gap in the
+</I>&gt;&gt;<i> market between the two, at least in memory capacity. Unfortunately, for
+</I>&gt;&gt;<i> eLua, the single chip options are still just a little tight in memory
+</I>&gt;&gt;<i> (both
+</I>&gt;&gt;<i> flash and RAM) while the multi-chip ones work out too expensive (and
+</I>&gt;&gt;<i> overkill) for the sort of radically distributed architectures I have in
+</I>&gt;&gt;<i> mind. Although you can certainly run eLua as an academic or benchmarking
+</I>&gt;&gt;<i> exercise in 256KB, as a practical engineer, I would not want my firmware
+</I>&gt;&gt;<i> to
+</I>&gt;&gt;<i> be occupying 9/10ths of the available memory with the application grubbing
+</I>&gt;&gt;<i> around in the last few KB!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Roll on ARM chips with 1MB Flash, 512KB RAM - that would really be an
+</I>&gt;&gt;<i> enabler!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -----Original Message-----
+</I>&gt;&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+</I>&gt;&gt;<i> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Jesus Alvarez
+</I>&gt;&gt;<i> Sent: 12 August 2009 13:54
+</I>&gt;&gt;<i> To: eLua Users and Development List
+</I>&gt;&gt;<i> Subject: Re: [eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> John,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> eLua with the default configuration and networking takes about 216 KB on
+</I>&gt;&gt;<i> the Micromint Eagle boards. There are 8 KB reserved for the bootloader.
+</I>&gt;&gt;<i> Swapping to the microSD card is normally not required. If your
+</I>&gt;&gt;<i> application uses additional code beyond the remaining flash, one
+</I>&gt;&gt;<i> alternative is to use the eLua configuration parameters to eliminate
+</I>&gt;&gt;<i> functions that are not needed. 256 KB could be a limitation if your eLua
+</I>&gt;&gt;<i> application also requires a medium size RTOS.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> A constraint in the flash for the Micromint Eagle is the use of
+</I>&gt;&gt;<i> TI/Luminary LM3S processors. They do not currently have a low cost 512KB
+</I>&gt;&gt;<i> flash option. Yet that has not been a significant limitation for
+</I>&gt;&gt;<i> customer applications. A large majority of standalone 32-bit embedded
+</I>&gt;&gt;<i> applications that we have seen work well within 256 KB flash. In fact,
+</I>&gt;&gt;<i> most 'C' applications can even add an RTOS and still have flash left.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> We do have an AVR32-based controller in the works that will have the
+</I>&gt;&gt;<i> option of 512 KB of flash, mainly because that option is available in
+</I>&gt;&gt;<i> that MCU.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> For applications with larger memory footprints we also offer an ARM9
+</I>&gt;&gt;<i> controller with 64 MB of RAM and 512MB or 1 GB of NAND flash. It targets
+</I>&gt;&gt;<i> applications using Linux but could be used for standalone applications
+</I>&gt;&gt;<i> too. A new 400 MHz model of the Electrum line in the picoITX form factor
+</I>&gt;&gt;<i> will be available for under $100 in about four weeks. I have not built
+</I>&gt;&gt;<i> eLua for the ARM9 but will do at some point.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Regards,
+</I>&gt;&gt;<i> Jesus Alvarez
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: 847.448.0386
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090812/504b423b/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090812/504b423b/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000990.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+	<LI>Next message: <A HREF="000996.html">[eLua-dev] New Board with eLua Support - Micromint Eagle 50
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#993">[ date ]</a>
+              <a href="thread.html#993">[ thread ]</a>
+              <a href="subject.html#993">[ subject ]</a>
+              <a href="author.html#993">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

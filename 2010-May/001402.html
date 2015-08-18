@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LM3S6569 on Mac OS X Issues
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LM3S6569%20on%20Mac%20OS%20X%20Issues&In-Reply-To=%3CAANLkTimIwkGsG53Lx6Aj4FuTz_MPEqShaCcq6Nr15_-L%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001401.html">
+   <LINK REL="Next"  HREF="001403.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LM3S6569 on Mac OS X Issues</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LM3S6569%20on%20Mac%20OS%20X%20Issues&In-Reply-To=%3CAANLkTimIwkGsG53Lx6Aj4FuTz_MPEqShaCcq6Nr15_-L%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] LM3S6569 on Mac OS X Issues">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri May 28 01:35:33 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001401.html">[eLua-dev] LM3S6569 on Mac OS X Issues
+</A></li>
+        <LI>Next message: <A HREF="001403.html">[eLua-dev] LM3S6569 on Mac OS X Issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1402">[ date ]</a>
+              <a href="thread.html#1402">[ thread ]</a>
+              <a href="subject.html#1402">[ subject ]</a>
+              <a href="author.html#1402">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I don't think you've missed anything, but here are a few other things
+that you can check on.
+
+Check that the FTDI module has loaded:
+$ kextstat -l | grep FTDI
+  174    0 0x592b6000 0x8000     0x7000
+com.FTDI.driver.FTDIUSBSerialDriver (2.2.14) &lt;112 31 5 4 3 1&gt;
+
+If not, you could try using kextload to load the module, something like:
+$ sudo kextload FTDIUSBSerialDriver.kext
+(when you're in /System/Library/Extensions)
+
+You might want to check your &quot;All Messages&quot; display with Console.app
+to see if anything shows up on device insertion, or if any messages
+with &quot;FTDI&quot; appear, when I reconnect a device I get something like
+this:
+&quot;5/27/10 6:33:01 PM	kernel	FTDIUSBSerialDriver:        0  4036001 start - ok&quot;
+
+It could also be that the
+/System/Library/Extensions/Caches/com.apple.kext.caches hasn't cached
+this extension yet and is loading an unedited version of the extension
+for you.
+
+You can ask for this to be rebuilt manually, with the kextcache
+command, however the man page recommends just using touch on
+/System/Library/Extensions to alert the system to the need to rebuild
+the startup cache:
+<A HREF="http://devworld.apple.com/mac/library/documentation/Darwin/Reference/ManPages/man8/kextcache.8.html">http://devworld.apple.com/mac/library/documentation/Darwin/Reference/ManPages/man8/kextcache.8.html</A>
+
+
+
+
+On Thu, May 27, 2010 at 3:10 PM, Stefan Brantschen
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">stefan.brantschen at mac.com</A>&gt; wrote:
+&gt;<i> I experience issues with connecting my brand-new LM3S6569 to Mac OS X. I flashed the eLua 0.7 binary to the board from Windows, and can operate the board from Windows as well without problems (eLua shell, Lua interpreter, example programs in ROM).
+</I>&gt;<i>
+</I>&gt;<i> I then tried to talk to the board from Mac OS X. I installed the FTDIUSBSerialDriver and edited the Info.plist file according to James' instructions, including making sure the permissions are OK:
+</I>&gt;<i>
+</I>&gt;<i> desroches:Extensions] sbr2&gt; pwd
+</I>&gt;<i> /System/Library/Extensions
+</I>&gt;<i> [desroches:Extensions] sbr2&gt; cd FTDIUSBSerialDriver.kext/Contents/
+</I>&gt;<i> [desroches:Contents] sbr2&gt; ls -l
+</I>&gt;<i> total 384
+</I>&gt;<i> -rwxr-xr-x &#160;1 root &#160;wheel &#160;196303 May 27 16:56 Info.plist
+</I>&gt;<i> drwxr-xr-x &#160;3 root &#160;wheel &#160; &#160; 102 Oct 21 &#160;2009 MacOS
+</I>&gt;<i> drwxr-xr-x &#160;3 root &#160;wheel &#160; &#160; 102 Oct 21 &#160;2009 Resources
+</I>&gt;<i> [desroches:Contents] sbr2&gt; plutil -lint Info.plist
+</I>&gt;<i> Info.plist: OK
+</I>&gt;<i> [desroches:Contents] sbr2&gt;
+</I>&gt;<i>
+</I>&gt;<i> From the Info.plist file:
+</I>&gt;<i>
+</I>&gt;<i> &lt;key&gt;IOKitPersonalities&lt;/key&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160;&lt;dict&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &lt;key&gt;Stellaris LM3S6965&lt;/key&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;dict&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;key&gt;CFBundleIdentifier&lt;/key&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;string&gt;com.FTDI.driver.FTDIUSBSerialDriver&lt;/string&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;key&gt;IOClass&lt;/key&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;string&gt;FTDIUSBSerialDriver&lt;/string&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;key&gt;IOProviderClass&lt;/key&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;string&gt;IOUSBInterface&lt;/string&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;key&gt;bConfigurationValue&lt;/key&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;integer&gt;1&lt;/integer&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;key&gt;bInterfaceNumber&lt;/key&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;integer&gt;1&lt;/integer&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;key&gt;idProduct&lt;/key&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;integer&gt;48345&lt;/integer&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;key&gt;idVendor&lt;/key&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;integer&gt;1027&lt;/integer&gt;
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&lt;/dict&gt;
+</I>&gt;<i> ...
+</I>&gt;<i>
+</I>&gt;<i> In the System Profiler I see the Stellaris board on USB level, including the product and vendor IDs (0xbcd9 and 0x0403, ie. 48345 and 1027 decimal). I have rebooted the system more than once.
+</I>&gt;<i>
+</I>&gt;<i> But: the serial link does not appear in /dev.
+</I>&gt;<i>
+</I>&gt;<i> Have I missed something?
+</I>&gt;<i>
+</I>&gt;<i> Thanks!
+</I>&gt;<i> -- Stefan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001401.html">[eLua-dev] LM3S6569 on Mac OS X Issues
+</A></li>
+	<LI>Next message: <A HREF="001403.html">[eLua-dev] LM3S6569 on Mac OS X Issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1402">[ date ]</a>
+              <a href="thread.html#1402">[ thread ]</a>
+              <a href="subject.html#1402">[ subject ]</a>
+              <a href="author.html#1402">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

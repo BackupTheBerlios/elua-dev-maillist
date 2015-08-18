@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua-dev Digest, Vol 35, Issue 31
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua-dev%20Digest%2C%20Vol%2035%2C%20Issue%2031&In-Reply-To=%3CBANLkTi%3DzcHvsHBVOp0jGjGwuR_6GOGrHdQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002509.html">
+   <LINK REL="Next"  HREF="002511.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua-dev Digest, Vol 35, Issue 31</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua-dev%20Digest%2C%20Vol%2035%2C%20Issue%2031&In-Reply-To=%3CBANLkTi%3DzcHvsHBVOp0jGjGwuR_6GOGrHdQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua-dev Digest, Vol 35, Issue 31">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Jun 15 02:01:56 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002509.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 31
+</A></li>
+        <LI>Next message: <A HREF="002511.html">[eLua-dev] Help with a Port (free hardware on offer)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2510">[ date ]</a>
+              <a href="thread.html#2510">[ thread ]</a>
+              <a href="subject.html#2510">[ subject ]</a>
+              <a href="author.html#2510">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Jun 14, 2011 at 6:01 AM, Raman Gopalan &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> Thanks for your reply.
+</I>&gt;<i>
+</I>&gt;<i> Yes, the RPC server is running and the boot=luarpc is enabled at build.
+</I>&gt;<i> I even tried starting the server with rpc.server() but it takes me to an
+</I>&gt;<i> infinite waiting state. It does not respond.
+</I>
+rpc.server is intended to &quot;take over&quot; and not do anything other than
+handle RPC requests after invokation.  There's another model writing
+servers that intermingle with other running Lua code, but given some
+platform limitations and the way LuaRPC is currently written use of
+that approach is problematic on the MCU.  We should have this
+supported in an upcoming release.
+
+&gt;<i> Awaiting your response.
+</I>
+OK, so I've done some additional testing and what I'm currently
+finding is that while STM32 seems to work fine on Windows, Mac &amp; Linux
+for me, I pulled out an LM3S6965 that I've got and while that works
+with a desktop OS X client, it doesn't appear to work with Windows.
+So, you have indeed found a bug, and one that I'm not quite sure why
+is manifesting in this way (working configurations/platforms vs
+non-working ones).
+
+I don't believe the problem is related to virtual com ports since the
+STM32 platform is also using one.  I'm guessing it may have something
+to do with the differences in behavior between the Win and POSIX
+serial implementations and perhaps timing and how that might vary
+between platforms?
+
+I know some enhancements were made to the rfs/mux serial
+implementation for Windows that prevent some problematic conditions
+for that platform.  I have tried updating the serial code being used
+by LuaRPC to use similar checks on setup reading and writing and that
+doesn't seem to fix the issue.
+
+ I'll send an update as soon as I've narrowed down what might be
+causing this issue.
+
+-jsnyder
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002509.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 31
+</A></li>
+	<LI>Next message: <A HREF="002511.html">[eLua-dev] Help with a Port (free hardware on offer)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2510">[ date ]</a>
+              <a href="thread.html#2510">[ thread ]</a>
+              <a href="subject.html#2510">[ subject ]</a>
+              <a href="author.html#2510">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

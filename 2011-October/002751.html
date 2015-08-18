@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RPC over SOCK_STREAM
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3CCA%2Bk0RGfTEu0XEorAJXma%3DHFkncMATeyXHi6fC193z_WW8ksQDQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002749.html">
+   <LINK REL="Next"  HREF="002752.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RPC over SOCK_STREAM</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RPC%20over%20SOCK_STREAM&In-Reply-To=%3CCA%2Bk0RGfTEu0XEorAJXma%3DHFkncMATeyXHi6fC193z_WW8ksQDQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RPC over SOCK_STREAM">dadosutter at gmail.com
+       </A><BR>
+    <I>Tue Oct  4 22:53:36 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002749.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+        <LI>Next message: <A HREF="002752.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2751">[ date ]</a>
+              <a href="thread.html#2751">[ thread ]</a>
+              <a href="subject.html#2751">[ subject ]</a>
+              <a href="author.html#2751">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello list,
+   (getting back from the vacations ....)
+
+On Tue, Oct 4, 2011 at 11:55, raman &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I've been working on the implementation of RPC over Ethernet.
+</I>
+
+Cool ! Thanks for sharing this !
+
+
+&gt;<i> I have been
+</I>&gt;<i> able to construct the luarpc instance on the PC, replacing the
+</I>&gt;<i> luarpc_desktop_uart.c code with socket code. I have also created
+</I>&gt;<i> luarpc_elua_net.c. So far, I have been able to establish a handshake
+</I>&gt;<i> between
+</I>&gt;<i> the micro and the PC. So, s, e = rpc.connect(&#8220;192.168.100.90&#8221;, 6655)
+</I>&gt;<i> returns
+</I>&gt;<i> without error and s corresponds to the slave.
+</I>&gt;<i>
+</I>&gt;<i> The luarpc instance on the PC is able to get values from the micro. So, pio
+</I>&gt;<i> = s.pio works, (pio corresponding to userdata). However, I ran into a few
+</I>&gt;<i> problems: pio.pin.setdir(###) does not return. It goes into a waiting
+</I>&gt;<i> state.
+</I>&gt;<i> I am sure the file descriptor returned by elua_accept(###) is valid. While
+</I>&gt;<i> tracing through the code, I realized that the state does not enter
+</I>&gt;<i> read_cmd_call(###). I can only wonder if there&#8217;s a problem with the code
+</I>&gt;<i> for
+</I>&gt;<i> transport_open_listener(###).
+</I>&gt;<i>
+</I>&gt;<i> Do you have any suggestions for me ?
+</I>&gt;<i>
+</I>&gt;<i> I could put up my test branch online. (Where can I put the code ?) Is
+</I>&gt;<i> someone willing to work on this ? I could use some help.
+</I>&gt;<i>
+</I>
+Do you have a github account of your own ?
+I suggest you clone eLua to a project of yours and work there. It makes it
+(very) easy for other developers to collaborate and also to eventually
+integrate the code into eLua (via Pull Requests).
+
+
+&gt;<i> Awaiting your response.
+</I>&gt;<i>
+</I>&gt;<i> Raman
+</I>&gt;<i>
+</I>
+Best
+Dado
+
+
+
+
+
+
+
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context:
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6858931.html">http://elua-development.2368040.n2.nabble.com/RPC-over-SOCK-STREAM-tp6858931p6858931.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111004/cdc4e6b3/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111004/cdc4e6b3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002749.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+	<LI>Next message: <A HREF="002752.html">[eLua-dev] RPC over SOCK_STREAM
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2751">[ date ]</a>
+              <a href="thread.html#2751">[ thread ]</a>
+              <a href="subject.html#2751">[ subject ]</a>
+              <a href="author.html#2751">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

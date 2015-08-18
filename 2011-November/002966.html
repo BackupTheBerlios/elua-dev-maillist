@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Finally! A small-footprint text editor written in Lua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Finally%21%20A%20small-footprint%20text%20editor%20written%20in%20Lua&In-Reply-To=%3CCADNiTVnYRaCP88Qhvic8AEDYOQohwo8PzDcFGub7tRZfhA09mg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002950.html">
+   <LINK REL="Next"  HREF="002967.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Finally! A small-footprint text editor written in Lua</H1>
+    <B>Ra Do</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Finally%21%20A%20small-footprint%20text%20editor%20written%20in%20Lua&In-Reply-To=%3CCADNiTVnYRaCP88Qhvic8AEDYOQohwo8PzDcFGub7tRZfhA09mg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Finally! A small-footprint text editor written in Lua">radvan72 at gmail.com
+       </A><BR>
+    <I>Wed Nov 16 19:49:39 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002950.html">[eLua-dev] Finally! A small-footprint text editor written in Lua
+</A></li>
+        <LI>Next message: <A HREF="002967.html">[eLua-dev] Finally! A small-footprint text editor written in Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2966">[ date ]</a>
+              <a href="thread.html#2966">[ thread ]</a>
+              <a href="subject.html#2966">[ subject ]</a>
+              <a href="author.html#2966">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>
+</I>&gt;<i> Date: Wed, 16 Nov 2011 04:30:24 +0100
+</I>&gt;<i> From: Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;<i>        &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> Subject: Re: [eLua-dev] Finally! A small-footprint text editor written
+</I>&gt;<i>        in Lua
+</I>&gt;<i> Message-ID:
+</I>&gt;<i>        &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">CAL4-wQrO9_JGbqPpcHb3NLU1z8nfXhq20dXy8m4fzygJ2HmJrA at mail.gmail.com</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> Content-Type: text/plain; charset=ISO-8859-1
+</I>&gt;<i>
+</I>&gt;<i> On 14 November 2011 23:26, ra.do &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">radvan72 at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; editor (<A HREF="https://github.com/martinwguy/lua-ed">https://github.com/martinwguy/lua-ed</A>) ...
+</I>&gt;<i> &gt; Since I don't have a MMC card implemented on my STM32F4-Discovery board
+</I>&gt;<i> yet,
+</I>&gt;<i> &gt; I've decided to flash the five .lua files to the ROMFS folder in order to
+</I>&gt;<i> &gt; give the editor a try.
+</I>&gt;<i> &gt; It failed right after require &quot;ed&quot; with
+</I>&gt;<i> &gt;&gt; require &quot;ed&quot;
+</I>&gt;<i> &gt; error loading module 'mainloop' from file '/rom/mainloop.lua':
+</I>&gt;<i> &gt; ? ? ? ? not enough memory
+</I>&gt;<i>
+</I>&gt;<i> &gt; Do you think this is because it's running off the romfs, or because I am
+</I>&gt;<i> actually out of memory on the board ?
+</I>&gt;<i> &gt; Or perhaps I am out of memory because I've flashed these files to the
+</I>&gt;<i> rom, hence taking too much available
+</I>&gt;<i>  memory away?
+</I>&gt;<i>
+</I>&gt;<i> No, ROM uage doesn't subtract from available RAM, the .lua files are
+</I>&gt;<i> only read and it uses no tempfile so it &quot;should work&quot;.
+</I>&gt;<i> How much RAM does the board have?
+</I>&gt;<i>
+</I>&gt;<i> M
+</I>&gt;<i>
+</I>
+looks like it has 192KB of RAM
+
+<A HREF="http://www.st.com/internet/evalboard/product/252419.jsp">http://www.st.com/internet/evalboard/product/252419.jsp</A>
+
+
+so the 5 lua files:
+
+buffer.lua 16112b
+ed.lua 1150b
+inout.lua 7076b
+mainloop.lua 29271b
+regex.lua 9266b
+
+would take away 62875 bytes (61.4KB) ... if all five were to be loaded to
+RAM, no ?
+
+what's the best way to check for available RAM in eLUA ?
+
+cheers
+R.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111116/9f2de3e2/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111116/9f2de3e2/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002950.html">[eLua-dev] Finally! A small-footprint text editor written in Lua
+</A></li>
+	<LI>Next message: <A HREF="002967.html">[eLua-dev] Finally! A small-footprint text editor written in Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2966">[ date ]</a>
+              <a href="thread.html#2966">[ thread ]</a>
+              <a href="subject.html#2966">[ subject ]</a>
+              <a href="author.html#2966">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Platform specific modules proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Platform%20specific%20modules%20proposal&In-Reply-To=%3CCBCBC1FC-5B1D-4896-BD59-DAC016EB20CC%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000268.html">
+   <LINK REL="Next"  HREF="000270.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Platform specific modules proposal</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Platform%20specific%20modules%20proposal&In-Reply-To=%3CCBCBC1FC-5B1D-4896-BD59-DAC016EB20CC%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Platform specific modules proposal">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jan  9 22:22:27 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000268.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+        <LI>Next message: <A HREF="000270.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#269">[ date ]</a>
+              <a href="thread.html#269">[ thread ]</a>
+              <a href="subject.html#269">[ subject ]</a>
+              <a href="author.html#269">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Jan 9, 2009, at 2:01 PM, Bogdan Marinescu wrote:
+
+&gt;<i>
+</I>&gt;<i> Oh, but timers can do so much more then just generate delays.  This  
+</I>&gt;<i> is why I proposed such a flexible interface.  As for caring what  
+</I>&gt;<i> functionality a platform has, IMO, since this is an embedded system  
+</I>&gt;<i> and users would be writing software that is closer to the hardware,  
+</I>&gt;<i> I would argue that an eLua user *would* want to know if the timer  
+</I>&gt;<i> was 8, 16, or 32 bits.  Even if they are just doing delays, that  
+</I>&gt;<i> knowledge would be invaluable in that it could tell you minimum  
+</I>&gt;<i> timer resolution and maximum timeout values.
+</I>&gt;<i>
+</I>&gt;<i> You're right, timers can do much more than just generate delays, I  
+</I>&gt;<i> was simplifying to make a point, the same principle applies to any  
+</I>&gt;<i> timer operation. As for your idea that the users would want to know  
+</I>&gt;<i> what kind of hardware they're using, I could argue that since  
+</I>&gt;<i> they're doing that, they might as well know if their timers can do  
+</I>&gt;<i> capture or not :), so querying for capabilities becomes kinda  
+</I>&gt;<i> redundant in this context. And for minimum/maximum timer resolution,  
+</I>&gt;<i> we already have tmr.getmindelay/tmr.getmaxdelay. Which are much more  
+</I>&gt;<i> useful in this particular situation, since knowing if a timer is  
+</I>&gt;<i> 8/16/32 bits tells only half of the story, you'd also need the timer  
+</I>&gt;<i> frequency and a calculator somewhere :) This is why I still stand by  
+</I>&gt;<i> my initial point, which I'd like to reformulate a bit: yes, the user  
+</I>&gt;<i> should know his platform, he just shouldn't care that much about it.  
+</I>&gt;<i> To me it's more natural to call functions like &quot;getmindelay&quot; that  
+</I>&gt;<i> completely hide the hardware (and allow for other neat stuff, like  
+</I>&gt;<i> the virtual timers that I implemented recently) than to try to  
+</I>&gt;<i> figure this out from the hardware. After all, Lua is a high level  
+</I>&gt;<i> language, and although the programmer does indeed use it at a level  
+</I>&gt;<i> that's very close to the hardware, he might not want to feel this.  
+</I>&gt;<i> Much like most C programmer out there don't want to feel that  
+</I>&gt;<i> there's some assembly code lurking in the shadows of their  
+</I>&gt;<i> beautifully intended code blocks :)
+</I>
+This brings up some basic issues with abstraction.  Recently I've had  
+the (not so great, because of the platform) privilege of helping some  
+students work with Basic Stamp for projects they were working on that  
+involved some servos.  A quick and easy way to control these is using  
+the PULSOUT command.  During the project a few of them had their  
+boards burn out and they were replaced with ones at higher clock  
+rates, and what I found out was that the values being used with  
+PULSOUT were directly tied to clock rate, so they had to guess at the  
+ranges needed to control the servos.  To me this represents a bad  
+tradeoff of &quot;knowing your hardware,&quot; especially with something geared  
+towards accessibility for beginners.  On the other hand, with Arduino,  
+this is handled completely differently, the hardware details are  
+completely abstracted away.  One passes angles for the servo instead  
+of pulse length related to clock cycles or even millisecond length.   
+What's bizarre about this is that Arduino basically uses C, and  
+compiles down to AVR assembler, and Basic Stamp is interpreted.
+
+Abstraction, almost much by definition, is limiting in some way. The  
+benefits one gets are in making something easier, that otherwise would  
+not have been.  In some cases you might want direct access to how the  
+timers are implemented and set things yourself.  One major downside to  
+this is that it's annoying to port, and may make for rather messy  
+implementations.  If you switch to another micro because it's a bit  
+faster or has hardware support for something that was previously being  
+emulated, you might have to tweak all of your magic numbers over  
+again.  In order to get around this you might also end up building  
+some sort of abstraction in Lua instead of C.  If the feature is  
+useful in many cases, perhaps the module should be extended, while  
+keeping the abstraction consistent, to include the feature.  If the  
+feature is a one off, you could still write your own custom module in  
+C.  I think it would be nicer to keep the Lua side of the interface  
+generally the same across platforms where possible, with the exception  
+of the platform specific modules.
+
+One other thought though:  If a feature, on some platforms, requires  
+emulation, and that emulation is particularly expensive over a full  
+hardware implementation, it might be nice to know if eLua is using  
+that in emulation rather than in hardware.  Perhaps this could somehow  
+be tied in with the pd module, either in the form of a list of  
+hardware supported features, like when one looks at /proc/cpuinfo on  
+linux, or something else?
+
+Just a few thoughts.
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090109/e116674c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090109/e116674c/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090109/e116674c/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090109/e116674c/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000268.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+	<LI>Next message: <A HREF="000270.html">[eLua-dev] Platform specific modules proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#269">[ date ]</a>
+              <a href="thread.html#269">[ thread ]</a>
+              <a href="subject.html#269">[ subject ]</a>
+              <a href="author.html#269">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

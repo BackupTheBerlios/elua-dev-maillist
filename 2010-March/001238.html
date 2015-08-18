@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C002101cabea1%24393de450%24abb9acf0%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001235.html">
+   <LINK REL="Next"  HREF="001239.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C002101cabea1%24393de450%24abb9acf0%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">john.hind at zen.co.uk
+       </A><BR>
+    <I>Mon Mar  8 10:24:59 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001235.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="001239.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1238">[ date ]</a>
+              <a href="thread.html#1238">[ thread ]</a>
+              <a href="subject.html#1238">[ subject ]</a>
+              <a href="author.html#1238">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yes, the PIC32 is a bit of a departure for Microchip in a number of
+directions. Note however that unlike the rest of the industry using ARM,
+Microchip have hone with a MIPS core - not sure if this will cause any
+problems for an eLua port? 
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Tony
+Sent: 07 March 2010 21:27
+To: eLua Users and Development List (www.eluaproject.net)
+Subject: Re: [eLua-dev] Single Chip Lua Prospects
+
+ 
+
+I'm glad to be the catalyst for a PIC32 port; I do think the PIC32MX795F512H
+looks pretty interesting.  I was very surprised that Microchip included so
+much RAM, because in the past PIC micros have been pretty light on RAM.  
+
+It looks like the PIC32MX795F512's are just starting to reach the
+distributors (e.g. Mouser USA has 10 in stock).
+
+Another bit of news: Atmel is working on a single precision FPU for the
+AVR32 U3 series.  Since no parts were announced, it'll be a while (my guess:
+&gt;<i>2 years to reach distribution).  But a AVR32U3 series with &gt;= 128K SRAM and
+</I>FPU would be pretty sweet.
+
+--Tony
+
+
+
+On Sat, Mar 6, 2010 at 2:09 AM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+
+I must look at PIC32 again myself! But is the serial port really necessary?
+The MX chips have USB and the (free) Microchip USB stack does Mass Storage
+Device as well as Human Interface Device (at least on the PIC 18 it does and
+it will even do both at once). Similar to the Mbed, would it not be possible
+to make the chip mount as a disk drive on the host computer and edit the
+script files directly in place?
+
+ 
+
+Ideally there could be a switch on the board and you'd flip it one way for
+MSD to load your scripts and flip it the other way to run the scripts with
+access to USB as HID so you could create USB devices.
+
+ 
+
+Time for another look, I think - Thanks Tony!
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+Sent: 05 March 2010 10:10
+To: eLua Users and Development List (www.eluaproject.net)
+
+
+Subject: Re: [eLua-dev] Single Chip Lua Prospects
+
+ 
+
+Thanks for all the good news, Tony! You made my day.
+
+On Fri, Mar 5, 2010 at 1:07 AM, Tony &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tony.elua at gmail.com</A>&gt; wrote:
+
+Even more single-chip eLua candidates are coming, so the situation is a bit
+better than last year.
+
+1. ST has expanded the STM32 Performance line with models with 96K SRAM and
+768K or 1024K flash; packages include a 64-pin QFP.  Not sure on
+availability, but should be fairly soon.
+
+
+Excellent. I really like the STM32s. If their next step is to bump the RAM
+to 128k, I'll probably marry that chip (sorry, wife). 96k is good enough
+though, I have a board with a STM32F103RE (512kF/32kR) and it can do a lot
+of nice stuff.
+ 
+
+2. Microchip has PIC32MX MCUs with 128K SRAM and 512K flash in a QFP-64.
+
+
+WOW! Now this is something I really have to try soon. I have an older PIC32
+board at home, but accessing its UART requires a connector that is hard to
+find and even harder to solder, so I didn't touch it yet (although PIC32 has
+been on eLua's TOPORT list for quite a while now). This is one thing about
+Microchip's PIC32 boards that annoys me quite a bit: in order to have a
+proper development environment for eLua (an UART, to be more precise), I'd
+have to buy the PIC32 board
+(<A HREF="http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE">http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE</A>
+&lt;<A HREF="http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE&amp;nodeId=2615">http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE&amp;nodeId=2615</A>
+&amp;dDocName=en535536&gt; &amp;nodeId=2615&amp;dDocName=en535536) which should be then
+stuck in a PIC32 I/O expansion board
+(<A HREF="http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE">http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE</A>
+&lt;<A HREF="http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE&amp;nodeId=2615">http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE&amp;nodeId=2615</A>
+&amp;dDocName=en535444&gt; &amp;nodeId=2615&amp;dDocName=en535444) and I still have to use
+some sort of daugherboard in that one to get a serial connector (if I don't
+feel like soldering, that is). 
+That said, I have to check if I can't use one of the on-board USB
+connections as a CDC, this might simplify things quite a bit. I don't think
+I have the time to develop a CDC device on PIC32 myself, but maybe they have
+something like this in their software library. And who knows, maybe they're
+even willing to sponsor us. Thanks for the hint! I had no idea about this
+new line (new to me, as least :) ) of PIC32 devices.
+
+3. If you want to go for broke, Renesas has the SH7216 series with 200MHz
+speed, FPU, 128K SRAM and 1024K flash -- but as usual with Renesas,
+availability is poor and the price is high (Digikey only lists one model,
+not in stock, for $42.27 qty 1).
+
+
+If they're not easily available in the US, chances are they aren't available
+at all in Europe. I found it quite hard to find Renesas products in Europe.
+Still, this chip sounds SWEET. Especially the FPU part.
+ 
+
+4. Someday Renesas promises they'll have a new RX600 MCU with 256K SRAM and
+4M flash.  On the good side, Renesas does make a lot of very capable MCUs in
+QFPs.  But, I'm not holding my breath waiting for availability (my guess is
+it's at least several years away).
+
+
+You're probably right, but it's very good to see this &quot;more on-board RAM and
+Flash&quot; trend. Very nice for eLua, as we all know :)
+
+Best,
+Bogdan
+ 
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100308/7220fb42/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100308/7220fb42/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001235.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="001239.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1238">[ date ]</a>
+              <a href="thread.html#1238">[ thread ]</a>
+              <a href="subject.html#1238">[ subject ]</a>
+              <a href="author.html#1238">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

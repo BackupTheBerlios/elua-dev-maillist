@@ -1,0 +1,400 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Typing file from MMC
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Typing%20file%20from%20MMC&In-Reply-To=%3CAANLkTim0%3D9JDPA_m6TubZWuKCnt1fV2rggPLnH8j7_YY%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001632.html">
+   <LINK REL="Next"  HREF="001640.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Typing file from MMC</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Typing%20file%20from%20MMC&In-Reply-To=%3CAANLkTim0%3D9JDPA_m6TubZWuKCnt1fV2rggPLnH8j7_YY%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Typing file from MMC">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Sep  2 16:23:30 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001632.html">[eLua-dev] Typing file from MMC
+</A></li>
+        <LI>Next message: <A HREF="001640.html">[eLua-dev] Typing file from MMC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1633">[ date ]</a>
+              <a href="thread.html#1633">[ thread ]</a>
+              <a href="subject.html#1633">[ subject ]</a>
+              <a href="author.html#1633">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I don't have my LM3S6965 w/ me and won't be able to check this out
+during the next few weeks.
+
+I think the problem might be this:
+<A HREF="http://github.com/elua/elua/commit/d636724b601db1b44a5efd0c937cb383f9a2ffd3">http://github.com/elua/elua/commit/d636724b601db1b44a5efd0c937cb383f9a2ffd3</A>
+
+That was committed after the 0.7 release. IIRC, the issue goes
+something like: newlib will set the binary flag, which generally
+doesn't mean anything except on Windows.  FatFs always opens in binary
+mode anyways, but either it or our flag conversion/checking were
+bailing if this flag was set.
+
+Sorry for all these issues you've been encountering, especially ones
+that are already fixed in trunk :-)
+
+At some point I believe we are aiming to have the interfacing between
+the builder site and the eLua build system be a bit more flexible to
+accomodate not only the last &quot;stable&quot; release, but also trunk.
+Depending on where we are with the next release when I'm back in town
+I may do a little combing around for bugfixes that are in trunk and
+should be applied to the builder site's eLua codebase.
+
+On Thu, Sep 2, 2010 at 3:38 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Thu, Sep 2, 2010 at 12:54 AM, Paul Verbeke &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">paverbeke at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> Hi Fernando,
+</I>&gt;&gt;<i> Yes I did use the web based eLua builder, and I did add files which worked
+</I>&gt;&gt;<i> fine. When I type 'ls' &#160;I see all of the files in ROM and the file that is
+</I>&gt;&gt;<i> in MMC. However if I want to 'type' the file in the MMC it does not work. If
+</I>&gt;&gt;<i> I want to run the same file using eLua it works fine. Just wondering if you
+</I>&gt;&gt;<i> are supposed to be able to do this or not.
+</I>&gt;<i>
+</I>&gt;<i> You're definitely supposed to do that. eLua doesn't handle files on
+</I>&gt;<i> different filesystems differently. In your case, I have no idea why
+</I>&gt;<i> that doesn't work. I'll try to check.
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;&gt;<i> On Wed, Sep 1, 2010 at 7:00 AM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-request at lists.berlios.de</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Send eLua-dev mailing list submissions to
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> To subscribe or unsubscribe via the World Wide Web, visit
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> or, via email, send a message with subject or body 'help' to
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-request at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You can reach the person managing the list at
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-owner at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> When replying, please edit your Subject line so it is more specific
+</I>&gt;&gt;&gt;<i> than &quot;Re: Contents of eLua-dev digest...&quot;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Today's Topics:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &#160; 1. Re: Thanks for the mmc (Fernando Ara?jo)
+</I>&gt;&gt;&gt;<i> &#160; 2. Re: Thanks for the mmc (Pedro Bittencourt)
+</I>&gt;&gt;&gt;<i> &#160; 3. Re: Thanks for the mmc (Bogdan Marinescu)
+</I>&gt;&gt;&gt;<i> &#160; 4. Re: [OT] 2^5 (Bogdan Marinescu)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ----------------------------------------------------------------------
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Message: 1
+</I>&gt;&gt;&gt;<i> Date: Tue, 31 Aug 2010 23:10:43 -0300
+</I>&gt;&gt;&gt;<i> From: Fernando Ara?jo &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">freecky at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;&gt;<i> Subject: Re: [eLua-dev] Thanks for the mmc
+</I>&gt;&gt;&gt;<i> Message-ID:
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">AANLkTinUqRPweLuq1H5NwhpS7EcOx1GPMiHsxPgNSq35 at mail.gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> Content-Type: text/plain; charset=&quot;iso-8859-1&quot;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; Fine point, you can't seem to type or ls the contents, but can run LUA
+</I>&gt;&gt;&gt;<i> &gt; not
+</I>&gt;&gt;&gt;<i> &gt;&gt; sure why...
+</I>&gt;&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Strange, I'll check it but not before the weekend :(
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Did you you eLua Builder ? If so, please check if you added any files to
+</I>&gt;&gt;&gt;<i> the
+</I>&gt;&gt;&gt;<i> ROMFS
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --Fernando Araujo
+</I>&gt;&gt;&gt;<i> -------------- next part --------------
+</I>&gt;&gt;&gt;<i> An HTML attachment was scrubbed...
+</I>&gt;&gt;&gt;<i> URL:
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100831/8ca3ad17/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100831/8ca3ad17/attachment-0001.html</A>&gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ------------------------------
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Message: 2
+</I>&gt;&gt;&gt;<i> Date: Tue, 31 Aug 2010 23:42:42 -0300
+</I>&gt;&gt;&gt;<i> From: Pedro Bittencourt &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;&gt;<i> Subject: Re: [eLua-dev] Thanks for the mmc
+</I>&gt;&gt;&gt;<i> Message-ID:
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;&lt;AANLkTinzDn01acTCSuRKxds1_Hk7fJsZXZFG+EipB=<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">LD at mail.gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> Content-Type: text/plain; charset=&quot;iso-8859-1&quot;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi!
+</I>&gt;&gt;&gt;<i> Lua Gravity is going great, we need to solve some memory issues (light
+</I>&gt;&gt;&gt;<i> functions and light tables may help).
+</I>&gt;&gt;&gt;<i> The bad news is: lua gravity is an excellent interrupt handler
+</I>&gt;&gt;&gt;<i> (simplifying a bit), but without interrupts we still need to use a loop to
+</I>&gt;&gt;&gt;<i> dispatch events (like btn presses, sensor readings and so on...)
+</I>&gt;&gt;&gt;<i> I'm brewing some solutions (better say &quot;workarounds&quot;) on interruptions but
+</I>&gt;&gt;&gt;<i> I
+</I>&gt;&gt;&gt;<i> need some time on this, and time is not a luxury I have (as would
+</I>&gt;&gt;&gt;<i> say Khrushchev)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --Pedro Bittencourt
+</I>&gt;&gt;&gt;<i> -------------- next part --------------
+</I>&gt;&gt;&gt;<i> An HTML attachment was scrubbed...
+</I>&gt;&gt;&gt;<i> URL:
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100831/6cb2d860/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100831/6cb2d860/attachment-0001.html</A>&gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ------------------------------
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Message: 3
+</I>&gt;&gt;&gt;<i> Date: Wed, 1 Sep 2010 11:03:11 +0300
+</I>&gt;&gt;&gt;<i> From: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;&gt;<i> Subject: Re: [eLua-dev] Thanks for the mmc
+</I>&gt;&gt;&gt;<i> Message-ID:
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">AANLkTin5vDwVTFtn_q8q+bqC-z2XDWeFi+crq4kKBSJW at mail.gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> Content-Type: text/plain; charset=ISO-8859-1
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Wed, Sep 1, 2010 at 5:42 AM, Pedro Bittencourt
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt; Hi!
+</I>&gt;&gt;&gt;<i> &gt; Lua Gravity is going great, we need to solve some memory issues (light
+</I>&gt;&gt;&gt;<i> &gt; functions and light tables may help).
+</I>&gt;&gt;&gt;<i> &gt; The bad news is: lua gravity is an excellent interrupt handler
+</I>&gt;&gt;&gt;<i> &gt; (simplifying?a bit), but without interrupts we still need to use a loop
+</I>&gt;&gt;&gt;<i> &gt; to
+</I>&gt;&gt;&gt;<i> &gt; dispatch events (like btn presses, sensor readings and so on...)
+</I>&gt;&gt;&gt;<i> &gt; I'm brewing some solutions (better say &quot;workarounds&quot;) on interruptions
+</I>&gt;&gt;&gt;<i> &gt; but I
+</I>&gt;&gt;&gt;<i> &gt; need some time on this, and time is not a luxury I have (as would
+</I>&gt;&gt;&gt;<i> &gt; say?Khrushchev)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Of course you realize, this means war! :)
+</I>&gt;&gt;&gt;<i> Yes, there is a very simple implementation of interrupt handlers that
+</I>&gt;&gt;&gt;<i> is working from eLua (with some inherent limitations, but working
+</I>&gt;&gt;&gt;<i> nevertheless). I need to get my priorities straight a bit, and the
+</I>&gt;&gt;&gt;<i> best way to motivate myself is to promise right here on the list that
+</I>&gt;&gt;&gt;<i> I'm going to restart working on interrupt support (which seems to be
+</I>&gt;&gt;&gt;<i> needed by a lot of people) and add it to the trunk as soon as
+</I>&gt;&gt;&gt;<i> possible. Which I believe I just did :), so you can expect me to focus
+</I>&gt;&gt;&gt;<i> on this direction. Loadable binary (C) modules can wait a bit more,
+</I>&gt;&gt;&gt;<i> after all :)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ------------------------------
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Message: 4
+</I>&gt;&gt;&gt;<i> Date: Wed, 1 Sep 2010 11:04:00 +0300
+</I>&gt;&gt;&gt;<i> From: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;&gt;&gt;<i> Subject: Re: [eLua-dev] [OT] 2^5
+</I>&gt;&gt;&gt;<i> Message-ID:
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;&lt;AANLkTi=<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wA01SXWs28J78uA06RmCwbYdDGzLftqA6E7Lm at mail.gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> Content-Type: text/plain; charset=ISO-8859-1
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Wed, Sep 1, 2010 at 2:19 AM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i> &gt; Happy birthday guys \o/ !!
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You probably meant \m/, right ? :D
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &gt; On Tue, Aug 31, 2010 at 2:20 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt; Thanks again you all guys, for being arround, for all the support for
+</I>&gt;&gt;&gt;<i> &gt;&gt; the
+</I>&gt;&gt;&gt;<i> &gt;&gt; project and for having Fun with eLua.
+</I>&gt;&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt; Best
+</I>&gt;&gt;&gt;<i> &gt;&gt; Dado
+</I>&gt;&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt; On Tue, Aug 31, 2010 at 13:47, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; Happy birthday to both Dado &amp; Bogdan :-)
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; I'm a little swamped, but perhaps I'll drop a present or two in SVN
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; before the day is out ( at least as the day is defined in UTC - 6 )
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; :-)
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; -jsnyder
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; On Tue, Aug 31, 2010 at 10:56 AM, Marcelo Politzer
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt; Happy Birthday! and good hacking :D
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt; Regards,
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt; Marcelo
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt; Em 31 de agosto de 2010 12:37, Fernando Ara?jo &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">freecky at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt; escreveu:
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; Happy bithday Dado and Bogdan!!! Many programming good things for
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; you
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; all
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; !!!
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; Best,
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; --
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; Fernando Araujo
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; On Tue, Aug 31, 2010 at 10:25, Bogdan Marinescu
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; Thanks everyone!
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt;&gt; Hope your taking the day off :)-Patrick
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; Nope, unfortunately.
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; I'm certainly not and in Bogdan's case, to take the day off
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; means
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; to
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; code a
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; &gt; bit more for eLua :)
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; You're right, that's one of the best ways to spend my free time by
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; far.
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; Best,
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; Bogdan
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt; eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; --
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; James Snyder
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; Biomedical Engineering
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; Northwestern University
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; Phone: (847) 448-0386
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ------------------------------
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> End of eLua-dev Digest, Vol 26, Issue 4
+</I>&gt;&gt;&gt;<i> ***************************************
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001632.html">[eLua-dev] Typing file from MMC
+</A></li>
+	<LI>Next message: <A HREF="001640.html">[eLua-dev] Typing file from MMC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1633">[ date ]</a>
+              <a href="thread.html#1633">[ thread ]</a>
+              <a href="subject.html#1633">[ subject ]</a>
+              <a href="author.html#1633">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

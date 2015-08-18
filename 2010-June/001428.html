@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] collectgarbage(&quot;count&quot;)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3CAANLkTimurK21K0PJX23UVDrannQgQvHdqxdNIyc-TQok%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001449.html">
+   <LINK REL="Next"  HREF="001420.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] collectgarbage(&quot;count&quot;)</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3CAANLkTimurK21K0PJX23UVDrannQgQvHdqxdNIyc-TQok%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] collectgarbage(&quot;count&quot;)">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jun 11 17:15:41 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001449.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+        <LI>Next message: <A HREF="001420.html">[eLua-dev] Terminal Program on Mac OS X
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1428">[ date ]</a>
+              <a href="thread.html#1428">[ thread ]</a>
+              <a href="subject.html#1428">[ subject ]</a>
+              <a href="author.html#1428">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Jun 11, 2010 at 8:26 AM, Stefan Brantschen
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">stefan.brantschen at mac.com</A>&gt; wrote:
+&gt;<i> I had expected to see the &quot;not enough memory&quot; error at or close to 64k, naively assuming that collectgarbage(&quot;count&quot;) gives the overall memory consumption. I know better now, so I guess I can infer that my test program with its non-collectable items plus stack is 24k if I get the above error message at collectgarbage(&quot;count&quot;) == 40k. Correct?
+</I>
+I believe the main stack (whose size is settable in stacks.h) is 2kB
+on that platform.  I'm not sure if the remaining 22k is really
+non-collectable items or if the problem is more related to
+fragmentation.  We would really need to instrument malloc and see what
+the memory space looks like to get a better idea here, but we don't
+currently have something like this implemented (it's on the wishlist
+somewhere).  I believe that Bogdan might have had a tool at some point
+that would collect some data on Lua's collectable allocations, but
+it's not in SVN and I don't think I have the sources for it.
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001449.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+	<LI>Next message: <A HREF="001420.html">[eLua-dev] Terminal Program on Mac OS X
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1428">[ date ]</a>
+              <a href="thread.html#1428">[ thread ]</a>
+              <a href="subject.html#1428">[ subject ]</a>
+              <a href="author.html#1428">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

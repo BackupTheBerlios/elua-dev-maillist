@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua vs. .net MF
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs.%20.net%20MF&In-Reply-To=%3C006401cc0b0b%24354d83c0%249fe88b40%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002362.html">
+   <LINK REL="Next"  HREF="002369.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua vs. .net MF</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs.%20.net%20MF&In-Reply-To=%3C006401cc0b0b%24354d83c0%249fe88b40%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] eLua vs. .net MF">john.hind at zen.co.uk
+       </A><BR>
+    <I>Thu May  5 12:00:05 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002362.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+        <LI>Next message: <A HREF="002369.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2363">[ date ]</a>
+              <a href="thread.html#2363">[ thread ]</a>
+              <a href="subject.html#2363">[ subject ]</a>
+              <a href="author.html#2363">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I would not personally emphasise the language, the debugger or even the
+absolute performance as the key issues. Other things being equal, these
+would be important. However at this stage of the game, for me, the important
+thing is being able to write a real, useful microcontroller application in a
+single chip. So the key things are:
+
+ 
+
+1. All the hardware I/O features of the chip should be accessible to the
+high-level language and well documented.
+
+ 
+
+2. There should be support for multitasking and event response in the
+high-level language.
+
+ 
+
+3. Memory use (RAM and EPROM) must be frugal enough so you can fit real
+applications in on-chip memory.
+
+ 
+
+I accept eLua has a difficult challenge due to trying to support lots of
+different chips and boards, but is that the right decision? Microcontrollers
+are a chip-per-application proposition, so we can afford to buy the chip
+that supports the software rather than trying to make the software support
+all the available chips.
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of Bogdan Marinescu
+Sent: 05 May 2011 09:35
+To: eLua Users and Development List (www.eluaproject.net)
+Subject: Re: [eLua-dev] eLua vs. .net MF
+
+ 
+
+ 
+
+On Thu, May 5, 2011 at 11:21 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+wrote:
+
+On Thu, May 5, 2011 at 2:37 AM, sweetlilmre &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">sweetlilmre at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> Having used .NETMF extensively one of its main issues for me has been
+</I>&gt;<i> interop performance.
+</I>&gt;<i>
+</I>&gt;<i> When needing to bitbang pins for LED matrix displays etc. it has been
+</I>&gt;<i> necessary to extend the firmware see
+</I>&gt;<i>
+</I><A HREF="http://forums.netduino.com/index.php?/topic/272-bitbanger-driver/page__p__17">http://forums.netduino.com/index.php?/topic/272-bitbanger-driver/page__p__17</A>
+78__hl__bitbanger__fromsearch__1#entry1778
+&gt;<i> NetDuino BitBanger
+</I>&gt;<i>
+</I>&gt;<i> eLua seems to perform better for this kind of application and seems more
+</I>&gt;<i> easily extensible.
+</I>
+I didn't want to jump to conclusions, but I was somewhat presuming
+that both of these might be the case.  I figured that the .NET VM
+would still end up being somewhat slower than Lua's, and I was curious
+about whether or not they had managed to come up with some way to make
+it as simply extensible with C modules.
+
+
+&gt;<i> Also as a language, Lua is significantly easier to learn (for newbies) and
+</I>I
+&gt;<i> find this attractive for teaching purposes.
+</I>
+I can't speak to this directly (since I haven't written anything of
+great length or significance in C#), but I would figure that the
+syntax and a primarily functional language like Lua + the REPL might
+be easier to teach with.
+
+
+&gt;<i>
+</I>&gt;<i> Still both are very interesting and have their place. A really nice
+</I>&gt;<i> debugging interface over serial akin to the VS debugger for .NETMF would
+</I>be
+&gt;<i> fantastic for eLua.
+</I>
+This is something I'm not sure if anyone (including myself) on the dev
+team is familiar with.  Is there a demo of this somewhere to show how
+this works without getting the hardware?  If you look at the roadmap
+on the site you'll note there's a &quot;Lua debugging (remote/on target)&quot;
+item, and while I think  we know we have some of the components we
+might need for such a tool, I'm not sure we've decided what it will
+look like (aside from not OpenOCD+gdb ;-) ).
+
+ 
+
+I think the OP was talking about high level debugging (debugging Lua code),
+not the very low level stuff one can do with OpenOCD+gdb. This isn't hard in
+itself:
+
+ 
+
+<A HREF="http://www.keplerproject.org/remdebug/example.html">http://www.keplerproject.org/remdebug/example.html</A>
+
+(there are other examples out there. A simple Lua debugger is almost trivial
+to write using the &quot;debug&quot; library).
+
+ 
+
+The main issue here is presentation. What most people have come to expect
+when they hear about debuggers is something integrated with a GUI where they
+can easily do stuff like breakpoint management, variable tracing, program
+control (on/off/step) and so on. A command line debugger is easy to write,
+not that easy to use. Without such a GUI and giving the dynamic nature of
+eLua I believe it's actually more efficient to simply add couple of &quot;print&quot;
+statements around the code and interpret the output. 
+
+On the other hand, I believe the GUI debugger should be a simple UI over the
+command line debugger (just like gdb+associated GUIs) so we'll have to do
+the command line version anyway.
+
+ 
+
+Best,
+
+Bogdan
+
+ 
+
+
+&gt;<i>
+</I>&gt;<i> My 2c
+</I>&gt;<i> -(e)
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context:
+</I><A HREF="http://elua-development.2368040.n2.nabble.com/eLua-vs-net-MF-tp6331487p63334">http://elua-development.2368040.n2.nabble.com/eLua-vs-net-MF-tp6331487p63334</A>
+33.html
+&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110505/01b261ad/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110505/01b261ad/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002362.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+	<LI>Next message: <A HREF="002369.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2363">[ date ]</a>
+              <a href="thread.html#2363">[ thread ]</a>
+              <a href="subject.html#2363">[ subject ]</a>
+              <a href="author.html#2363">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua Simulator
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Simulator&In-Reply-To=%3CAANLkTimtc-Oy8RBQWjABkyUpudRVchq_skk%2B1CoWbh_9%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001681.html">
+   <LINK REL="Next"  HREF="001697.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua Simulator</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Simulator&In-Reply-To=%3CAANLkTimtc-Oy8RBQWjABkyUpudRVchq_skk%2B1CoWbh_9%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua Simulator">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Nov  9 21:19:54 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001681.html">[eLua-dev] eLua Simulator
+</A></li>
+        <LI>Next message: <A HREF="001697.html">[eLua-dev] eLua Simulator
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1686">[ date ]</a>
+              <a href="thread.html#1686">[ thread ]</a>
+              <a href="subject.html#1686">[ subject ]</a>
+              <a href="author.html#1686">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I remember looking at this at some time in the past since CodeSourcery
+(which maintains the ARM GCC port) uses qemu for some of its automated
+testing suites.  I never got to the stage where I had working
+configuration though.  I would be interested in any details you have
+on how you did your build and command line options if you get this to
+a working state.
+
+Note:  the emulator, I believe, emulates _some_ of the peripheral
+features of the device, but might not emulate all.  You may be
+encountering issues due to eLua trying to init some of these
+facilities on startup.  As Bogdan points out however looking at the
+program counter and a dump might be the most useful way to figure out
+where it has failed.
+
+On Mon, Nov 8, 2010 at 8:03 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Mon, Nov 8, 2010 at 3:48 PM, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> Hello eLuers,
+</I>&gt;&gt;<i> I've recently found out that qemu is able to simulate the&#160;lm3s6965evb which
+</I>&gt;&gt;<i> is compatible with eLua ( did any one knew? good news huh? :) ).
+</I>&gt;<i>
+</I>&gt;<i> Never tried it, I actually didn't know that qemu emulates something
+</I>&gt;<i> else than x86. Good to know :)
+</I>&gt;<i>
+</I>&gt;&gt;<i> But i've got into a little problem, After removing some examples from
+</I>&gt;&gt;<i> SConstruct ( wasn't fitting when building codesourcery ).&#160;I've tried running
+</I>&gt;&gt;<i> qemu like this:
+</I>&gt;&gt;<i> `qemu-system-arm -M lm3s6965evb -kernel elua_lua_lm3s6965.bin'
+</I>&gt;&gt;<i> qemu: hardware error: ssys_read: Bad offset 0x70
+</I>&gt;&gt;<i> CPU #0:
+</I>&gt;&gt;<i> R00=01c00380 R01=400fe060 R02=400fe070 R03=078e3ac0
+</I>&gt;&gt;<i> R04=01c00380 R05=00000000 R06=00000000 R07=00000000
+</I>&gt;&gt;<i> R08=00000000 R09=00000000 R10=00000000 R11=00000000
+</I>&gt;&gt;<i> R12=00000000 R13=2000ffb0 R14=00004101 R15=00004402
+</I>&gt;&gt;<i> PSR=20000173 --C- T svc32
+</I>&gt;&gt;<i> Aborted
+</I>&gt;&gt;<i> Any one have ever tried this? Does it work? Does it worth trying?
+</I>&gt;<i>
+</I>&gt;<i> Did you try disassembling the elf file (arm-none-eabi-objdump -d
+</I>&gt;<i> elua_lua_lm3s6965.elf) and see where the actualy error is (PC equals
+</I>&gt;<i> 0x4402, as shown above, so it can easily identify the error location).
+</I>&gt;<i> I have a feeling that while qemu might emulate the CPU just fine, it
+</I>&gt;<i> most likely have issues with peripheral emulation. This is just of the
+</I>&gt;<i> many possible causes of error I guess.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001681.html">[eLua-dev] eLua Simulator
+</A></li>
+	<LI>Next message: <A HREF="001697.html">[eLua-dev] eLua Simulator
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1686">[ date ]</a>
+              <a href="thread.html#1686">[ thread ]</a>
+              <a href="subject.html#1686">[ subject ]</a>
+              <a href="author.html#1686">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

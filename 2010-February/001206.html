@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 port
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20port&In-Reply-To=%3C356719.92405.qm%40web59911.mail.ac4.yahoo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001205.html">
+   <LINK REL="Next"  HREF="001207.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 port</H1>
+    <B>Euripedes Rocha</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20port&In-Reply-To=%3C356719.92405.qm%40web59911.mail.ac4.yahoo.com%3E"
+       TITLE="[eLua-dev] AVR32 port">euripedesrocha at ymail.com
+       </A><BR>
+    <I>Tue Feb 23 11:32:40 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001205.html">[eLua-dev] AVR32 port
+</A></li>
+        <LI>Next message: <A HREF="001207.html">[eLua-dev] AVR32 port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1206">[ date ]</a>
+              <a href="thread.html#1206">[ thread ]</a>
+              <a href="subject.html#1206">[ subject ]</a>
+              <a href="author.html#1206">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Of course Dado. Like I said I just made some minor fixes. The diff are below.
+
+_________________________________________________________________
+diff --git a/SConstruct b/SConstruct
+index 1dc5f7c..4886ff7 100644
+--- a/SConstruct
++++ b/SConstruct
+@@ -47,7 +47,7 @@ toolchain_list = {
+&#160;&#160;&#160;&#160; 'cross_lualong' : 'int 32'
+&#160;&#160; },
+&#160;&#160; 'avr32-gcc' : { 
+-&#160;&#160;&#160; 'compile' : 'avr32-gcc', 
++&#160;&#160;&#160; 'compile' : 'avr32-g++', 
+&#160;&#160;&#160;&#160; 'link' : 'avr32-ld', 
+&#160;&#160;&#160;&#160; 'asm' : 'avr32-as', 
+&#160;&#160;&#160;&#160; 'bin' : 'avr32-objcopy', 
+_______________________________________________________________
+
+diff --git a/src/platform/avr32/platform_conf.h b/src/platform/avr32/platform_conf.h
+index d74c1c9..7db9b4f 100644
+--- a/src/platform/avr32/platform_conf.h
++++ b/src/platform/avr32/platform_conf.h
+@@ -97,7 +97,7 @@
+&#160;// Allocator data: define your free memory zones here in two arrays
+&#160;// (start address and end address)
+&#160;#define MEM_START_ADDRESS&#160;&#160;&#160;&#160; { ( void* )end, ( void* )SDRAM }
+-#define MEM_END_ADDRESS&#160;&#160;&#160;&#160;&#160;&#160; { ( void* )( 0x10000 - STACK_SIZE_TOTAL - 1 ), ( void* )( SDRAM + SDRAM_SIZE - 1 ) }
++#define MEM_END_ADDRESS&#160;&#160;&#160;&#160;&#160;&#160; { ( void* )( 0x10000 - STACK_SIZE_TOTAL - 1 ), ( void* )( (int)SDRAM + SDRAM_SIZE - 1 ) }
+&#160;
+&#160;// *****************************************************************************
+&#160;// CPU constants that should be exposed to the eLua &quot;cpu&quot; module
+__________________________________________________________________________
+diff --git a/src/shell.c b/src/shell.c
+index 5819730..28ae11f 100644
+--- a/src/shell.c
++++ b/src/shell.c
+@@ -116,7 +116,7 @@ static void shell_recv( char* args )
+&#160;&#160; long actsize;
+&#160;&#160; lua_State* L;
+&#160;
+-&#160; if( ( shell_prog = malloc( XMODEM_INITIAL_BUFFER_SIZE ) ) == NULL )
++&#160; if( ( shell_prog = (char*)malloc( XMODEM_INITIAL_BUFFER_SIZE ) ) == NULL )
+&#160;&#160; {
+&#160;&#160;&#160;&#160; printf( &quot;Unable to allocate memory\n&quot; );
+&#160;&#160;&#160;&#160; return;
+_________________________________________________________________________
+
+Like I said until now it's just some minor fixes. 
+
+I needed to change the compiler because of the Bool type that appears in commom.c. And this is the reason of the other changes until now. We can use a struct to define the type but I prefered to change the compiler.
+
+Best
+
+Euripedes
+
+--- Em seg, 22/2/10, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; escreveu:
+
+De: Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+Assunto: Re: [eLua-dev] AVR32 port
+Para: &quot;eLua Users and Development List (www.eluaproject.net)&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+Data: Segunda-feira, 22 de Fevereiro de 2010, 22:46
+
+Hello,
+&#160;&#160; We're all working on this and other ports too :). Could you share your work to see if it is ready to go to the main repo ?
+
+Thanks
+Dado
+
+
+
+On Mon, Feb 22, 2010 at 19:40, Euripedes Rocha &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">euripedesrocha at ymail.com</A>&gt; wrote:
+
+
+
+
+Hi,
+I'm now working on the AVR32 port of elua and I fix some minor errors. This email is just to tell it. If someone is working on it to, let me know so we can work together.
+
+best
+
+Euripedes
+
+
+
+
+
+
+      Veja quais s&#227;o os assuntos do momento no Yahoo! + Buscados: Top 10 - Celebridades - M&#250;sica - Esportes
+
+
+_______________________________________________
+
+eLua-dev mailing list
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+
+
+-----Anexo incorporado-----
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+      ____________________________________________________________________________________
+Veja quais s&#227;o os assuntos do momento no Yahoo! +Buscados
+<A HREF="http://br.maisbuscados.yahoo.com">http://br.maisbuscados.yahoo.com</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100223/85c8546b/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100223/85c8546b/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001205.html">[eLua-dev] AVR32 port
+</A></li>
+	<LI>Next message: <A HREF="001207.html">[eLua-dev] AVR32 port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1206">[ date ]</a>
+              <a href="thread.html#1206">[ thread ]</a>
+              <a href="subject.html#1206">[ subject ]</a>
+              <a href="author.html#1206">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

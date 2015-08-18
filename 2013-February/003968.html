@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua for the TI Stellaris Launchpad?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20for%20the%20TI%20Stellaris%20Launchpad%3F&In-Reply-To=%3C73CB1777-344A-4A04-957A-351F94FB857B%40me.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003967.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua for the TI Stellaris Launchpad?</H1>
+    <B>Andres Molina-Markham</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20for%20the%20TI%20Stellaris%20Launchpad%3F&In-Reply-To=%3C73CB1777-344A-4A04-957A-351F94FB857B%40me.com%3E"
+       TITLE="[eLua-dev] eLua for the TI Stellaris Launchpad?">a.mm at me.com
+       </A><BR>
+    <I>Thu Feb 21 17:06:15 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003967.html">[eLua-dev] eLua for the TI Stellaris Launchpad?
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3968">[ date ]</a>
+              <a href="thread.html#3968">[ thread ]</a>
+              <a href="subject.html#3968">[ subject ]</a>
+              <a href="author.html#3968">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks scdr,
+
+I added an entry to the SConstruct file in order to use scons and fixed some typos in the building python script (changes at <A HREF="https://github.com/am-m/elua">https://github.com/am-m/elua</A>). However, it seems that there is at least one file missing in the driver lib folder:
+
+After running:
+
+$ scons cpu=LM4F120 toolchain=codesourcery
+
+I get the following compilation error (I am also attaching the full output to this email):
+
+src/platform/lm3s/usblib/usbmode.c:35:37: fatal error: driverlib/rtos_bindings.h: No such file or directory
+
+I compiled on:
+Linux ubuntu 3.5.0-23-generic #35-Ubuntu SMP Thu Jan 24 13:05:29 UTC 2013 i686 i686 i686 GNU/Linux
+
+Cheers,
+
+Andres
+
+
+
+On Feb 20, 2013, at 8:37 PM, <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A> wrote:
+
+&gt;<i> 
+</I>&gt;<i> My work on adapting eLua to the Stellaris Launchpad (LM4F120) is on github.
+</I>&gt;<i> 
+</I>&gt;<i> <A HREF="https://github.com/ecdr/elua">https://github.com/ecdr/elua</A>
+</I>&gt;<i> 
+</I>&gt;<i> Almost all changes so far are in the lm3s platform directory.
+</I>&gt;<i> Updated the Stellarisware and USB libraries to latest versions (friendlier license and LM4F compatible)
+</I>&gt;<i> Added information about Stellaris Launchpad to the platform files
+</I>&gt;<i> Tweaked the build files a bit to (hopefully) add the LM4F120 (Stellaris Launchpad)
+</I>&gt;<i> 
+</I>&gt;<i> This is very much a rough draft
+</I>&gt;<i> 
+</I>&gt;<i> I have run it through a compiler (not gcc), and it did compile.
+</I>&gt;<i> Have not tried to link it.
+</I>&gt;<i> Have not tried to run it.
+</I>&gt;<i> Have not tried to build it with the regular build system.
+</I>&gt;<i> 
+</I>&gt;<i> Some of the changes I made in order to regularize handling of pin MUXing may break the versions for some
+</I>&gt;<i> of the other LM3S.
+</I>&gt;<i> 
+</I>&gt;<i> So input, testing, suggestions, patches, etc. welcome, but use at your own risk.
+</I>&gt;<i> 
+</I>&gt;<i> Have not done anything about reducing memory footprint.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;&gt;<i> ----- Original Message -----
+</I>&gt;&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A>
+</I>&gt;&gt;<i> Sent: 01/14/13 05:06 PM
+</I>&gt;&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;&gt;<i> Subject: Re: [eLua-dev] eLua for the TI Stellaris Launchpad?
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> I will put the code up on github (once I work out how to get git installed).
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Any tips on how to trim eLua's RAM usage?
+</I>&gt;&gt;<i> (So far I looked mostly at the platform code, haven't looked around the main implementation
+</I>&gt;&gt;<i> to try to figure what takes most memory and what can be easily disabled to save mem).
+</I>&gt;&gt;<i> Thanks.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> ----- Original Message -----
+</I>&gt;&gt;&gt;<i> From: Tony
+</I>&gt;&gt;&gt;<i> Sent: 01/10/13 04:48 PM
+</I>&gt;&gt;&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;&gt;&gt;<i> Subject: Re: [eLua-dev] eLua for the TI Stellaris Launchpad?
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> Since the Launchpad has only 32K of SRAM, it may be tough to get eLua
+</I>&gt;&gt;&gt;<i> running, but I'd love to see it.
+</I>&gt;&gt;&gt;<i> --Tony
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> On Tue, Jan 8, 2013 at 10:54 PM, Jacob Buys &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wjbuys at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;&gt;<i> I've got a couple of Stellaris Launchpads lying around. If you want, you
+</I>&gt;&gt;&gt;&gt;<i> can put your code up somewhere (github?) and I'd be more than happy to help
+</I>&gt;&gt;&gt;&gt;<i> you test and refine it.
+</I>&gt;&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;&gt;<i> On 8 January 2013 13:00, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-request at lists.berlios.de</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;&gt;&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">scdr at gmx.com</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Subject: Re: [eLua-dev] eLua for the TI Stellaris Launchpad?
+</I>&gt;&gt;&gt;&gt;&gt;<i> Message-ID: &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">20130108064145.183800 at gmx.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;&gt;&gt;<i> I have done a little work on porting it to the Stellaris Launchpad. ?Just
+</I>&gt;&gt;&gt;&gt;&gt;<i> studied the code and
+</I>&gt;&gt;&gt;&gt;&gt;<i> made some of the changes that are obviously needed. ?I have not tried
+</I>&gt;&gt;&gt;&gt;&gt;<i> compiling my
+</I>&gt;&gt;&gt;&gt;&gt;<i> changes or running it (my launchpads came right before hollidays).
+</I>&gt;&gt;&gt;&gt;&gt;<i> I am still figuring my way around setting up build system for elua and
+</I>&gt;&gt;&gt;&gt;&gt;<i> git, etc.
+</I>&gt;&gt;&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Has there been any work on getting eLua working on the new TI M4
+</I>&gt;&gt;&gt;&gt;&gt;<i> processors, specifically the LX4F120H found on &gt;the EK-LM4F120 launchpad?
+</I>&gt;&gt;&gt;&gt;&gt;<i> If not, I'd love to try, but I've got no clue where to start. Any pointers?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Jacob
+</I>&gt;&gt;&gt;&gt;&gt;<i> 
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130221/a4e3224d/attachment-0002.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130221/a4e3224d/attachment-0002.html</A>&gt;
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: elua-compilation-out.txt
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130221/a4e3224d/attachment-0001.txt">https://lists.berlios.de/pipermail/elua-dev/attachments/20130221/a4e3224d/attachment-0001.txt</A>&gt;
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130221/a4e3224d/attachment-0003.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130221/a4e3224d/attachment-0003.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003967.html">[eLua-dev] eLua for the TI Stellaris Launchpad?
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3968">[ date ]</a>
+              <a href="thread.html#3968">[ thread ]</a>
+              <a href="subject.html#3968">[ subject ]</a>
+              <a href="author.html#3968">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

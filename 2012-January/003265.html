@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua heading into a product
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20heading%20into%20a%20product&In-Reply-To=%3C4F1F2F0A.7010407%40gmx.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003260.html">
+   <LINK REL="Next"  HREF="003266.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua heading into a product</H1>
+    <B>heinz</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20heading%20into%20a%20product&In-Reply-To=%3C4F1F2F0A.7010407%40gmx.de%3E"
+       TITLE="[eLua-dev] eLua heading into a product">kheinz57 at gmx.de
+       </A><BR>
+    <I>Tue Jan 24 23:22:02 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003260.html">[eLua-dev] eLua heading into a product
+</A></li>
+        <LI>Next message: <A HREF="003266.html">[eLua-dev] eLua heading into a product
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3265">[ date ]</a>
+              <a href="thread.html#3265">[ thread ]</a>
+              <a href="subject.html#3265">[ subject ]</a>
+              <a href="author.html#3265">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Matt,
+
+thank you so much for the description. I guess most on the list will 
+just like it.
+I couldn't stop reading ;-)
+It pretty much explains the heart of eLUA as I see it as well.
+Supporting a layerd  modular structure where LUA acts as a
+(pretty good!) glue code with fast round trips.
+
+And since in testing scripts are used often, LUA ist just perfect there.
+I use LUA within an embedded linux box for this purpose as well.
+
+So you are running eLUA on the same device the linux is normally running 
+on.
+But you are focusing on 'testing hardware behaviour'. Right? That
+would be a pretty neat setup for HW-guys and for the purpose of bridging
+hw to sw on the proess of development.
+
+Or is eLUA acting as a Testsystem and simulating the environment for the 
+SUT (system under test)?
+
+Heinz
+
+
+Am 24.01.2012 12:55, schrieb Matt Wilbur:
+&gt;<i>
+</I>&gt;<i> On Monday, 23 January, 2012 at 7:32 AM, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi Matt,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, Jan 23, 2012 at 2:29 PM, Matt Wilbur &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A> 
+</I>&gt;&gt;<i> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">wilburm at gmail.com</A>&gt;&gt; wrote:
+</I>&gt;&gt;&gt;<i> About a year ago I made the pitch to use eLua as a platform for the
+</I>&gt;&gt;&gt;<i> self-diagnostics software of my employer's next modem.  It'll be 
+</I>&gt;&gt;&gt;<i> going into
+</I>&gt;&gt;&gt;<i> pre-production soon!
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Let me know if you're interested in more details.  I'll provide what 
+</I>&gt;&gt;&gt;<i> I can.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Are you kidding me ?! Hit me with all you got! :)
+</I>&gt;<i> First:
+</I>&gt;<i>
+</I>&gt;<i> Any views or opinions presented in this email are solely those of the 
+</I>&gt;<i> author and do not necessarily represent those of the company.
+</I>&gt;<i> Backstory:
+</I>&gt;<i>
+</I>&gt;<i> I was tasked with software to help do diagnostics software of an 
+</I>&gt;<i> embedded product.  Typically, our products are based on embedded 
+</I>&gt;<i> linux, and design-verification test (DVT) and functional test (FT) 
+</I>&gt;<i> have all used horrendous bash scripts to test the system.  I mean, the 
+</I>&gt;<i> scripts were ugly.  Really ugly.
+</I>&gt;<i>
+</I>&gt;<i> Additionally, there was no easy way to test low level interfaces (SPI, 
+</I>&gt;<i> I2C, etc).  So, one could get an RMA and really have an enormous fault 
+</I>&gt;<i> tree to deal with.  Also, lots of NFF boards meant we wanted to try to 
+</I>&gt;<i> test the product in situ before it was sent back, if necessary.
+</I>&gt;<i>
+</I>&gt;<i> Finally, there was a desire to separate the &quot;mission mode&quot; software 
+</I>&gt;<i> with the diagnostics and test software.  Updates to &quot;mission mode&quot; 
+</I>&gt;<i> software would sometimes cause production test software to break, 
+</I>&gt;<i> resulting in an ugly double reflashing of pre-programmed parts during 
+</I>&gt;<i> production.
+</I>&gt;<i>
+</I>&gt;<i> Initially, there was a push to use another linux system for test, but 
+</I>&gt;<i> I pushed back on this quite vigourously.  Why incur the overhead a 
+</I>&gt;<i> multi-user pre-emptive OS to bit bash pins?  Then u-boot was 
+</I>&gt;<i> suggested.  Oy.  So much baggage.
+</I>&gt;<i>
+</I>&gt;<i> Finally, I proposed eLua.  I had read about it some time ago and 
+</I>&gt;<i> wanted a way to use it somewhere in something.  I'm a micro controller 
+</I>&gt;<i> nerd at heart.  For better or for worse, others weren't really paying 
+</I>&gt;<i> too much attention, said &quot;Ok&quot;, and I ran with it.  It was ideal for my 
+</I>&gt;<i> needs - interactive, flexible, scriptable, low level, super super easy 
+</I>&gt;<i> to extend with C.  However, we are using a Freescale PowerPC 
+</I>&gt;<i> microprocessor (er -- Power Architecture, my bad).  So, I had to work 
+</I>&gt;<i> on the port from scratch.
+</I>&gt;<i>
+</I>&gt;<i> What I have now is a series of tests that a run via autorun.lua when 
+</I>&gt;<i> eLua starts.  An SPI boot loader, written by me, loads the eLua binary 
+</I>&gt;<i> from SPI flash into ram and vectors to eLua.  Then all tests run, 
+</I>&gt;<i> optionally dropping to the eLua after the shell.  The tests gradually 
+</I>&gt;<i> &quot;walk&quot; out from a SPI flash / SRAM only start (the SPI boot loader, 
+</I>&gt;<i> which tests DDR), to eLua which then tests peripherals such as I2C, 
+</I>&gt;<i> SPI, local bus, PCIe.  It then talks to an FPGA via the local bus 
+</I>&gt;<i> which thens tests its interfaces.  There is an soft-core processor on 
+</I>&gt;<i> the FPGA running software.  The messaging lua code is partially 
+</I>&gt;<i> generated via a YAML description.
+</I>&gt;<i>
+</I>&gt;<i> I only have polling-mode drivers, as the OpenPIC used in PPC is not 
+</I>&gt;<i> well documented.  Documentation brags about using this &quot;Open&quot; 
+</I>&gt;<i> standard.  Try to find a copy.  It's impossible.  Anyhow, I want to go 
+</I>&gt;<i> down that road, but don't have time at the moment.  Also, the MMU is 
+</I>&gt;<i> always &quot;on&quot; in the processor, and there are at one, usually two, and 
+</I>&gt;<i> sometimes three levels of memory translation to get to a peripheral. 
+</I>&gt;<i>  It is a pain.  However, I'm pretty sure I understand this better than 
+</I>&gt;<i> anyone else in the company now.
+</I>&gt;<i>
+</I>&gt;<i> What I do have is:
+</I>&gt;<i>
+</I>&gt;<i> Timers
+</I>&gt;<i> SPI
+</I>&gt;<i> I2C
+</I>&gt;<i> UART
+</I>&gt;<i> GPIO
+</I>&gt;<i>
+</I>&gt;<i> RPC works great.  I haven't gotten XMODEM going yet, but I haven't 
+</I>&gt;<i> really looked into it yet.  I'd love to use <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Go at .</A>  I can't use RFS 
+</I>&gt;<i> because of no interrupts.  So, I have leveraged RPC for development, 
+</I>&gt;<i> effectively using it to upload code.  I put all my functions into a 
+</I>&gt;<i> table and create remote objects on the modem, and add references into 
+</I>&gt;<i> _G in order to make them &quot;look&quot; local.  It actually works pretty well, 
+</I>&gt;<i> as long as I remember not to print.
+</I>&gt;<i>
+</I>&gt;<i> I also added a raw module (people at my company are addicted to peeks 
+</I>&gt;<i> and pokes), but at first opportunity, I remove these uses.  Some of 
+</I>&gt;<i> the Freescale peripherals do not play well with the eLua model.  I2C, 
+</I>&gt;<i> in particular.  I have never seen a more convoluted peripheral.  I 
+</I>&gt;<i> wrote fairly generic-ish drivers, and wrapped them to glue them into 
+</I>&gt;<i> eLua.  That way, I could use them for my SPI boot loader.
+</I>&gt;<i>
+</I>&gt;<i> I built the powerpc-eabi toolchain in a very similar manner to James' 
+</I>&gt;<i> ARM methodology, but before I knew about his stuff.  It was a lot of 
+</I>&gt;<i> going through ugly shell scripts (no, I don't like shell scripts) but, 
+</I>&gt;<i> it allowed me to apply the size optimizations to the C library.  I 
+</I>&gt;<i> have started on a MINIX C library port for eLua, but am doing that on 
+</I>&gt;<i> my own time to ensure there is no issue releasing it.  However, I have 
+</I>&gt;<i> very little of my own time.
+</I>&gt;<i>
+</I>&gt;<i> It broke my heart when I couldn't fit it all into 256k.  The processor 
+</I>&gt;<i> I have can be configured to use 256k of L2 cache as SRAM.  But, I am 
+</I>&gt;<i> loading from SPI flash, and can't execute in place, so the whole 
+</I>&gt;<i> enchilada must fit, and 32-bit RISC is, apparently, not space 
+</I>&gt;<i> efficient.  So, I have to use the DDR2 attached to the processor.  If 
+</I>&gt;<i> parallel NOR were an option, I could do that (I did try it), but then 
+</I>&gt;<i> was relegated to SPI.
+</I>&gt;<i>
+</I>&gt;<i> What I really like:
+</I>&gt;<i>
+</I>&gt;<i> So little baggage.  eLua gives you lua with a nice clean interface to 
+</I>&gt;<i> peripherals.  The Platform Interface design was a very very good idea.
+</I>&gt;<i> I can write my scripts in lua, and if speed is an issue, I can put 
+</I>&gt;<i> selected portions in C.  Users are none the wiser.
+</I>&gt;<i> I just love the C-lua interface.  It is so easy to cross.  Using RO 
+</I>&gt;<i> tables is very painless.  I can be as low-level or high-level as I 
+</I>&gt;<i> want.  With the interactivity, I can easily test things out, and paste 
+</I>&gt;<i> it into a script.  Then, once it is working, just via dofile, I 
+</I>&gt;<i> migrate to a module.
+</I>&gt;<i>
+</I>&gt;<i> I can test program logic on my desktop as long as I have some &quot;fakes&quot; 
+</I>&gt;<i> setup.  I'd really like to systematize mocks for the eLua modules to 
+</I>&gt;<i> allow for easier desktop development.  I hand craft them right now, 
+</I>&gt;<i> but perhaps luaspec or lemock might be useful.
+</I>&gt;<i>
+</I>&gt;<i> Separation of SConstruct and conf.py is really nice.
+</I>&gt;<i>
+</I>&gt;<i> What I don't like (not eLua's fault):
+</I>&gt;<i>
+</I>&gt;<i> Lua's requirement to touch several files to add a new module.
+</I>&gt;<i>
+</I>&gt;<i> Phew.  That's a lot.  Sorry if there's too much, or not enough 
+</I>&gt;<i> specific to eLua.  But I've been slaving away for almost a year in 
+</I>&gt;<i> obscurity, and enjoy telling about it.  However, I believe eLua's star 
+</I>&gt;<i> is finally rising at my employer and people are able to see the 
+</I>&gt;<i> benefit.  For example, I was able to turn a custom load for the 
+</I>&gt;<i> Hardware team in &lt; 0.5 a day.  Let's see you do that in linux.  And 
+</I>&gt;<i> keep it all to about 256k.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120124/f9214d9a/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120124/f9214d9a/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003260.html">[eLua-dev] eLua heading into a product
+</A></li>
+	<LI>Next message: <A HREF="003266.html">[eLua-dev] eLua heading into a product
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3265">[ date ]</a>
+              <a href="thread.html#3265">[ thread ]</a>
+              <a href="subject.html#3265">[ subject ]</a>
+              <a href="author.html#3265">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

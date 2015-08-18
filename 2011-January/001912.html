@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua vs Lua on RTOS
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs%20Lua%20on%20RTOS&In-Reply-To=%3CAANLkTik8vrintzk1WJbL_Mbu6RRZZaEJ_oAyycU%2B-%3Dn%3D%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001909.html">
+   <LINK REL="Next"  HREF="001923.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua vs Lua on RTOS</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs%20Lua%20on%20RTOS&In-Reply-To=%3CAANLkTik8vrintzk1WJbL_Mbu6RRZZaEJ_oAyycU%2B-%3Dn%3D%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua vs Lua on RTOS">dadosutter at gmail.com
+       </A><BR>
+    <I>Tue Jan 25 19:57:50 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001909.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+        <LI>Next message: <A HREF="001923.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1912">[ date ]</a>
+              <a href="thread.html#1912">[ thread ]</a>
+              <a href="subject.html#1912">[ subject ]</a>
+              <a href="author.html#1912">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+On Tue, Jan 25, 2011 at 16:13, Lwazi Dub &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">lwazidub at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi everyone,
+</I>&gt;<i>
+</I>&gt;<i> I am not a Lua programmer but I find this project interesting.
+</I>
+
+Thanks and welcome to the list.
+
+
+&gt;<i> Why
+</I>&gt;<i> would one use eLua instead of running their Lua app on an RTOS?
+</I>&gt;<i>
+</I>
+Lwazi, this is one of the questions I hear more often and with more and more
+(and cheaper) Linux embedded platforms around, we'll hear it much more in
+the future.
+It may deserve a long entry on our FAQ one of these days (any English
+natively speaker to help ? :).
+Differences go from a (muuuuuuuuuuuch) smaller footprint to full control of
+your hardware by your programs, with nothing else &quot;in the middle&quot;.
+
+-There is also not enough kernel-mode drivers for every peripheral of every
+platform yet. It is much simpler to add them (MCU manufacturers usually make
+available royalty-free libs if they are used only for their platforms) them
+to eLua than to do the equivalent in Linux.
+-You would also need to extend Lua with binds to these &quot;drivers&quot;, as Lua
+itself does not have any module/lib to support mcu peripherals and the extra
+auxiliary modules embedded programming requires. We've added a bunch of them
+in eLua already.
+-eLua has been running on 32bits MCUs for several years and only now, the
+faster and external-memory-capable MCUs are getting cheaper enough for Linux
+to be a nice option.
+-We want to offer a simple embedded development framework for users not
+necessarily deeply involved with software development, pretty much like what
+the Arduino did for their typical users. In eLua, we would add to that
+field-engineers that benefit from easy scripting and configuring their
+process-oriented devices. Lua is simple to learn and to teach, which is not
+always the case for Linux.
+
+Does/Will eLua have threads that run directly on cpu cores?
+
+
+Another long and interesting subject.
+Preemtive multitasking is a great thing. On the embedded world, it can also
+be one of the greatest nighmares one can have for modeling and debugging, if
+you're not a computer science expert.
+I'm not saying we don't want it but so far we've been following the greatest
+Lua mottos: simplicity, minimamalism, elegance (in the sense of using other
+approaches to the same goals), ......
+Coroutine (non-preemptive multitasking) is a great and simple approach that
+hasn't been explored or well supported by most high-level languages in the
+past. Lua implements it very nicely and eLua benefits from it without a
+single extra byte of code.
+It is sufficient for most embedded applications and it is a blessing for the
+newcomers and a large part of the eLua audience too.
+I would be very glad to have true/preemptive multitasking in eLua in the
+future, if we have some more help for the dev and we come to an elegant and
+light implementation.
+You can have it today, if you strugle a bit with an RTOS and run multiple
+copies of eLua but keep in mind that we haven't architectured eLua for it.
+With the modern MCUs going multicore too, we might have more code support
+and expertise in the future to try a decent model too.
+
+
+I have a thousand other questions and thoughts but I will leave that for
+&gt;<i> another thread maybe.
+</I>&gt;<i>
+</I>
+Nice, we'll be glad to hear them all.
+Thanks for sharing this !
+
+
+&gt;<i> Thanks,
+</I>&gt;<i>
+</I>&gt;<i> Lwazi
+</I>&gt;<i>
+</I>
+Best
+Dado
+
+
+
+&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110125/555d400d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110125/555d400d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001909.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+	<LI>Next message: <A HREF="001923.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1912">[ date ]</a>
+              <a href="thread.html#1912">[ thread ]</a>
+              <a href="subject.html#1912">[ subject ]</a>
+              <a href="author.html#1912">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

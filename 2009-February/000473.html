@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Large ADC Commit
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3C81fbe47d0902170414i2824c181u1ac2e37b2adf610d%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000484.html">
+   <LINK REL="Next"  HREF="000476.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Large ADC Commit</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Large%20ADC%20Commit&In-Reply-To=%3C81fbe47d0902170414i2824c181u1ac2e37b2adf610d%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Large ADC Commit">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Feb 17 13:14:31 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000484.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+        <LI>Next message: <A HREF="000476.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#473">[ date ]</a>
+              <a href="thread.html#473">[ thread ]</a>
+              <a href="subject.html#473">[ subject ]</a>
+              <a href="author.html#473">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> True..  Are you anticipating use of higher or lower bit depth?  There are
+</I>&gt;<i> certainly lower and higher ones out there, though I've not seen &gt;16-bit ones
+</I>&gt;<i> built-in to uCs.  If we want to accomodate larger sizes, the return types
+</I>&gt;<i> for some things will need adjustment, perhaps by defining a type that
+</I>&gt;<i> reflects the maximum size that will be returned?  This type would be
+</I>&gt;<i> selected at compile time depending on the maximum bits-per-sample one might
+</I>&gt;<i> want to work with?
+</I>&gt;<i>
+</I>&gt;<i> Something like:
+</I>&gt;<i>
+</I>&gt;<i> #if MAX_ADC_BIT_RESOLUTION &lt;= 8
+</I>&gt;<i> typedef u8 t_adc_data
+</I>&gt;<i> #elif MAX_ADC_BIT_RESOLUTION &lt;= 16
+</I>&gt;<i> typedef u16 t_adc_data
+</I>&gt;<i> #elif MAX_ADC_BIT_RESOLUTION &lt;= 32
+</I>&gt;<i> typedef u32 t_adc_data
+</I>&gt;<i> #else
+</I>&gt;<i> #error &quot;No matching type for MAX_ADC_BIT_RESOLUTION, check your selected
+</I>&gt;<i> bit depth or add larger type&quot;
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>
+Something like this, but not at compile time, since one might have a system
+that uses both an (hypothetical) internal 8-bit ADC, and an external 16-bit
+SPI ADC. Let's keep it like this for now, seems to be generic enough for our
+needs.
+
+OK, sounds good.  The one midly complicated thing to make this approach work
+&gt;<i> with dynamic buffer sizing is to have buf_set handle increasing buffer size
+</I>&gt;<i> gracefully.  I think the main case to handle is when wptr &lt; rptr.  i.e. the
+</I>&gt;<i> write pointer has wrapped around to the beginning of the buffer, but the
+</I>&gt;<i> read ptr has not.  If one just adds space in this case, the read pointer
+</I>&gt;<i> will start going into as yet unwritten space thinking it is picking up valid
+</I>&gt;<i> data.
+</I>&gt;<i>
+</I>
+Sorry, I don't understand the problem here. Why not just stop the ADC
+sequencer, call buf_set again with the new size, and restart it (which seems
+to be what you're doing now)?  You want to change it with the ADC still
+running? I think this is way too complex for thte benefits it provides. Or
+maybe I'm missing the problem entirely? :)
+
+Also, for now, it seems that using the ADC automatically implies using
+buffers. This might be overkill for someone that just wants one ADC sample
+per call of adc_sample. Need to find a way to deal with this easier.
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Mon, Feb 16, 2009 at 3:12 AM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; &gt; Hi -
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I've dropped in another large ADC commit.  I've mentioned most of what
+</I>&gt;<i> was done in the commit message, but here's a rundown:
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; - When samples are available from ADC, they're initially copied into an
+</I>&gt;<i> elua buf.
+</I>&gt;<i> &gt; &gt; - buf length is adjusted according to number of expected samples coming
+</I>&gt;<i> in (when burst is requested, buf is resized to accomodate the number of
+</I>&gt;<i> burst samples, size is dropped back down when single samples are requested)
+</I>&gt;<i> &gt; &gt; - if smoothing is enabled, and has no samples, smoothing buffer (not an
+</I>&gt;<i> elua buf) is filled first to warm up the filter, then samples begin to
+</I>&gt;<i> accumulate in the main buffer.
+</I>&gt;<i> &gt; &gt; - a flush function has been added to manually clear out both smoothing
+</I>&gt;<i> and primary buffers in case one doesn't want old samples or old smoothing
+</I>&gt;<i> data being used for future measurements
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Also, I forgot to mention one thing in the commit message:  As per a
+</I>&gt;<i> discussion with Bogdan, the type checking on buf_write and buf_read have
+</I>&gt;<i> been pulled out.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; One adjustment that I'd like to consider before the 0.6 freeze is to
+</I>&gt;<i> remove the option for blocking and non-blocking as it applies to sample and
+</I>&gt;<i> burst functions (used to initiate sampling) and to instead make these always
+</I>&gt;<i> non-blocking, and never have them return any samples (only errors, if
+</I>&gt;<i> needed).  A separate function, say getsamples would pull in data collected
+</I>&gt;<i> using either mode.  Right now, if one uses non-blocking mode, samples will
+</I>&gt;<i> always be returned for the last time you ran sample or burst.  This means
+</I>&gt;<i> that if you want to get the data already requested, you also have to always
+</I>&gt;<i> request new samples, even if you don't want them.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I should be able to make this change with minimal code changes, but I
+</I>&gt;<i> haven't done it yet because it changes the pre-existing paradigm, and I
+</I>&gt;<i> wanted to get these changes in sooner rather than later :-)
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I think it might just take me another hour or so to get adjustments
+</I>&gt;<i> along those lines working.  There wouldn't be as long of a delay as this ADC
+</I>&gt;<i> commit.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Suggestions/comments are welcome :-)
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; -jsnyder
+</I>&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;<i> &gt; &gt; Elua-dev mailing list
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________ Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/4b8868d6/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/4b8868d6/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000484.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+	<LI>Next message: <A HREF="000476.html">[eLua-dev] Large ADC Commit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#473">[ date ]</a>
+              <a href="thread.html#473">[ thread ]</a>
+              <a href="subject.html#473">[ subject ]</a>
+              <a href="author.html#473">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

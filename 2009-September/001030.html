@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Is there a debug mode?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Is%20there%20a%20debug%20mode%3F&In-Reply-To=%3CFA0CC81F-00DC-4B34-9A56-57CE6FE6C598%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001029.html">
+   <LINK REL="Next"  HREF="001031.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Is there a debug mode?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Is%20there%20a%20debug%20mode%3F&In-Reply-To=%3CFA0CC81F-00DC-4B34-9A56-57CE6FE6C598%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Is there a debug mode?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Sep 18 23:50:03 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001029.html">[eLua-dev] Is there a debug mode?
+</A></li>
+        <LI>Next message: <A HREF="001031.html">[eLua-dev] TI MCU Days in Brazil -- could be good for Stellaris dev	boards
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1030">[ date ]</a>
+              <a href="thread.html#1030">[ thread ]</a>
+              <a href="subject.html#1030">[ subject ]</a>
+              <a href="author.html#1030">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yeah, what I was thinking of was taking some of the principles that  
+they use there and making something that would be compatible with the  
+debug model they use.
+
+The other thing of note is that many of these debug systems are  
+written in pure Lua, so it may or may not work to strip them down vs  
+doing a C-API implementation of something similar.
+
+As far as basic functionality, since the LuaRPC code will happily  
+serialize a number of different Lua types and ship them over any type  
+of interface that can read and write bytes, that machinery should be  
+very useful for any type of remote debugger that needs to interact  
+with the remote Lua universe.  Also, because of the way it works, the  
+calls made on the server end of the RPC are protected so that whether  
+it fails or returns values, we can serialize that back to the calling  
+client.
+
+-jsnyder
+
+On Sep 18, 2009, at 8:45 AM, Bogdan Marinescu wrote:
+
+&gt;<i> I think we can take parts of RemDebug and make it work over serial.  
+</I>&gt;<i> A complete port is very unlikely to happen.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Sep 18, 2009 at 4:30 PM, Pedro Bittencourt &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A> 
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> Well, they say that &quot;RemDebug depends on LuaSocket 2.0,  
+</I>&gt;<i> LuaFileSystem 1.2&quot;.
+</I>&gt;<i> So maybe it works if some kind of bind to LuaSocket and LFS exist...
+</I>&gt;<i>
+</I>&gt;<i> --Pedro Bittencourt
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Sep 14, 2009 at 6:10 PM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> I suspect it wouldn't be too hard to make something like that work  
+</I>&gt;<i> with the RPC code. There's nothing that does what you're suggesting  
+</I>&gt;<i> &quot;out of the box&quot; though.  It would be neat to be able to
+</I>&gt;<i>
+</I>&gt;<i> I think it might be good to discuss the mode of operation for  
+</I>&gt;<i> something like that.  Perhaps something like this could serve as a  
+</I>&gt;<i> reference point for a model?
+</I>&gt;<i> <A HREF="http://www.keplerproject.org/remdebug/">http://www.keplerproject.org/remdebug/</A>
+</I>&gt;<i>
+</I>&gt;<i> I haven't looked at the implementation, but the external  
+</I>&gt;<i> requirements suggest that it wouldn't be something that could just  
+</I>&gt;<i> be dropped in.
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sep 13, 2009, at 3:53 AM, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;<i> Not yet I'm afraid. It's one of the things I intend to take care of  
+</I>&gt;<i> right after releasing 0.6. It might be easy to accomplish something  
+</I>&gt;<i> like this using the RPC mechanism implemented by James, but I didn't  
+</I>&gt;<i> try this.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Sun, Sep 13, 2009 at 1:09 AM, Pedro Bittencourt &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A> 
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> Salutations,
+</I>&gt;<i>
+</I>&gt;<i> Is there any mechanism to debug Lua programs running on the target  
+</I>&gt;<i> board?
+</I>&gt;<i> (by &quot;debug&quot; I mean breakpoints, single stepping and memory watch)
+</I>&gt;<i>
+</I>&gt;<i> Thx,
+</I>&gt;<i> --Pedro Bittencourt
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: 847.448.0386
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: 847.448.0386
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 4012 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090918/4db1b3d0/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090918/4db1b3d0/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001029.html">[eLua-dev] Is there a debug mode?
+</A></li>
+	<LI>Next message: <A HREF="001031.html">[eLua-dev] TI MCU Days in Brazil -- could be good for Stellaris dev	boards
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1030">[ date ]</a>
+              <a href="thread.html#1030">[ thread ]</a>
+              <a href="subject.html#1030">[ subject ]</a>
+              <a href="author.html#1030">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

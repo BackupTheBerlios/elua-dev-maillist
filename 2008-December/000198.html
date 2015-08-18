@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] interested in stm32 port
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20interested%20in%20stm32%20port&In-Reply-To=%3Cd3b6d880812270709m240b8f30u8a15bbb1ab9938b5%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000196.html">
+   <LINK REL="Next"  HREF="000199.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] interested in stm32 port</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20interested%20in%20stm32%20port&In-Reply-To=%3Cd3b6d880812270709m240b8f30u8a15bbb1ab9938b5%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] interested in stm32 port">dadosutter at gmail.com
+       </A><BR>
+    <I>Sat Dec 27 16:09:27 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000196.html">[eLua-dev] interested in stm32 port
+</A></li>
+        <LI>Next message: <A HREF="000199.html">[eLua-dev] interested in stm32 port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#198">[ date ]</a>
+              <a href="thread.html#198">[ thread ]</a>
+              <a href="subject.html#198">[ subject ]</a>
+              <a href="author.html#198">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello Alex, welcome to eLua !!! :)
+
+
+On Sat, Dec 27, 2008 at 04:03, Alex Babkin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ababkin at gmail.com</A>&gt; wrote:
+
+&gt;<i> 1.
+</I>&gt;<i>
+</I>&gt;<i> this piece of code in src/newlib/stubs.c
+</I>&gt;<i>
+</I>&gt;<i> #if ELUA_PLATFORM == AVR32
+</I>&gt;<i> int _gettimeofday_r( struct _reent *r, struct timeval *tp, struct timezone
+</I>&gt;<i> *tzp )
+</I>&gt;<i> #else
+</I>&gt;<i> int _gettimeofday_r( struct _reent *r, struct timeval *tv, void *tz )
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> on my system, this #if check doesn't work properly and ends up going
+</I>&gt;<i> through the first branch (i.e as if it's for AVR32 target) while i am using
+</I>&gt;<i> the stm32 target.
+</I>&gt;<i> this was causing my initial problem (my last post), and commenting out all
+</I>&gt;<i> of the above lines except for the second branch (i.e int _gettimeofday_r(
+</I>&gt;<i> struct _reent *r, struct timeval *tv, void *tz )) made it build.
+</I>
+
+May be an SConstruct little bug. We'll take a look.
+
+2. scons -c doesn't work, but scons -c &lt;all the required parameters for
+&gt;<i> build&gt; works. I think just scons -c should work and clean everything up
+</I>
+
+This looked strange to me at first too. But it is actually usefull, when you
+are working with more than on target at the same time, as the option only
+clears the selectioned target.
+On the other hand, most users generally work with a single target at a time
+and for them help comes from up-arrow or ctr-r sco tab up-arrow for now.
+Tks for pointing it. We'll keep an eye on other opinions too.
+
+
+&gt;<i> 3. factor out the toolchain prefix (like arm-elf- or arm-none-eabi-) into a
+</I>&gt;<i> separate variable as opposed to hardcoding it in the platform py file
+</I>
+
+Looks good if different toolchains will really be used for the same target.
+Do we expect it too happen or there will be a clearly &quot;better&quot; choice that
+deserves to be hardcoded ?
+
+Mike is the one that was working on the STM32 port. We (me and Bogdan) don't
+have STM32 kits :(
+But this is definetely a nice platform to have eLua on, although I agree
+that you will probably need some more mem :(
+My guess is that 32Kb ram will be pretty usable, with some magic that Bogdan
+has been working on lately :) (read-only tables in flash, light functions,
+new clib, .......)
+
+Cheers
+&gt;<i> Alex
+</I>
+
+Best
+Dado
+
+
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Dec 26, 2008 at 11:39 PM, Alex Babkin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ababkin at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi there
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I am an stm32 platform enthusiast and would love to make an easily
+</I>&gt;&gt;<i> script-able platform out of it. eLua seems to fit the bill except that i
+</I>&gt;&gt;<i> really hope that 128kb of flash and 20kb of ram (that the stm32 chips i am
+</I>&gt;&gt;<i> using have) would be enough (even if barely) to be able to run lua scripts,
+</I>&gt;&gt;<i> even pre-compiled if needed, off an SD card.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I had followed the toolchain building tutorial and built those
+</I>&gt;&gt;<i> successfully. But it seems to me that scons for the stm32 target uses
+</I>&gt;&gt;<i> arm-none-eabi prefix for toolchain. I suspect that the CodeSourcery's
+</I>&gt;&gt;<i> toolchain was used for this target.
+</I>&gt;&gt;<i> I have tried to build the elua for the stm32f103ze target and it breaks on
+</I>&gt;&gt;<i> the following step:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mlittle-endian -Os
+</I>&gt;&gt;<i> -fomit-frame-pointer -Iinc -Iinc/newlib -Isrc/lua -Isrc/modules
+</I>&gt;&gt;<i> -Isrc/platform/stm32 -Isrc/uip -Isrc/platform/stm32/FWLib/library/inc
+</I>&gt;&gt;<i> -ffunction-sections -fdata-sections -fno-strict-aliasing
+</I>&gt;&gt;<i> -DELUA_CPU=STM32F103ZE -DELUA_BOARD=STM3210E-EVAL -DELUA_PLATFORM=STM32
+</I>&gt;&gt;<i> -D__BUFSIZ__=128 -DLUA_NUMBER_INTEGRAL -Dgcc -Wall -c src/newlib/stubs.c -o
+</I>&gt;&gt;<i> src/newlib/stubs.o
+</I>&gt;&gt;<i> src/newlib/stubs.c:311: error: conflicting types for '_gettimeofday_r'
+</I>&gt;&gt;<i> /usr/bin/../lib/gcc/arm-none-eabi/4.3.2/../../../../arm-none-eabi/include/reent.h:84:
+</I>&gt;&gt;<i> error: previous declaration of '_gettimeofday_r' was here
+</I>&gt;&gt;<i> scons: *** [src/newlib/stubs.o] Error 1
+</I>&gt;&gt;<i> scons: building terminated because of errors.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> from the way it looks, something is wrong with newlib. Are there any
+</I>&gt;&gt;<i> suggestions as to how i go about fixing it? Is this happening because libnew
+</I>&gt;&gt;<i> wasn't compiled in a specific way that elua prescribes?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> would it be possible to just stick to the toolchain built as per
+</I>&gt;&gt;<i> instructions on elua site? or CS's toolchain is really necessary for stm32?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> btw, i am normally using CS's toolchain (binaries) for all my stm32
+</I>&gt;&gt;<i> projects
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks
+</I>&gt;&gt;<i> Alex
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081227/9fbfc833/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081227/9fbfc833/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000196.html">[eLua-dev] interested in stm32 port
+</A></li>
+	<LI>Next message: <A HREF="000199.html">[eLua-dev] interested in stm32 port
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#198">[ date ]</a>
+              <a href="thread.html#198">[ thread ]</a>
+              <a href="subject.html#198">[ subject ]</a>
+              <a href="author.html#198">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

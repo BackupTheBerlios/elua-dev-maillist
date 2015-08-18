@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] require and Lua path
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20require%20and%20Lua%20path&In-Reply-To=%3CAANLkTimDpWkxkCQ-m6DA1XqSjHqVZOI-VtWTSVWg0hgF%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001463.html">
+   <LINK REL="Next"  HREF="001476.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] require and Lua path</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20require%20and%20Lua%20path&In-Reply-To=%3CAANLkTimDpWkxkCQ-m6DA1XqSjHqVZOI-VtWTSVWg0hgF%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] require and Lua path">dadosutter at gmail.com
+       </A><BR>
+    <I>Tue Jun 22 16:23:40 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001463.html">[eLua-dev] require and Lua path
+</A></li>
+        <LI>Next message: <A HREF="001476.html">[eLua-dev] require and Lua path
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1468">[ date ]</a>
+              <a href="thread.html#1468">[ thread ]</a>
+              <a href="subject.html#1468">[ subject ]</a>
+              <a href="author.html#1468">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Jun 22, 2010 at 02:02, Stefan Brantschen
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">stefan.brantschen at mac.com</A>&gt;wrote:
+
+&gt;<i> ...................
+</I>&gt;<i>
+</I>&gt;<i> Problem persists. Shouldn't line 108 in src/lua/luaconf.h read ...........
+</I>&gt;<i>
+</I>
+Yes Stefan. I had fixed it only on line 93 and this is also needed on line
+108. I've already commited the fix so you can update your trunk and try
+again, if you haven't done it locally already.
+
+   Those #defines look a bit confusing to me, since we added the #ifdefs for
+LUA_RPC (and kept the original Lua checks for WIN32).
+   I don't know for example, why we need to keep searching the original
+(Lua) paths of /, /lua for .lua and .lc files and even for the init.lua
+file.
+   To respect the Lua feature of running an init.lua or init.lc file if
+found, we should instead add it to our /rom and /mmc search paths or to
+better merge this feature with our autorun right ?
+
+Tks for helping us to test it
+Best
+Dado
+
+
+
+
+
+
+
+
+
+
+&gt;<i>  #define LUA_PATH_DEFAULT  &quot;/mmc/?.lua;/mmc/?.lc;/rom/?.lua;/rom/?.lc&quot;
+</I>&gt;<i>
+</I>&gt;<i> in lieu of the current
+</I>&gt;<i>
+</I>&gt;<i>  #define LUA_PATH_DEFAULT  &quot;/rom/?.lua;/rom/?.lc&quot;
+</I>&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i> -- Stefan
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100622/413e0c71/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100622/413e0c71/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001463.html">[eLua-dev] require and Lua path
+</A></li>
+	<LI>Next message: <A HREF="001476.html">[eLua-dev] require and Lua path
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1468">[ date ]</a>
+              <a href="thread.html#1468">[ thread ]</a>
+              <a href="subject.html#1468">[ subject ]</a>
+              <a href="author.html#1468">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

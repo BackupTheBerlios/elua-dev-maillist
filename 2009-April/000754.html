@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] SVN access to eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20SVN%20access%20to%20eLua&In-Reply-To=%3C81fbe47d0904090451u2518f606y8c037e9f77c3c28b%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000749.html">
+   <LINK REL="Next"  HREF="000761.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] SVN access to eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20SVN%20access%20to%20eLua&In-Reply-To=%3C81fbe47d0904090451u2518f606y8c037e9f77c3c28b%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] SVN access to eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Apr  9 13:51:09 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000749.html">[eLua-dev] SVN access to eLua
+</A></li>
+        <LI>Next message: <A HREF="000761.html">[eLua-dev] SVN access to eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#754">[ date ]</a>
+              <a href="thread.html#754">[ thread ]</a>
+              <a href="subject.html#754">[ subject ]</a>
+              <a href="author.html#754">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> The code is split into two parts -- the top level file system code is
+</I>&gt;<i>  fairly generic and the bottom level code in a separate file which deals
+</I>&gt;<i> directly with the AT91 embedded flash controller.  The code is really
+</I>&gt;<i> green (just written a few days ago) so there is no urgent need to get it
+</I>&gt;<i> in or anything.  I'll post a link to the files where others can examine
+</I>&gt;<i> them (and make suggestions).  Over time, if others think the file system
+</I>&gt;<i> would be useful it can be integrated in a way that makes it fairly
+</I>&gt;<i> portable between platforms that may implement embedded nand flash memory
+</I>&gt;<i> in different ways.
+</I>
+
+Excellent, this is exactly what we're looking for.
+
+
+&gt;<i> &gt; - USB drivers? what for? I mean, I know what they are :), but do you
+</I>&gt;<i> &gt; have a specific usage scenario for USB+eLua ?
+</I>&gt;<i>
+</I>&gt;<i> With regards to USB, I think it's useful for the AT91 chips in that the
+</I>&gt;<i> dev boards for those chips are commonly plugged into the PC via the USB
+</I>&gt;<i> port.  Serial ports are harder to come by on PCs these days and almost
+</I>&gt;<i> non-existent on laptops (OK, USB to serial cables aren't too hard to
+</I>&gt;<i> find).  I believe enabling a build switch to make the eLua shell console
+</I>&gt;<i> active through the USB port rather than the serial port is indeed
+</I>&gt;<i> useful.  I would suggest making USB shell access a compile time switch
+</I>&gt;<i> that can be set for those platforms which support a USB controller.  It
+</I>&gt;<i> should be easy to make portable in that from eLua perspective it looks
+</I>&gt;<i> pretty much just like a serial port -- only the underlying driver kept
+</I>&gt;<i> in the platform specific code is much different.
+</I>&gt;<i>
+</I>
+Sure, console over serial port over USB sounds just fine to me :) About the
+build switch, we should probably keep it platform-specific, don't know if we
+can include it in the platform interface.
+
+
+&gt;<i> For zmodem, the implementation I ported from the AVRFreaks site was
+</I>&gt;<i> intended for the AVR ATmega128 (16k SRAM) and uses very little RAM --
+</I>&gt;<i> less than the current eLua xmodem code in fact.  It does a good job of
+</I>&gt;<i> implementing the protocol byte-by-byte rather than buffering entire
+</I>&gt;<i> frames.  That said, zmodem doesn't offer much over xmodem for the way
+</I>&gt;<i> eLua is using it.  I needed it for bulk transfer of files to the file
+</I>&gt;<i> system on the chip.
+</I>&gt;<i>
+</I>
+Oh. In this case, by all means, let us have it :) ZMODEM would be better
+than XMODEM for eLua, as it contains information such as the file name being
+transfered and (very important) its size.
+
+Thanks,
+Bogdan
+
+
+&gt;<i> These are just things that I need for my specific use and I would be
+</I>&gt;<i> happy to make any pieces available to others who would find them useful
+</I>&gt;<i> as well.
+</I>&gt;<i>
+</I>&gt;<i> Mike
+</I>&gt;<i>
+</I>&gt;<i> &gt; It might be wise to move this discussion to the eLua dev list.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Thu, Apr 9, 2009 at 12:19 AM, Bogdan Marinescu
+</I>&gt;<i> &gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;&gt; wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     Hi Mike,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     You should have developer access now, please check.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     Best,
+</I>&gt;<i> &gt;     Bogdan
+</I>&gt;<i>  &gt;
+</I>&gt;<i> &gt;     On Thu, Apr 9, 2009 at 12:03 AM, Mike Thompson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpthompson at gmail.com</A>
+</I>&gt;<i> &gt;     &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpthompson at gmail.com</A>&gt;&gt; wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;         Bogdan and Dado,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;         Can I be given developer access to the eLua SVN repository?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;         I now have a number of things I would like to contribute to eLua
+</I>&gt;<i> &gt;         including platform support for AT91SAM7S, embedded flash
+</I>&gt;<i> &gt;         controller and file system, USB drivers and zmodem code.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;         Thanks,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;         Mike Thompson
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090409/4a97a36e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090409/4a97a36e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000749.html">[eLua-dev] SVN access to eLua
+</A></li>
+	<LI>Next message: <A HREF="000761.html">[eLua-dev] SVN access to eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#754">[ date ]</a>
+              <a href="thread.html#754">[ thread ]</a>
+              <a href="subject.html#754">[ subject ]</a>
+              <a href="author.html#754">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,354 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Changing%20gcc%20between%20ARM9%20and%20ARM-cortex%0A%09automatically.&In-Reply-To=%3Cl2m63fda4a21005011946gab1d995ck8a105de1c0068f80%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001387.html">
+   <LINK REL="Next"  HREF="001389.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.</H1>
+    <B>Thiago Naves</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Changing%20gcc%20between%20ARM9%20and%20ARM-cortex%0A%09automatically.&In-Reply-To=%3Cl2m63fda4a21005011946gab1d995ck8a105de1c0068f80%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.">naves.thiago at gmail.com
+       </A><BR>
+    <I>Sun May  2 04:46:01 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001387.html">[eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.
+</A></li>
+        <LI>Next message: <A HREF="001389.html">[eLua-dev] AVR32 : EVK1101 board and SPI added. Need a EVK1100	tester.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1388">[ date ]</a>
+              <a href="thread.html#1388">[ thread ]</a>
+              <a href="subject.html#1388">[ subject ]</a>
+              <a href="author.html#1388">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Apr 30, 2010 at 1:53 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> On Fri, Apr 30, 2010 at 12:35 AM, Marcelo Politzer
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>
+
+
+&gt;<i>  &gt; The script does create the symbolic links.
+</I>&gt;<i> &gt; but the changes on SConstruct need to be done manualy.
+</I>&gt;<i>
+</I>&gt;<i> Cool.  I may give that a try on my Mac to see if I can still build the
+</I>&gt;<i> elf toolchains (it's been a bit).
+</I>&gt;<i>
+</I>&gt;<i> I've tryed building on OS X using a earlier version of those scripts with
+</I>no success.
+But I'm not a shell expert so, maybe with some modifications it would work (
+I did try
+to modify the script, but got nothing ).
+Not sure about that new version, I might give it a try.
+
+
+
+&gt;<i> Actually, this also brings to mind something that I've run into
+</I>&gt;<i> frequently with configuring different builds which is that I'm lazy
+</I>&gt;<i> and usually don't want to retype a long scons invokation each time
+</I>&gt;<i> it's run.  Might it make sense to designate some separate override or
+</I>&gt;<i> configuration file where users could modify defaults without changing
+</I>&gt;<i> the SConstruct?  It certainly wouldn't be difficult to  do, and
+</I>&gt;<i> perhaps SCons might provide some convenient way to do this?
+</I>&gt;<i>
+</I>&gt;<i> I think Marcelo was working on something like that too...
+</I>
+
+&gt;<i> Anyone else have their root of the elua tree filled with one-liner
+</I>&gt;<i> scripts for building different targets? :-)
+</I>&gt;<i>
+</I>
+Yeah =)
+
+
+&gt;<i>
+</I>&gt;<i> &gt; I've downloaded your script, and I'm going to try it out on Linux (
+</I>&gt;<i> Ubuntu
+</I>&gt;<i> &gt; 32 ) and
+</I>&gt;<i> &gt; report if it works.
+</I>&gt;<i>
+</I>&gt;<i> Thanks!  FYI, please test the binaries that it generates if it does
+</I>&gt;<i> build.  I tried it a few months ago on Ubuntu and found that the
+</I>&gt;<i> horrible mess that is genmultilib (shell &amp; sed) gave me correct
+</I>&gt;<i> results on an OS X machine, and different results on a Linux machine.
+</I>&gt;<i> The latter was correctable by copying the specs file from the Mac,
+</I>&gt;<i> forcing it to use proper configurations when building for Cortex-M3.
+</I>&gt;<i> I'm hoping that has been fixed in one of these more recent releases.
+</I>&gt;<i> I'll see if I can get a build done on a 32-bit Linux box soon and I'd
+</I>&gt;<i> be happy to compare results.
+</I>&gt;<i>
+</I>&gt;<i> I'll try your script too..
+</I>
+
+Best,
+
+Thiago
+
+
+
+
+&gt;<i>  &gt; Regards,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Marcelo Politzer Couto.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 2010/4/29 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Interesting approach.  I haven't checked, but the build scripts you've
+</I>&gt;<i> &gt;&gt; also posted perhaps could do all of this automatically as well?
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Another approach, although a bit more complicated to build is to use a
+</I>&gt;<i> &gt;&gt; multilib version of GCC to build for both.  This can be a bit tricky,
+</I>&gt;<i> &gt;&gt; but I do actually have an example Makefile that will download, build,
+</I>&gt;<i> &gt;&gt; and install such a toolchain at least on OS X.  I believe it should
+</I>&gt;<i> &gt;&gt; also work on Linux without too much modification (just install latex,
+</I>&gt;<i> &gt;&gt; mpfr, etc.. before trying to build the toolchain):
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; I'd love to hear how well it works for people on Linux targets, since
+</I>&gt;<i> &gt;&gt; perhaps there are just some small changes needed.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; <A HREF="http://github.com/jsnyder/arm-eabi-toolchain">http://github.com/jsnyder/arm-eabi-toolchain</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; -jsnyder
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Thu, Apr 29, 2010 at 1:16 AM, Marcelo Politzer &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt;
+</I>&gt;<i> &gt;&gt; wrote:
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Hello eLuers,
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; I've been getting a hard time while doing eLua development with
+</I>&gt;<i> diferent
+</I>&gt;<i> &gt;&gt; &gt; CPUs using GCC.
+</I>&gt;<i> &gt;&gt; &gt; As the gcc to arm9 and the gcc to arm-cortex have the same name I have
+</I>&gt;<i> &gt;&gt; &gt; to
+</I>&gt;<i> &gt;&gt; &gt; manualy change the
+</I>&gt;<i> &gt;&gt; &gt; PATH environment variable to switch between the two gcc versions. (
+</I>&gt;<i> &gt;&gt; &gt; Learned
+</I>&gt;<i> &gt;&gt; &gt; the method from Dado ).
+</I>&gt;<i> &gt;&gt; &gt; After getting a lot of frustration caused by forgetting to change,
+</I>&gt;<i> &gt;&gt; &gt; happened
+</I>&gt;<i> &gt;&gt; &gt; a it a few times already and I've come to a solution.
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Why don't create symbolic links with different names to each of them
+</I>&gt;<i> &gt;&gt; &gt; like
+</I>&gt;<i> &gt;&gt; &gt; arm-elf-gcc-79 and arm-elf-gcc-cortex to avoid this conflict.
+</I>&gt;<i> &gt;&gt; &gt; ( also did the symlinks with the other binutils )
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; So I gave it a shot, and after creating the links at
+</I>&gt;<i> &gt;&gt; &gt; /usr/local/cross-arm/bin and at /usr/local/cross-cortex/bin ( the
+</I>&gt;<i> &gt;&gt; &gt; originals
+</I>&gt;<i> &gt;&gt; &gt; stayed intact ).
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; I've realized that the SConstruct needed some modifications as well (
+</I>&gt;<i> &gt;&gt; &gt; changes documented at the bottom of the email ).
+</I>&gt;<i> &gt;&gt; &gt; After all this change it worked like a charm and automatically
+</I>&gt;<i> choosing
+</I>&gt;<i> &gt;&gt; &gt; the
+</I>&gt;<i> &gt;&gt; &gt; toolchain.
+</I>&gt;<i> &gt;&gt; &gt; As I think it is a good solution I came to share it with the list and
+</I>&gt;<i> &gt;&gt; &gt; check
+</I>&gt;<i> &gt;&gt; &gt; if it worth the change in the SConstruct and make people change their
+</I>&gt;<i> &gt;&gt; &gt; SO.
+</I>&gt;<i> &gt;&gt; &gt; But would be a Great new feature to eLua and help make it more
+</I>&gt;<i> frendly.
+</I>&gt;<i> &gt;&gt; &gt; Some
+</I>&gt;<i> &gt;&gt; &gt; more thoughts about it.
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Pros:
+</I>&gt;<i> &gt;&gt; &gt; - Part of the building complexity gets transparent to user as
+</I>&gt;<i> SConstruct
+</I>&gt;<i> &gt;&gt; &gt; automatically choses the toolchain to use.
+</I>&gt;<i> &gt;&gt; &gt; - There is no more need to prepend path to change the toolchain.
+</I>&gt;<i> &gt;&gt; &gt; - the systems without the symbolic links still works perfectly ( need
+</I>&gt;<i> to
+</I>&gt;<i> &gt;&gt; &gt; add
+</I>&gt;<i> &gt;&gt; &gt; toolchain=arm-gcc, peaple don't need to create symlinks if they don't
+</I>&gt;<i> &gt;&gt; &gt; want
+</I>&gt;<i> &gt;&gt; &gt; to )
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Cons:
+</I>&gt;<i> &gt;&gt; &gt; - People used to: &quot;$scons board=elua-puc&quot; prog will have to add
+</I>&gt;<i> &gt;&gt; &gt; toolchain=arm-gcc
+</I>&gt;<i> &gt;&gt; &gt; - can't think any more else...
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; And here is the documentation of how I did it and some comments as it
+</I>&gt;<i> &gt;&gt; &gt; goes:
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; The symbolinc links wore done in the following way for arm7 and arm9:
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; $ cd /usr/local/cross-arm
+</I>&gt;<i> &gt;&gt; &gt; $ for file in *; do ln -s &quot;$f&quot; &quot;$f&quot;-79; done
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; and for arm cortex:
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; $ cd /usr/local/cross-cortex
+</I>&gt;<i> &gt;&gt; &gt; $ for file in *; do ln -s &quot;$f&quot; &quot;$f&quot;-cortex-m3; done
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Here are the changes at SConstruct: added two more toolchains, the
+</I>&gt;<i> &gt;&gt; &gt; symbolic
+</I>&gt;<i> &gt;&gt; &gt; linked ones.
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; toolchain_list = {
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;   'arm-gcc-79' : {
+</I>&gt;<i> &gt;&gt; &gt;     'compile' : 'arm-elf-gcc-79',
+</I>&gt;<i> &gt;&gt; &gt;     'link' : 'arm-elf-ld-79',
+</I>&gt;<i> &gt;&gt; &gt;     'asm' : 'arm-elf-as-79',
+</I>&gt;<i> &gt;&gt; &gt;     'bin' : 'arm-elf-objcopy-79',
+</I>&gt;<i> &gt;&gt; &gt;     'size' : 'arm-elf-size-79',
+</I>&gt;<i> &gt;&gt; &gt;     'cross_cpumode' : 'little',
+</I>&gt;<i> &gt;&gt; &gt;     'cross_lua' : 'float_arm 64',
+</I>&gt;<i> &gt;&gt; &gt;     'cross_lualong' : 'int 32'
+</I>&gt;<i> &gt;&gt; &gt;   },
+</I>&gt;<i> &gt;&gt; &gt;   'arm-gcc-cortex-m3' : {
+</I>&gt;<i> &gt;&gt; &gt;     'compile' : 'arm-elf-gcc-cortex-m3',
+</I>&gt;<i> &gt;&gt; &gt;     'link' : 'arm-elf-ld-cortex-m3',
+</I>&gt;<i> &gt;&gt; &gt;     'asm' : 'arm-elf-as-cortex-m3',
+</I>&gt;<i> &gt;&gt; &gt;     'bin' : 'arm-elf-objcopy-cortex-m3',
+</I>&gt;<i> &gt;&gt; &gt;     'size' : 'arm-elf-size-cortex-m3',
+</I>&gt;<i> &gt;&gt; &gt;     'cross_cpumode' : 'little',
+</I>&gt;<i> &gt;&gt; &gt;     'cross_lua' : 'float_arm 64',
+</I>&gt;<i> &gt;&gt; &gt;     'cross_lualong' : 'int 32'
+</I>&gt;<i> &gt;&gt; &gt;   },
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; ...
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; }
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Also at SConstruct but a little further: the toolchain used by each
+</I>&gt;<i> &gt;&gt; &gt; platform. ( after some tests, I've noticed that the first acts as
+</I>&gt;<i> &gt;&gt; &gt; default,
+</I>&gt;<i> &gt;&gt; &gt; so no toolchain= is the &quot;auto&quot; one. )
+</I>&gt;<i> &gt;&gt; &gt; As arm-gcc is not the first anymore, it needs to be explicitly called
+</I>&gt;<i> &gt;&gt; &gt; when
+</I>&gt;<i> &gt;&gt; &gt; used. so if the user calls &quot;$scons board=elua-puc&quot; on a system without
+</I>&gt;<i> &gt;&gt; &gt; the
+</I>&gt;<i> &gt;&gt; &gt; symbolic links it will issue an error like: &quot;arm-gcc-79 not found&quot; as
+</I>&gt;<i> &gt;&gt; &gt; mentioned earlier.
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; platform_list = {
+</I>&gt;<i> &gt;&gt; &gt;   'at91sam7x' : { 'cpus' : [ 'AT91SAM7X256', 'AT91SAM7X512' ],
+</I>&gt;<i> &gt;&gt; &gt; 'toolchains'
+</I>&gt;<i> &gt;&gt; &gt; : [ 'arm-gcc-79', 'arm-gcc', 'codesourcery', 'devkitarm',
+</I>&gt;<i> 'arm-eabi-gcc'
+</I>&gt;<i> &gt;&gt; &gt; ]
+</I>&gt;<i> &gt;&gt; &gt; },
+</I>&gt;<i> &gt;&gt; &gt;   'lm3s' : { 'cpus' : [ 'LM3S8962', 'LM3S6965', 'LM3S6918', 'LM3S9B92'
+</I>&gt;<i> &gt;&gt; &gt; ],
+</I>&gt;<i> &gt;&gt; &gt; 'toolchains' : [ 'arm-gcc-cortex-m3', 'codesourcery', 'devkitarm',
+</I>&gt;<i> &gt;&gt; &gt; 'arm-eabi-gcc' ] },
+</I>&gt;<i> &gt;&gt; &gt;   'str9' : { 'cpus' : [ 'STR912FAW44' ], 'toolchains' : [
+</I>&gt;<i> 'arm-gcc-79',
+</I>&gt;<i> &gt;&gt; &gt; 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ] },
+</I>&gt;<i> &gt;&gt; &gt;   'i386' : { 'cpus' : [ 'I386' ], 'toolchains' : [ 'i686-gcc' ] },
+</I>&gt;<i> &gt;&gt; &gt;   'sim' : { 'cpus' : [ 'LINUX' ], 'toolchains' : [ 'i686-gcc' ] },
+</I>&gt;<i> &gt;&gt; &gt;   'lpc288x' : { 'cpus' : [ 'LPC2888' ], 'toolchains' : [ 'arm-gcc-79',
+</I>&gt;<i> &gt;&gt; &gt; 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ] },
+</I>&gt;<i> &gt;&gt; &gt;   'str7' : { 'cpus' : [ 'STR711FR2' ], 'toolchains' : [ 'arm-gcc-79',
+</I>&gt;<i> &gt;&gt; &gt; 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ] },
+</I>&gt;<i> &gt;&gt; &gt;   'stm32' : { 'cpus' : [ 'STM32F103ZE', 'STM32F103RE' ], 'toolchains'
+</I>&gt;<i> :
+</I>&gt;<i> &gt;&gt; &gt; [
+</I>&gt;<i> &gt;&gt; &gt; 'arm-gcc-79', 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ]
+</I>&gt;<i> &gt;&gt; &gt; },
+</I>&gt;<i> &gt;&gt; &gt;   'avr32' : { 'cpus' : [ 'AT32UC3A0512' ], 'toolchains' : [
+</I>&gt;<i> 'avr32-gcc'
+</I>&gt;<i> &gt;&gt; &gt; ] },
+</I>&gt;<i> &gt;&gt; &gt;   'lpc24xx' : { 'cpus' : [ 'LPC2468' ], 'toolchains' : [ 'arm-gcc-79',
+</I>&gt;<i> &gt;&gt; &gt; 'arm-gcc', 'codesourcery', 'devkitarm', 'arm-eabi-gcc' ] },
+</I>&gt;<i> &gt;&gt; &gt;   'lpc17xx' : { 'cpus' : [ 'LPC1768' ], 'toolchains' : [
+</I>&gt;<i> &gt;&gt; &gt; 'arm-gcc-cortex-m3', 'arm-gcc', 'codesourcery', 'devkitarm',
+</I>&gt;<i> &gt;&gt; &gt; 'arm-eabi-gcc'
+</I>&gt;<i> &gt;&gt; &gt; ] }
+</I>&gt;<i> &gt;&gt; &gt; }
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Thank you for the attention.
+</I>&gt;<i> &gt;&gt; &gt; Best Regards,
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; Marcelo Politzer Couto.
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; --
+</I>&gt;<i> &gt;&gt; James Snyder
+</I>&gt;<i> &gt;&gt; Biomedical Engineering
+</I>&gt;<i> &gt;&gt; Northwestern University
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> &gt;&gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> &gt;&gt; Phone: (847) 448-0386
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; eLua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> Phone: (847) 448-0386
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100501/19d845cd/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100501/19d845cd/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001387.html">[eLua-dev] Changing gcc between ARM9 and ARM-cortex	automatically.
+</A></li>
+	<LI>Next message: <A HREF="001389.html">[eLua-dev] AVR32 : EVK1101 board and SPI added. Need a EVK1100	tester.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1388">[ date ]</a>
+              <a href="thread.html#1388">[ thread ]</a>
+              <a href="subject.html#1388">[ subject ]</a>
+              <a href="author.html#1388">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

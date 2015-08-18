@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua design change to allow synchronized PWM channel	start?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20design%20change%20to%20allow%20synchronized%20PWM%20channel%0A%09start%3F&In-Reply-To=%3CBANLkTi%3DTakyKExXyouCTny6WBjCfK8y7mA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002241.html">
+   <LINK REL="Next"  HREF="002243.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua design change to allow synchronized PWM channel	start?</H1>
+    <B>Marcelo Politzer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20design%20change%20to%20allow%20synchronized%20PWM%20channel%0A%09start%3F&In-Reply-To=%3CBANLkTi%3DTakyKExXyouCTny6WBjCfK8y7mA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua design change to allow synchronized PWM channel	start?">mpolitzer.c at gmail.com
+       </A><BR>
+    <I>Sun Apr  3 23:02:54 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002241.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+        <LI>Next message: <A HREF="002243.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2242">[ date ]</a>
+              <a href="thread.html#2242">[ thread ]</a>
+              <a href="subject.html#2242">[ subject ]</a>
+              <a href="author.html#2242">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2011/4/3 Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;:
+&gt;<i> Hi
+</I>&gt;<i> &#160; I'm looking at the AVR32 PWM stuff, and one thing that strikes me
+</I>&gt;<i> is that the platform allows synchronized starting of several PWM
+</I>&gt;<i> channels, but the eLua module interface to pwm forces you to start
+</I>&gt;<i> them one by one.
+</I>&gt;<i>
+</I>&gt;<i> Other eLua module functions can apply to a variable list of things,
+</I>&gt;<i> for example the functions of the pio.* module which can set/clear a
+</I>&gt;<i> range of pins in one operation.
+</I>&gt;<i>
+</I>&gt;<i> I thought it would be best to discuss this here first, since it is a
+</I>&gt;<i> change to the eLua API.
+</I>&gt;<i>
+</I>&gt;<i> To avoid breaking existing code, this can be applied to functions
+</I>&gt;<i> where the PWM channel id is the last (or only) parameter.
+</I>&gt;<i>
+</I>&gt;<i> This is fine for pwm.start(id) and pwm_stop(id). pwm_start() is
+</I>&gt;<i> exactly the one that makes an operational difference, since doing
+</I>&gt;<i> synchronized starting is impossible at present.
+</I>&gt;<i>
+</I>&gt;<i> pwm.setup(id, freq, duty) cannot be extended in this way unless it
+</I>&gt;<i> accepts a number id or a table of ids as the first parameter, but it
+</I>&gt;<i> seems a bit strange.
+</I>&gt;<i> Is changing the frequency and/or duty cycle of several PWM output
+</I>&gt;<i> synchronously (or as close to synchronously as can be achieved in
+</I>&gt;<i> practice) a useful thing to be able to do?
+</I>&gt;<i>
+</I>&gt;<i> That only leaves pwm.setclock( id, frequency ) and pwm.getclock( id )
+</I>&gt;<i> - I doubt that extending these is useful. Anyway all the existing
+</I>&gt;<i> platforms except one have a common base clock frequency for all PWM
+</I>&gt;<i> channels.
+</I>&gt;<i>
+</I>&gt;<i> Thoughts? &#160;Sorry, I've never used PWM in practice so only see what is
+</I>&gt;<i> possible, not what is actually useful in practice.
+</I>
+Well, For motor control you sure want the PWMs to be in sync, at leas 2 of them
+for brushed DC. Even thou it doesn't seem a typical eLua application
+might be handy
+to someone.
+
+&gt;<i>
+</I>&gt;<i> &#160; &#160;M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+[]s,
+Marcelo
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002241.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+	<LI>Next message: <A HREF="002243.html">[eLua-dev] eLua design change to allow synchronized PWM channel	start?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2242">[ date ]</a>
+              <a href="thread.html#2242">[ thread ]</a>
+              <a href="subject.html#2242">[ subject ]</a>
+              <a href="author.html#2242">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

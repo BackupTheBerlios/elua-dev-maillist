@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Simple eLua flash file system
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Simple%20eLua%20flash%20file%20system&In-Reply-To=%3Cd3b6d880904050802l49c1a080tad5f21c8a5a4a3c2%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000746.html">
+   <LINK REL="Next"  HREF="000737.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Simple eLua flash file system</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Simple%20eLua%20flash%20file%20system&In-Reply-To=%3Cd3b6d880904050802l49c1a080tad5f21c8a5a4a3c2%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Simple eLua flash file system">dadosutter at gmail.com
+       </A><BR>
+    <I>Sun Apr  5 17:02:28 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000746.html">[eLua-dev] Simple eLua flash file system
+</A></li>
+        <LI>Next message: <A HREF="000737.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#747">[ date ]</a>
+              <a href="thread.html#747">[ thread ]</a>
+              <a href="subject.html#747">[ subject ]</a>
+              <a href="author.html#747">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Just Great Mike !
+   Pls keep this as a branch on svn for now, while we manage to polish up
+v0.6 to release.
+
+Thanks !
+Dado
+
+On Sun, Apr 5, 2009 at 04:40, Mike Thompson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpthompson at gmail.com</A>&gt; wrote:
+
+&gt;<i> Bogdan Marinescu wrote:
+</I>&gt;<i> &gt; We will have such a FS at some point (I have a proof of concept ready),
+</I>&gt;<i> &gt; but I can't tell you why, as right now I'm so busy that I don't even get
+</I>&gt;<i> &gt; to work on the 0.6 docs anymore (hope this will change soon).
+</I>&gt;<i> &gt; I do not recommend using FAT on Flash directly. You might kill your
+</I>&gt;<i> &gt; Flash soon. FAT was not designed to work directly with a medium such as
+</I>&gt;<i> &gt; Flash that generally needs a wear leveling algorithm for a nice, long
+</I>&gt;<i> &gt; life :)
+</I>&gt;<i>
+</I>&gt;<i> Just a follow up on this, I did take Bogdan's warning to heart about
+</I>&gt;<i> using the FAT file system over raw NAND flash.  After scouring the
+</I>&gt;<i> Internet with Google and not finding anything suitable (small, free and
+</I>&gt;<i> easy to use) I've put together my own simple linear file store system
+</I>&gt;<i> for the AT91SAM7 EFC.  It should correctly implement a wear leveling
+</I>&gt;<i> strategy whereby it keeps track of the order of writes to the underlying
+</I>&gt;<i> flash to distribute them evenly across all blocks in the filestore --
+</I>&gt;<i> even when rewriting portions of an existing file.
+</I>&gt;<i>
+</I>&gt;<i> Because there is no central table at the top of the filesystem it won't
+</I>&gt;<i> win any speed contests as all searches for file blocks are linear across
+</I>&gt;<i> the filestore.  I took this approach to minimize bookkeeping structures
+</I>&gt;<i> in SRAM which other linear file stores will typically use.  This
+</I>&gt;<i> strategy should work fine for small file systems on the order of a few
+</I>&gt;<i> hundred flash pages.
+</I>&gt;<i>
+</I>&gt;<i> It's very simple and just supports a root directory with an arbitrary
+</I>&gt;<i> number of files, but it should get the job done.  It will intergrate
+</I>&gt;<i> with eLua as a filesystem connected via newlib just as FatFs does so the
+</I>&gt;<i> usual open, close, read, write, etc. calls should work.
+</I>&gt;<i>
+</I>&gt;<i> I want to spend a few days cleaning up code and performing unit testing,
+</I>&gt;<i> but I'll be happy to share it with others who may find it useful.  I'm
+</I>&gt;<i> sure a few other sets of eyes looking it over would help with ideas for
+</I>&gt;<i> making it more portable and more efficient.
+</I>&gt;<i>
+</I>&gt;<i> I'll be using this to store Lua byte code and other resources on the
+</I>&gt;<i> internal flash of the AT91SAM7S of the NXT Lego brick.  I wanted
+</I>&gt;<i> something well integrated with the file system, but reasonable for the
+</I>&gt;<i> raw NAND flash.
+</I>&gt;<i>
+</I>&gt;<i> Mike Thompson
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090405/210cb478/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090405/210cb478/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000746.html">[eLua-dev] Simple eLua flash file system
+</A></li>
+	<LI>Next message: <A HREF="000737.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#747">[ date ]</a>
+              <a href="thread.html#747">[ thread ]</a>
+              <a href="subject.html#747">[ subject ]</a>
+              <a href="author.html#747">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

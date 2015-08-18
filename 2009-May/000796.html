@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GC Parameters &amp; Emergency Collection
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3CEMEWEMEW2_DELIMl48N6G70ba30408ca60324c2d864%2C%0A%09jbsnyder%40fanplastic.org%2C%208862ACC0-52C9-46CD-8B2A-587%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000792.html">
+   <LINK REL="Next"  HREF="000798.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GC Parameters &amp; Emergency Collection</H1>
+    <B>jbsnyder at fanplastic.org</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3CEMEWEMEW2_DELIMl48N6G70ba30408ca60324c2d864%2C%0A%09jbsnyder%40fanplastic.org%2C%208862ACC0-52C9-46CD-8B2A-587%3E"
+       TITLE="[eLua-dev] GC Parameters &amp; Emergency Collection">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sun May 10 06:06:16 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000792.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+        <LI>Next message: <A HREF="000798.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#796">[ date ]</a>
+              <a href="thread.html#796">[ thread ]</a>
+              <a href="subject.html#796">[ subject ]</a>
+              <a href="author.html#796">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+Sent from my iPhone
+
+On May 9, 2009, at 2:41 PM, Bogdan Marinescu  
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> Hello eLua list,
+</I>&gt;<i>
+</I>&gt;<i> I am the creator of the Emergency Garbage Collection (EGC) patch for  
+</I>&gt;<i> Lua
+</I>&gt;<i> 5.1.x.  I joined this list because I have interest in using Lua VM  
+</I>&gt;<i> with a
+</I>&gt;<i> very low memory limit and I think that over laps with embedded  
+</I>&gt;<i> systems.
+</I>&gt;<i>
+</I>&gt;<i> Attached is a version of the EGC patch for eLua SVN revision 281.  I  
+</I>&gt;<i> just had
+</I>&gt;<i> to updated line numbers so it would apply cleanly to eLua without any
+</I>&gt;<i> warnings.
+</I>&gt;<i>
+</I>&gt;<i> Many, many thanks for this !!! I wanted to do this for quite a while  
+</I>&gt;<i> now, but didn't find the time to do it. Your patch is excellent for  
+</I>&gt;<i> eLua and its goals, so it's a Great Thing to have it running on our  
+</I>&gt;<i> targets. Thanks again.
+</I>
+Ditto. Thanks for getting this up and going. I will do some testing  
+with this, this weekend if I get a chance. I'm curious if this might  
+allow pushing limits a bit more where we would previously run out of  
+memory where the problem could be helped by emergency gc.
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> For testing &amp; debugging what tools do other people use?  Remote gdb  
+</I>&gt;<i> over
+</I>&gt;<i> serial?  I might be able to do more testing tomorrow, right now I am  
+</I>&gt;<i> to
+</I>&gt;<i> tired.
+</I>&gt;<i>
+</I>&gt;<i> Personally I never used gdb over serial, although I have the  
+</I>&gt;<i> required hardware for some of the targets. Then again, I didn't  
+</I>&gt;<i> really low-level debugging, a LED or a serial connection did the job  
+</I>&gt;<i> just fine for me. There are also plans for an &quot;eLua simulator&quot; that  
+</I>&gt;<i> would run *inside* an OS (so you won't need the standalone version  
+</I>&gt;<i> to test it), but this is quite vague at the moment, and will have to  
+</I>&gt;<i> wait at least until we give eLua its own libc.
+</I>
+Looking forward to this as well. One thing I've been mentioning when  
+I've been trying to sell the idea of eLua to people is the potential  
+to mock the eLua environment on a desktop for not just debugging but  
+for simulating algorithm behavior and performance.
+
+I also don't use gdb over jtag much.  I try to test as much as  
+possible on the targets through the lua side.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> About 2/3 of the EGC patch is to make the resizing of the internal  
+</I>&gt;<i> string
+</I>&gt;<i> table &amp; hashpart of Lua table use less memory.  That is done by  
+</I>&gt;<i> doing an
+</I>&gt;<i> in-place resize of those tables.  If the table is shrinking then the  
+</I>&gt;<i> nodes
+</I>&gt;<i> are moved to the start of the table then realloc is called to shrink  
+</I>&gt;<i> the
+</I>&gt;<i> table.  If the table is growing then the realloc is done first  
+</I>&gt;<i> before the
+</I>&gt;<i> nodes are moved.  All of these changes are in lstring.c &amp; ltable.c  
+</I>&gt;<i> and I
+</I>&gt;<i> don't see any conflict with the change eLua made to vanilla Lua.
+</I>&gt;<i>
+</I>&gt;<i> Yet another very good thing for eLua :)
+</I>
+These features of egc were what actually what lead me to post the  
+question about whether we could make just a really simple egc patch.  
+But since it applies cleanly now I'll have to try it with both egc and  
+the extra memory usage features :)
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I still think that low memory systems should use the EGC to fully  
+</I>&gt;<i> utilize the
+</I>&gt;<i> limited memory they have.
+</I>&gt;<i>
+</I>&gt;<i> And I couldn't agree with you more, and this why I feel so excited  
+</I>&gt;<i> for having EGC in eLua. I'll have to think of a good batch of tests  
+</I>&gt;<i> for making your patch shine in its full potential :)
+</I>&gt;<i>
+</I>
+Would the torture tests for the egc patch work in really low memory  
+conditions like with 64k of SRAM?
+
+I think we should also have a general test suite for to simplify the  
+verification of builds across our multiple platforms.  I think I may  
+start after luarpc is working with eLua.
+
+&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000792.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+	<LI>Next message: <A HREF="000798.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#796">[ date ]</a>
+              <a href="thread.html#796">[ thread ]</a>
+              <a href="subject.html#796">[ subject ]</a>
+              <a href="author.html#796">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

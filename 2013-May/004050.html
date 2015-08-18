@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] at91sam7x build issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20at91sam7x%20build%20issue&In-Reply-To=%3C8CB66DE5-428E-4407-890F-611A625DC293%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004049.html">
+   <LINK REL="Next"  HREF="004051.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] at91sam7x build issue</H1>
+    <B>Lukas Kacer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20at91sam7x%20build%20issue&In-Reply-To=%3C8CB66DE5-428E-4407-890F-611A625DC293%40gmail.com%3E"
+       TITLE="[eLua-dev] at91sam7x build issue">kacer.lukas at gmail.com
+       </A><BR>
+    <I>Wed May  1 23:31:00 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004049.html">[eLua-dev] at91sam7x build issue
+</A></li>
+        <LI>Next message: <A HREF="004051.html">[eLua-dev] at91sam7x build issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4050">[ date ]</a>
+              <a href="thread.html#4050">[ thread ]</a>
+              <a href="subject.html#4050">[ subject ]</a>
+              <a href="author.html#4050">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>my define section looks almost like  yours, just I have also BUILD_XMODEM commented out, but that should not be problem.
+other think that came in my mind is if you have correct CON_UART_ID. I checked in the git and it is the same as I have:
+//#define CON_UART_ID         ( SERMUX_SERVICE_ID_FIRST + 1 )
+#define CON_UART_ID           0
+
+you mentioned that you tried to debug shell.c, so you probably don't hang somewhere in HW initialization.
+
+which board are you using? you could have also some HW issue. 
+is your serial connected to UART 0? some boards have jumpers to select what will be connected to connector and some boards like my one use DBGU instead UART. 
+there is small chance that you can have crystal with different freq. I don't remember from what the communication speed depends, but I guess that it could be problem. my is 18.432 
+
+if you are able to use GDB for debugging, try to put breakpoints to
+src/common_uart.c  line165. it should be inside function platform_uart_send
+and step inside to see if it goes to src/platform/at91sam7x/platform.c and if it is doing what is expected.
+if it will not break there, try breakpoint in 
+src/newlib/genstd.c at line 93 in function std_write. you should get in function std_send_char_func
+
+the line numbers I get from actual git repository. 
+have in mind that you have limited numbers of breakpoints. (maybe just 2? don't remember.)
+if you will not get to that breakpoints, something strange is happening. 
+try to make breakpoint on some printf. If I do step-in on my gdb-remote on printf (or some other newlib fund) it will make step-over. to do step-in, I have to make steps by instructions. 
+
+I hope that at least something will help you. 
+I'm just junior, so sorry If I wrote something wrong. I hope that somebody will correct me in that case.
+
+Lukas. 
+
+On May 1, 2013, at 22:08 PM, Ashu wrote:
+
+&gt;<i> Thanks Lukas,
+</I>&gt;<i> 
+</I>&gt;<i> Yes, it's based on Eclipse (Open declaration) that's showing path to
+</I>&gt;<i> /src/sim
+</I>&gt;<i> 
+</I>&gt;<i> SERMUX is in fact disabled; even with that I do NOT see eLua prompt via
+</I>&gt;<i> RS232.
+</I>&gt;<i> 
+</I>&gt;<i> Here are the options selected in platform_conf.h
+</I>&gt;<i> 
+</I>&gt;<i> // Define here what components you want for this platform
+</I>&gt;<i> #define BUILD_XMODEM
+</I>&gt;<i> #define BUILD_SHELL
+</I>&gt;<i> #define BUILD_ROMFS
+</I>&gt;<i> #define BUILD_TERM
+</I>&gt;<i> #define BUILD_CON_GENERIC
+</I>&gt;<i> //#define BUILD_RPC
+</I>&gt;<i> //#define BUILD_RFS
+</I>&gt;<i> //#define BUILD_SERMUX
+</I>&gt;<i> #define BUILD_C_INT_HANDLERS
+</I>&gt;<i> #define PLATFORM_HAS_SYSTIMER
+</I>&gt;<i> 
+</I>&gt;<i> UPDATE:
+</I>&gt;<i> Debugging (break-pointing) further I noticed, in shell.c printf which is
+</I>&gt;<i> supposed to send elua prompt doesn't appear to send it to uart. Diving
+</I>&gt;<i> deeper to understand printf is in fact bound to uart. Sounds like trouble in
+</I>&gt;<i> stdio, newlib area.
+</I>&gt;<i> 
+</I>&gt;<i> More on that soon...
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/at91sam7x-build-issue-tp7577941p7577943.html">http://elua-development.2368040.n2.nabble.com/at91sam7x-build-issue-tp7577941p7577943.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130501/6c651907/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130501/6c651907/attachment-0001.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004049.html">[eLua-dev] at91sam7x build issue
+</A></li>
+	<LI>Next message: <A HREF="004051.html">[eLua-dev] at91sam7x build issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4050">[ date ]</a>
+              <a href="thread.html#4050">[ thread ]</a>
+              <a href="subject.html#4050">[ subject ]</a>
+              <a href="author.html#4050">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

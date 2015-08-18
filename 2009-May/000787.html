@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua-RPC Coming
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua-RPC%20Coming&In-Reply-To=%3CEMEWEMEW2_DELIMl45AvV1930138e68ce18ea3d9c59%2C%0A%09jbsnyder%40fanplastic.org%2C%20568A589C-A779-4D7C-9B09-D94%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000788.html">
+   <LINK REL="Next"  HREF="000789.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua-RPC Coming</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua-RPC%20Coming&In-Reply-To=%3CEMEWEMEW2_DELIMl45AvV1930138e68ce18ea3d9c59%2C%0A%09jbsnyder%40fanplastic.org%2C%20568A589C-A779-4D7C-9B09-D94%3E"
+       TITLE="[eLua-dev] Lua-RPC Coming">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed May  6 17:57:22 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000788.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+        <LI>Next message: <A HREF="000789.html">[eLua-dev] Device Manager
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#787">[ date ]</a>
+              <a href="thread.html#787">[ thread ]</a>
+              <a href="subject.html#787">[ subject ]</a>
+              <a href="author.html#787">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On May 6, 2009, at 3:19 AM, Bogdan Marinescu wrote:
+
+&gt;<i> On Tue, May 5, 2009 at 10:21 PM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> Actually, I've just realized that one could do something similar to  
+</I>&gt;<i> the following:
+</I>&gt;<i> LOCAL:
+</I>&gt;<i> fstring = string.dump(func)
+</I>&gt;<i>
+</I>&gt;<i> remote.execfunc(fstring, inputval)
+</I>&gt;<i>
+</I>&gt;<i> REMOTE:
+</I>&gt;<i> function execfunc( fstring, input )
+</I>&gt;<i>        func = loadstring(fstring)
+</I>&gt;<i>        return func(input)
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> The are some limitations on the functions that can be used (only  
+</I>&gt;<i> pure lua, no upvalues, etc..), but it seems to work :-)
+</I>&gt;<i>
+</I>&gt;<i> This method then just makes use of the RPC mechanism for sending  
+</I>&gt;<i> strings as input values for functions.
+</I>&gt;<i>
+</I>&gt;<i> I don't think I'll be aiming to support sending anything other than  
+</I>&gt;<i> chunks of Lua code over the wire, so I think this can be implemented  
+</I>&gt;<i> with just a bit of syntactic sugar :-)
+</I>&gt;<i>
+</I>&gt;<i> That sounds just abourt right. The main problem isn't sending the  
+</I>&gt;<i> code I think, but rather serializing/deserializing the parameters/ 
+</I>&gt;<i> results, which I believe is also most of the work from Lua-RPC. I  
+</I>&gt;<i> don't think we need to handle &quot;tricky stuff&quot; like recursive tables  
+</I>&gt;<i> and such.
+</I>&gt;<i>
+</I>&gt;<i> Other ideas that I find interesting:
+</I>&gt;<i>
+</I>&gt;<i> - (almost) transparent remoting. By setting a metatable on _G, one  
+</I>&gt;<i> can try to execute remotely calls that won't work locally. For  
+</I>&gt;<i> example, if we do this on the PC:
+</I>&gt;<i>
+</I>&gt;<i> start_remote()  -- this sets the metatable, also sets up the RPC  
+</I>&gt;<i> transport if needed
+</I>&gt;<i> print &quot;Testme&quot; -- local call, will work just fine
+</I>&gt;<i> pio.set(1) -- the metatable will catch this call and try to execute  
+</I>&gt;<i> it remotely instead of throwing an error immediately
+</I>&gt;<i> end_remote()
+</I>&gt;<i> pio.set(1) -- this time we'll get an error
+</I>&gt;<i>
+</I>&gt;<i> This raises a number of interesting questions, like what happens if  
+</I>&gt;<i> an assignment like &quot;a = 1&quot; happens inside a start_remote() block?  
+</I>&gt;<i> Maybe this should also happen remotely, in which case a metatable  
+</I>&gt;<i> with __newindex would also be fine. I wouldn't go this way though,  
+</I>&gt;<i> it creates too much confusion. Or maybe the &quot;print&quot; in the above  
+</I>&gt;<i> code example should also happen on the remote side? Lots of stuff to  
+</I>&gt;<i> experiment with, in any case :)
+</I>
+Yeah, there are a lot of conceptual issues to consider there.  You  
+could potentially make some of that bi-directional like if a remote  
+call tries to find a but does not it can make a request back to the  
+other end to get that variable.
+
+I think the existing model needs to be adjusted to facilitate such  
+back-and-forth behavor.
+
+As far as the &quot;RPC if no local exists&quot; goes I think this would  
+actually not be too hard to implement.  The way it works now is that  
+you get a handle table when you open an rpc connection and doing an  
+__index (used to be a gettable event) on entries in that table  
+provides you with a helper (not sure why this double-layer is needed),  
+and then you can call global functions through that helper.  I only  
+have a __call metamethod on the helper so at the moment it only allows  
+calling functions, but I should be able to adjust it to allow access  
+to tables, numbers, etc..  I assume there's some global level call  
+mechanism that could just be wrapped to check locally and then fall  
+back to selected rpc handle if that fails.
+
+
+&gt;<i>
+</I>&gt;<i> - for RPC, you'd need a way to detect a failure on the transport and  
+</I>&gt;<i> return this to the local caller; maybe by using the regular (nil,  
+</I>&gt;<i> errormessage) Lua way.
+</I>
+It has exception handling for failures with the procedure calls  
+themselves as well as the transport layer.  You can register a local  
+error handler which gets an error message on, I think, both types of  
+failure.  If you don't register one it comes back through a standard  
+lua_error.
+
+&gt;<i>
+</I>&gt;<i> - how exactly do you plan on implementing the transport part? Will  
+</I>&gt;<i> it be a separate &quot;thread&quot; running on both the PC and the eLua board,  
+</I>&gt;<i> or will it block both of them by doing RPC only? For example, while  
+</I>&gt;<i> you do RPC, will you be able to use the shell on the eLua side?  
+</I>&gt;<i> Cause you need some kind of listener for your RPC calls.
+</I>
+There are two ways to handle this currently in LuaRPC. You can  
+initialize a server with RPC_server, which is blocking and just waits  
+on connections/calls.
+
+Alternately you can do something like the following:
+
+handle = RPC_listen (12345);
+while 1 do
+	if RPC_peek (handle) then
+		RPC_dispatch (handle)
+	end
+end
+
+So you can open up the socket and only deal with calls when they've  
+already come in.
+
+As far as how to initialize things in eLua my thought was along the  
+lines of having an option to have it, by default, come up in an  
+RPC_server mode on a given transport and wait for RPC calls.  This  
+would be off by default.  Something more compatible with the default  
+mode would be to have a command that could be issued at the shell like  
+&quot;rpc&quot; or something with an argument related to what transport/port to  
+use, and that would fire up the listener on elua on that port.  My  
+thought on that front, for an initial implementation, is to just take  
+over the connection that the shell was open on, sort of like how  
+xmodem does, and that will stay in control until no longer needed.
+
+One nice thing about this latter approach is that it would be pretty  
+easy to set up the desktop-side of the connection to start the rpc  
+connection from the terminal if needed so one needn't do that manually.
+
+Now as far as concurrency is concerned, you can do that within a  
+script using the listen, peek, dispatch approach.  I suppose some sort  
+of green threading could also be done with our yet-to-be-implemented  
+Lua interrupts.
+
+&gt;<i>
+</I>&gt;<i> - can we do this both ways ? :) I mean, since we can call eLua from  
+</I>&gt;<i> PC, it will only be fair to eLua to let it call the PC. The PC has  
+</I>&gt;<i> nothing on eLua :)
+</I>
+I think this could go further than the bidirectionality mentioned  
+above, but it will require that both sides have listeners going for  
+incoming RPC requests.  I presume that if, right now, one starts a  
+server on different ports on each side of a connection that requests  
+can go both ways as long as things are run in non-blocking mode.  It  
+would be interesting to see what work might be needed to do bi- 
+directional calls over a single connection.
+
+&gt;<i> Must return to some inhumanly boring work now, but I'll come back  
+</I>&gt;<i> when I have new ideas.
+</I>
+I have to do some of that too (mostly writing).
+
+I also spent about 4 hours of yesterday, with students, explaining  
+filtering, sampling while helping them debug their op-amp circuits,  
+which I thought they had figured out the previous week :-)
+
+I'll see what I get time for, but I think this should work pretty well  
+with a bit of effort.
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090506/e96c8c74/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090506/e96c8c74/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090506/e96c8c74/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090506/e96c8c74/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000788.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+	<LI>Next message: <A HREF="000789.html">[eLua-dev] Device Manager
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#787">[ date ]</a>
+              <a href="thread.html#787">[ thread ]</a>
+              <a href="subject.html#787">[ subject ]</a>
+              <a href="author.html#787">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

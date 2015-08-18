@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C81fbe47d1003110211r631dfc52kaeb66aa7cb288559%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001244.html">
+   <LINK REL="Next"  HREF="001246.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C81fbe47d1003110211r631dfc52kaeb66aa7cb288559%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Mar 11 11:11:02 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001244.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="001246.html">[eLua-dev] eLua on AVR32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1245">[ date ]</a>
+              <a href="thread.html#1245">[ thread ]</a>
+              <a href="subject.html#1245">[ subject ]</a>
+              <a href="author.html#1245">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> You are right of course, if you actually *want* a tty interaction model,
+</I>&gt;<i> CDC
+</I>&gt;<i> has the edge. But are you sure this really is the base requirement?
+</I>
+
+It is for me, and I explained why in a previous e-mail: prototyping. There
+are others too, read below.
+
+
+&gt;<i> Mostly I
+</I>&gt;<i> see one of the following: File transfer, which would be a packetized layer
+</I>&gt;<i> on top of tty (such as X-Modem)
+</I>
+
+Actually, after playing a bit with eLua, I realized that file transfer via
+X/Y/ZModem is extremely annoying. Doing the receive operation over and over
+again while prototyping can easily become extremely annoying. It's not just
+my impression, many other people have confirmed this. We have a much better
+alternative in the works (already functional actually), but I'm keeping this
+as a surprise for now :) And yes, it uses the serial port like crazy.
+
+
+&gt;<i> and in the USB world would be better done
+</I>&gt;<i> with MSD;
+</I>
+and proprietary packetized command/response protocols for
+&gt;<i> debuggers or computer peripherals like GPS or PLC like devices (which would
+</I>&gt;<i> be better done with HID or a custom USB profile).
+</I>&gt;<i>
+</I>&gt;<i> Conceptually the problem with RS232/ASCII/tty is that it is not a complete
+</I>&gt;<i> communications stack except for the intended teletype application. All the
+</I>&gt;<i> actual modern applications require additional layers on top. In contrast,
+</I>&gt;<i> the USB profiles are complete specifications right up to the application
+</I>&gt;<i> layer.
+</I>&gt;<i>
+</I>
+This didn't bother me so far. In the way I use a serial port, a CDC profile
+and an actual hardware RS232 port are perfectly equivalent for me.
+
+
+&gt;<i> The clincher for me is that you can do HID and MSD on any modern platform
+</I>&gt;<i> without an additional device driver. I'm not sure why, or if this is just a
+</I>&gt;<i> Windows problem, but you do need to source and install a manufacturer
+</I>&gt;<i> specific device driver to do CDC. If you stick with FTDI-based devices, the
+</I>&gt;<i> driver seems to be OK, but I have had endless problems with the (more
+</I>&gt;<i> common
+</I>&gt;<i> in over-the-counter USB-Serial converters) Prolific chip drivers on Vista
+</I>&gt;<i> and Windows 7.
+</I>&gt;<i>
+</I>
+I think serial ports simply don't like you :) I have a Prolific (PL-2303
+based) adapter that I use with all my eLua boards, and it never gave me any
+problems on any of the OSes I used it on (Linux, XP, Vista, W7). Are you on
+W7 64bits by any chance?
+
+Best,
+Bogdan
+
+
+&gt;<i>
+</I>&gt;<i> &gt; -----Original Message-----
+</I>&gt;<i> &gt; From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of James Snyder
+</I>&gt;<i> &gt; Sent: 09 March 2010 19:43
+</I>&gt;<i> &gt; To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> &gt; Subject: Re: [eLua-dev] Single Chip Lua Prospects
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I suppose it depends on the interaction model desired, but if what one
+</I>&gt;<i> &gt; wants is a tty, I suspect that presenting as an HID is going to make
+</I>&gt;<i> &gt; it more complicated to support different platforms
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; James Snyder
+</I>&gt;<i> &gt; Biomedical Engineering
+</I>&gt;<i> &gt; Northwestern University
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> &gt; PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> &gt; Phone: (847) 448-0386
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100311/896f818f/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100311/896f818f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001244.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="001246.html">[eLua-dev] eLua on AVR32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1245">[ date ]</a>
+              <a href="thread.html#1245">[ thread ]</a>
+              <a href="subject.html#1245">[ subject ]</a>
+              <a href="author.html#1245">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

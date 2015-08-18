@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STR9 GPIO INT
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STR9%20GPIO%20INT&In-Reply-To=%3CCAHDO%3Dv8_KZJ3M4CezeBdM0h-mP%2BkdJ1UEPBB16TmpED4Tphexg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002784.html">
+   <LINK REL="Next"  HREF="002753.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STR9 GPIO INT</H1>
+    <B>Marcelo Politzer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STR9%20GPIO%20INT&In-Reply-To=%3CCAHDO%3Dv8_KZJ3M4CezeBdM0h-mP%2BkdJ1UEPBB16TmpED4Tphexg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STR9 GPIO INT">mpolitzer.c at gmail.com
+       </A><BR>
+    <I>Fri Oct 14 00:39:25 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002784.html">[eLua-dev] STR9 GPIO INT
+</A></li>
+        <LI>Next message: <A HREF="002753.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2818">[ date ]</a>
+              <a href="thread.html#2818">[ thread ]</a>
+              <a href="subject.html#2818">[ subject ]</a>
+              <a href="author.html#2818">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Ok, I did some testing, here are the results:
+
+After running the Lua script below, I started up GDB and set a
+breakpoint to &quot;exint_irq_handler&quot;, after pressing the button nothing
+happened. Tried both POSEDGE and NEGEDGE.
+
+I also did tried adding the &quot;platform_s_uart_send&quot; function, but it
+doesn't seem to exist.
+I tried with &quot;platform_uart_send&quot;, but also without success.
+
+I'll take a look into the initialization part of the interrupt but as
+I'm quite unfamiliar
+with the str9, any help is more than welcome.
+
+This is the Lua part used:
+------------------------------------------------------------------------------------------
+function __p()
+       print &quot;I'm a GPIO interrupt&quot;
+end
+
+function init()
+	pio.pin.setdir( pio.INPUT, pio.P7_6)
+
+	cpu.set_int_handler( cpu.INT_GPIO_NEGEDGE, __p )
+	cpu.sei( cpu.INT_GPIO_NEGEDGE, pio.P7_6 )
+end
+
+function __test()
+	local b
+	init()
+	while true do
+		b = btn.getbtn()
+		if (b) then
+			print (&quot;ok&quot;)
+		end
+		if uart.getchar( 0, 0 ) ~= &quot;&quot; then break end
+	end
+end
+
+__test()
+---------------------------------------------------------------------------------------
+2011/10/11 Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt;:
+&gt;<i> Ok, I'll try it out and post the answer.
+</I>&gt;<i>
+</I>&gt;<i> Probably not until Thursday, tomorow is a holly day here and I don't
+</I>&gt;<i> have this kit
+</I>&gt;<i> @home.
+</I>&gt;<i>
+</I>&gt;<i> 2011/10/11 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;:
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Oct 4, 2011 at 11:46 PM, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hello, I've trying to put the gpio interrupt to work but without much
+</I>&gt;&gt;&gt;<i> success.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The code turn the GPIO interrupt on, the pin as input and goes to a while
+</I>&gt;&gt;&gt;<i> 1.
+</I>&gt;&gt;&gt;<i> But it is never calling the __p function. Have any one used GPIO
+</I>&gt;&gt;&gt;<i> interrupts
+</I>&gt;&gt;&gt;<i> up to now?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Here is a snippet of the code:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> -------------------------------------------------------------------------------------------------------------
+</I>&gt;&gt;&gt;<i> function __p()
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;print &quot;I'm a GPIO interrupt&quot;
+</I>&gt;&gt;&gt;<i> end
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> pio.pin.setdir( pio.INPUT, pio.P7_6)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> cpu.set_int_handler( cpu.INT_GPIO_NEGEDGE, __p )
+</I>&gt;&gt;&gt;<i> cpu.sei( cpu.INT_GPIO_NEGEDGE, pio.P7_6 )
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> function __test()
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;while true do
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;if uart.getchar( 0, 0 ) ~= &quot;&quot; then break end
+</I>&gt;&gt;&gt;<i> &#160; &#160; &#160; &#160;end
+</I>&gt;&gt;&gt;<i> end
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> __test()
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Since it's quite hard for me to test this, please do this:
+</I>&gt;&gt;<i> 1. edit src/platform/str9/platform_int.c
+</I>&gt;&gt;<i> 2. locate function &quot;exint_irq_handler&quot;
+</I>&gt;&gt;<i> 3. add this line at the beginning:
+</I>&gt;&gt;<i> &#160; platform_s_uart_send( CON_UART_ID, '@' );
+</I>&gt;&gt;<i> This will send a '@' char on the UART when the interrupt handler is called.
+</I>&gt;&gt;<i> If you try to generate an interrupt by changing the pin's logic level and
+</I>&gt;&gt;<i> you can't see a '@' on the terminal it means that the interrupt never gets
+</I>&gt;&gt;<i> through and we'll have a good starting point. If you see a '@' we'll have
+</I>&gt;&gt;<i> another good starting point :)
+</I>&gt;&gt;<i> Also, try with INT_GPIO_POSEDGE instead of INT_GPIO_NEGEDGE, does anything
+</I>&gt;&gt;<i> change?
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> -------------------------------------------------------------------------------------------------------------
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Marcelo
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> []s,
+</I>&gt;<i> Marcelo
+</I>&gt;<i>
+</I>
+
+
+-- 
+Best,
+Marcelo
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002784.html">[eLua-dev] STR9 GPIO INT
+</A></li>
+	<LI>Next message: <A HREF="002753.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2818">[ date ]</a>
+              <a href="thread.html#2818">[ thread ]</a>
+              <a href="subject.html#2818">[ subject ]</a>
+              <a href="author.html#2818">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

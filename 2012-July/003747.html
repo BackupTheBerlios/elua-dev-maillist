@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] extreme small
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20extreme%20small&In-Reply-To=%3CCANKDJfa%3DhAB42ByKe1Z1enrQ1p4n4-wXuJn14BLZXR5AozkbMg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003743.html">
+   <LINK REL="Next"  HREF="003749.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] extreme small</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20extreme%20small&In-Reply-To=%3CCANKDJfa%3DhAB42ByKe1Z1enrQ1p4n4-wXuJn14BLZXR5AozkbMg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] extreme small">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Jul 26 22:33:01 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003743.html">[eLua-dev] extreme small
+</A></li>
+        <LI>Next message: <A HREF="003749.html">[eLua-dev] extreme small
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3747">[ date ]</a>
+              <a href="thread.html#3747">[ thread ]</a>
+              <a href="subject.html#3747">[ subject ]</a>
+              <a href="author.html#3747">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Jul 26, 2012 at 12:04 AM, Tim Van Der Hulst
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tim at agfirstbop.co.nz</A>&gt; wrote:
+&gt;<i> Martin,
+</I>&gt;<i>
+</I>&gt;<i> Some advise if you please. I am using STM32 (64K SRAM) and my project is built around 5 modules plus one additional module per sensor (in our case its soil moisture + weather station sensors (wind direction,rain,etc) which equates in KB to (20+6+8+2+2+ approx 1 K per sensor), Roughly 40K.
+</I>
+That sounds like an extremely cool application.
+
+&gt;<i> With precompiling several of the larger modules I can just manage to load the code from MMC and it runs fine day and night. If I put the modules on the ROM it seems to use about a 1/3 less memory however these modules are still a work in progress so even when we have some units in the field I intend to remotely upgrade them hence the only code (autorun.lua) I want on the ROM is a small bootstrap routine to load some config off the MMC and then kick off a script running on the MMC.
+</I>
+Have you tried our new WOFS
+(<A HREF="http://www.eluaproject.net/doc/master/en_arch_wofs.html">http://www.eluaproject.net/doc/master/en_arch_wofs.html</A>) ? It seems
+to cover your needs nd it works currently on the STM32F1 subfamily
+(can be easily extended for other STM32 subfamilies)
+
+&gt;<i>
+</I>&gt;<i> My code is completely unoptimized so I am not worried as I can always give it a good squeeze if needed but I would rather not have to if it could be avoided. RAD, rather than performance being the name of the game at this stage..
+</I>
+I'm sorry, I'm not sure I understand what exactly you need help for.
+What's the problem at the moment? Too much flash? Too much RAM?
+Something else?
+
+Thanks,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> Any advice appreciated,
+</I>&gt;<i>
+</I>&gt;<i> TiM
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ----- Original Message -----
+</I>&gt;<i> From: &quot;Martin Guy&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> Sent: Wednesday, July 25, 2012 9:37:56 PM
+</I>&gt;<i> Subject: Re: [eLua-dev] extreme small
+</I>&gt;<i>
+</I>&gt;<i> On 24 July 2012 22:19, Karoly Molnar &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">molnarkaroly at hotmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> For anyone interested but not knowing about XMOS (www.xmos.com): It is
+</I>&gt;&gt;<i> running on 4 or 500MHz, single, dual or quad core, 8 real time threads per
+</I>&gt;&gt;<i> core, so it is fairly fast. Dev environment is free and low cost EVBs with
+</I>&gt;&gt;<i> JTAG debugging are available.
+</I>&gt;<i>
+</I>&gt;&gt;<i> But there is only 64K dedicated memory (RAM, actually) available for each
+</I>&gt;&gt;<i> core :-S (256K for quad core). It is possible to extend this with external
+</I>&gt;&gt;<i> SRAM but only by software emulation of data and address lines; so the
+</I>&gt;&gt;<i> extension would be slow, possibly enough for the script itself but not for
+</I>&gt;&gt;<i> the engine.
+</I>&gt;<i>
+</I>&gt;<i> Elua is fine in 64KB, low RAM usage being one of its strong points,
+</I>&gt;<i> but is a single-threaded interpreter, so you would only get 1/8th (or
+</I>&gt;<i> 16th or 32nd) of the available CPU power.
+</I>&gt;<i>
+</I>&gt;<i>    M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003743.html">[eLua-dev] extreme small
+</A></li>
+	<LI>Next message: <A HREF="003749.html">[eLua-dev] extreme small
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3747">[ date ]</a>
+              <a href="thread.html#3747">[ thread ]</a>
+              <a href="subject.html#3747">[ subject ]</a>
+              <a href="author.html#3747">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

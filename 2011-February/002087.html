@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] PIC32 port status?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PIC32%20port%20status%3F&In-Reply-To=%3CAANLkTi%3DjAtMnyoJ5qqGiTmmSN_ADCSbnvvdjAR5vrOkt%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002086.html">
+   <LINK REL="Next"  HREF="002088.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] PIC32 port status?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20PIC32%20port%20status%3F&In-Reply-To=%3CAANLkTi%3DjAtMnyoJ5qqGiTmmSN_ADCSbnvvdjAR5vrOkt%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] PIC32 port status?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Feb 24 02:13:54 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002086.html">[eLua-dev] PIC32 port status?
+</A></li>
+        <LI>Next message: <A HREF="002088.html">[eLua-dev] PIC32 port status?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2087">[ date ]</a>
+              <a href="thread.html#2087">[ thread ]</a>
+              <a href="subject.html#2087">[ subject ]</a>
+              <a href="author.html#2087">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Feb 23, 2011 at 5:18 PM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt; wrote:
+&gt;<i> Why do people use silicon from such a sleazy company then?&#160; It seems that
+</I>&gt;<i> Microchip is willfully violating the GPL if they have somehow time limited
+</I>&gt;<i> the optimization in GCC...&#160; There are much more 'GPL friendly' cores in
+</I>&gt;<i> existence such as the Cortex-M3 from ARM that can be sourced from just about
+</I>&gt;<i> anywhere and have no such limitations in the compilers.
+</I>
+I don't think it's clear from those comments whether they're violating
+the GPL or not.  It sounds like they're distributing some &quot;secret
+sauce&quot; with their own version of the compiler, and depending on the
+way that's done that could either be a violation or not.  For example,
+CodeSourcery, the ARM maintainer for GCC has their own commercial
+products with special headers, libraries, startup code (CS3), and
+debug sprite that they distribute with special licenses.  They're
+also, however, a much more welcome part of the community, since they
+contribute a lot of patches to gcc, newlib, etc...
+
+Clearly, however, Microchip is being less friendly.  One thing I've
+never really understood is why a company would restrict copying of
+header files containing register locations that they publish in
+datasheets or manuals that are freely available.  Sure, I suppose it
+is intellectual property, but I thought generally the goal of a
+hardware maker was to get people to develop on one's hardware by any
+means possible.  Arbitrary restrictions would seem to impede that,
+especially when one wouldn't be restricted if one were to just
+translate the documentation into new header files.
+
+I'm certainly not going to discourage ports to new platforms, as long
+as the quality of the port is generally good and all licenses involved
+are complied with in the process.
+
+&gt;<i> I am honestly surprised that the FSF has not gone after Microchip for this
+</I>&gt;<i> issue.&#160; If/When they do, what is Microchip going to do, drop the limitations
+</I>&gt;<i> or drop the compiler?&#160; If they drop the compiler (which is a possibility,
+</I>&gt;<i> esp if they decide that hitech is all they need to sell chips) then all the
+</I>&gt;<i> code that is written with 'gccisms' in it will need to be rewritten.&#160; If I
+</I>&gt;<i> were a project manager and saw such a possibility in my products future
+</I>&gt;<i> (dead code due to the EOL of a compiler) I would jump ship to another chip
+</I>&gt;<i> ASAP.
+</I>
+This may have more to do with the reason for the strange restrictions
+and limitations, but I don't expect we'll really know.
+
+
+&gt;<i> I would personally be hesitant to work with a company that so flagrantly
+</I>&gt;<i> violates the GPL...
+</I>&gt;<i>
+</I>&gt;<i> Also, even though you can 'externalize' the libs from microchip, would not
+</I>&gt;<i> the mixed licenses of the compiled code be in violation somewhere?&#160; I am not
+</I>&gt;<i> sure what licenses the eLua code is under at the moment (I think at one
+</I>&gt;<i> point it was GPL/LGPL, is it now BSD?) but some of these licenses control
+</I>&gt;<i> how the binaries can be distributed in addition to the source.&#160; Just linking
+</I>&gt;<i> the proprietary Microchip code with eLua could violate a license and make
+</I>&gt;<i> the binary itself undistributable...
+</I>
+Most of eLua is MIT licensed now, like Lua itself.  There are various
+exceptions to this for some libraries and other chunks of code we've
+included along the way, but there shouldn't be any GPL code currently
+in eLua.  A lot of the non-MIT licensed code is BSD license or
+similar: <A HREF="http://www.eluaproject.net/en_overview.html#license">http://www.eluaproject.net/en_overview.html#license</A>
+
+&gt;<i>
+</I>&gt;<i> Mike
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Feb 23, 2011 at 11:54 AM, Tim michals &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tcmichals at yahoo.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is the route I went down and here is what I found:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 1. The include files for the processor, i.e. the register mapping.
+</I>&gt;&gt;<i> According to the license agreement no files can be copied or modified.
+</I>&gt;&gt;<i> - Created a new register mapping include files using a simple address
+</I>&gt;&gt;<i> approach instead using linker adjust locations. One Include file has defines
+</I>&gt;&gt;<i> for each PIC32.&#160; Used the data sheets etc. to get mappings and addresses.
+</I>&gt;&gt;<i> - Since the Include file is changed, all peripheral library cannot be
+</I>&gt;&gt;<i> used.
+</I>&gt;&gt;<i> - Also, Microchips GCC has special commands built in for Fuse Bits, how
+</I>&gt;&gt;<i> interrupts are mapped. The standard GCC doe support ISR mapping, but it is a
+</I>&gt;&gt;<i> little different.&#160; So, worked on a simple ASM vector map file to help linker
+</I>&gt;&gt;<i> with the table.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2. Library startup, i.e. mapping flash speeds etc.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 3. Flag bits in flash for setting up speed
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 4. New boot loader
+</I>&gt;&gt;<i> &#160; - There is a large chunk of flash space taken to support there jtag
+</I>&gt;&gt;<i> tools, since I'm not using these tools, no need to have support.&#160; What I'm
+</I>&gt;&gt;<i> talking about is MIPS code to support a JTAG debugger.&#160; There is code to
+</I>&gt;&gt;<i> help get registers etc.&#160; This for Microchip is in Flash.
+</I>&gt;&gt;<i> - The boot loader would only be in the first 12K. Then the 512K is up to
+</I>&gt;&gt;<i> the app..
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Basically any code for USB, configuration of peripherals, is all new.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ________________________________
+</I>&gt;&gt;<i> From: &quot;King, Mike&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">MKing at klmicrowave.com</A>&gt;
+</I>&gt;&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;&gt;<i> Sent: Wed, February 23, 2011 10:14:23 AM
+</I>&gt;&gt;<i> Subject: Re: [eLua-dev] PIC32 port status?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I realize I'm joining this conversation late but has anyone looked into
+</I>&gt;&gt;<i> using CodeSourcery's Sourcery G++ Lite Edition toolchain for the MIPS
+</I>&gt;&gt;<i> architecture?&#160; Could this be a solution to the Microchip PIC32 licensing
+</I>&gt;&gt;<i> problem?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://www.codesourcery.com/sgpp/lite/mips">http://www.codesourcery.com/sgpp/lite/mips</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> CONFIDENTIALITY NOTICE: This e-mail message, including any attachments, is
+</I>&gt;&gt;<i> for the sole use of the intended recipient(s) and may contain information
+</I>&gt;&gt;<i> that is confidential or proprietary to K&amp;L Microwave, Inc. Any unauthorized
+</I>&gt;&gt;<i> review, use, disclosure or distribution is prohibited.
+</I>&gt;&gt;<i> If this communication has been transmitted from a U.S. location it may
+</I>&gt;&gt;<i> also contain data subject to the International Traffic in Arms Regulations
+</I>&gt;&gt;<i> or U.S. Export Administration Regulations and, if so, cannot be
+</I>&gt;&gt;<i> disseminated, distributed or copied to foreign nationals, residing in the
+</I>&gt;&gt;<i> U.S. or abroad, without the prior approval of the U.S. Department of State
+</I>&gt;&gt;<i> or appropriate export licensing authority. If you have received this
+</I>&gt;&gt;<i> communication in error, please notify the sender by reply e-mail and delete
+</I>&gt;&gt;<i> or destroy all copies of this e-mail message and/or any file attachment(s).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002086.html">[eLua-dev] PIC32 port status?
+</A></li>
+	<LI>Next message: <A HREF="002088.html">[eLua-dev] PIC32 port status?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2087">[ date ]</a>
+              <a href="thread.html#2087">[ thread ]</a>
+              <a href="subject.html#2087">[ subject ]</a>
+              <a href="author.html#2087">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

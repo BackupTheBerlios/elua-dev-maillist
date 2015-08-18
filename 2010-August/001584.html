@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Cleaning the eLua svn repository
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Cleaning%20the%20eLua%20svn%20repository&In-Reply-To=%3CAANLkTiku3FxwDURxh4vKdUo-JBdXW%2B_tztb%2BQydmnObO%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001582.html">
+   <LINK REL="Next"  HREF="001585.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Cleaning the eLua svn repository</H1>
+    <B>Ryan Pusztai</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Cleaning%20the%20eLua%20svn%20repository&In-Reply-To=%3CAANLkTiku3FxwDURxh4vKdUo-JBdXW%2B_tztb%2BQydmnObO%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Cleaning the eLua svn repository">rpusztai at gmail.com
+       </A><BR>
+    <I>Thu Aug 12 17:36:38 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001582.html">[eLua-dev] Cleaning the eLua svn repository
+</A></li>
+        <LI>Next message: <A HREF="001585.html">[eLua-dev] Cleaning the eLua svn repository
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1584">[ date ]</a>
+              <a href="thread.html#1584">[ thread ]</a>
+              <a href="subject.html#1584">[ subject ]</a>
+              <a href="author.html#1584">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Aug 12, 2010 at 7:10 AM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi Martin,
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Aug 12, 2010 at 2:06 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; Hi
+</I>&gt;<i> &gt;  I just found the eLua coding style guidelines, which say:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 3. line terminators: THIS IS IMPORTANT! Use UNIX style (LF) line
+</I>&gt;<i> &gt; terminators, not DOS (CR/LF) or old Mac (CR) line terminators.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; but the eLua source tree has a mixture of files with LF and with CRLF
+</I>&gt;<i> &gt; line terminators.
+</I>&gt;<i>
+</I>&gt;<i> Thank you very much for your reports. Yes, this happens a lot, mostly
+</I>&gt;<i> when importend 3rd party files (for example support libraries) into
+</I>&gt;<i> the eLua repository.
+</I>&gt;<i>
+</I>&gt;<i> &gt; Since this seems to be the reason my previous patches appied cleanly
+</I>&gt;<i> &gt; in some environments and not in others, I wonder if it might be time
+</I>&gt;<i> &gt; to run a script to sanitize all the elua source files, or whether that
+</I>&gt;<i> &gt; might cause problems if people have large patch sets in the pipeline.
+</I>&gt;<i> &gt; I'd guess it needs to be done at some point...
+</I>&gt;<i>
+</I>&gt;<i> I do the kind of cleaning you mention below (NL translations) from
+</I>&gt;<i> time to time, but not all the time, so accidents happen. Thanks for
+</I>&gt;<i> reminding me that it needs to be done again.
+</I>&gt;<i>
+</I>&gt;<i> &gt; You can get a list of affected text files using
+</I>&gt;<i> &gt; find . \( -name .svn -prune \) -o -type f | egrep -v
+</I>&gt;<i> &gt; '\.(gif|png|jpg|bin)' | xargs grep -l '^M'
+</I>&gt;<i> &gt; (where ^M is a real control character obtained by the sequence
+</I>&gt;<i> &gt; control-V control-M)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I also notice that this also lists
+</I>&gt;<i> &gt;  src/platform/stm32/FWLib/.sconsign.dblite
+</I>&gt;<i> &gt; which is probably in the svn repository by mistake
+</I>&gt;<i>
+</I>&gt;<i> Definitely. Thanks.
+</I>
+
+Why not use the SVN property 'svn:eol-style' and set it to &quot;native&quot;.
+-- 
+Regards,
+Ryan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100812/15edcb81/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100812/15edcb81/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001582.html">[eLua-dev] Cleaning the eLua svn repository
+</A></li>
+	<LI>Next message: <A HREF="001585.html">[eLua-dev] Cleaning the eLua svn repository
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1584">[ date ]</a>
+              <a href="thread.html#1584">[ thread ]</a>
+              <a href="subject.html#1584">[ subject ]</a>
+              <a href="author.html#1584">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

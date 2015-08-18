@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y0tWAdLGDiPyEpJF%3D8E6x0UfJCAcxDt2HZfmn7FkN-NuA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002668.html">
+   <LINK REL="Next"  HREF="002671.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y0tWAdLGDiPyEpJF%3D8E6x0UfJCAcxDt2HZfmn7FkN-NuA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Jul 19 01:35:41 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002668.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002671.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2670">[ date ]</a>
+              <a href="thread.html#2670">[ thread ]</a>
+              <a href="subject.html#2670">[ subject ]</a>
+              <a href="author.html#2670">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jul 18, 2011 at 2:02 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 18 July 2011 20:13, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> On Mon, Jul 18, 2011 at 12:45 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> On 13 July 2011 02:17, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> For example, the seismographs here on Mount Etna sample at the rate of
+</I>&gt;&gt;&gt;&gt;<i> 27.27Hz, for which a small solar-powered data collecting station would
+</I>&gt;&gt;&gt;&gt;<i> be perfect, but I don't see how to do this yet.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Ah, it can't be expressed in eLua because free-running ADC frequencies
+</I>&gt;&gt;&gt;<i> are currently integers at the C platform interface.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So, are you suggesting changing it so that it could be expressed in
+</I>&gt;&gt;<i> floating point or fixed point units as well?
+</I>&gt;<i>
+</I>&gt;<i> Yes, but making sure that when LUA_NUMBER_INTEGRAL, everything is integral.
+</I>&gt;<i> If Lua is compiled with its usual floating point numbers, the FP
+</I>&gt;<i> support will be in the executable anyway.
+</I>&gt;<i> This should make no difference to the Lua interface, it would just
+</I>&gt;<i> mean that the decimal places in frequencies survive down to where they
+</I>&gt;<i> need to be used, when they can.
+</I>
+Indeed.  My only point here is that so far we've intentionally kept
+types that are defined by Lua out of the platform layer so that they
+don't depend on Lua itself, and that we also only have integer types.
+This doesn't preclude enabling some sort of union or &quot;number&quot; type
+from Lua that passes through this layer than can have varying type,
+but it changes an existing policy.
+
+There are two ways I can think of that could remain exclusively integer:
+1) Passing optional divisors.  For PWM, at one point, I suggested that
+we could allow finer resolution duty cyles by allowing other fractions
+than per cent such as /1000 (per mil) or 10000 (per basis point).
+Clock frequencies could have this as well, either fixed or arbitrary
+divisors passed as a parameter.
+2) Something similar to POSIX's timer API which allows specification
+of a low and higher resolution component.  i.e.: integer Hz + integer
+&#181;Hz or nHz.  This came up a while ago, and wasn't for setting clock
+frequencies, more for timer intervals, but one could use it for clock
+frequencies as well.  So that you would define that you wanted 27 Hz +
+270000 &#181;Hz or something similar
+
+Just a few thoughts.  In some ways the gymnastics necessary for the
+user, interface implementer, and backend implementer start making the
+floating point version sound appealing :-)
+
+&gt;<i>
+</I>&gt;&gt;&gt;<i> Changing it to lua_Number
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> One thing we should keep in mind is making sure that such a change
+</I>&gt;&gt;<i> should work for both integer and floating point versions of eLua.
+</I>&gt;&gt;<i> Also, so far we don't pass any lua types or floating point types
+</I>&gt;&gt;<i> through the platform interface.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This also brings up the issue of non-integer PWM percentages...
+</I>&gt;<i>
+</I>&gt;<i> True, It would be a solution to that too... at least, when compiling
+</I>&gt;<i> floating-point Lua.
+</I>&gt;<i>
+</I>&gt;&gt;<i> On this front, probably fair enough. &#160;When I wrote the platform
+</I>&gt;&gt;<i> interface I was following the other platform interfaces which used the
+</I>&gt;&gt;<i> _op function, which is similar to a lot of POSIX functionality.
+</I>&gt;<i>
+</I>&gt;<i> Right. A similar mechanism is used in PWM, TIMER and PIO.
+</I>&gt;<i> In the case of PIO, the handling of port/pin selection and processing
+</I>&gt;<i> of the variable arguments to specify pins is done in one place for six
+</I>&gt;<i> eLua functions . PWM doesn't gain anything from it, and TIMER only
+</I>&gt;<i> saves 3 lines of code. But the downside is that it denies the compiler
+</I>&gt;<i> some opportunities for code optimization.
+</I>
+It's certainly making some decisions for the compiler.  I'm not sure
+whether in the end it comes out as much of a benefit in terms of code
+space or stack usage.  It might be a bit of a wash, but one never
+knows :-)  I was persuaded by your noting how how often the 32 bit
+passed/returned parameters are used.  You're right that it might give
+it a chance to inline things that it otherwise wouldn't which could
+save some stack and instructions.
+
+&gt;<i>
+</I>&gt;&gt;<i> I can try applying this on one or two platforms and see if it works for me.
+</I>&gt;<i>
+</I>&gt;<i> Thanks. Don't apply that patch to trunk though as the documentation
+</I>&gt;<i> part was not correct. I think the code is OK except for one wart,
+</I>&gt;<i> which is that, as a result of the split, it ends up with two
+</I>&gt;<i> functions, one called platform_adc_set_clock() and the other called
+</I>&gt;<i> platform_adc_setclock(), which do the same thing (the one just calls
+</I>&gt;<i> the other). &#160;setclock() is the platform-specific one implemented in 6
+</I>&gt;<i> places, while set_clock is the new C program interface name derived
+</I>&gt;<i> from PLATFORM_ADC_OP_SET_CLOCK. As setclock is the only one of the
+</I>&gt;<i> platform_adc_*() function where two words are united, I guess we can
+</I>&gt;<i> rename platform_adc_setclock() to platform_adc_set_clock() everywhere.
+</I>
+Noted.
+
+&gt;<i>
+</I>&gt;<i> &#160; &#160;M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002668.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002671.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2670">[ date ]</a>
+              <a href="thread.html#2670">[ thread ]</a>
+              <a href="subject.html#2670">[ subject ]</a>
+              <a href="author.html#2670">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

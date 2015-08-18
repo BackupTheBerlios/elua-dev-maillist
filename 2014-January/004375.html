@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Pure Lua multitasking with eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2014-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Pure%20Lua%20multitasking%20with%20eLua&In-Reply-To=%3CCAAtRCRFw1cUz2K4uDJFGPLb0FdCNfH3i1Omgz87H8Mg079FPmQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004373.html">
+   <LINK REL="Next"  HREF="004364.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Pure Lua multitasking with eLua</H1>
+    <B>Brent Picasso</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Pure%20Lua%20multitasking%20with%20eLua&In-Reply-To=%3CCAAtRCRFw1cUz2K4uDJFGPLb0FdCNfH3i1Omgz87H8Mg079FPmQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Pure Lua multitasking with eLua">brent at autosportlabs.com
+       </A><BR>
+    <I>Wed Jan  8 17:44:53 CET 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004373.html">[eLua-dev] Pure Lua multitasking with eLua
+</A></li>
+        <LI>Next message: <A HREF="004364.html">[eLua-dev] Pure Lua multitasking with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4375">[ date ]</a>
+              <a href="thread.html#4375">[ thread ]</a>
+              <a href="subject.html#4375">[ subject ]</a>
+              <a href="author.html#4375">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Been following this thread a bit.  My recommendation would be to put eLua
+in the context of an existing RTOS (FreeRTOS or chibiOS/RT) and wrap the
+threading primitives in Lua statements. That way you can spin up new tasks
+as needed, getting the benefits of a real underlying preemptive scheduler.
+
+-Brent
+
+
+On Wed, Jan 8, 2014 at 8:02 AM, Stefan Heinzmann &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">stefan_heinzmann at gmx.de</A>&gt;wrote:
+
+&gt;<i> Fabien Fleutot wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; In Mihini's scheduler[<A HREF="http://www.eclipse.org/mihini/">http://www.eclipse.org/mihini/</A>], (the original
+</I>&gt;<i> inspiration for [e]lumen), we have a function using Lua's C API to do that.
+</I>&gt;<i> If &gt; you want to write your own, beware that you need to manage two
+</I>&gt;<i> different cases, depending on whether the signalling function is called
+</I>&gt;<i> from the OS &gt; thread running the lua_State or from another thread.
+</I>&gt;<i>
+</I>&gt;<i> In the eLua system there wouldn't be any other threads (unless the system
+</I>&gt;<i> was built with FreeRTOS). It would be just the &quot;main thread&quot; running the
+</I>&gt;<i> lua interpreter, and interrupt handlers that are invoked occasionally in
+</I>&gt;<i> reaction to hardware events.
+</I>&gt;<i>
+</I>&gt;<i> &gt; Of course, it's by no means real-time, but you shouldn't expect
+</I>&gt;<i> otherwise from a collaboratie multithreading system.
+</I>&gt;<i>
+</I>&gt;<i> I am fully aware of that. If the lua code is busy handling some previous
+</I>&gt;<i> event, the reaction to the next event has to wait until the processor is
+</I>&gt;<i> done with it. That is quite acceptable. One could still do the truly
+</I>&gt;<i> time-critical stuff within the interrupt handlers if necessary.
+</I>&gt;<i>
+</I>&gt;<i> Essentially, a function needs to be provided that can be called safely
+</I>&gt;<i> from within an interrupt handler, which does the following:
+</I>&gt;<i>
+</I>&gt;<i> 1. Put a Lumen signal into the signal queue
+</I>&gt;<i> 2. If the lua code is waiting on the signal queue, release it, so that
+</I>&gt;<i> after returning from the interrupt handler, it will recheck the queue and
+</I>&gt;<i> find the new signal in there. In other words, arrange the scheduler to be
+</I>&gt;<i> run immediately after returning from the interrupt handler.
+</I>&gt;<i>
+</I>&gt;<i> If this could be done in a way that is compatible with standard APIs, such
+</I>&gt;<i> as select(), even better.
+</I>&gt;<i>
+</I>&gt;<i> Unfortunately, I am not familiar enough with the innards of the lua
+</I>&gt;<i> interpreter to tell how difficult this is.
+</I>&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i> Stefan
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Brent Picasso
+*Autosport Labs &lt;<A HREF="http://www.autosportlabs.com">http://www.autosportlabs.com</A>&gt;*
+*Technology for Race and Street*
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20140108/bbfeae55/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20140108/bbfeae55/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004373.html">[eLua-dev] Pure Lua multitasking with eLua
+</A></li>
+	<LI>Next message: <A HREF="004364.html">[eLua-dev] Pure Lua multitasking with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4375">[ date ]</a>
+              <a href="thread.html#4375">[ thread ]</a>
+              <a href="subject.html#4375">[ subject ]</a>
+              <a href="author.html#4375">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

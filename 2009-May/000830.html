@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua STM32 support and general questions
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20STM32%20support%20and%20general%20questions&In-Reply-To=%3C81fbe47d0905250125v5c1e46d1y1721fa6a62487562%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000829.html">
+   <LINK REL="Next"  HREF="000831.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua STM32 support and general questions</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20STM32%20support%20and%20general%20questions&In-Reply-To=%3C81fbe47d0905250125v5c1e46d1y1721fa6a62487562%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua STM32 support and general questions">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon May 25 10:25:43 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000829.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+        <LI>Next message: <A HREF="000831.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#830">[ date ]</a>
+              <a href="thread.html#830">[ thread ]</a>
+              <a href="subject.html#830">[ subject ]</a>
+              <a href="author.html#830">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+First idea was to write a small script language on my own, but after some
+&gt;<i> research,
+</I>&gt;<i> I decided to try Lua - even if it is much more powerful than my needs. I
+</I>&gt;<i> tried to
+</I>&gt;<i> get Lua 5.1.4 running, but it was not that easy as I thought. Main problem
+</I>&gt;<i> was the
+</I>&gt;<i> need for a filesystem, which is not avaialble.
+</I>
+
+It should be possible to make Lua run without a file system, although I
+didn't try this myself (you can try searching for this on the Lua list).
+It's true though that you should modify the code, or at least provide a
+&quot;dummy&quot; buffered I/O library tailored to your needs.
+
+eLua seems to solve my problem, and even more I got a filesystem, terminal
+&gt;<i> mode,
+</I>&gt;<i> and more. I haven't checked eLua until now, because I'm not sure if this is
+</I>&gt;<i> the
+</I>&gt;<i> right direction. I get more than I need, which have to be paid with ROM.
+</I>
+
+eLua is highly configurable, in most cases you can specify what you want to
+be built into your image and what you don't. eLua without terminal mode, for
+example, is as easy as not defining BUILD_TERM in your platform's
+platform_conf.h file. Other components are equally easy to remove.
+
+
+&gt;<i> Do you think Lua | eLua is the right thing to put a small script language
+</I>&gt;<i> to a limited
+</I>&gt;<i> device?
+</I>
+
+eLua is quite OK for this configuration, as it was built with this kind of
+requirements in mind. You might also try some variant of Forth (which is a
+completely different language though) or PyMite (
+<A HREF="http://pymite.python-hosting.com/">http://pymite.python-hosting.com/</A>).
+Lua is also probably good enough for you, as long as you can figure your
+filesystem dependency problem. Compared to Lua though, eLua is optimized for
+usage on small devices, including (important) memory allocation tunings and
+a patch called LTR (Lua Tiny RAM) that can have an important impact on your
+RAM usage.
+
+
+&gt;<i> Do I have to use eLua (which is under GPL/BSD license)? Or should it be
+</I>&gt;<i> even
+</I>&gt;<i> possible to use &quot;plain&quot; Lua (which offers more flexible MIT license)?
+</I>
+
+eLua is MIT at this point, although this isn't specified in the license
+file. We are planning to make the official announcement to MIT starting with
+the next release, but you can use the code as you want even now. If you need
+it, I'll change the LICENSE file right away.
+
+
+&gt;<i> As I wrote, I neither need a FS, GUI nor a terminal mode. Lua scripts are
+</I>&gt;<i> written to
+</I>&gt;<i> the device with a proprietary mechanism. Maximum length of Lua script is
+</I>&gt;<i> ~250 lines.
+</I>&gt;<i> At the end each LOC is stored in one separate string.
+</I>
+
+The upcoming documentation for 0.6, although not 100% complete, contains a
+lot of information about eLua in general and about how to configure its
+components at compile time it in particular. It also contains information
+about the LTR patch and other important parts of eLua. I'll upload it to a
+temporary location today when I have some time and then come back to the
+list with the link, maybe this will be help.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090525/5d5c87f9/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090525/5d5c87f9/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000829.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+	<LI>Next message: <A HREF="000831.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#830">[ date ]</a>
+              <a href="thread.html#830">[ thread ]</a>
+              <a href="subject.html#830">[ subject ]</a>
+              <a href="author.html#830">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

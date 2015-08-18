@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] collectgarbage(&quot;count&quot;)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3CAANLkTik-jf7tbGiesrB9Ds7mxbf-orNIheoJfscyH0NE%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001430.html">
+   <LINK REL="Next"  HREF="001449.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] collectgarbage(&quot;count&quot;)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3CAANLkTik-jf7tbGiesrB9Ds7mxbf-orNIheoJfscyH0NE%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] collectgarbage(&quot;count&quot;)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jun 14 12:57:10 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001430.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+        <LI>Next message: <A HREF="001449.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1447">[ date ]</a>
+              <a href="thread.html#1447">[ thread ]</a>
+              <a href="subject.html#1447">[ subject ]</a>
+              <a href="author.html#1447">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+It's true that collectgarbage('count') is only a part of the story. A lot of
+stuff happens in the background, such as buffered I/O (fopen and friends),
+eLua's own buffers, malloc overhead and so on. I still don't have a good way
+to see a clear &quot;memory map&quot; of the system when an &quot;out of memory&quot; error is
+returned, and I'm not even sure if this would help. In the end, the truth is
+that 64k is still quite a limitation for eLua. I'm afraid that the only
+thing left to do to decrease memory consumption is to have a &quot;run from
+memory&quot; patch (run a Lua script directly from Flash, thus saving RAM; this
+obviously will work only for Flash memory mapped on the CPU's bus, not
+serial memory or anything similar, but it would still be an improvement).
+Well, this and rewriting the VM, of course :)
+
+Best,
+Bogdan
+
+On Fri, Jun 11, 2010 at 8:08 PM, Stefan Brantschen &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">stefan.brantschen at mac.com</A>&gt; wrote:
+
+&gt;<i> Hi
+</I>&gt;<i>
+</I>&gt;<i> On 11 Jun 2010, at 15:55, Dado Sutter wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; PS: BTW, I can run about 100 counting agents in parallel with tight
+</I>&gt;<i> garbage collection.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Very impressive for such a tiny board, simple code and on bare metal ! :)
+</I>&gt;<i>
+</I>&gt;<i> Bear in mind that they don't do anything useful though :-)
+</I>&gt;<i>
+</I>&gt;<i> &gt; Meanwhile, does the performance change too much if you let the GC do it's
+</I>&gt;<i> job automatically ? (not forcing collect ...)
+</I>&gt;<i>
+</I>&gt;<i> Running 50 agents doing their counting and displaying, with
+</I>&gt;<i>
+</I>&gt;<i>  t-cycle = time to run all agents once
+</I>&gt;<i>  c-max = max value of collectgarbage(&quot;count&quot;)
+</I>&gt;<i>
+</I>&gt;<i> 1) GC let alone: t-cycle = 27.7 ms, c-max = 32.2k
+</I>&gt;<i>
+</I>&gt;<i> 2) GC enforced each scheduler cycle: t-cycle = 30.8 ms, c-max = 23.3k
+</I>&gt;<i>
+</I>&gt;<i> 3) GC enforced each 10th cycle: t-cycle = 28.6 ms, c-max = 24.6k
+</I>&gt;<i>
+</I>&gt;<i> In this set-up, variant 3) looks like a decent compromise.
+</I>&gt;<i>
+</I>&gt;<i> Times measures with the board's timer and the tmr module.
+</I>&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i> -- Stefan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100614/92b7b3ed/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100614/92b7b3ed/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001430.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+	<LI>Next message: <A HREF="001449.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1447">[ date ]</a>
+              <a href="thread.html#1447">[ thread ]</a>
+              <a href="subject.html#1447">[ subject ]</a>
+              <a href="author.html#1447">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Web builder and profiles
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Web%20builder%20and%20profiles&In-Reply-To=%3C0whq4p3r2iyuk28wsdm621m7.1307624733873%40email.android.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002494.html">
+   <LINK REL="Next"  HREF="002495.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Web builder and profiles</H1>
+    <B>Nuccio Raciti</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Web%20builder%20and%20profiles&In-Reply-To=%3C0whq4p3r2iyuk28wsdm621m7.1307624733873%40email.android.com%3E"
+       TITLE="[eLua-dev] Web builder and profiles">raciti.nuccio at gmail.com
+       </A><BR>
+    <I>Thu Jun  9 15:25:45 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002494.html">[eLua-dev] Sub-directory support for ROMFS
+</A></li>
+        <LI>Next message: <A HREF="002495.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 27
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2488">[ date ]</a>
+              <a href="thread.html#2488">[ thread ]</a>
+              <a href="subject.html#2488">[ subject ]</a>
+              <a href="author.html#2488">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Vagner,
+I was thinking:NETWORK
+DEFAULT
+DEFAULT-DEBUG (with console,rfs and uarts or usb virtual uarts)
+NETWORK
+NETWORK-DEBUG (network plus rfs, console and uarts or usb virtual uarts )
+WEBSERVER &#160; &#160; &#160; &#160; &#160; &#160;(with the network outside of eLua)
+WEBSERVER-DEBUG (plus rfs, console, uarts or usb virtual uarts)
+OTHER
+OTHER-DEBUG
+
+What do you think?
+Ciao,
+NuccioVagner nascimento &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">vagnernascimento at gmail.com</A>&gt; ha scritto:Hi Nuccio,
+
+I understand your point of view and can be implemented a set of preset options, but what can we considerated as &quot;good options&quot; for the users? Could be something like: Default, Minimal, Ethernet, All, etc...
+
+Best,
+Vagner
+
+2011/6/9 nuccio raciti &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">raciti.nuccio at gmail.com</A>&gt;
+Hi Dado, All
+
+putting myself in the shoes of a new eLua user, 
+I can see that is hard to know (and so choice)
+the right combination of BUILD_XXX options in order to obtain the elua.elf package that I want.
+So my idea is to help the user &quot;before&quot; the first build.
+
+Ciao,
+Nuccio
+
+
+2011/6/9 Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+
+
+On Wed, Jun 8, 2011 at 23:07, Vagner nascimento &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">vagnernascimento at gmail.com</A>&gt; wrote:
+Hey guys,
+A new feature we have thought is a way to clone a previous build, so the user could save some builds like templates / models / preferences.
+More suggestions?
+
+Just to make it clear, when you mention &quot;clone a previous build&quot; you actually mean &quot;clone a previous build configurations&quot; right ?
+
+Final builds are saved too and users can download them again without the need to rebuild the the eLua binary image. 
+
+Best,
+Vagner
+
+Best
+Dado
+
+
+
+&#160;
+
+
+
+2011/6/8 Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+Hello,
+
+On Tue, Jun 7, 2011 at 04:23, Nuccio Raciti &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">raciti.nuccio at gmail.com</A>&gt; wrote:
+Sure,
+a sort of group of build options, for example:
+The `DEVELOP` profile could contain:
+BUILD_RFS + BUILD_CONSOLE
+while a `PRODUCTION` profile should not have them.
+
+Nuccio, If I understood your suggestion, this is exactly what we have already.
+There is not a concept of a &quot;profile&quot; but each build actually saves every single option you used and you can reuse it or slightly modify it to rebuild over and over.
+The builds are stored and you can name them as you would do to your &quot;profiles&quot; visions.
+Was this that you had in mind ?
+
+The WB is likely to be refactored for the future eLua build configuration scheme. But the current version would continue to build v0.8 for those who need older versions for some reason.
+
+And yes, suggestions for the Web Builder features, interface and general behavior are highly welcomed.
+
+Best,
+Nuccio&#160;
+
+Tksss
+Dado
+
+
+
+
+
+&#160;
+
+
+Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; ha scritto:
+
+Hi Nuccio,
+
+On Tue, Jun 7, 2011 at 9:24 AM, nuccio raciti &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">raciti.nuccio at gmail.com</A>&gt; wrote:
+hello guys,
+I played with the &quot;web builder&quot;, it is very convenient and powerful, 
+soI was wondering if it could be extended to handle&#160;&quot;profiles&quot;.
+
+It would probably help quite a bit if you could let us know how you define &quot;profiles&quot; :)
+
+Best,
+Bogdan
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110609/f9f9cd1f/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110609/f9f9cd1f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002494.html">[eLua-dev] Sub-directory support for ROMFS
+</A></li>
+	<LI>Next message: <A HREF="002495.html">[eLua-dev] eLua-dev Digest, Vol 35, Issue 27
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2488">[ date ]</a>
+              <a href="thread.html#2488">[ thread ]</a>
+              <a href="subject.html#2488">[ subject ]</a>
+              <a href="author.html#2488">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

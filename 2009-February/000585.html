@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Keplerizing eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Keplerizing%20eLua&In-Reply-To=%3C92ab989c0902211420l710e6829g2381766410851d7a%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000558.html">
+   <LINK REL="Next"  HREF="000590.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Keplerizing eLua</H1>
+    <B>Andre Carregal</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Keplerizing%20eLua&In-Reply-To=%3C92ab989c0902211420l710e6829g2381766410851d7a%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Keplerizing eLua">carregal at pobox.com
+       </A><BR>
+    <I>Sat Feb 21 23:20:41 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000558.html">[eLua-dev] Keplerizing eLua
+</A></li>
+        <LI>Next message: <A HREF="000590.html">[eLua-dev] Keplerizing eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#585">[ date ]</a>
+              <a href="thread.html#585">[ thread ]</a>
+              <a href="subject.html#585">[ subject ]</a>
+              <a href="author.html#585">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Replying again to this one, now with the new mindset in place... :o)
+
+On Wed, Feb 18, 2009 at 4:31 PM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt; wrote:
+&gt;<i> What I would like to begin with, for v0.6 if possible, is a _much_ simpler
+</I>&gt;<i> task. I only need to review the net module syntax (maybe to hear some
+</I>&gt;<i> opinions on the semantics but we'll probably not have time to implement it
+</I>&gt;<i> to v0.6) and the template files, for their extensions (lua pages?, lua
+</I>&gt;<i> scripts?).
+</I>
+After a better look at the examples and the http server, it's clear
+that space is a much more high priority than I was assuming. I don't
+see how we can beat the current web server+request handler+template
+parser implementation under 4K... :o)
+
+&gt;<i> For a WASAPI bind, it seems that we would need a real net.select().
+</I>
+Not really, but forget WSAPI for now.
+
+&gt;<i> Although we can simulate one with what we have today, this will probably be
+</I>&gt;<i> left for later, as Bogdan will replace our TCP/IP Stack (uIP) for another
+</I>&gt;<i> one, somewhere in the future.
+</I>
+I see no problem with the current implementation, and I think only
+after you have more headroom for Lua code you should spent time on
+this.
+
+&gt;<i> Orbit and Sputnik seem very promissing for the embedded world too but not
+</I>&gt;<i> before we have 1MB+ RAM on our kits. This is already available on some with
+</I>&gt;<i> external memory controllers.
+</I>
+Then let's leave this as an optional path once you have enough
+resources. On that case I would suggest checking WSAPI again. But
+probably only the common.lua part of it, not even the helper modules.
+
+&gt;<i> The main idea of lhttpd.lua was to show that a web server can be completely
+</I>&gt;<i> written in Lua and still perform pretty well. The problems we've had with
+</I>&gt;<i> ours show to have come from uIP, not from lhttpd.lua.
+</I>
+I can imagine that, and I guess the best strategy would be to focus on
+the TCP/IP stack first.
+
+&gt;<i> It seems to me (although I would like to hear more from you all) that for
+</I>&gt;<i> v0.6 we could:
+</I>&gt;<i>
+</I>&gt;<i> - Change the opening block tag for Lua code in srvr scripts for &lt;% (as used
+</I>&gt;<i> in Kepler)
+</I>
+I don't see how this would make much of a difference. The API
+available for LHP files is already totally different from the one
+associated with LP files, so there is no point in using the same
+syntax. It could even lead to confusion.
+
+&gt;<i> - .lp extension for html files with Lua web scripting code embedded (&lt;% Lua
+</I>&gt;<i> code %&gt;
+</I>
+Ditto.
+
+&gt;<i> - Review the basic syntax of the net module (I'm sure this will trigger a
+</I>&gt;<i> loooong discussion on many other features :)
+</I>
+I still think that you need to have the TCP/IP stack in place before
+you start changing things in the upper levels.
+
+Again, I was using the wrong hat. Sorry for the previous noise on the list. :o)
+
+Andr&#233;
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000558.html">[eLua-dev] Keplerizing eLua
+</A></li>
+	<LI>Next message: <A HREF="000590.html">[eLua-dev] Keplerizing eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#585">[ date ]</a>
+              <a href="thread.html#585">[ thread ]</a>
+              <a href="subject.html#585">[ subject ]</a>
+              <a href="author.html#585">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

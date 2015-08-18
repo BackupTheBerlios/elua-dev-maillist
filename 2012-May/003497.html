@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Order of Parameter from Timer-Functions
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Order%20of%20Parameter%20from%20Timer-Functions&In-Reply-To=%3CCAKoW%3DmBKzNk7QAfvoL087aJ%3DL57KBZ%3DHsJR-FviMOBM3zxz_sg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003496.html">
+   <LINK REL="Next"  HREF="003498.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Order of Parameter from Timer-Functions</H1>
+    <B>Marcus Vinicius Costa</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Order%20of%20Parameter%20from%20Timer-Functions&In-Reply-To=%3CCAKoW%3DmBKzNk7QAfvoL087aJ%3DL57KBZ%3DHsJR-FviMOBM3zxz_sg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Order of Parameter from Timer-Functions">marcusvc.costa at gmail.com
+       </A><BR>
+    <I>Fri May  4 17:46:56 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003496.html">[eLua-dev] Order of Parameter from Timer-Functions
+</A></li>
+        <LI>Next message: <A HREF="003498.html">[eLua-dev] Order of Parameter from Timer-Functions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3497">[ date ]</a>
+              <a href="thread.html#3497">[ thread ]</a>
+              <a href="subject.html#3497">[ subject ]</a>
+              <a href="author.html#3497">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Stefan,
+
+I have the similar problem but with net.accept when i use with timeout.
+I do this test in LM3S8962 too:
+
+   * local maxdelay = tmr.getmaxdelay( 0 )
+    **print(&quot;maxdelay: &quot;..maxdelay)*
+*    if (maxdelay &gt; 10000000) then maxdelay = 10000000 end
+    print(&quot;timeout: &quot;..maxdelay)
+
+    tstart = tmr.read( 0 )
+    sock, remoteip, err = net.accept( 7474, 0, maxdelay)
+    tend = tmr.read( 0 )
+    print( tstart, tend, tmr.gettimediff( 0, tstart, tend ) )
+*
+
+And the output are:
+
+*&gt;maxdelay:                          85899345
+&gt;<i>timeout:                             10000000
+</I>&gt;<i>4244932445    4294962417    1000599
+</I>*
+
+I change the timeout value but the function net.accept never change the
+internal timeout, always print 1000599
+
+The values in function tmr.gettimediff are correctly and I use the last
+version in git.
+
+Its very dificult to implement this...
+
+regards,
+Marcus
+
+2012/5/4 Stefan Baumann &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">steff_bau at yahoo.de</A>&gt;
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> I just cloned the actual master-Branch and saw that the Timer-Parameters
+</I>&gt;<i> are
+</I>&gt;<i> switched:
+</I>&gt;<i> tmr.gettimediff( id, tstart, tend)
+</I>&gt;<i>
+</I>&gt;<i> I have to switch tstart and tend to receive the correct value. The new
+</I>&gt;<i> function
+</I>&gt;<i> tmr.getdiffnow(id, tstart)
+</I>&gt;<i>
+</I>&gt;<i> returns the same wrong values.
+</I>&gt;<i>
+</I>&gt;<i> I saw that there was a Patch from Bogdan on Jan 21, 2012 witch should put
+</I>&gt;<i> these things in correct order. I found this problem because
+</I>&gt;<i> uart.read( id, format, [timeout], [timer_id] )
+</I>&gt;<i>
+</I>&gt;<i> doesnt work in the mode with a &quot;positive number&quot; to block with a timer or
+</I>&gt;<i> until the number of characters are received.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I tested this with LM3S9B92 LM3S8962.
+</I>&gt;<i>
+</I>&gt;<i> Sample eLua Code:
+</I>&gt;<i> tstart = tmr.start( 0 )
+</I>&gt;<i> tmr.delay( 1, 1000000 )
+</I>&gt;<i> tend = tmr.read( 0 )
+</I>&gt;<i>
+</I>&gt;<i> print( tstart, tend, tmr.gettimediff( 0, tstart, tend ) )
+</I>&gt;<i> print( tstart, &quot;--&quot;, tmr.getdiffnow(0, tstart) )
+</I>&gt;<i>
+</I>&gt;<i> --&gt; 4294967295      4244958673      84899173
+</I>&gt;<i> --&gt; 4294967295      --                   84897392
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> regards,
+</I>&gt;<i> Stefan
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context:
+</I>&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/Order-of-Parameter-from-Timer-Functions-tp7527150.html">http://elua-development.2368040.n2.nabble.com/Order-of-Parameter-from-Timer-Functions-tp7527150.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120504/8e8b98ba/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120504/8e8b98ba/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003496.html">[eLua-dev] Order of Parameter from Timer-Functions
+</A></li>
+	<LI>Next message: <A HREF="003498.html">[eLua-dev] Order of Parameter from Timer-Functions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3497">[ date ]</a>
+              <a href="thread.html#3497">[ thread ]</a>
+              <a href="subject.html#3497">[ subject ]</a>
+              <a href="author.html#3497">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

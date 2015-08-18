@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 Port of eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Port%20of%20eLua&In-Reply-To=%3CCANKDJfZYn0_inNZyeZbL4i61BANqGbpK3RWAcDa%3DSUuQY-LUdA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003297.html">
+   <LINK REL="Next"  HREF="003299.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 Port of eLua</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Port%20of%20eLua&In-Reply-To=%3CCANKDJfZYn0_inNZyeZbL4i61BANqGbpK3RWAcDa%3DSUuQY-LUdA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32 Port of eLua">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Feb 15 10:02:28 CET 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003297.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+        <LI>Next message: <A HREF="003299.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3298">[ date ]</a>
+              <a href="thread.html#3298">[ thread ]</a>
+              <a href="subject.html#3298">[ subject ]</a>
+              <a href="author.html#3298">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Wed, Feb 15, 2012 at 12:47 AM, Rob Emanuele &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rob at emanuele.us</A>&gt; wrote:
+&gt;<i> Ok, I'm going to look at adding enables and disables. &#160;Maybe the setup
+</I>&gt;<i> call implicitly enables the peripheral.
+</I>&gt;<i>
+</I>&gt;<i> So is anyone active in the STM32 port?
+</I>
+Currently, only the AVR32 port has an official maintainer. STM32 is
+quite active though, with both James and me working on it and the
+community recently contributing support for the newer M4 cores from
+ST.
+
+&gt;<i> I'd like to clean it up, so it
+</I>&gt;<i> is more like the AVR32 port. &#160;Basically break out the differences
+</I>&gt;<i> between the chips and boards into separate files.
+</I>
+By all means, do that. It can't possibly be a bad thing and it might
+just clean things enough to get us courage to merge the M4 support :)
+
+&gt;<i>
+</I>&gt;<i> On a related note, what is conf.lua in the port? &#160;It looks like
+</I>&gt;<i> conf.py for SCons.
+</I>
+eLua has an (yet still mostly unnoficial) Lua based build system. For
+this build system, conf.lua does what conf.py does for SConstruct.
+
+Best,
+Bogdan
+
+&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>
+</I>&gt;<i> Rob
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Feb 14, 2012 at 1:24 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> On Tue, Feb 14, 2012 at 2:26 PM, Bogdan Marinescu
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Tue, Feb 14, 2012 at 8:44 PM, Rob Emanuele &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">rob at emanuele.us</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> Greetings,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> We've started developing an STM32 port of eLua for our family of
+</I>&gt;&gt;&gt;&gt;<i> products such as, <A HREF="http://www.crystalfontz.com/product/CFA735YYKKR1">http://www.crystalfontz.com/product/CFA735YYKKR1</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> We just completed a patch set for I2C and I have a question about the
+</I>&gt;&gt;&gt;&gt;<i> methodology to enabling ports and clocks. &#160;In the current STM32 port
+</I>&gt;&gt;&gt;&gt;<i> the platform code initializes all of the clocks for each peripheral
+</I>&gt;&gt;&gt;&gt;<i> supported in functions such as cans_init(), spis_init(), etc. &#160;Having
+</I>&gt;&gt;&gt;&gt;<i> all the clocks enabled when some may be unused wastes power and more
+</I>&gt;&gt;&gt;&gt;<i> importantly, can cause unexpected behaviour if two peripherals that
+</I>&gt;&gt;&gt;&gt;<i> share the same resources (pins, memory) conflict. &#160;We do use some of
+</I>&gt;&gt;&gt;&gt;<i> the pins in a remap state for their alternate functions.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I propose that we should not clock any peripheral (within reason,
+</I>&gt;&gt;&gt;&gt;<i> GPIOs and peripherals internal to lua need to be clocked) until it is
+</I>&gt;&gt;&gt;&gt;<i> setup. &#160;For example, in this snip of my I2C code, I've created a &quot;3rd&quot;
+</I>&gt;&gt;&gt;&gt;<i> I2C port which is really just the first port remapped to new pins. &#160;I
+</I>&gt;&gt;&gt;&gt;<i> am open to suggestions for better ways to do the remaps. &#160;Anyway, the
+</I>&gt;&gt;&gt;&gt;<i> example:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> // ****************************************************************************
+</I>&gt;&gt;&gt;&gt;<i> // I2C support
+</I>&gt;&gt;&gt;&gt;<i> static const GPIO_TypeDef* i2c_port_data[] = { GPIOB, GPIOB, GPIOB };
+</I>&gt;&gt;&gt;&gt;<i> static const I2C_TypeDef* i2cs[] = { I2C1, I2C2, I2C1 };
+</I>&gt;&gt;&gt;&gt;<i> static const u32 i2c_clks[] = { RCC_APB1Periph_I2C1,
+</I>&gt;&gt;&gt;&gt;<i> RCC_APB1Periph_I2C2, RCC_APB1Periph_I2C1 };
+</I>&gt;&gt;&gt;&gt;<i> static const u16 i2c_clock_pin[] = { GPIO_Pin_6, GPIO_Pin_10, GPIO_Pin_8 };
+</I>&gt;&gt;&gt;&gt;<i> static const u16 i2c_data_pin[] = { GPIO_Pin_7, GPIO_Pin_11, GPIO_Pin_9 };
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> #define I2C_TIMEOUT (500000)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> u32 platform_i2c_setup( unsigned id, u32 speed )
+</I>&gt;&gt;&gt;&gt;<i> {
+</I>&gt;&gt;&gt;&gt;<i> &#160;GPIO_InitTypeDef GPIO_InitStructure;
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_InitTypeDef I2C_InitStructure;
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &#160;if (id == 2)
+</I>&gt;&gt;&gt;&gt;<i> &#160; &#160; &#160;GPIO_PinRemapConfig(GPIO_Remap_I2C1, ENABLE);
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &#160;// Setup PIO
+</I>&gt;&gt;&gt;&gt;<i> &#160;GPIO_StructInit( &amp;GPIO_InitStructure );
+</I>&gt;&gt;&gt;&gt;<i> &#160;GPIO_InitStructure.GPIO_Pin = i2c_clock_pin[ id ] | i2c_data_pin[ id ];
+</I>&gt;&gt;&gt;&gt;<i> &#160;GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
+</I>&gt;&gt;&gt;&gt;<i> &#160;GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+</I>&gt;&gt;&gt;&gt;<i> &#160;GPIO_Init( (GPIO_TypeDef*)i2c_port_data[ id ], &amp;GPIO_InitStructure );
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &#160;// Setup and interface
+</I>&gt;&gt;&gt;&gt;<i> &#160;/* I2C configuration */
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_StructInit( &amp;I2C_InitStructure );
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_InitStructure.I2C_OwnAddress1 = 0x0;
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_InitStructure.I2C_ClockSpeed = speed;
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &#160;RCC_APB1PeriphClockCmd(i2c_clks[ id ], ENABLE);
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_DeInit( (I2C_TypeDef*)i2cs[ id ] );
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_Cmd((I2C_TypeDef*)i2cs[ id ], ENABLE);
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &#160;I2C_Init( (I2C_TypeDef*)i2cs[ id ], &amp;I2C_InitStructure );
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &#160;// Return actual speed
+</I>&gt;&gt;&gt;&gt;<i> &#160;return speed;
+</I>&gt;&gt;&gt;&gt;<i> }
+</I>&gt;&gt;&gt;&gt;<i> //****************************************************************************
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> How do people feel about this? &#160;Would it also be good to have a way to
+</I>&gt;&gt;&gt;&gt;<i> disable ports?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Completely agreed. eLua does not address the issue of power
+</I>&gt;&gt;&gt;<i> consumption at all at this moment, so having a way to change this can
+</I>&gt;&gt;&gt;<i> only be a good thing. We just have to find a smart way. The first
+</I>&gt;&gt;&gt;<i> thing that comes to mind is to add 'enable'/'disable' (and maybe
+</I>&gt;&gt;&gt;<i> 'is_enabled') functions for each peripheral, with some additional
+</I>&gt;&gt;&gt;<i> rules to make life easier for a developer (for example, calling
+</I>&gt;&gt;&gt;<i> 'uart.setup' will automatically enable the given UART). This sounds a
+</I>&gt;&gt;&gt;<i> bit too simplistic to be a complete solution, but I think it it a good
+</I>&gt;&gt;&gt;<i> start.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I think in some cases we do do the clocking in the setup functions,
+</I>&gt;&gt;<i> other times it's just done at startup.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'd be fine with making clocking implicit in setup or usage of a
+</I>&gt;&gt;<i> peripheral (since not everything has a setup function), requiring
+</I>&gt;&gt;<i> enable/disable for everything would break existing functionality and
+</I>&gt;&gt;<i> make code overly verbose. &#160;On the Lua level this might not require
+</I>&gt;&gt;<i> explicit enabling of clocking, but the underlying platform API would
+</I>&gt;&gt;<i> include and make use of enable/disable functions to make this somewhat
+</I>&gt;&gt;<i> transparent. &#160;In addition, we could expose enable/disable functions
+</I>&gt;&gt;<i> within Lua for direct control.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Once we come to a nice solution, our changes will be found:
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://github.com/crystalfontz/elua">https://github.com/crystalfontz/elua</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Thank you,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Rob
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> ph: (847) 448-0386
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003297.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+	<LI>Next message: <A HREF="003299.html">[eLua-dev] STM32 Port of eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3298">[ date ]</a>
+              <a href="thread.html#3298">[ thread ]</a>
+              <a href="subject.html#3298">[ subject ]</a>
+              <a href="author.html#3298">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

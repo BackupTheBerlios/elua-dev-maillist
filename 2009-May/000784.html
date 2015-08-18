@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua-RPC Coming
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua-RPC%20Coming&In-Reply-To=%3C81fbe47d0905060119xd3d1dc5r3c19f7c281db4f26%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000786.html">
+   <LINK REL="Next"  HREF="000785.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua-RPC Coming</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua-RPC%20Coming&In-Reply-To=%3C81fbe47d0905060119xd3d1dc5r3c19f7c281db4f26%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Lua-RPC Coming">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed May  6 10:19:37 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000786.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+        <LI>Next message: <A HREF="000785.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#784">[ date ]</a>
+              <a href="thread.html#784">[ thread ]</a>
+              <a href="subject.html#784">[ subject ]</a>
+              <a href="author.html#784">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, May 5, 2009 at 10:21 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> Actually, I've just realized that one could do something similar to the
+</I>&gt;<i> following:
+</I>&gt;<i> LOCAL:
+</I>&gt;<i> fstring = string.dump(func)
+</I>&gt;<i>
+</I>&gt;<i> remote.execfunc(fstring, inputval)
+</I>&gt;<i>
+</I>&gt;<i> REMOTE:
+</I>&gt;<i> function execfunc( fstring, input )
+</I>&gt;<i>        func = loadstring(fstring)
+</I>&gt;<i>        return func(input)
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> The are some limitations on the functions that can be used (only pure lua,
+</I>&gt;<i> no upvalues, etc..), but it seems to work :-)
+</I>&gt;<i>
+</I>&gt;<i> This method then just makes use of the RPC mechanism for sending strings as
+</I>&gt;<i> input values for functions.
+</I>&gt;<i>
+</I>&gt;<i> I don't think I'll be aiming to support sending anything other than chunks
+</I>&gt;<i> of Lua code over the wire, so I think this can be implemented with just a
+</I>&gt;<i> bit of syntactic sugar :-)
+</I>
+
+That sounds just abourt right. The main problem isn't sending the code I
+think, but rather serializing/deserializing the parameters/results, which I
+believe is also most of the work from Lua-RPC. I don't think we need to
+handle &quot;tricky stuff&quot; like recursive tables and such.
+
+Other ideas that I find interesting:
+
+- (almost) transparent remoting. By setting a metatable on _G, one can try
+to execute remotely calls that won't work locally. For example, if we do
+this on the PC:
+
+start_remote()  -- this sets the metatable, also sets up the RPC transport
+if needed
+print &quot;Testme&quot; -- local call, will work just fine
+pio.set(1) -- the metatable will catch this call and try to execute it
+remotely instead of throwing an error immediately
+end_remote()
+pio.set(1) -- this time we'll get an error
+
+This raises a number of interesting questions, like what happens if an
+assignment like &quot;a = 1&quot; happens inside a start_remote() block? Maybe this
+should also happen remotely, in which case a metatable with __newindex would
+also be fine. I wouldn't go this way though, it creates too much confusion.
+Or maybe the &quot;print&quot; in the above code example should also happen on the
+remote side? Lots of stuff to experiment with, in any case :)
+
+- for RPC, you'd need a way to detect a failure on the transport and return
+this to the local caller; maybe by using the regular (nil, errormessage) Lua
+way.
+
+- how exactly do you plan on implementing the transport part? Will it be a
+separate &quot;thread&quot; running on both the PC and the eLua board, or will it
+block both of them by doing RPC only? For example, while you do RPC, will
+you be able to use the shell on the eLua side? Cause you need some kind of
+listener for your RPC calls.
+
+- can we do this both ways ? :) I mean, since we can call eLua from PC, it
+will only be fair to eLua to let it call the PC. The PC has nothing on eLua
+:<i>)
+</I>
+Must return to some inhumanly boring work now, but I'll come back when I
+have new ideas.
+
+Best,
+Bogdan
+
+
+
+&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On May 5, 2009, at 12:33 PM, James Snyder wrote:
+</I>&gt;<i>
+</I>&gt;<i>  Hi -
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I just wanted to let folks know that I'm working on getting LuaRPC (
+</I>&gt;&gt;<i> <A HREF="http://q12.org/lua/index.html">http://q12.org/lua/index.html</A>) up and running for eLua.  I've gotten it
+</I>&gt;&gt;<i> going with Lua 5.1.4 on the desktop, and it seems to be working to the
+</I>&gt;&gt;<i> degree that can initiate procedure calls with tables, numbers, etc.. as
+</I>&gt;&gt;<i> arguments, and get return values back over local socket connections.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The original code doesn't support shipping functions over the wire, but I
+</I>&gt;&gt;<i> think it should be possible to do this with lua_dump, so that one could
+</I>&gt;&gt;<i> modify functions on the remote &quot;server&quot; device (which in this case would be
+</I>&gt;&gt;<i> eLua).  I'll drop it into eLua when I get it working over serial, which I
+</I>&gt;&gt;<i> think, at least in principle, should be fairly easy.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If anyone is interested in looking at what I've done so far, you can find
+</I>&gt;&gt;<i> my modifications here:
+</I>&gt;&gt;<i> <A HREF="http://github.com/jsnyder/luarpc/tree/master">http://github.com/jsnyder/luarpc/tree/master</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The Lua API has gone through some interesting changes between 4.0.x and
+</I>&gt;&gt;<i> 5.1.x. I think I've mostly covered the bases as far as handling those
+</I>&gt;&gt;<i> differences, but the only testing I've done is with some examples provided
+</I>&gt;&gt;<i> by the original author.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> ph: (847) 448-0386
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 448-0386
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090506/5cfdcc30/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090506/5cfdcc30/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000786.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+	<LI>Next message: <A HREF="000785.html">[eLua-dev] Lua-RPC Coming
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#784">[ date ]</a>
+              <a href="thread.html#784">[ thread ]</a>
+              <a href="subject.html#784">[ subject ]</a>
+              <a href="author.html#784">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

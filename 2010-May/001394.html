@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] scripts to build toolchains ( arm79 and cortex-m3 )
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20scripts%20to%20build%20toolchains%20%28%20arm79%20and%20cortex-m3%20%29&In-Reply-To=%3Cu2gb3ef86d61005081124p56e7b51fn1f2255fe849ab352%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001400.html">
+   <LINK REL="Next"  HREF="001395.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] scripts to build toolchains ( arm79 and cortex-m3 )</H1>
+    <B>Fernando Ara&#250;jo</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20scripts%20to%20build%20toolchains%20%28%20arm79%20and%20cortex-m3%20%29&In-Reply-To=%3Cu2gb3ef86d61005081124p56e7b51fn1f2255fe849ab352%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] scripts to build toolchains ( arm79 and cortex-m3 )">freecky at gmail.com
+       </A><BR>
+    <I>Sat May  8 20:24:17 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001400.html">[eLua-dev] Buildind eLua
+</A></li>
+        <LI>Next message: <A HREF="001395.html">[eLua-dev] scripts to build toolchains ( arm79 and cortex-m3 )
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1394">[ date ]</a>
+              <a href="thread.html#1394">[ thread ]</a>
+              <a href="subject.html#1394">[ subject ]</a>
+              <a href="author.html#1394">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Great! Tested it here and it's fully working!
+
+Best,
+--
+Fernando Araujo
+
+
+
+
+On Thu, Apr 29, 2010 at 03:55, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt;wrote:
+
+&gt;<i> Hello eLuers,
+</I>&gt;<i>
+</I>&gt;<i> After some changes of SO ( Gentoo 64bits to Ubuntu 64bits to Ubuntu 32bits
+</I>&gt;<i> ... ) and some rebuilds of the toolchains.
+</I>&gt;<i> I've decided to create a bash script to do it for me.
+</I>&gt;<i>
+</I>&gt;<i> It download the required files ( binutils, gcc, newlib ), do the apt-gets,
+</I>&gt;<i> do the patches to get thumb2 and finaly build ( and also creates the
+</I>&gt;<i> symbolic links, to remove this step read Obs1. )
+</I>&gt;<i>
+</I>&gt;<i> A Special thanks to Bogdan who created the tutorial that I've folowed a few
+</I>&gt;<i> times and shamelessly copied to create the script. :)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>    - To run it `sudo ./build_arm79.sh &amp;&amp; sudo ./build_arm_cortex_m3.sh'
+</I>&gt;<i>    - If you already have the needed files: &quot;*gcc-4.3.3.tar,bz2,
+</I>&gt;<i>    binutils-2.19.50.tar.bz2, newlib-1.17.0.tar.gz*&quot; you can create a
+</I>&gt;<i>    folder named *workdir* at the same folder as the scripts and put the
+</I>&gt;<i>    files inside to not re download them. If you you don't the script downloads
+</I>&gt;<i>    them automagicaly ( tnx to wget ).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The Idea is to put it at the wiki after some more testing.
+</I>&gt;<i> But before that I'm posting to know
+</I>&gt;<i>
+</I>&gt;<i>    - if it worth mantaining
+</I>&gt;<i>    - someone would like to add/remove/say anything about it.
+</I>&gt;<i>
+</I>&gt;<i> add something more importantly, to share it :)
+</I>&gt;<i>
+</I>&gt;<i> so...
+</I>&gt;<i>
+</I>&gt;<i> feedbacks are welcome.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>    - Obs1: The script creates the symbolic links I've talked on the other
+</I>&gt;<i>    thread. don't know if people aready read about it, but you can comment out
+</I>&gt;<i>    the following lines to avoid this:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> on file *build_arm79.sh:*
+</I>&gt;<i> lines 86 to 88
+</I>&gt;<i>
+</I>&gt;<i> on file *build_arm_cortex_m3.sh:*
+</I>&gt;<i> lines 77 to 81
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>    - Obs2: The script already adds */usr/local/cross-arm/bin* and *
+</I>&gt;<i>    /usr/local/cross-cortex/bin* to the path via .bashrc, to avoid this
+</I>&gt;<i>    comment out:
+</I>&gt;<i>
+</I>&gt;<i> on file *build_arm79.sh:*
+</I>&gt;<i> lines 90 to 97
+</I>&gt;<i>
+</I>&gt;<i> on file *build_arm_cortex_m3.sh:*
+</I>&gt;<i> lines 83 to 90
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>    - Obs3: If you have a diferent linux then *ubuntu* or *gentoo*, you
+</I>&gt;<i>    have to comment lines 7 to 11 and manualy get the packages. And also you can
+</I>&gt;<i>    send me the line to do the job for a path to it. :)
+</I>&gt;<i>
+</I>&gt;<i> And That's about it...
+</I>&gt;<i>
+</I>&gt;<i> Best Regards,
+</I>&gt;<i> Marcelo Politzer Couto
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100508/b4e08462/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100508/b4e08462/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001400.html">[eLua-dev] Buildind eLua
+</A></li>
+	<LI>Next message: <A HREF="001395.html">[eLua-dev] scripts to build toolchains ( arm79 and cortex-m3 )
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1394">[ date ]</a>
+              <a href="thread.html#1394">[ thread ]</a>
+              <a href="subject.html#1394">[ subject ]</a>
+              <a href="author.html#1394">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Peripheral%20Function%20Side%20Effects%20%28was%3A%20eLua%0A%20design%20change%20to%20allow%20synchronized%20PWM%20channel%20start%3F%29&In-Reply-To=%3CBANLkTim%3DkFO4qw2i4FpQtS%2BGr-ZbFVwUmA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002264.html">
+   <LINK REL="Next"  HREF="002266.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Peripheral%20Function%20Side%20Effects%20%28was%3A%20eLua%0A%20design%20change%20to%20allow%20synchronized%20PWM%20channel%20start%3F%29&In-Reply-To=%3CBANLkTim%3DkFO4qw2i4FpQtS%2BGr-ZbFVwUmA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Apr  8 16:52:13 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002264.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+        <LI>Next message: <A HREF="002266.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2265">[ date ]</a>
+              <a href="thread.html#2265">[ thread ]</a>
+              <a href="subject.html#2265">[ subject ]</a>
+              <a href="author.html#2265">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Apr 8, 2011 at 5:25 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 8 April 2011 15:16, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt; In general, a system that is &quot;easy to use&quot; cannot be powerful and vice
+</I>&gt;<i> &gt;&gt; versa.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I make it my mission to prove this wrong :) Which of course I'll never be
+</I>&gt;<i> &gt; able to do, as &quot;easy to use&quot; is a fairly subjective matter.
+</I>&gt;<i>
+</I>&gt;<i> No, it's a decision you have to make when designing a system, and it
+</I>&gt;<i> applies to all fields of technology.
+</I>&gt;<i>
+</I>
+Sorry, I simply don't agree that &quot;ease of use&quot; precludes &quot;power&quot;. The first
+example that immediately comes to mind is Xcode under OS/X. I believe that
+simplicity and power can co-exist, at least up to a point which is very much
+ahead of what we have in eLua right now.
+
+
+&gt;<i> If people want to be able to express themselves with precision, they
+</I>&gt;<i> need a larger vocabulary, so need to understand more.
+</I>&gt;<i> If you understand less, the range of concepts that you can express is
+</I>&gt;<i> smaller.
+</I>&gt;<i>
+</I>
+Absolutely correct. I fail to see the connection though. I feel like you're
+still talking about APIs and I'm still talking about warning messages. I'm
+with you on the API front.
+
+
+&gt;<i> The thing to avoid is making a  system that is difficult to use and
+</I>&gt;<i> still gives you no power. Think MS-DOS command.com
+</I>&gt;<i>
+</I>&gt;<i> Computers are the most complex machines ever built, and creating the
+</I>&gt;<i> illusion of simplicity is what programming is all about.
+</I>&gt;<i> You do this by hiding the immense underlying complexity, which you do
+</I>&gt;<i> by making decisions for the users and doing &quot;the right thing&quot; without
+</I>&gt;<i> bothering them.
+</I>&gt;<i> How successful you are in doing this determines how easy your product
+</I>&gt;<i> is to use, and the goal is the same whether you are aiming at
+</I>&gt;<i> high-level or low-level users.
+</I>&gt;<i> The Linux device drivers are high-complexity because they give wide
+</I>&gt;<i> expressive power to their callers, but they still hide everything else
+</I>&gt;<i> that is not relevant.
+</I>&gt;<i>
+</I>&gt;<i> A flood of warning messages exposes complexity instead of hiding it.
+</I>&gt;<i> Think of a Windows machine where there is a constant flow of
+</I>&gt;<i> distracting boxes popping up with incomprehensible messages in them.
+</I>&gt;<i> No user likes that, whether naive or advanced. It confuses the naive
+</I>&gt;<i> ones and annoys the advanced ones.
+</I>&gt;<i>
+</I>
+Ah, this is a problem of perspective then. I agree with you in most cases,
+but not always. While _developing_ a program I personally find the message
+boxes extremely useful. Moreover, I found myself reading the Windows debug
+logs more than once in an attempt to find bugs. It was helpful on many
+ocasions. And when I didn't want it anymore, I just closed it. Linux has a
+generic logging facility which you can control however you like and it
+doesn't have to stay in front of your eyes at all times. What I'm trying to
+achieve is exactly something between these lines.
+
+
+&gt;<i> &gt; the warnings themselves shouldn't have any influence on
+</I>&gt;<i> &gt; the actual functionality.
+</I>&gt;<i>
+</I>&gt;<i> Printing an error message IS a change in functionality.
+</I>&gt;<i> If an application changes the duty cycle once per cycle (like the
+</I>&gt;<i> crude DAC example), the flood of error messages to print on the serisl
+</I>&gt;<i> port will slow the system to a crawl.
+</I>&gt;<i>
+</I>
+Absolutely correct. This is why you'll most likely decide not to use them
+after the prototyping phase. As I see it, the flow is like this:
+
+1. you write your program
+2. you get one or more warnings
+3. you fix them and mask them if needed so they don't interfere with your
+work anymore
+4. repeat from step 1 until your program works. At this point you can
+disable warnings completely.
+
+When the warnings are disabled, what you're left with is the overhead of
+calling the warning system functions. I believe that's mostly negligeable in
+a system built around an interpreted language.
+
+
+&gt;<i> If they are controlling some device on the serial port, a warning
+</I>&gt;<i> message will come out in the middle of their protocol.
+</I>&gt;<i> At present, a running eLua program never writes anything to the UART
+</I>&gt;<i> unless you ask it to.
+</I>&gt;<i>
+</I>
+And it won't issue a warning if you tell it not to :)
+
+
+&gt;<i> An observer ALWAYS modifies the system it observes.
+</I>&gt;<i>
+</I>
+Which is extremely important if you want to talk about quantum physics,
+Heisenberg's principle and related topics. Not that much in this particular
+and very practical situation :)
+
+
+&gt;<i> Unobtrusive observation, even though it is one of the dogmas of naive
+</I>&gt;<i> scientists, is impossible. Even serious physicists have now woken up
+</I>&gt;<i> to this.
+</I>
+
+I suspected tha the discussion might be headed in this direction :) Again:
+you're perfectly right in theory. In practice though, in the particular case
+of eLua, I believe this is a non-issue.
+
+It's one of the fallacies of scientific method (the other one is that
+&gt;<i> you can recreate the same initial state to repeat the same
+</I>&gt;<i> experiment).
+</I>&gt;<i>
+</I>&gt;<i> &gt;&gt; Linux device drivers are a very different world from a programming
+</I>&gt;<i> &gt;&gt; system for beginners, so the policy there (of not enforcing one way of
+</I>&gt;<i> &gt;&gt; driving a peripheral, but of having a complex programmer interface
+</I>&gt;<i> &gt;&gt; that allows the caller to set the device up with as much precision and
+</I>&gt;<i> &gt;&gt; flexibility as possible) is made according to the world of Linux
+</I>&gt;<i> &gt;&gt; device drivers.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Sure. It's a good generic principle though and I'm trying to follow it as
+</I>&gt;<i> &gt; much as I can.
+</I>&gt;<i>
+</I>&gt;<i> Don't do that if you want your system to be easy to use.
+</I>&gt;<i>
+</I>
+I do want it to be easy to use, but remember the &quot;power' aspect.
+Equilibrium, this is what it's all about (no, not the movie). One can't have
+everything. I won't pretend for a second that I know how to find this
+equilibrium, but at least I'm trying :)
+
+
+&gt;<i> An expressive interface is complex, and a complex interface is more
+</I>&gt;<i> difficult to use.
+</I>&gt;<i> A simple interface is easy to use, but a simple interface doesn't let
+</I>&gt;<i> you do much.
+</I>&gt;<i> Choosing the right level of complexity/expressiveness in an interface
+</I>&gt;<i> is an important choice, but it is still a choice. If you don't make
+</I>&gt;<i> that choice consciously, the simple interface will grow lots of extra
+</I>&gt;<i> methods to perform advanced tasks... which is what is happening to
+</I>&gt;<i> eLua.
+</I>&gt;<i>
+</I>
+It's a bit more complex than that in  eLua as we have the additional
+platform independce requirement. It's fairly easy to write an interface that
+use all the capabilities of a certain peripheral on a certain platform, it's
+much harder to generalize. And even after you're done generalizing you're
+still left with pieces of platform-specific funtionality that can only be
+implemented by a certain platform.
+
+
+&gt;<i> If you try to make it both complex and simple, both powerful and easy
+</I>&gt;<i> to use, you are trying to resolve a paradox and are certain not to
+</I>&gt;<i> succeed.
+</I>
+Of course, in the attempt to do the impossible, you may achieve
+&gt;<i> enlightenment :)
+</I>&gt;<i>
+</I>
+:<i>)
+</I>
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110408/09d64af3/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110408/09d64af3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002264.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+	<LI>Next message: <A HREF="002266.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2265">[ date ]</a>
+              <a href="thread.html#2265">[ thread ]</a>
+              <a href="subject.html#2265">[ subject ]</a>
+              <a href="author.html#2265">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

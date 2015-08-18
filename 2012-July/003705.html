@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GSM Library
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GSM%20Library&In-Reply-To=%3C1906436552.1161049.1342154575017.JavaMail.root%40zimbra-pri%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003706.html">
+   <LINK REL="Next"  HREF="003707.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GSM Library</H1>
+    <B>Tim Van Der Hulst</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GSM%20Library&In-Reply-To=%3C1906436552.1161049.1342154575017.JavaMail.root%40zimbra-pri%3E"
+       TITLE="[eLua-dev] GSM Library">tim at agfirstbop.co.nz
+       </A><BR>
+    <I>Fri Jul 13 06:42:55 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003706.html">[eLua-dev] MBED power up
+</A></li>
+        <LI>Next message: <A HREF="003707.html">[eLua-dev] WOFS question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3705">[ date ]</a>
+              <a href="thread.html#3705">[ thread ]</a>
+              <a href="subject.html#3705">[ subject ]</a>
+              <a href="author.html#3705">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Folks,
+
+Here is a first crack at a GSM Library. Thought I had better get some feedback before I complete it just in case as I am an eLua/Lua noob!
+
+Example usage:
+
+require 'gsm'
+			
+gsm.init{ id = 3}
+			
+if gsm.gsm() then
+  gsm.sendSMS('022XXXXXX','wassup')
+end
+
+---------
+
+GPRS features (eg tcp/ip operations such as HTTP GET) etc are not implemented yet, nor are phonebook, sms features (except sending SMS).
+
+It is reasonably robust in getting an GSM connection, anything more robust is up to the you to implement as additional application logic.
+
+I have only tested this with one GSM Device (sim300) but it should (in theory) work on any GSM07.07 device :)
+
+There is a test() function you can run that will dump out AT Command support which will assist in this area. Eg
+
+if gsm.at() then
+  gsm.test()
+end
+
+manufacturer:SIMCOM_Ltd
+model:SIMCOM_SIM300S
+revision:Revision:1604B06SIM300S32_SST34HF3284_MMS
+CCLK
++CPBS: (&quot;MC&quot;,&quot;RC&quot;,&quot;DC&quot;,&quot;LD&quot;,&quot;LA&quot;,&quot;ME&quot;,&quot;SM&quot;,&quot;FD&quot;,&quot;ON&quot;,&quot;BN&quot;,&quot;SD&quot;,&quot;VM&quot;)
++CREG: (0-2)
++CFUN: (0,1,4),(0-1)
++CGATT: (0-1)
++CGDCONT: (1-10),&quot;IP&quot;,,,(0,1),(0,1)
++CMEE: (0-2)
++COPS: (2,&quot;VODAFONE&quot;,&quot;voda NZ&quot;,&quot;53001&quot;),(3,&quot;24&quot;,&quot;24&quot;,&quot;53024&quot;),,(0-4),(0-2)
+
+--------------
+
+Cheers,
+
+PS Any tips to improve performance would be great, I am a web developer so this is the first time I have had to think about memory usage etc and I have used quite a bit of string concat, table, regex  features to ensure the code is reasonably high level, hhehe
+
+Ok, beer o'clock time :)
+
+TiM
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: gsm.lua
+Type: text/x-lua
+Size: 16719 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120713/e4d9d38e/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20120713/e4d9d38e/attachment.bin</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003706.html">[eLua-dev] MBED power up
+</A></li>
+	<LI>Next message: <A HREF="003707.html">[eLua-dev] WOFS question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3705">[ date ]</a>
+              <a href="thread.html#3705">[ thread ]</a>
+              <a href="subject.html#3705">[ subject ]</a>
+              <a href="author.html#3705">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

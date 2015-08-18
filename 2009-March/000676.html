@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] STM32 Bootloader Flashing in Python
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Bootloader%20Flashing%20in%20Python&In-Reply-To=%3C81fbe47d0903191148h7e7f1c10l868d9a38c163bdee%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000675.html">
+   <LINK REL="Next"  HREF="000677.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] STM32 Bootloader Flashing in Python</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20STM32%20Bootloader%20Flashing%20in%20Python&In-Reply-To=%3C81fbe47d0903191148h7e7f1c10l868d9a38c163bdee%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] STM32 Bootloader Flashing in Python">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Mar 19 19:48:11 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000675.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+        <LI>Next message: <A HREF="000677.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#676">[ date ]</a>
+              <a href="thread.html#676">[ thread ]</a>
+              <a href="subject.html#676">[ subject ]</a>
+              <a href="author.html#676">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Oh yes, I tried CuteCom a while ago. I'll give them credit for choosing the
+name: &quot;cute&quot; describes it perfectly. Simple interface, very little
+functionality. Cute, but wrong :)
+I also think screen is the best choice in Linux, better than minicom anyway.
+But can you do XMODEM from screen?
+
+Best,
+Bogdan
+
+On Thu, Mar 19, 2009 at 8:43 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;wrote:
+
+&gt;<i> FYI: CuteCom is basically like Bray's terminal, if you've used it on
+</I>&gt;<i> windows.  It doesn't really handle terminal characters, so anything that's
+</I>&gt;<i> drawing text on the screen with term isn't going to work correctly.
+</I>&gt;<i>
+</I>&gt;<i> Oh well :-)
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mar 19, 2009, at 1:11 PM, James Snyder wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mar 19, 2009, at 3:10 AM, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Between this and the new patches Bogdan committed for being agnostic about
+</I>&gt;&gt;<i> line endings, I can now cut windows out of the loop for STM32 development
+</I>&gt;&gt;<i> :-)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> You da man! :) Out of curiosity, what terminal emulator are you using in
+</I>&gt;<i> Linux? I was unable to find a decent one (&quot;decent&quot;=something that could
+</I>&gt;<i> compete with TeraTerm).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I haven't yet found something that is as easy to work with as TeraTerm,
+</I>&gt;<i> which I do find somewhat irritating.  For quick and dirty stuff (no
+</I>&gt;<i> transfers, just console) I just use screen, which one can fire up by just
+</I>&gt;<i> pointing it at the tty device (screen /dev/ttyUSB0 115200).
+</I>&gt;<i>
+</I>&gt;<i> I've tried a few things including minicom, and haven't been thrilled with
+</I>&gt;<i> them.  One thing that I just stumbled upon, and haven't tried yet is CuteCom
+</I>&gt;<i> (<A HREF="http://cutecom.sourceforge.net/">http://cutecom.sourceforge.net/</A>) &lt;<A HREF="http://cutecom.sourceforge.net/%29">http://cutecom.sourceforge.net/%29</A>&gt;.
+</I>&gt;<i>  I'm going to try and compile that on my Mac, it looks like it's at least in
+</I>&gt;<i> the Ubuntu repositories though.
+</I>&gt;<i>
+</I>&gt;<i> If that doesn't work well, I'll be further tempted to try and hack
+</I>&gt;<i> something together in Python... :-)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> FYI: I have an ADC implementation for STM32 that should basically work,
+</I>&gt;&gt;<i> but something is causing a hang on boot when I enable the ADC peripheral
+</I>&gt;&gt;<i> clock on boot.  I'll commit that and some changes to elua_adc that allow it
+</I>&gt;&gt;<i> to handle situations where a single interrupt gives you values from a series
+</I>&gt;&gt;<i> of channels.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Good news, keep up the good work! After all the docs I wrote (and I'm still
+</I>&gt;<i> writing) I'm not even sure I know how to program anymore :)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I'm sure it'll come back to you :-)
+</I>&gt;<i>
+</I>&gt;<i> I did get past that other issue I had mentioned, which, if I recall, came
+</I>&gt;<i> down to some issues of ordering the startup sequence.
+</I>&gt;<i>
+</I>&gt;<i> I've found that the Stellaris platform is much easier to write something
+</I>&gt;<i> and have it behave the way you expect it to, without having to dig through
+</I>&gt;<i> large swaths of the reference documentation for the hardware.  That
+</I>&gt;<i> simplicity does have a cost, in that there's way more flexibility with
+</I>&gt;<i> STM32, but I find it takes more time to debug, and that solutions are
+</I>&gt;<i> sometimes non-obvious after the fact :-)  I don't think I'm alone there,
+</I>&gt;<i> since I've seen plenty of discussions on the STM32 forums that sound similar
+</I>&gt;<i> to my own experiences.
+</I>&gt;<i>
+</I>&gt;<i> Right now non-clocked conversion seems to work OK, and it runs at a similar
+</I>&gt;<i> speed to LM3S6965 with adcscope.lua.  While this chip is clocked faster, I
+</I>&gt;<i> think it's not bad for a first pass at settings things up.  Their DMA
+</I>&gt;<i> support also allows for some flexibility that, in some ways, I like better
+</I>&gt;<i> than the dedicated FIFOs on Luminary.  The DMA includes both source and
+</I>&gt;<i> destination address incrementation, and has separate interrupts for
+</I>&gt;<i> half-full/complete events.
+</I>&gt;<i>
+</I>&gt;<i> I feel like their docs and/or driver model could be more friendly to
+</I>&gt;<i> someone who isn't intimately familiar with their peripheral architecture,
+</I>&gt;<i> though.  You definitely cannot write driver interfaces that differ much from
+</I>&gt;<i> their code examples using only the driver manual.  You need the chip
+</I>&gt;<i> reference manual to figure out how the hardware works, and then you can find
+</I>&gt;<i> the appropriate calls to set things up.  Certainly you have to do this, to
+</I>&gt;<i> some degree, on all platforms, but with Luminary's docs I got most of what I
+</I>&gt;<i> needed just from their driver manual, and from a few app notes.  This makes
+</I>&gt;<i> me wonder a bit about what things are like with other manufacturer's
+</I>&gt;<i> offerings :-)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090319/e4fa81d0/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090319/e4fa81d0/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000675.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+	<LI>Next message: <A HREF="000677.html">[eLua-dev] STM32 Bootloader Flashing in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#676">[ date ]</a>
+              <a href="thread.html#676">[ thread ]</a>
+              <a href="subject.html#676">[ subject ]</a>
+              <a href="author.html#676">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

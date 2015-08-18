@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTi%3DwcwTJcWa-iOKm_VZ-YBE%3DHnBBYg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002449.html">
+   <LINK REL="Next"  HREF="002454.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTi%3DwcwTJcWa-iOKm_VZ-YBE%3DHnBBYg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">martinwguy at gmail.com
+       </A><BR>
+    <I>Mon Jun  6 15:09:26 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002449.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002454.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2453">[ date ]</a>
+              <a href="thread.html#2453">[ thread ]</a>
+              <a href="subject.html#2453">[ subject ]</a>
+              <a href="author.html#2453">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 6 June 2011 05:17, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+&gt;<i> I would take a look at some other &quot;mature&quot; platform APIs:
+</I>
+Many thanks for these suggestions. Whether they are mature or not
+doesn't necessarily mean they are well-designed. They may just be old
+;-).
+In fact, they are all totally different:
+
+&gt;<i> <A HREF="http://mbed.org/handbook/I2C">http://mbed.org/handbook/I2C</A>
+</I>
+frequency() read() write() start() stop().   The same as eLua's current.
+
+&gt;<i> <A HREF="http://arduino.cc/en/Reference/Wire">http://arduino.cc/en/Reference/Wire</A>
+</I>
+bizarre.
+
+&gt;<i> <A HREF="http://labdasar.ee.itb.ac.id/lab/installer/embedded/ecos-3.0.cygwin/ecos-3.0/doc/html/ref/i2c-api.html">http://labdasar.ee.itb.ac.id/lab/installer/embedded/ecos-3.0.cygwin/ecos-3.0/doc/html/ref/i2c-api.html</A>
+</I>
+Two functions:
+uint32 cyg_i2c_tx(const cyg_i2c_device* device, const cyg_uint8*
+tx_data, cyg_uint32 count)
+uint32 cyg_i2c_rx(const cyg_i2c_device* device, cyg_uint8* rx_data,
+cyg_uint32 count);
+where cyg_i2c_device encodes &quot;which i2c bus&quot;, &quot;slave address&quot; and &quot;speed&quot;
+looks like the closest yet... until you try to do a write-read
+combined message. Then you have to use a different, big hairy
+transaction-oriented interface, because the &quot;simple&quot; interface above
+doesn't allow tx-rx without an intervening stop.
+
+&gt;<i> <A HREF="http://code.bsd64.org/browse/freebsd/RELENG_8_0/src/sys/dev/iicbus/iic.h">http://code.bsd64.org/browse/freebsd/RELENG_8_0/src/sys/dev/iicbus/iic.h</A>
+</I>
+start, stop, read, write, rdwr(?), and repeated-start.  Again, too
+low-level for high level hardware
+
+&gt;<i> eLua's platform C API can also be a bit lower level than the Lua API
+</I>&gt;<i> as well in case some commands might need to be bundled together for
+</I>&gt;<i> efficiency/timing purposes.
+</I>
+No, I need to keep the whole I2C message, including a combined
+write-read sequence, intact down to the platform level, otherwise the
+hardware generates a STOP automatically if the read request doesn't
+arrive in time.
+If your basic primitives are start() stop() readbyte() writebyte(),
+the higher level description can easily be implemented in terms of
+them.  But if the platform interface is at a lower level than this, it
+is quite difficlt to reconstruct the original combined message by
+spotting a special sequence of starts, tx and rx messages.  You would
+still end up having to buffer everything from the start to the first
+stop and then performing the whole operation at that time.
+
+&gt;<i> Perhaps we could aim for keeping things
+</I>&gt;<i> fairly generic, simple and atomic at the platform C API level
+</I>
+Of these words I think understand &quot;atomic&quot;: it means &quot;a single
+operation that either completes in its entirety or doesn't happen at
+all&quot;, which suggests keeping entire I2C messages as single objects all
+the way down.
+
+ and then
+&gt;<i> perhaps provide some convenience or group some operations within the
+</I>&gt;<i> higher level Lua API?
+</I>
+
+&gt;<i> Some of them include
+</I>&gt;<i> semantics (like arduino) to use send to queue messages and then send
+</I>&gt;<i> them when the transmission is ended, then ACK/NACK status is returned.
+</I>
+Exactly what I was hoping to avoid, since you have to copy and buffer
+a potentially infinite amount of data, then send it when they say
+&quot;stop&quot;, which means you have to be able to allocate arbitrary amounts
+of memory inside the device driver.
+
+&gt;<i> FWIW: I'm not too concerned about running in slave mode either at this point.
+</I>
+Nor am I personally, but if we are designing a world-class API that
+will be with eLua forever, maybe thinking about it would be a good
+idea at this point.  I gather that the buttons on the Mizar32 LCD
+display are supposed to work in master mode with the AVR32 SoC as
+slave so that you don't have to do busy-wait polling to detect button
+presses (you prod the button-controlling PIC, go into slave mode and
+then wait for the buttons to poke you).  However, this may just be a
+case of poor design, and the LCD/button hardware module is not one of
+those scheduled to be ready for the initial product release, so we can
+still review its design.
+
+   M
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002449.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002454.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2453">[ date ]</a>
+              <a href="thread.html#2453">[ thread ]</a>
+              <a href="subject.html#2453">[ subject ]</a>
+              <a href="author.html#2453">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

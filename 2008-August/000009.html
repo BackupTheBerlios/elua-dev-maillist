@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Elua-dev] Undelivered Mail Returned to Sender
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BElua-dev%5D%20Undelivered%20Mail%20Returned%20to%20Sender&In-Reply-To=%3C81fbe47d0808180012v1112350am3ed88410a959d1f6%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000008.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Elua-dev] Undelivered Mail Returned to Sender</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BElua-dev%5D%20Undelivered%20Mail%20Returned%20to%20Sender&In-Reply-To=%3C81fbe47d0808180012v1112350am3ed88410a959d1f6%40mail.gmail.com%3E"
+       TITLE="[Elua-dev] Undelivered Mail Returned to Sender">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Aug 18 09:12:01 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000008.html">[Elua-dev] Test message
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#9">[ date ]</a>
+              <a href="thread.html#9">[ thread ]</a>
+              <a href="subject.html#9">[ subject ]</a>
+              <a href="author.html#9">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Let's take care of your message that never made it to the list :)
+because it seems that BerliOS is back on track.
+
+&gt;<i> * we pack our samples instead of Lua's (very math oriented ones)
+</I>Agreed.
+
+&gt;<i> * we call the directory &quot;rom&quot; as well to make it simple
+</I>I'd go with &quot;romfs&quot;, it tells exactly what's going on.
+
+&gt;<i> * we remove Lua samples nsieve.lua,  nsieveb.lua and pidigits.lua which all
+</I>&gt;<i> fail because of not enough memory on my LM3S 64kb platform -- or even all of
+</I>&gt;<i> them.
+</I>That's no longer true. On my LPC2888, with the new &quot;multiple&quot;
+allocator, all of them are working (as the board has an external 32MB
+SDRAM that is now used when the internal chip memory (64k) runs out).
+I suspect we'll have more boards with this behaviour, so let's leave
+it like this for now. But we should indeed &quot;exchange&quot; the contents of
+the &quot;romfs&quot; and examples directories, it makes more sense this way.
+By the way, on my LM3S board the &quot;nsieveb.lua&quot; sample does run. Have
+you try running it right after a reset? I suspect we might have some
+memory holes (no idea why yet), so running it right after reset it
+helps. And use the old (newlib) allocator, the new one seems to have a
+larger memory overhead.
+
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000008.html">[Elua-dev] Test message
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#9">[ date ]</a>
+              <a href="thread.html#9">[ thread ]</a>
+              <a href="subject.html#9">[ subject ]</a>
+              <a href="author.html#9">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New linux platform for eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20linux%20platform%20for%20eLua&In-Reply-To=%3CEMEWEMEW2_DELIMl4AH8dc8d84e8fffa1e150f0910b%2C%0A%09jbsnyder%40fanplastic.org%2C%20D1A0DD40-3D6D-4B57-9E5E-644%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000806.html">
+   <LINK REL="Next"  HREF="000814.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New linux platform for eLua</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20linux%20platform%20for%20eLua&In-Reply-To=%3CEMEWEMEW2_DELIMl4AH8dc8d84e8fffa1e150f0910b%2C%0A%09jbsnyder%40fanplastic.org%2C%20D1A0DD40-3D6D-4B57-9E5E-644%3E"
+       TITLE="[eLua-dev] New linux platform for eLua">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue May 12 00:08:37 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000806.html">[eLua-dev] New linux platform for eLua
+</A></li>
+        <LI>Next message: <A HREF="000814.html">[eLua-dev] New linux platform for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#809">[ date ]</a>
+              <a href="thread.html#809">[ thread ]</a>
+              <a href="subject.html#809">[ subject ]</a>
+              <a href="author.html#809">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Very neat patch :-)  I've been looking at a number of different  
+approaches including using qemu for emulating the ARM CPUs we use, but  
+having a native linux binary would be easier to debug for sure.
+
+I presume from taking a look at the sources that it is somewhat linux  
+specific, so having a similar binary on OS X would require some work?
+
+In addition to GDB if you're interested in using tracing you might  
+want to checkout DTrace for linux:
+<A HREF="http://www.crisp.demon.co.uk/blog/index.html">http://www.crisp.demon.co.uk/blog/index.html</A>
+
+And dtrace probes for Lua:
+<A HREF="http://lua-users.org/lists/lua-l/2007-06/msg00310.html">http://lua-users.org/lists/lua-l/2007-06/msg00310.html</A>
+
+Thanks for all the patches Robert :-)
+
+-jsnyder
+
+On May 11, 2009, at 7:37 AM, Robert G. Jakabosky wrote:
+
+&gt;<i>
+</I>&gt;<i> Attached is a patch to add a linux platform that allows eLua to be  
+</I>&gt;<i> compiled
+</I>&gt;<i> and tested as a linux app.
+</I>&gt;<i>
+</I>&gt;<i> eLua will still use it's romfs/newlib/etc.. libraries.  The only linux
+</I>&gt;<i> syscalls eLua uses are read/write/mmap.  read/write are used to  
+</I>&gt;<i> emulate a
+</I>&gt;<i> keyboard &amp; monitor.  mmap is used to allocate a 64Kbyte block of ram  
+</I>&gt;<i> for eLua
+</I>&gt;<i> as memory.  You can configure the amount of memory in platform_conf.h
+</I>&gt;<i>
+</I>&gt;<i> This platform is just to make it easier to use gdb for debugging.  It
+</I>&gt;<i> shouldn't be to hard to add other simulated devices.
+</I>&gt;<i>
+</I>&gt;<i> One bug I found is that longjmp is broken since it uses the 'cli'  
+</I>&gt;<i> intruction
+</I>&gt;<i> which causes eLua to segfault.  It should be possible to override the
+</I>&gt;<i> setjmp/longjmp implementations and maybe pull in the one from  
+</I>&gt;<i> linux.  If
+</I>&gt;<i> someone looks into overrideing/replacing those symbols I could write a
+</I>&gt;<i> setjmp/longjmp in assembly that should work.
+</I>&gt;<i>
+</I>&gt;<i> Trying to run life.lua in eLua with only 64Kbyte will cause an out  
+</I>&gt;<i> of memory
+</I>&gt;<i> error and crash eLua.  If eLua is also compiled with the EGC patch  
+</I>&gt;<i> life.lua
+</I>&gt;<i> runs fine. :)
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Robert G. Jakabosky
+</I>&gt;<i> &lt;elua_linux.patch&gt;_______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/9ec67493/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/9ec67493/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000806.html">[eLua-dev] New linux platform for eLua
+</A></li>
+	<LI>Next message: <A HREF="000814.html">[eLua-dev] New linux platform for eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#809">[ date ]</a>
+              <a href="thread.html#809">[ thread ]</a>
+              <a href="subject.html#809">[ subject ]</a>
+              <a href="author.html#809">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

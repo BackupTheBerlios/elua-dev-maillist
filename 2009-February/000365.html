@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua open hardware
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20open%20hardware&In-Reply-To=%3C81fbe47d0902120351j252597b4sd244bde45997a3c3%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000360.html">
+   <LINK REL="Next"  HREF="000367.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua open hardware</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20open%20hardware&In-Reply-To=%3C81fbe47d0902120351j252597b4sd244bde45997a3c3%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua open hardware">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Thu Feb 12 12:51:30 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000360.html">[eLua-dev] eLua open hardware
+</A></li>
+        <LI>Next message: <A HREF="000367.html">[eLua-dev] eLua open hardware
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#365">[ date ]</a>
+              <a href="thread.html#365">[ thread ]</a>
+              <a href="subject.html#365">[ subject ]</a>
+              <a href="author.html#365">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Hi everyone! I am one of the aforementioned refugees from the Lua list, in
+</I>&gt;<i> fact I think it was my posting that got everyone talking about
+</I>&gt;<i> microcontrollers and LuaChips again.
+</I>
+
+Indeed it was, thanks for that :)
+
+
+&gt;<i> I was about to launch my own LuaChip
+</I>&gt;<i> project as a search had revealed nothing existing except the pbLua port to
+</I>&gt;<i> the Lego controller, then Bogdan pointed me to the whole existing world of
+</I>&gt;<i> eLua - not sure if eLua is especially low key or if my search abilities
+</I>&gt;<i> need
+</I>&gt;<i> honing!
+</I>
+
+Googling for &quot;lua microcontroller&quot; returns eLua on the first page. &quot;lua
+embedded&quot; doesn't, as the traditional semantics of that is to embed the Lua
+interpreter in other programs, in order to use it as a scripting engine. Not
+sure if this is the fault of eluaproject.net or not, I'm not good at all
+when it comes to SEO.
+
+
+&gt;<i> I'd like to help in any way towards a target of getting something like the
+</I>&gt;<i> Arduino infrastructure, but based on Lua, 32bit and network capability,
+</I>&gt;<i> available to purchase. This means that for a few tens of dollars I could
+</I>&gt;<i> buy
+</I>&gt;<i> a small pre-built card that I can plug into a PC (Windows, Linux and
+</I>&gt;<i> perhaps
+</I>&gt;<i> OSX) via USB and immediately start programming in Lua. The processor needs
+</I>&gt;<i> to come with the system pre-loaded, or at least an automatic boot loader
+</I>&gt;<i> which installs it on first connection (and updates as necessary). The card
+</I>&gt;<i> needs to have connections at breadboard pitch and/or feasible for hand
+</I>&gt;<i> soldering. Like the Arduino the whole thing including the hardware designs
+</I>&gt;<i> should be open-source, but the real key is the availability of pre-built
+</I>&gt;<i> modules that can be used without a C tool chain, special development
+</I>&gt;<i> hardware or surface-mount assembly tools. Accepting that we have to supply
+</I>&gt;<i> (or get partners to supply) a board-level product means we can access the
+</I>&gt;<i> best chips for the job be they surface-mount or even BGA and it also makes
+</I>&gt;<i> possible a modest revenue stream to help fund the project. (Self-publish
+</I>&gt;<i> manuals following the Lua.org pattern are another possibility here).
+</I>
+
+Where are you from? I'm from Romania, and here doing BGA is almost
+impossible, as there are few PCB design and assembly companies, and none of
+them seem to have the capabilities required for a BGA design to work
+(micro-vias, even double sided component soldering, things like this). I'm
+actually very curious to know how (if?) this is different in other
+countries, especially US.
+In my view, the best form factor would be a stamp (hence the LuaStamp I've
+been picturing in my head for a while now), i.e. a board as small as
+possible, with headers that would allow access to as much MCU pins as
+possible. Something like
+<A HREF="http://www.luminarymicro.com/products/lm3s8962_can_ethernet_evaluation_kit.html,">http://www.luminarymicro.com/products/lm3s8962_can_ethernet_evaluation_kit.html,</A>
+only (hopefully) smaller, and maybe with few connectors mounted on the stamp
+itself, but definitely with the USB to RS232 support circuitry on board and
+connected to one of the CPU's UARTs, so it would be perfectly possible to
+run eLua using only the stamp board. From here there are different ways to
+go:
+
+- a &quot;daughter board&quot; that would expose other interfaces (USB, Ethernet, CAN,
+other UARTs...)
+- an &quot;expansion board&quot; that would allow other boards to be plugged in and
+used by the stamp directly (like uCdimm, Microchip's PICTail boards, and I'm
+sure there are other similar ideas out there).
+- lots of boards that would allow the stamp itself to be stacked with them
+vertically (and of course allowing more than two boards to be stacked with a
+stamp at a given time).
+- probably other things that I can't think of right now.
+
+I think we gain a lot of flexibility by using this approach.
+All of this, of course, should be accompanied by a very good support
+package. I have many things in mind for this support package, but this in an
+idea for a different topic on this list.
+
+As for a name, does the Portugese word &quot;apara&quot; work in this context? Can it
+&gt;<i> mean this kind of chip? It sounds well in English, evoking the word
+</I>&gt;<i> &quot;apparatus&quot;, and it would be nice not to be saddled with an ugly
+</I>&gt;<i> mixed-language hybrid like &quot;LuaChip&quot;. On the other hand, going all English,
+</I>&gt;<i> &quot;MoonChip&quot; has a nice ring to it also.
+</I>
+
+I'll stick with my &quot;LuaStamp&quot; for now :)
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090212/5ce4947e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090212/5ce4947e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000360.html">[eLua-dev] eLua open hardware
+</A></li>
+	<LI>Next message: <A HREF="000367.html">[eLua-dev] eLua open hardware
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#365">[ date ]</a>
+              <a href="thread.html#365">[ thread ]</a>
+              <a href="subject.html#365">[ subject ]</a>
+              <a href="author.html#365">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

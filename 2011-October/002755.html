@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Expo of adc sequencer?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Expo%20of%20adc%20sequencer%3F&In-Reply-To=%3CCAL4-wQqsiA1YK_6uC_p8udqTgMJfboz3KBYQ3iz-E%2BZrLL%2BOfw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002754.html">
+   <LINK REL="Next"  HREF="002756.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Expo of adc sequencer?</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Expo%20of%20adc%20sequencer%3F&In-Reply-To=%3CCAL4-wQqsiA1YK_6uC_p8udqTgMJfboz3KBYQ3iz-E%2BZrLL%2BOfw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Expo of adc sequencer?">martinwguy at gmail.com
+       </A><BR>
+    <I>Wed Oct  5 15:08:45 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002754.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+        <LI>Next message: <A HREF="002756.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2755">[ date ]</a>
+              <a href="thread.html#2755">[ thread ]</a>
+              <a href="subject.html#2755">[ subject ]</a>
+              <a href="author.html#2755">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 5 October 2011 08:12, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+
+many thanks for writing
+
+&gt;<i> setting up sequencing/scanning of channels
+</I>
+Sorry, can you help me understand what you mean by &quot;sequencing&quot; in this context?
+I understand &quot;scanning&quot; to mean &quot;go and see which ADCs have completed
+their conversions and go and collect the results&quot;, but am not sure
+what kind of sequence is suggested here. Maybe I'm being too finickity
+with the language?
+
+Thanks, your explanation makes sense, and corresponds with the code I've seen.
+
+&gt;<i> If you can let me know under what conditions you're getting the errant
+</I>&gt;<i> samples, I can try looking into it.
+</I>
+I'd heard a rumor that simultaneous acquisition from the AVR32 ADCs
+might be dodgy, so I have 8 trimmers on the 8 ADC channels and am
+trying that out.  The code looks fine, but I am finding that some
+channels report the voltage supplied on different channels, sometimes
+consistently, sometimes sporadically. In the first tests, with the
+existing code, channel 0 responded to the pot connected to channel 1
+and channel 1 gave the same result as channel 7, responding to the pot
+on channel 7.  The results for different combinations of channels were
+weird, see <A HREF="http://code.google.com/p/mizar32/issues/detail?id=42">http://code.google.com/p/mizar32/issues/detail?id=42</A>
+
+Like you say, the code looks fine: all 8 channels are just 8 identical
+register sets in a straight line and 8-bit fields in various control
+registers. I found that it was running the ADC out of spec (7.5MHz
+instead of &lt;=5) but correcting this only changed things - what made a
+difference was fixing the sample-and-hold time, which should be 600ns
+but it only almost works when set to 1333ns. Sadly, making it longer
+than this, which should be more reliable, makes it much worse - most
+of the channels report the value from channel 7.
+
+However, a debugging printf reveals that the erroneous behaviour is
+always accompanied by one or more calls to adc_configure(), whereas
+while it is working (almost) smoothly, it does not repeatedly call
+this function... except once every 50 samplings or so, exactly
+coinciding with when it gets the wrong value on ADC0.  That suggests a
+timing-dependent issue, something to do with which channels have
+completed conversion and which haven't when the interrupt routine
+fires.
+
+&gt;<i> &#160;If you're getting samples from
+</I>&gt;<i> the wrong channel inconsistently, it may be that somehow the internal
+</I>&gt;<i> bookkeeping for what channels are active vs what's going on in
+</I>&gt;<i> hardware.
+</I>
+That's the symptom. I'll see if I can understand the bookkeeping stuff.
+
+&gt;<i> but if you can recall the conditions that cause the problem (just
+</I>&gt;<i> sampling on 8 channels? &#160;or sampling different counts on these?
+</I>
+I haven't got getsample() to work at all, so I'm just asking for one
+sample from each channel, then getting them with adc.getsample() using
+variations on:
+
+while true do
+  adc.sample({0,1,2,3,4,5,6,7},1)
+  for id = 0,7 do
+    io.write (id ..&quot;:&quot;..adc.getsample(id)..&quot; &quot;)
+  end
+  io.write(&quot;\n&quot;)
+end
+
+&gt;<i> I can try to reproduce it locally and then maybe
+</I>&gt;<i> also test it with some other similar hardware to try and help narrow
+</I>&gt;<i> down whether it might be in the platform code or in the common code.
+</I>
+You'll need to do some hardware hacking to be able to verify it, since
+the EVK1100 only has one pot and you really need to look at all 8 to
+see what's going on. If you have a Mizar32 and a protoboard, this is
+very easy :) see attachment
+
+&gt;<i> Also, is this with the code currently in the repo or with modifications?
+</I>
+Yes, I'm using the mainline git code and a Mizar32 with 256KB flash.
+I currently only maintain a set of patches for the 120K version of the
+firmware, visible in our google code repo, which disable a load of
+non-essential stuff to make space for all the eLua modules except net.
+
+Thanks again for the clues
+
+    M
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 8adcs-mini.jpg
+Type: image/jpeg
+Size: 36768 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111005/93857e8f/attachment.jpg">https://lists.berlios.de/pipermail/elua-dev/attachments/20111005/93857e8f/attachment.jpg</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002754.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+	<LI>Next message: <A HREF="002756.html">[eLua-dev] Expo of adc sequencer?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2755">[ date ]</a>
+              <a href="thread.html#2755">[ thread ]</a>
+              <a href="subject.html#2755">[ subject ]</a>
+              <a href="author.html#2755">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

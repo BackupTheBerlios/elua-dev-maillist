@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] How to get precisely times samples?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y3C2%2Bfdp291UEu1utkoQ%3DOEBsGCFZyje58_YsPVUbfhXQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002639.html">
+   <LINK REL="Next"  HREF="002645.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] How to get precisely times samples?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20How%20to%20get%20precisely%20times%20samples%3F&In-Reply-To=%3CCAJ%3DY9Y3C2%2Bfdp291UEu1utkoQ%3DOEBsGCFZyje58_YsPVUbfhXQ%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] How to get precisely times samples?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Jul 14 00:58:53 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002639.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+        <LI>Next message: <A HREF="002645.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2644">[ date ]</a>
+              <a href="thread.html#2644">[ thread ]</a>
+              <a href="subject.html#2644">[ subject ]</a>
+              <a href="author.html#2644">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Jul 13, 2011 at 9:50 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> On 13 July 2011 04:17, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> On Tue, Jul 12, 2011 at 7:17 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> settimer isn't enabled because when I initially added ADC support for
+</I>&gt;&gt;<i> AVR32, I believe I found that for UC3A0 parts that timer triggers
+</I>&gt;&gt;<i> couldn't be used for ADC (and instead one would have to set up timer
+</I>&gt;&gt;<i> interrupts to initiate ADC conversions). &#160;It does work on other
+</I>&gt;&gt;<i> platforms that have hardware timer trigger support. &#160;Now that I'm
+</I>&gt;&gt;<i> looking around at the documentation I can't seem to find what parts
+</I>&gt;&gt;<i> actually support triggered conversions and what don't. The UC3A manual
+</I>&gt;&gt;<i> says this about timer triggers:
+</I>&gt;&gt;<i> &quot;Timer Counters may or may not be used as hardware triggers depending
+</I>&gt;&gt;<i> on user requirements. Thus, some or all of the timer counters may be
+</I>&gt;&gt;<i> non-connected.&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Then when looking at the register field descriptions for the trigger
+</I>&gt;&gt;<i> selection (TRGSEL: Trigger Selection), it has a list of internal
+</I>&gt;&gt;<i> triggers which are all labelled like this:
+</I>&gt;&gt;<i> &quot;Internal Trigger 0, depending of chip integration
+</I>&gt;&gt;<i> Internal Trigger 1, depending of chip integration
+</I>&gt;&gt;<i> Internal Trigger 2, depending of chip integration
+</I>&gt;<i>
+</I>&gt;&gt;<i> This is all in doc 32058 dated april 4/2011.
+</I>&gt;<i>
+</I>&gt;<i> That's the one. It also says (in the same chapter)
+</I>&gt;<i> &quot;The hardware trigger can be one of the TIOA outputs of the Timer
+</I>&gt;<i> Counter channels&quot;
+</I>
+Yeah, I saw that as well.  Then there's also this in &quot;1. Description&quot;
+
+&quot;The PWM modules provides seven independent channels with many
+configuration options including polarity, edge alignment and waveform
+non overlap control. One PWM channel can trigger ADC conversions for
+more accurate close loop control implementations.&quot;
+
+&gt;<i> of which there are three, although the TRGSEL can select one of six
+</I>&gt;<i> such inputs, &quot;Internal trigger 0-5&quot;
+</I>&gt;<i> Mystery.
+</I>
+Yep, that's how I feel :-)  I'm glad I'm not the only one who is a bit
+confused by this.
+
+&gt;<i>
+</I>&gt;&gt;<i> If there's some documentation somewhere indicating what parts have
+</I>&gt;&gt;<i> this functionality and how its configured, it should be fairly
+</I>&gt;&gt;<i> straightforward to add hardware triggered ADC support.
+</I>&gt;<i>
+</I>&gt;<i> I've put a query on the avrfreaks forum
+</I>&gt;<i> <A HREF="http://www.avrfreaks.net/index.php?name=PNphpBB2&amp;file=viewtopic&amp;p=848231">http://www.avrfreaks.net/index.php?name=PNphpBB2&amp;file=viewtopic&amp;p=848231</A>
+</I>
+Thanks.  I'll keep an eye on that.  I don't know many people at Atmel,
+but I suppose I could also ask someone I've communicated with a few
+times around toolchain stuff.
+
+&gt;<i>
+</I>&gt;&gt;<i> &#160;If not, we can
+</I>&gt;&gt;<i> use timer interrupts which I've been intending to add support for, but
+</I>&gt;&gt;<i> haven't gotten around to yet.
+</I>&gt;<i>
+</I>&gt;<i> That sounds like the best solution, which would work on all platforms,
+</I>&gt;<i> including those without hardware trigger support.
+</I>
+It's also needed at least on older revisions of the STR9 platform,
+plus a number of other platforms have restrictions on timer usage for
+ADC triggering.  I feel like the best way to do this might be to use
+the built-in interrupt support and have C-side handlers.  This way we
+could make more of the code platform independent, though it requires
+that individual platforms that consume this functionality would have
+timer interrupts supported in eLua's interrupt system.
+
+There might be some downsides to using interrupts in terms of latency
+or effective clock jitter depending on whether latencies are constant
+but it's better than no timer trigger support and should just be
+documented when used for a given platform.
+
+I have a few other things pending in my queue but I'm happy to help
+with this as time allows.  If there is some way to use periodic
+triggers in hardware with the AVR32 chips on the Mizar &amp; EVK1100 I can
+put that together or help with it as well once theres some indication
+of what supports it and how to do it :-)
+
+&gt;<i>
+</I>&gt;<i> &#160; &#160;M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002639.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+	<LI>Next message: <A HREF="002645.html">[eLua-dev] How to get precisely times samples?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2644">[ date ]</a>
+              <a href="thread.html#2644">[ thread ]</a>
+              <a href="subject.html#2644">[ subject ]</a>
+              <a href="author.html#2644">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

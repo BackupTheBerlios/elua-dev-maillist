@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] new STM32 !
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20new%20STM32%20%21&In-Reply-To=%3CEMEWEMEW2_DELIMl23AVe2592937349055b6c4ecdac%2C%0A%09jbsnyder%40fanplastic.org%2C%2022332650.221236184303040.J%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000649.html">
+   <LINK REL="Next"  HREF="000651.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] new STM32 !</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20new%20STM32%20%21&In-Reply-To=%3CEMEWEMEW2_DELIMl23AVe2592937349055b6c4ecdac%2C%0A%09jbsnyder%40fanplastic.org%2C%2022332650.221236184303040.J%3E"
+       TITLE="[eLua-dev] new STM32 !">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Mar  4 17:31:40 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000649.html">[eLua-dev] New Stellaris MCU announced, plus TI Delfino
+</A></li>
+        <LI>Next message: <A HREF="000651.html">[eLua-dev] Nabble forum/list/archive now has list archives
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#650">[ date ]</a>
+              <a href="thread.html#650">[ thread ]</a>
+              <a href="subject.html#650">[ subject ]</a>
+              <a href="author.html#650">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I can't seem to find the datasheet for the ROM version of the driver lib, but it looks like all the function names are prepended with ROM_, and I'm not sure if the whole driverlib is in there or not. 
+
+I'm guessing they're thinking the driver lib is fairly stable at this point? You could certainly selectively replace functions where you wanted to, but I'd rather have the same number of bytes of ROM available as flash instead. 
+
+All that said, I could imagine if they did find a bug and fixed it that it could be irritating to check which ROM version you've got and selectively work around bugs when/where needed. I'll be curious to see if they have any creative ways of dealing with these issues. 
+
+Maybe we could talk them into sending one of us a devel board to play with? 
+
+-jsnyder 
+
+----- &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote: 
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Wed, Mar 4, 2009 at 5:48 AM, James Snyder &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> &gt; wrote: 
+</I>&gt;<i> 
+</I>
+
+&gt;<i> 
+</I>Something else interesting about the LM3S parts is that the driver library comes built-in in ROM (along with their bootloader, AES tables, and some CRC software). 
+
+&gt;<i> 
+</I>&gt;<i> Really?! I completely missed that one. How very strange. Indeed, that should save a bit on the flash usage, but it also makes the driver library completely unupgradable. Definitely not something I would've done. 
+</I>&gt;<i> 
+</I>&gt;<i> Best, 
+</I>&gt;<i> Bogdan 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+
+&gt;<i> 
+</I>
+
+&gt;<i> 
+</I>That should save a bit on usage of that 256k of flash. 
+
+&gt;<i> 
+</I>-jsnyder 
+
+
+&gt;<i> 
+</I>&gt;<i> 
+</I>
+On Mar 3, 2009, at 9:32 PM, James Snyder wrote: 
+&gt;<i> 
+</I>
+
+
+&gt;<i> I would guess it would depend on usage, but one can't even compare at the moment because the Luminary datasheets indicate that the power usage data are &quot;pending.&quot; 
+</I>&gt;<i> 
+</I>&gt;<i> I'm glad to see that they're all growing these bus interfaces though. I wonder when we'll see some reference/eval/dev boards based on them. I'd love to be able to use the Luminary platform even with some small amount of SDRAM attached. 
+</I>&gt;<i> 
+</I>&gt;<i> -jsnyder 
+</I>&gt;<i> 
+</I>&gt;<i> ----- &quot;Mike Panetta&quot; &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A> &gt; wrote: 
+</I>&gt;<i> &gt; Yeah, and I am kinda disappointed. The flash still sucks (2ws at 72MHz, where as the Luminary parts are 0ws at 100) and no built in PHY. Otherwise they are pretty much the same as the other parts in the line, where the high end with EBI is my fav for now. 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; For price I think the STM32 series is still better (if you don't care about ethernet), but I am not sure about power usage anymore. The STM32's used to be at the top there (maybe due to the slower flash??) but the new Luminary parts apparently use a new Cortex-M3 core that's on a smaller process which should use less power. 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Mike 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; On Tue, Mar 3, 2009 at 8:39 PM, Alex Babkin &lt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ababkin at gmail.com</A> &gt; wrote: 
+</I>&gt;<i> &gt; 
+</I>
+following luminary, ST comes through and unveils their new stuff: STM32f105/f107 
+&gt;<i> &gt; 
+</I>&gt;<i> &gt; <A HREF="http://www.st.com/stonline/products/literature/ds/15274.pdf">http://www.st.com/stonline/products/literature/ds/15274.pdf</A> 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; _______________________________________________ 
+</I>&gt;<i> &gt; Elua-dev mailing list 
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> 
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; _______________________________________________ Elua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> _______________________________________________ 
+</I>&gt;<i> Elua-dev mailing list 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> 
+</I>
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+
+&gt;<i> 
+</I>&gt;<i> _______________________________________________ 
+</I>&gt;<i> Elua-dev mailing list 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> 
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________ Elua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090304/e5bddae2/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090304/e5bddae2/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000649.html">[eLua-dev] New Stellaris MCU announced, plus TI Delfino
+</A></li>
+	<LI>Next message: <A HREF="000651.html">[eLua-dev] Nabble forum/list/archive now has list archives
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#650">[ date ]</a>
+              <a href="thread.html#650">[ thread ]</a>
+              <a href="subject.html#650">[ subject ]</a>
+              <a href="author.html#650">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] assembling commands for SPI
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20assembling%20commands%20for%20SPI&In-Reply-To=%3C20131121071339.54970%40gmx.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004295.html">
+   <LINK REL="Next"  HREF="004300.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] assembling commands for SPI</H1>
+    <B>scdr at gmx.com</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20assembling%20commands%20for%20SPI&In-Reply-To=%3C20131121071339.54970%40gmx.com%3E"
+       TITLE="[eLua-dev] assembling commands for SPI">scdr at gmx.com
+       </A><BR>
+    <I>Thu Nov 21 08:13:39 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004295.html">[eLua-dev] assembling commands for SPI
+</A></li>
+        <LI>Next message: <A HREF="004300.html">[eLua-dev] assembling commands for SPI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4299">[ date ]</a>
+              <a href="thread.html#4299">[ thread ]</a>
+              <a href="subject.html#4299">[ subject ]</a>
+              <a href="author.html#4299">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+For what it's worth, I drafted a little documentation for bitarray a while ago.
+(Not much more extensive than James' list below.)
+I just pushed it to my eLua repository, <A HREF="http://github.com/ecdr/elua">http://github.com/ecdr/elua</A>
+it is in the BitarrayDoc branch.
+(I have not tested it yet, i.e. have not set up document building tools to see
+if it will generate web page correctly. &#160;Also haven't done spell check.)
+
+
+
+&gt;<i> ----- Original Message -----
+</I>&gt;<i> From: James Snyder
+</I>&gt;<i> Sent: 11/19/13 03:40 PM
+</I>&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> Subject: Re: [eLua-dev] assembling commands for SPI
+</I>&gt;<i> 
+</I>&gt;<i> On Tue, Nov 19, 2013 at 4:28 PM, Richard Graham &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>&gt; wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks for that. I think I should be able to manage with just the bit
+</I>&gt;<i> &gt; module.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I didn't see the bitarrays module before. Looks like it might work,
+</I>&gt;<i> &gt; though I couldn't find any documentation about this and the source is
+</I>&gt;<i> &gt; not that easy to read at a quick look. Presumably this module is used
+</I>&gt;<i> &gt; internally somewhere?
+</I>&gt;<i> &gt;
+</I>&gt;<i> 
+</I>&gt;<i> Not sure if we use it internally anywhere, it may just not have gotten
+</I>&gt;<i> documented. Here's one example of its usage to take a binary image put it
+</I>&gt;<i> in a bit array and then rotate it to be shown on an OLED display:
+</I>&gt;<i> <A HREF="http://wiki.eluaproject.net/Logo">http://wiki.eluaproject.net/Logo</A>
+</I>&gt;<i> 
+</I>&gt;<i> Here's a first pass at the API just from skimming the source a bit:
+</I>&gt;<i> 
+</I>&gt;<i> arrays are created either with a specific capacity, a source byte array
+</I>&gt;<i> (string) or an existing Lua array, packed into a uniform element size array
+</I>&gt;<i> // Lua: array = bitarray.new( capacity, [element_size_bits], [fill] ), or
+</I>&gt;<i> // array = bitarray.new( &quot;string&quot;, [element_size_bits] ), or
+</I>&gt;<i> // array = bitarray.new( lua_array, [element_size_bits] )
+</I>&gt;<i> 
+</I>&gt;<i> fields can be indexed like a lua table:
+</I>&gt;<i> // Lua: value = array[ idx ]
+</I>&gt;<i> 
+</I>&gt;<i> can be assigned like a table:
+</I>&gt;<i> // Lua: array[ key ] = value
+</I>&gt;<i> 
+</I>&gt;<i> get length similar to how one would do so for a string:
+</I>&gt;<i> // Lua : size = #array
+</I>&gt;<i> 
+</I>&gt;<i> arrays can be converted into a string. not sure what raw/seq means
+</I>&gt;<i> // Lua: string = bitarray.tostring( array, [&quot;raw&quot;|&quot;seq&quot;] )
+</I>&gt;<i> 
+</I>&gt;<i> or a table (again, not sure about raw/seq):
+</I>&gt;<i> // Lua: table = bitarray.totable( array, [&quot;raw&quot;|&quot;seq&quot;] )
+</I>&gt;<i> 
+</I>&gt;<i> And it looks like you can use bitarray.pairs which looks like it should
+</I>&gt;<i> behave like the built-in Lua pairs.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Another thing, I was wondering if anyone has compiled the elua modules
+</I>&gt;<i> &gt; so they can be used with lua on the desktop? I would prefer to do most
+</I>&gt;<i> &gt; of the development on the desktop but since some libraries are
+</I>&gt;<i> &gt; different, i.e. the bit and bitlib api that is not to easy.
+</I>&gt;<i> &gt;
+</I>&gt;<i> 
+</I>&gt;<i> One quick way that should work is to build the luarpc desktop binary as
+</I>&gt;<i> described here:
+</I>&gt;<i> <A HREF="http://www.eluaproject.net/doc/master/en_using.html#rpc">http://www.eluaproject.net/doc/master/en_using.html#rpc</A>
+</I>&gt;<i> 
+</I>&gt;<i> If you already have the build environment for using the lua-based build
+</I>&gt;<i> system and you have compilers on your system to build native binaries you
+</I>&gt;<i> should be able to just run:
+</I>&gt;<i> lua rpc-lua.lua
+</I>&gt;<i> 
+</I>&gt;<i> When you run the resulting binary (luarpc) you'll get a Lua REPL and the
+</I>&gt;<i> binary should include the modules like bit/pack/bitarray.
+</I>&gt;<i> 
+</I>&gt;<i> Best.
+</I>&gt;<i> 
+</I>&gt;<i> -jsnyder
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> ph: (847) 448-0386
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004295.html">[eLua-dev] assembling commands for SPI
+</A></li>
+	<LI>Next message: <A HREF="004300.html">[eLua-dev] assembling commands for SPI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4299">[ date ]</a>
+              <a href="thread.html#4299">[ thread ]</a>
+              <a href="subject.html#4299">[ subject ]</a>
+              <a href="author.html#4299">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

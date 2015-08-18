@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ADC module on STR912
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20module%20on%20STR912&In-Reply-To=%3CAANLkTik0tqhBj8kj5n_u30XnKiNnLjKwEAecKuQDFJ_x%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001670.html">
+   <LINK REL="Next"  HREF="001672.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ADC module on STR912</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20module%20on%20STR912&In-Reply-To=%3CAANLkTik0tqhBj8kj5n_u30XnKiNnLjKwEAecKuQDFJ_x%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] ADC module on STR912">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Oct 18 21:36:56 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001670.html">[eLua-dev] ADC module on STR912
+</A></li>
+        <LI>Next message: <A HREF="001672.html">[eLua-dev] ADC module on STR912
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1671">[ date ]</a>
+              <a href="thread.html#1671">[ thread ]</a>
+              <a href="subject.html#1671">[ subject ]</a>
+              <a href="author.html#1671">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Oct 18, 2010 at 10:09 PM, Mauricio Henrique Bomfim
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mauriciobomfim at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160;I've just built the the eLua trunk for a STR912 and I'm trying to
+</I>&gt;<i> use the ADC module. Follows, my code:
+</I>&gt;<i>
+</I>&gt;<i> adc.setblocking(0, 0) -- no blocking on any channels
+</I>&gt;<i> adc.setsmoothing(0, 4) -- set smoothing from adcsmoothing table
+</I>&gt;<i> adc.setclock(0, 4, 0)
+</I>&gt;<i>
+</I>&gt;<i> The error I get:
+</I>&gt;<i>
+</I>&gt;<i> stdin:1: timer 0 not valid with adc 0
+</I>&gt;<i> stack traceback:
+</I>&gt;<i> &#160; &#160; &#160; [C]: in function 'setclock'
+</I>&gt;<i> &#160; &#160; &#160; stdin:1: in main chunk
+</I>&gt;<i> &#160; &#160; &#160; [C]: ?
+</I>&gt;<i>
+</I>&gt;<i> I've tried all combinations of timers IDs and ADC IDs, but none has worked.
+</I>&gt;<i>
+</I>&gt;<i> Am I doing something wrong?
+</I>
+I can see this in src/platform/str9/platform.c:
+
+int platform_adc_check_timer_id( unsigned id, unsigned timer_id )
+{
+  return 0; // This platform does not support direct timer triggering
+}
+
+Apparently there is no support for ADC triggering using a timer in STR9.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001670.html">[eLua-dev] ADC module on STR912
+</A></li>
+	<LI>Next message: <A HREF="001672.html">[eLua-dev] ADC module on STR912
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1671">[ date ]</a>
+              <a href="thread.html#1671">[ thread ]</a>
+              <a href="subject.html#1671">[ subject ]</a>
+              <a href="author.html#1671">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

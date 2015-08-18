@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] extreme small
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20extreme%20small&In-Reply-To=%3CCAL4-wQpSeDjogcmviEaJy%3D6PdGVxKqQLKKT9TsjBuLD_gvA3Ng%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003750.html">
+   <LINK REL="Next"  HREF="003737.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] extreme small</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20extreme%20small&In-Reply-To=%3CCAL4-wQpSeDjogcmviEaJy%3D6PdGVxKqQLKKT9TsjBuLD_gvA3Ng%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] extreme small">martinwguy at gmail.com
+       </A><BR>
+    <I>Fri Jul 27 13:24:43 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003750.html">[eLua-dev] extreme small
+</A></li>
+        <LI>Next message: <A HREF="003737.html">[eLua-dev] handling events.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3751">[ date ]</a>
+              <a href="thread.html#3751">[ thread ]</a>
+              <a href="subject.html#3751">[ subject ]</a>
+              <a href="author.html#3751">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 26 July 2012 23:30, Tim Van Der Hulst &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tim at agfirstbop.co.nz</A>&gt; wrote:
+&gt;<i> Main problem is am getting out of memory errors. I assumed the VM would be smart enough to swap out unused memory
+</I>
+Elua doesn't have virtual memory (or do you mean virtual machine?).
+The memory in this case is the RAM.
+There is a Lua construct &quot;weak tables&quot; which obligingly forget their
+contents if the interpreter runs out of RAM, often used for caching
+the results of some calculation, so you might optimise your app to use
+those.
+
+&gt;<i> I would happily trade CPU cycles for extra memory. 99% of the time my app is going to be in sleep mode except when logging so speed is not important.
+</I>
+Of course, one way to fix that is to use a different base board. Of
+course I would suggest the Mizar32, which has 64KB of fast RAM and
+32MB of SDRAM, so small applications run a bit faster than those that
+overflow into the SDRAM; the difference is about a factor of two since
+the SDRAM is on a 16-bit bus with 1 wait state so two accesses per
+cell, whereas the internal RAM is 32-bit no wait states. But you will
+*never* run out of memory :) and can have a full interpreter in the
+two models with larger flash.
+
+&gt;<i> Martin, apologies, hijacked another/existing thread, sorry old habbits die hard :(
+</I>
+No worries
+
+   M
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003750.html">[eLua-dev] extreme small
+</A></li>
+	<LI>Next message: <A HREF="003737.html">[eLua-dev] handling events.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3751">[ date ]</a>
+              <a href="thread.html#3751">[ thread ]</a>
+              <a href="subject.html#3751">[ subject ]</a>
+              <a href="author.html#3751">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

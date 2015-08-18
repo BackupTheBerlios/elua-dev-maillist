@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] [Elua-dev] Fwd: MOD711
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-October/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BElua-dev%5D%20Fwd%3A%20MOD711&In-Reply-To=%3C834ae5d10810291354u66444d51ibea4369e8fde65d2%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000038.html">
+   <LINK REL="Next"  HREF="000040.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] [Elua-dev] Fwd: MOD711</H1>
+    <B>T&#233;o Benjamin</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BElua-dev%5D%20Fwd%3A%20MOD711&In-Reply-To=%3C834ae5d10810291354u66444d51ibea4369e8fde65d2%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] [Elua-dev] Fwd: MOD711">teo.benjamin at gmail.com
+       </A><BR>
+    <I>Wed Oct 29 21:54:21 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000038.html">[eLua-dev] Fwd: [Elua-dev] Fwd: MOD711
+</A></li>
+        <LI>Next message: <A HREF="000040.html">[eLua-dev] [Elua-dev] Fwd: MOD711
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#39">[ date ]</a>
+              <a href="thread.html#39">[ thread ]</a>
+              <a href="subject.html#39">[ subject ]</a>
+              <a href="author.html#39">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This is in Linux...
+
+On Wed, Oct 29, 2008 at 6:53 PM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> This comes  from Windows or Linux? In Windows, you need to use giveio. In
+</I>&gt;<i> Linux you should probably set the right permission to /dev/parport0.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Oct 29, 2008 at 10:50 PM, T&#233;o Benjamin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">teo.benjamin at gmail.com</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Info:    openocd.c:93 main(): Open On-Chip Debugger (2007-09-05 09:00
+</I>&gt;&gt;<i> CEST)
+</I>&gt;&gt;<i> Error:   parport.c:359 parport_init(): cannot open device. check it exists
+</I>&gt;&gt;<i> and that user read and write rights are set
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'll have a look on the link you sent...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Oct 29, 2008 at 6:41 PM, Bogdan Marinescu &lt;
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Well, my tutorial also says this (feels kinda strange quoting myself :)
+</I>&gt;&gt;&gt;<i> ):
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &quot;The board comes with its own JTAG adadpter, but it uses a parallel
+</I>&gt;&gt;&gt;<i> interface, and since my computer doesn't have one, I used the
+</I>&gt;&gt;&gt;<i> ARM-USB-TINY &lt;<A HREF="http://www.olimex.com/dev/arm-usb-tiny.html">http://www.olimex.com/dev/arm-usb-tiny.html</A>&gt; from Olimex&quot;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> So you'll need to change your interface description. I think you should
+</I>&gt;&gt;&gt;<i> use this:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> #interface
+</I>&gt;&gt;&gt;<i> interface parport
+</I>&gt;&gt;&gt;<i> parport_port 0x378
+</I>&gt;&gt;&gt;<i> parport_cable wiggler
+</I>&gt;&gt;&gt;<i> jtag_speed 0
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> instead of this:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # JTAG interface
+</I>&gt;&gt;&gt;<i> interface ft2232
+</I>&gt;&gt;&gt;<i> ft2232_device_desc &quot;Olimex OpenOCD JTAG TINY A&quot;
+</I>&gt;&gt;&gt;<i> ft2232_layout olimex-jtag
+</I>&gt;&gt;&gt;<i> jtag_speed 20
+</I>&gt;&gt;&gt;<i> jtag_nsrst_delay 200
+</I>&gt;&gt;&gt;<i> jtag_ntrst_delay 200
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> in the &quot;str7prg.cfg&quot; file.
+</I>&gt;&gt;&gt;<i> Change &quot;0x378&quot; to the correct value if you're not using LPT1.
+</I>&gt;&gt;&gt;<i> Also, see this thread for more details/troubleshooting data:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> <A HREF="http://en.mikrocontroller.net/topic/81646#new">http://en.mikrocontroller.net/topic/81646#new</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Good luck!
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Wed, Oct 29, 2008 at 10:35 PM, T&#233;o Benjamin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">teo.benjamin at gmail.com</A>&gt;wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> The same we sent you last month... ;)
+</I>&gt;&gt;&gt;&gt;<i> We tried this in Linux and this message appears.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> We tried in Windows and the message was this one:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Open On-Chip Debugger (2008-06-19 19:00) svn: 717
+</I>&gt;&gt;&gt;&gt;<i> URL: <A HREF="http://svn.berlios.de/svnroot/repos/openocd/trunk">http://svn.berlios.de/svnroot/repos/openocd/trunk</A>
+</I>&gt;&gt;&gt;&gt;<i> Info:    options.c:50 configuration_output_handler(): couldn't open
+</I>&gt;&gt;&gt;&gt;<i> script file
+</I>&gt;&gt;&gt;&gt;<i> str7prg.cfg
+</I>&gt;&gt;&gt;&gt;<i> Error:   jtag.c:1511 jtag_interface_init(): JTAG interface has to be
+</I>&gt;&gt;&gt;&gt;<i> specified,
+</I>&gt;&gt;&gt;&gt;<i> see &quot;interface&quot; command
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Wed, Oct 29, 2008 at 6:21 PM, Bogdan Marinescu &lt;
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Resending to list, as usual ... :)
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> ---------- Forwarded message ----------
+</I>&gt;&gt;&gt;&gt;&gt;<i> From: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;<i> Date: Wed, Oct 29, 2008 at 10:21 PM
+</I>&gt;&gt;&gt;&gt;&gt;<i> Subject: Re: [Elua-dev] MOD711
+</I>&gt;&gt;&gt;&gt;&gt;<i> To: T&#233;o Benjamin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">teo.benjamin at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> What kind of JTAG adapter are you using?
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> On Wed, Oct 29, 2008 at 10:16 PM, T&#233;o Benjamin &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">teo.benjamin at gmail.com</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Hello eLua people.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> We are trying to use OpenOCD to flash a .bin eLua image in the MOD711
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> from ScTec.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> But we are having a problem here that we can't figure out the
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> solution.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> When we finish all the steps of the tutorial in the site, this error
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> message appears:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Info:    openocd.c:93 main(): Open On-Chip Debugger (2007-09-05 09:00
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> CEST)
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Error:   ft2232.c:1439 ft2232_init_libftdi(): unable to open ftdi
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> device: device not found
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Any idea how to fix it?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Thanks,
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Teo
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081029/6ae0d0df/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081029/6ae0d0df/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000038.html">[eLua-dev] Fwd: [Elua-dev] Fwd: MOD711
+</A></li>
+	<LI>Next message: <A HREF="000040.html">[eLua-dev] [Elua-dev] Fwd: MOD711
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#39">[ date ]</a>
+              <a href="thread.html#39">[ thread ]</a>
+              <a href="subject.html#39">[ subject ]</a>
+              <a href="author.html#39">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

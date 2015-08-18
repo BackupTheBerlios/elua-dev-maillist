@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] What can I do?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3CAANLkTikuZo9gj2O%3D26LBC5nethfVD9PFfmQEP%2Bwr3w%2B8%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001788.html">
+   <LINK REL="Next"  HREF="001790.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] What can I do?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20What%20can%20I%20do%3F&In-Reply-To=%3CAANLkTikuZo9gj2O%3D26LBC5nethfVD9PFfmQEP%2Bwr3w%2B8%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] What can I do?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Thu Dec  9 20:05:41 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001788.html">[eLua-dev] What can I do?
+</A></li>
+        <LI>Next message: <A HREF="001790.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1789">[ date ]</a>
+              <a href="thread.html#1789">[ thread ]</a>
+              <a href="subject.html#1789">[ subject ]</a>
+              <a href="author.html#1789">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Dec 9, 2010 at 7:01 AM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> On Thu, Dec 9, 2010 at 2:52 PM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> -----Original Message-----
+</I>&gt;&gt;&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of James Snyder
+</I>&gt;&gt;&gt;<i> Sent: 09 December 2010 00:48
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I think we can get away with not using real stack-needing threads for
+</I>&gt;&gt;&gt;<i> things like this. &#160;I'm jumping back in to this conversation more than
+</I>&gt;&gt;&gt;<i> a few steps later than when I last chimed in, but I think there might
+</I>&gt;&gt;&gt;<i> be a way to meld these two concepts together.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> With eLua ISRs there isn't an explicit scheduler, just a queue that
+</I>&gt;&gt;&gt;<i> gets examined every two VM instructions. &#160;This provides a coarse
+</I>&gt;&gt;&gt;<i> grained pre-emptive model for handling ISRs. This could be adapted to
+</I>&gt;&gt;&gt;<i> provide some of the functionality that John is describing by allowing
+</I>&gt;&gt;&gt;<i> for different types of events to trigger Lua ISR calls. &#160;There is also
+</I>&gt;&gt;&gt;<i> the difference that John/Rupin's version makes use of coroutines
+</I>&gt;&gt;&gt;<i> instead of functions to allow for a given &quot;thread&quot; of execution to
+</I>&gt;&gt;&gt;<i> have points where it yields control, but expects to be resumed at a
+</I>&gt;&gt;&gt;<i> later time. &#160;This has an advantage over pure function handlers in that
+</I>&gt;&gt;&gt;<i> when yielding the coroutine has its scope saved, which will come back
+</I>&gt;&gt;&gt;<i> when it gets resumed. &#160;I presume you could get some of this by using
+</I>&gt;&gt;&gt;<i> closures with the current model, but there is something to be said for
+</I>&gt;&gt;&gt;<i> mixing these concepts together together so that if one knows a given
+</I>&gt;&gt;&gt;<i> thread won't be able to do something until new data comes in, it would
+</I>&gt;&gt;&gt;<i> be wasteful to have it sit in a loop polling for something and have
+</I>&gt;&gt;&gt;<i> that be pre-empted in order for anything else to happen, when instead
+</I>&gt;&gt;&gt;<i> you could have the ISR facility allow a coroutine to &quot;yield&quot; or
+</I>&gt;&gt;&gt;<i> &quot;select&quot; by asking the ISR facility to resume it when a given event
+</I>&gt;&gt;&gt;<i> comes in.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Unless I've completely glossed over things, this would seem to provide
+</I>&gt;&gt;&gt;<i> the benefits of pre-emptive ISRs and select-like behavior under a
+</I>&gt;&gt;&gt;<i> single model? &#160;Of course the Lua ISR system would need to be adapted
+</I>&gt;&gt;&gt;<i> to not only handle functions, but do the right thing with coroutines.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I think you are right - plus I just realised that this mechanism could be
+</I>&gt;&gt;<i> used to force a coroutine to yield asynchronously so we could use it for
+</I>&gt;&gt;<i> full pre-emptive multitasking within a single Lua State!
+</I>&gt;<i>
+</I>&gt;<i> I'm not 100% sure but this might require the coco patch. Not a big
+</I>&gt;<i> issue, just increased RAM consumption.
+</I>
+I'd have to think this through a bit further to be sure whether coco
+is needed.  That patch adds full stackful coroutines but I suspect
+what you're referring to here are the added abilities to yield in
+situations where the stock Lua won't. 5.2 adds some of this
+functionality as well, perhaps without the overhead of needing the
+extra stack spaces? .  This might present a good reason for us to look
+at 5.2 once there is a stable release :-)
+
+In any case, coco does work just fine on eLua, there's a branch which
+is a bit old but it definitely worked on the ARM targets I tested.
+Each platform needs a little added support for patching the setjmp
+buffer (the branch has this for at least newlib/thumb2), which usually
+involves looking at the platform implementation of setjmp.
+
+&gt;<i>
+</I>&gt;&gt;<i> (Albeit as you say
+</I>&gt;&gt;<i> &quot;course grained&quot;.) Given that the Lua VM allows you to take this kind of
+</I>&gt;&gt;<i> liberty using debug hooks, it ought to be feasible to patch it to do this
+</I>&gt;&gt;<i> in-line without the performance overhead.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I will do some experimenting with this on my Visual Studio compiled Windows
+</I>&gt;&gt;<i> runtime.
+</I>&gt;<i>
+</I>&gt;<i> Excellent! Please let us know your results, I'm also interested in this.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001788.html">[eLua-dev] What can I do?
+</A></li>
+	<LI>Next message: <A HREF="001790.html">[eLua-dev] What can I do?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1789">[ date ]</a>
+              <a href="thread.html#1789">[ thread ]</a>
+              <a href="subject.html#1789">[ subject ]</a>
+              <a href="author.html#1789">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

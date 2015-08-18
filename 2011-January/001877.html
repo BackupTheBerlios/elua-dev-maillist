@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Mizar32: Enable serial console input buffer by	default
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mizar32%3A%20Enable%20serial%20console%20input%20buffer%20by%0A%09default&In-Reply-To=%3CAANLkTik11ZDy0_4B2DLXUkCj34WZFtnu3krRHQFD5SbG%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001866.html">
+   <LINK REL="Next"  HREF="001880.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Mizar32: Enable serial console input buffer by	default</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mizar32%3A%20Enable%20serial%20console%20input%20buffer%20by%0A%09default&In-Reply-To=%3CAANLkTik11ZDy0_4B2DLXUkCj34WZFtnu3krRHQFD5SbG%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Mizar32: Enable serial console input buffer by	default">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sun Jan 16 17:04:46 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001866.html">[eLua-dev] Mizar32: Enable serial console input buffer by default
+</A></li>
+        <LI>Next message: <A HREF="001880.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1877">[ date ]</a>
+              <a href="thread.html#1877">[ thread ]</a>
+              <a href="subject.html#1877">[ subject ]</a>
+              <a href="author.html#1877">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This is a bit more problematic. After the remotefs_int branch merge
+from yesterday UART buffering is handled using the generic eLua
+interrupt layer (see platform_uart_set_buffer in src/common_uart.c for
+details). There is already support for this in AVR32
+(src/platform/avr32/platform_int.c) but it requires adding the eLua
+interrupt code (BUILD_C_INT_HANDLERS) which might make things too big
+to fit. I tried it on my machine and I got this:
+
+   text	   data	    bss	    dec	    hex	filename
+ 121344	   1364	   1480	 124188	  1e51c	elua_lualong_at32uc3a0128.elf
+
+with LTR enabled. With LTR disabled (optram=0):
+
+   text	   data	    bss	    dec	    hex	filename
+ 120320	   1364	   1480	 123164	  1e11c	elua_lualong_at32uc3a0128.elf
+
+However, experience suggests that your toolchain gets different
+results for some reason. So please let me know if you want me to check
+in the code with UART buffering support enabled on Mizar32 or not.
+
+Best,
+Bogdan
+
+On Sun, Jan 16, 2011 at 12:15 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> With the previous patch for floating UART RX pin applied, the serial
+</I>&gt;<i> console buffer can be re-enabled.
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160;M
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001866.html">[eLua-dev] Mizar32: Enable serial console input buffer by default
+</A></li>
+	<LI>Next message: <A HREF="001880.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1877">[ date ]</a>
+              <a href="thread.html#1877">[ thread ]</a>
+              <a href="subject.html#1877">[ subject ]</a>
+              <a href="author.html#1877">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

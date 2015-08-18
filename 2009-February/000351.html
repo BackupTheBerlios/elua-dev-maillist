@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3C36dc677c0902041902g648ecfc2le2fe2af65e411172%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000352.html">
+   <LINK REL="Next"  HREF="000353.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)</H1>
+    <B>Mike Panetta</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20RTOS%20and%20ISRs%20%28was%20eLua%20and%20RTOS%20integration%29&In-Reply-To=%3C36dc677c0902041902g648ecfc2le2fe2af65e411172%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)">panetta.mike at gmail.com
+       </A><BR>
+    <I>Thu Feb  5 04:02:37 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000352.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+        <LI>Next message: <A HREF="000353.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#351">[ date ]</a>
+              <a href="thread.html#351">[ thread ]</a>
+              <a href="subject.html#351">[ subject ]</a>
+              <a href="author.html#351">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Feb 4, 2009 at 10:30 AM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> How will loadable C modules fix this issue?  I'm not quite sure I
+</I>&gt;&gt;<i> understand where your coming from with that.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I wasn't clear on this, I was talking about &quot;loadable C modules&quot; on a more
+</I>&gt;<i> general level, closer to o loadable dynamic library that exposes a number of
+</I>&gt;<i> functions that can be called. If you combine the ability to turn off the
+</I>&gt;<i> garbage collector with the ability to use loadable C modules that can do
+</I>&gt;<i> most of the intensive processing work (in theory you could register them as
+</I>&gt;<i> interrupt handlers, for example) you might have something that is &quot;quite
+</I>&gt;<i> RT&quot;. It will never match the RT capabilities of a system written in C or
+</I>&gt;<i> some other medium-to-low-level language, and it won't even be RT from a Lua
+</I>&gt;<i> standpoint (since all the &quot;real stuff&quot; happens in C), but it might still be
+</I>&gt;<i> RT enough for you :)
+</I>&gt;<i>
+</I>
+This does sound interesting, and a definite possible solution.  As another
+reply stated, I would still like to have semaphores and mutexes to keep
+things in line however.
+
+I don't know how much I like having to turn the GC off though.  With it on
+Lua can run on a small 64K system very well, with it off things get a little
+hairy.  And even with it off things will still be non-deterministic, as when
+you do finally get around to calling the GC, you still don't know how long
+it will take to run. What happens if an ISR fires during this time that
+makes a block of data ready to be processed in Lua? Actually turning it off
+may make latencies worse, since it will take longer to run when you do get
+around to running it.
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Actually it only requires one VM.  The lua thread that is waiting on the
+</I>&gt;&gt;<i> semaphore will block in C land.  No need to interrupt the VM.  Basically it
+</I>&gt;&gt;<i> would be Lanes for eLua with a well defined c-&gt;lua lua-&gt;c API.  At least
+</I>&gt;&gt;<i> that was my idea anyway. :)
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I was talking about having to do ISRs from Lua itself. If you just want to
+</I>&gt;<i> block in C, you might not need threads at all, just block in a C module and
+</I>&gt;<i> let your interrupt handlers do all the work. It's a limited model, still
+</I>&gt;<i> pretty usable in my experience. Also in my experience, there are (too) many
+</I>&gt;<i> times when people rush to use an OS when they could do very well without it
+</I>&gt;<i> (by &quot;very well&quot; I mean that the added code complexity would not be
+</I>&gt;<i> significant). If your CPU has a modern interrupt controller that supports
+</I>&gt;<i> priorities and interrupt nesting, you'd probably go the OS way only for
+</I>&gt;<i> quite complex applications (remember that I'm still talking about
+</I>&gt;<i> small-to-medium complexity embedded systems here).
+</I>&gt;<i>
+</I>
+Ahh, I would never do an ISR in Lua.  Way too slow.
+
+I agree about rusing to use an OS.  None of the embedded controllers I have
+done have used or needed one.  Of course none of them have had a script
+language running on them either. :)
+
+Lets not forget that just by adding Lua we in fact *are* increasing the
+complexity of the system, by quite a bit.  The whole purpose (in my mind) of
+adding something like Lua to an embedded system is to make tasks like UI
+creation and such easier, not to replace any of the RT parts.  The easiest
+way to connect the non RT domain of Lua to the RT domain is through an OS.
+Just having C code running that blocks the Lua code while it waits for a new
+piece of data to display is not going to be enough I think.  You still need
+some method of synchronization between the ISR and the C code that presents
+the data to Lua, else what do you do if the ISR gets called twice (or more)
+while the Lua code is waking up?
+
+
+&gt;<i>
+</I>&gt;<i> As for taking care of how the data is passed between the ISR and the VM,
+</I>&gt;&gt;<i> also see Lanes... ;)
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I know about Lanes, it's an excellent package. I didn't look at its code
+</I>&gt;<i> though, so I don't know how the data is passed between states. All I
+</I>&gt;<i> remember is seeing a relatively large numbers of threads where people
+</I>&gt;<i> complain about this stuff on the Lua mailing list.
+</I>&gt;<i>
+</I>
+Ahh, I have never actually used it, just looked at the site and the source a
+little bit.  To me it basically seemed like a wrapper for pthreads, maybe
+its not.
+
+What I would invision for eLua is more along the lines of simple Lua
+interfaces to the system provided synchronization primitives, and maybe some
+sort of event system where you register callbacks in Lua that get run when
+data is available on the C side of things.  This way you would only need one
+Lua thread.  An event driven system like glib and Gtk provide is kinda nice.
+
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>
+Mike
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090204/9d55eeeb/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090204/9d55eeeb/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000352.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+	<LI>Next message: <A HREF="000353.html">[eLua-dev] RTOS and ISRs (was eLua and RTOS integration)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#351">[ date ]</a>
+              <a href="thread.html#351">[ thread ]</a>
+              <a href="subject.html#351">[ subject ]</a>
+              <a href="author.html#351">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

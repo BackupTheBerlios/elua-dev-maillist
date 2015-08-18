@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 PX patch (again/still)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20PX%20patch%20%28again/still%29&In-Reply-To=%3CAANLkTik-8eR8cqiTHzscabvQLxzcak42Ds6qiO3DeQGg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002067.html">
+   <LINK REL="Next"  HREF="002071.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 PX patch (again/still)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20PX%20patch%20%28again/still%29&In-Reply-To=%3CAANLkTik-8eR8cqiTHzscabvQLxzcak42Ds6qiO3DeQGg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 PX patch (again/still)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Feb 22 20:45:29 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002067.html">[eLua-dev] AVR32 PX patch (again/still)
+</A></li>
+        <LI>Next message: <A HREF="002071.html">[eLua-dev] AVR32 PX patch (again/still)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2070">[ date ]</a>
+              <a href="thread.html#2070">[ thread ]</a>
+              <a href="subject.html#2070">[ subject ]</a>
+              <a href="author.html#2070">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>OK, I think I know why. You're using the multiple allocator (which you
+should) and I assumed that's hardcoded in the build script (and it's
+not). My bad. Back to the drawing board :)
+
+Best,
+Bogdan
+
+On Tue, Feb 22, 2011 at 8:12 PM, Bogdan Marinescu
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> Bodgan
+</I>&gt;&gt;&gt;<i> &#160; Can I apply my patch to give sensible names to the PX pins on AVR32?
+</I>&gt;<i>
+</I>&gt;<i> I've been meaning to do this myself this week-end but just couldn't
+</I>&gt;<i> find the time. I apologize for that. Please don't apply it yet, I'll
+</I>&gt;<i> take a look at it _today_ and most likely commit it. My idea to move
+</I>&gt;<i> it to to the platform interface layer proved to be non-trivial (and
+</I>&gt;<i> weird) so I abandoned it, I'll just patch the GPIO module as you
+</I>&gt;<i> suggested initially. I'll just do a quick sanity check and apply it.
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> It works fine, the existing names are nonsense, and the integer
+</I>&gt;&gt;&gt;<i> version for Mizar32 in 0.8 doesn't fit in 128KB, whereas it does with
+</I>&gt;&gt;&gt;<i> this patch.
+</I>&gt;<i>
+</I>&gt;<i> I have no idea why it doesn't work for you. I just downloaded the eLua
+</I>&gt;<i> 0.8 source tarball from BerliOS and did this:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdanm at bogdanm-desktop</A>:~/work/elua/elua0.8$ scons board=mizar32
+</I>&gt;<i> target=lualong prog -j2
+</I>&gt;<i> [skip]
+</I>&gt;<i> progfunc_avr32([&quot;prog&quot;], [&quot;elua_lualong_at32uc3a0128.elf&quot;])
+</I>&gt;<i> &#160; text &#160; &#160;data &#160; &#160; bss &#160; &#160; dec &#160; &#160; hex filename
+</I>&gt;<i> &#160;121344 &#160; &#160;1364 &#160; &#160;1480 &#160;124188 &#160; 1e51c elua_lualong_at32uc3a0128.elf
+</I>&gt;<i> Generating binary image...
+</I>&gt;<i> scons: done building targets.
+</I>&gt;<i>
+</I>&gt;<i> Also I can't imagine why your GPIO patch would have such a big impact
+</I>&gt;<i> on the Mizar32 image size. Yet another reason to take a better look at
+</I>&gt;<i> the patch :)
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> 0.8 seems like another disaster release, like 0.7 which didn't even
+</I>&gt;&gt;&gt;<i> compile for EVK1100.
+</I>&gt;<i>
+</I>&gt;<i> Actually it did, but for an older version of the Atmel tools (headers
+</I>&gt;<i> and libraries); the newer library used a different API. This is what
+</I>&gt;<i> you get when dependencies such as headers and libraries are not part
+</I>&gt;<i> of the project. I think AVR32 is currently the only eLua target that
+</I>&gt;<i> has external dependencies. But yes, ATEVK1100 built just fine, the
+</I>&gt;<i> best proof is the ATEVK1100 binary image that is part of the 0.7
+</I>&gt;<i> release.
+</I>&gt;<i> That said, while I'm the first to acknowledge that eLua has its (many)
+</I>&gt;<i> problems, I definitely wouldn't call 0.8 a &quot;disaster release&quot;. But of
+</I>&gt;<i> course that's just me :)
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> Of course I appreciate the effort but the
+</I>&gt;&gt;&gt;<i> releases I've seen so far seem to need either an -rc phase, or (at
+</I>&gt;&gt;&gt;<i> this point) an 0.8.1 a few weeks later just to fix the three or four
+</I>&gt;&gt;&gt;<i> critical bugs that have been found since the release.
+</I>&gt;<i>
+</I>&gt;<i> What exactly are the &quot;three of four&quot; _critical_ bugs in 0.8 ?
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> What do you say? &#160;Of course, you have the whole make-release process
+</I>&gt;&gt;&gt;<i> scripted? ;-)
+</I>&gt;<i>
+</I>&gt;<i> Of course I do :) Making a new release is a fairly quick process, it's
+</I>&gt;<i> actually the overhead of uploading everything to BerliOS and creating
+</I>&gt;<i> a new release on their system that's more significant. But I'm sorry,
+</I>&gt;<i> at this point I simply don't see a need for it. Points to clarify:
+</I>&gt;<i>
+</I>&gt;<i> - why does Mizar32 work for me but not for you ?
+</I>&gt;<i> - what are the critical bugs you're referring to ?
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002067.html">[eLua-dev] AVR32 PX patch (again/still)
+</A></li>
+	<LI>Next message: <A HREF="002071.html">[eLua-dev] AVR32 PX patch (again/still)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2070">[ date ]</a>
+              <a href="thread.html#2070">[ thread ]</a>
+              <a href="subject.html#2070">[ subject ]</a>
+              <a href="author.html#2070">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

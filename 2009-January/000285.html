@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] reducing rom size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20reducing%20rom%20size&In-Reply-To=%3C3F8B674C-804C-457A-8B42-9354087EB108%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000284.html">
+   <LINK REL="Next"  HREF="000286.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] reducing rom size</H1>
+    <B>Dean Hall</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20reducing%20rom%20size&In-Reply-To=%3C3F8B674C-804C-457A-8B42-9354087EB108%40gmail.com%3E"
+       TITLE="[eLua-dev] reducing rom size">dwhall256 at gmail.com
+       </A><BR>
+    <I>Wed Jan 14 17:31:51 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000284.html">[eLua-dev] reducing rom size
+</A></li>
+        <LI>Next message: <A HREF="000286.html">[eLua-dev] reducing rom size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#285">[ date ]</a>
+              <a href="thread.html#285">[ thread ]</a>
+              <a href="subject.html#285">[ subject ]</a>
+              <a href="author.html#285">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I followed some of Bogdan's advice and have it compiling under 64 KB!   
+I had to edit lua code this time, so it's not as clean.
+
+- Removed the shell (had to remove calls to shell funcs in src/main.c)
+- Updated svn and now mathlib is no longer compiled in; no code  
+changes needed.
+- Restored src/lua/lauxlib.c (I previously overlooked error messages  
+that said its funcs were needed)
+- Added a stub in src/lua/noparser.c for luaX_syntaxerror(LexState  
+*ls, const char *msg);
+- Ifdef'd away unused/uncompiled entries in lualibs[] in linit.c
+
+Result:
+
+$ arm-elf-size elua_lualong_at91sam7s64.elf
+    text	   data	    bss	    dec	    hex	filename
+   60088	   2265	    764	  63117	   f68d	elua_lualong_at91sam7s64.elf
+
+I didn't think I'd make it this far so quickly, so I haven't planned  
+my next steps in detail yet.  I think I'd like to make a hosted  
+interactive environment.  This is where the host PC will accept  
+interactive input from the programmer, compile to lua bytecode (.luac  
+packets), send those to the micro for execution, and accept &amp; print  
+result strings.
+
+I realize I'll run out of RAM quickly, but it's worth a try.
+
+!!Dean
+
+
+On Jan 14, 2009, at 05:05 , Bogdan Marinescu wrote:
+
+&gt;<i> You might want to try now. After fixing the bug I describe below  
+</I>&gt;<i> (mathlib's rotable not being ignored in lualong mode) the binary  
+</I>&gt;<i> image decreased with about 23k on a LM3S :) I somehow doubt it will  
+</I>&gt;<i> have the same dramatic effect in your case, but it's worth a shot.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jan 14, 2009 at 11:11 AM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A> 
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> Very interesting! I was aiming to try this on the 128k SAM7 at some  
+</I>&gt;<i> point, but you're even more ambitious :) Some other ideas:
+</I>&gt;<i>
+</I>&gt;<i> - remove the shell if you don't need it, you'd save more than 1.5k  
+</I>&gt;<i> of Flash this way. The code in src/main.c automatically starts the  
+</I>&gt;<i> standard Lua interpreter if the shell isn't compiled in, but I'm  
+</I>&gt;<i> guessing this isn't a solution for you, since you don't have a  
+</I>&gt;<i> parser at all. If all you do is start a precompiled script stored in  
+</I>&gt;<i> ROMFS, then name it &quot;autorun.luac&quot; (I think this should work,  
+</I>&gt;<i> although I never tried autorun with precompiled bytecode, only with  
+</I>&gt;<i> source code) and once again you won't have to touch the code at all,  
+</I>&gt;<i> as main.c will start it automatically. If your scritpt runs in an  
+</I>&gt;<i> infinite loop you never return to main(), those you won't start the  
+</I>&gt;<i> interpreter.
+</I>&gt;<i>
+</I>&gt;<i> - you're compiling in integer mode, so why exactly do you need the  
+</I>&gt;<i> mathlib for ? :) It won't work, and the &quot;lualong&quot; mode doesn't even  
+</I>&gt;<i> include the mathlib, but the rotables implementation doesn't take  
+</I>&gt;<i> this into account and adds the math module map array to flash anyway  
+</I>&gt;<i> (which is a bug and I'll fix it), so removing the mathlib would some  
+</I>&gt;<i> even more Flash.
+</I>&gt;<i>
+</I>&gt;<i> - start drifting away from Newlib. This isn't by any means easy, but  
+</I>&gt;<i> there's already a branch called &quot;elua_with_own_libc&quot; on which I  
+</I>&gt;<i> started to replace Newlib with a modified version of the Minix libc  
+</I>&gt;<i> implementation. But the work on this is in its very early stages, so  
+</I>&gt;<i> don't expect anything functional just yet. Although I think that you  
+</I>&gt;<i> can completely replace the strxxx (strcmp/strcpy...) and memxxxx  
+</I>&gt;<i> functions with you can find there, and not only that. Try to play  
+</I>&gt;<i> with it a bit if you have the time.
+</I>&gt;<i>
+</I>&gt;<i> - use a different compiler. GCC is a great compiler, but there are  
+</I>&gt;<i> better ARM compilers (in terms of optimizations) out there.
+</I>&gt;<i>
+</I>&gt;<i> - about the RAM now: we all know that LTR is great :D, still 16k  
+</I>&gt;<i> isn't much at all. The default allocator in Lua is Newlib's default  
+</I>&gt;<i> allocator, which is Doug Lea's dlmalloc (<A HREF="http://g.oswego.edu/dl/html/malloc.html">http://g.oswego.edu/dl/html/malloc.html</A> 
+</I>&gt;<i> ). It is a very good seggregated allocator and it does wonders when  
+</I>&gt;<i> it comes to handling memory fragmentation, but the RAM overhead that  
+</I>&gt;<i> the allocator itself adds might be significant in a system with only  
+</I>&gt;<i> 16k of RAM. We might need a special allocator for this. I wrote a  
+</I>&gt;<i> very simple, very small &quot;chained allocator&quot; to test the RAM  
+</I>&gt;<i> requirements of Lua before even starting eLua, and it works quite  
+</I>&gt;<i> well, even though it is slow and it obviously doesn't handle  
+</I>&gt;<i> fragmentation as well as a seggregated allocator, so we might use it  
+</I>&gt;<i> instead. Also Ralph Hempel (the author of pbLua) wrote something  
+</I>&gt;<i> quite similar (<A HREF="http://www.hempeldesigngroup.com/embedded/stories/memoryManager.html">http://www.hempeldesigngroup.com/embedded/stories/memoryManager.html</A> 
+</I>&gt;<i> ). I didn't have a chance to benchmark his implementation versus  
+</I>&gt;<i> mine yet.
+</I>&gt;<i>
+</I>&gt;<i> HTH,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jan 14, 2009 at 6:50 AM, Dean Hall &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dwhall256 at gmail.com</A>&gt;  
+</I>&gt;<i> wrote:
+</I>&gt;<i> The reason I was so happy to see Bogdan reduce the RAM footprint was
+</I>&gt;<i> that I was hoping to get eLua to run on the Atmel AT91SAM7S64 that has
+</I>&gt;<i> 64 KB Flash and 16 KB SRAM.  eLua is small, but I want to see how much
+</I>&gt;<i> smaller I can make it and still run pre-compiled code.  Here's what
+</I>&gt;<i> I've done:
+</I>&gt;<i>
+</I>&gt;<i> - Copied Atmel's SAM7S development files into a new platform directory
+</I>&gt;<i> - Copied the platform.c from the SAM7X platform directory
+</I>&gt;<i> - Removed Lua's lexer, parser and dump following instructions in
+</I>&gt;<i> lua-5.1.4/etc/noparser.c
+</I>&gt;<i> - Removed Lua's libs except base and math
+</I>&gt;<i> - Removed uip
+</I>&gt;<i> - Removed demo source in romfs
+</I>&gt;<i> - Removed all modules except pio and uart
+</I>&gt;<i> - Build line: scons board=AT91SAM7S-EK target=lualong cpumode=thumb
+</I>&gt;<i> noparser=true
+</I>&gt;<i>
+</I>&gt;<i> (aside: I did all of the above without modifying any eLua source code
+</I>&gt;<i> except SConstruct and adding src/noparser.c.  That is a sign of a  
+</I>&gt;<i> well-
+</I>&gt;<i> conceived project and build system.)
+</I>&gt;<i>
+</I>&gt;<i> The result is &quot;region flash overflowed by 4380 bytes.&quot;  I'm so close!
+</I>&gt;<i> Size details are below for those interested.  I welcome any ideas to
+</I>&gt;<i> further reduce flash usage.
+</I>&gt;<i>
+</I>&gt;<i> !!Dean
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>    text           data     bss     dec     hex filename
+</I>&gt;<i>     532              0       0     532     214 src/main.o
+</I>&gt;<i>     572             36      52     660     294 src/romfs.o
+</I>&gt;<i>     592              0       8     600     258 src/xmodem.o
+</I>&gt;<i>    1739              0       4    1743     6cf src/shell.o
+</I>&gt;<i>     544              0      28     572     23c src/term.o
+</I>&gt;<i>       0              0       0       0       0 src/dlmalloc.o
+</I>&gt;<i>     636              1      19     656     290 src/common.o
+</I>&gt;<i> 4615 subtotal
+</I>&gt;<i>
+</I>&gt;<i>     272              0       0     272     110 src/platform/at91sam7s/
+</I>&gt;<i> board_cstartup.o
+</I>&gt;<i>     248              0       0     248      f8 src/platform/at91sam7s/
+</I>&gt;<i> board_lowlevel.o
+</I>&gt;<i>      64              0       0      64      40 src/platform/at91sam7s/
+</I>&gt;<i> board_memories.o
+</I>&gt;<i>    1472             12       0    1484     5cc src/platform/at91sam7s/
+</I>&gt;<i> platform.o
+</I>&gt;<i>     440              0       0     440     1b8 src/platform/ 
+</I>&gt;<i> at91sam7s/pmc/
+</I>&gt;<i> pmc.o
+</I>&gt;<i>     276              0       0     276     114 src/platform/ 
+</I>&gt;<i> at91sam7s/pio/
+</I>&gt;<i> pio.o
+</I>&gt;<i>     168              0       0     168      a8 src/platform/ 
+</I>&gt;<i> at91sam7s/tc/tc.o
+</I>&gt;<i>      64              0       0      64      40 src/platform/ 
+</I>&gt;<i> at91sam7s/aic/
+</I>&gt;<i> aic.o
+</I>&gt;<i>     468              0       0     468     1d4 src/platform/ 
+</I>&gt;<i> at91sam7s/pwmc/
+</I>&gt;<i> pwmc.o
+</I>&gt;<i>     383              0       0     383     17f src/platform/ 
+</I>&gt;<i> at91sam7s/usart/
+</I>&gt;<i> usart.o
+</I>&gt;<i> 3855 subtotal
+</I>&gt;<i>
+</I>&gt;<i>     328              0     580     908     38c src/newlib/devman.o
+</I>&gt;<i>     718              0       8     726     2d6 src/newlib/stubs.o
+</I>&gt;<i>     356             36       8     400     190 src/newlib/genstd.o
+</I>&gt;<i>       0              0       0       0       0 src/newlib/stdtcp.o
+</I>&gt;<i> 1402 subtotal
+</I>&gt;<i>
+</I>&gt;<i>      54              0       0      54      36 src/lua/noparser.o
+</I>&gt;<i>    4048              0       0    4048     fd0 src/lua/lapi.o
+</I>&gt;<i>    4661              0       0    4661    1235 src/lua/lcode.o
+</I>&gt;<i>    3455              0       0    3455     d7f src/lua/ldebug.o
+</I>&gt;<i>    2614              0       0    2614     a36 src/lua/ldo.o
+</I>&gt;<i>     652              0       0     652     28c src/lua/lfunc.o
+</I>&gt;<i>    2916              0       0    2916     b64 src/lua/lgc.o
+</I>&gt;<i>     219              0       0     219      db src/lua/lmem.o
+</I>&gt;<i>    1129              0       0    1129     469 src/lua/lobject.o
+</I>&gt;<i>     436              0       0     436     1b4 src/lua/lopcodes.o
+</I>&gt;<i>     814              0       0     814     32e src/lua/lstate.o
+</I>&gt;<i>     456              0       0     456     1c8 src/lua/lstring.o
+</I>&gt;<i>    2388              0       0    2388     954 src/lua/ltable.o
+</I>&gt;<i>     550              0       0     550     226 src/lua/ltm.o
+</I>&gt;<i>    1288              0       0    1288     508 src/lua/lundump.o
+</I>&gt;<i>    5457              0       0    5457    1551 src/lua/lvm.o
+</I>&gt;<i>     220              0       0     220      dc src/lua/lzio.o
+</I>&gt;<i>     194              0       0     194      c2 src/lua/linit.o
+</I>&gt;<i>    2624              4       4    2632     a48 src/lua/lua.o
+</I>&gt;<i>     508              0       0     508     1fc src/lua/lrotable.o
+</I>&gt;<i> 34683 subtotal
+</I>&gt;<i>
+</I>&gt;<i>    4984              0       0    4984    1378 src/lua/lbaselib.o
+</I>&gt;<i>    2094              0       0    2094     82e src/lua/lmathlib.o
+</I>&gt;<i> 7078 subtotal
+</I>&gt;<i>
+</I>&gt;<i>    1425              0      64    1489     5d1 src/modules/pio.o
+</I>&gt;<i>     695              0       0     695     2b7 src/modules/uart.o
+</I>&gt;<i> 2120 subtotal
+</I>&gt;<i> =======
+</I>&gt;<i> 53753 TOTAL
+</I>&gt;<i>
+</I>&gt;<i> (yes I'm under 64 KB here, but I believe arm-elf-gcc is adding in libc
+</I>&gt;<i> and libm that takes up the remaining space and more)
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000284.html">[eLua-dev] reducing rom size
+</A></li>
+	<LI>Next message: <A HREF="000286.html">[eLua-dev] reducing rom size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#285">[ date ]</a>
+              <a href="thread.html#285">[ thread ]</a>
+              <a href="subject.html#285">[ subject ]</a>
+              <a href="author.html#285">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20on%20LM3S%20Connection%20Issue%20%28was%20Re%3A%20eLua-dev%0A%20Digest%2C%20Vol%2035%2C%20Issue%2041%29&In-Reply-To=%3CBANLkTikHbRy%2ByoAoYP4cwqptSiNT_vZ3ag%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002553.html">
+   <LINK REL="Next"  HREF="002559.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LuaRPC%20on%20LM3S%20Connection%20Issue%20%28was%20Re%3A%20eLua-dev%0A%20Digest%2C%20Vol%2035%2C%20Issue%2041%29&In-Reply-To=%3CBANLkTikHbRy%2ByoAoYP4cwqptSiNT_vZ3ag%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Jun 21 06:13:04 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002553.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+        <LI>Next message: <A HREF="002559.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2558">[ date ]</a>
+              <a href="thread.html#2558">[ thread ]</a>
+              <a href="subject.html#2558">[ subject ]</a>
+              <a href="author.html#2558">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jun 20, 2011 at 7:00 AM, raman &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ramangopalan at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I tried building on Gnu/Linux Ubuntu, 10.10.
+</I>&gt;<i> 2.6.35-22-generic #33-Ubuntu SMP i686 GNU/Linux
+</I>&gt;<i>
+</I>&gt;<i> I only made a small change in the rpc-lua.py file to
+</I>&gt;<i> link with the ncurses library. There is no change in
+</I>&gt;<i> response. ./luarpc does not return the handle. Here
+</I>&gt;<i> too, it just waits on the console infinitely.
+</I>
+Are you having to link in ncurses in order to get it to work?  I
+believe that for most modern unix platforms just linking against
+readline should work if a recent version is installed. On my Ubuntu
+box I installed libreadline5-dev I believe and linked against that for
+a readline library.
+
+I also just checked in a version that uses linenoise instead to
+eliminate those dependencies. This should work fine for Linux &amp; OS X.
+There's not a full port of that library for Windows yet.
+
+All that said, I'm not sure if this would have any effect on the issue
+being encountered, but perhaps something strange is going on here.  I
+believe I have had occasions at least on Windows where the timeouts
+don't seem to work correctly unless I have something within luarpc.c
+or one of the lower level layers print something like a debug
+statement.
+
+&gt;<i>
+</I>&gt;<i> Am I overlooking any additional configuration that
+</I>&gt;<i> is mandatory for the lrpc on my Linux box ?
+</I>
+I don't believe so, but maybe something in the above might be relevant.
+
+&gt;<i>
+</I>&gt;<i> Awaiting your response.
+</I>
+On the windows side, I did find an issue that was preventing it from
+reading data, at least on my machine.  I'm not sure why I've only
+experienced this with LM3S, perhaps it has to do with which FTDI chip
+is onboard?  In any case by not setting the DTR control to disabled,
+and just leaving it in its default state (whatever that might be) it
+now works for me on Windows XP 32-bit:
+
+C:\elua&gt;luarpc test\test-rpc.lua
+Platform: LM3S
+CPU: LM3S6965
+Board: EK-LM3S6965
+CPU Clock: 50 MHz
+Memory Used: 10.009765625 kB
+
+I finally narrowed it down by a simple test program in C that just
+sent the 9 byte opening sequence and then tried to read the 8 byte
+header back.  Since I found this worked, I then started removing
+things that weren't in this test setup from serial_win32 until I found
+that applying this one setting ( dcb.fDtrControl =
+DTR_CONTROL_DISABLE; ) would even prevent the test program from
+successfully running until I had unplugged/replugged the USB
+interface.  I'm guessing that for some reason, even though the DTR
+line wouldn't even be used in this case, changing its state is messing
+something up or maybe it's having the opposite effect of disabling
+DTR?  Some more investigation is warranted.
+
+This leads me to another question for others on the list: has anyone
+been using either luarpc, mux or rfs with LM3S boards successfully
+prior to this fix?  Bogdan, have you tried RFS or mux with an LM3S
+eval kit using the onboard FTDI JTAG/UART for a serial interface?
+
+&gt;<i>
+</I>&gt;<i> Raman
+</I>&gt;<i>
+</I>
+&gt;<i> A dmsg gave me the following information.
+</I>&gt;<i>
+</I>&gt;<i> usb 8-1: Detected FT2232C
+</I>&gt;<i> usb 8-1: Number of endpoints 2
+</I>&gt;<i> usb 8-1: Endpoint 1 MaxPacketSize 64
+</I>&gt;<i> usb 8-1: Endpoint 2 MaxPacketSize 64
+</I>&gt;<i> usb 8-1: Setting MaxPacketSize 64
+</I>&gt;<i> usb 8-1: FTDI USB Serial Device converter now attached to ttyUSB0
+</I>&gt;<i>
+</I>&gt;<i> This was on Ubuntu, 10.10, i686, Kernel: 2.6.35-xx
+</I>&gt;<i>
+</I>&gt;<i> This was not displayed. So, ftdi_sio was not registered.
+</I>&gt;<i> [10211.358498] usbcore: registered new interface driver ftdi_sio
+</I>&gt;<i> [10211.358500] ftdi_sio: v1.6.0:USB FTDI Serial Converters Driver
+</I>&gt;<i>
+</I>&gt;<i> I am not sure why this is not happening, but is there a conclusion we can
+</I>&gt;<i> draw ?
+</I>
+It may be that it's just not printing the same information to the logs
+with the version of Ubuntu you're running.    I can't imagine it's not
+running that driver since I think that provides the virtual UART
+functionality.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002553.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+	<LI>Next message: <A HREF="002559.html">[eLua-dev] LuaRPC on LM3S Connection Issue (was Re: eLua-dev Digest, Vol 35, Issue 41)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2558">[ date ]</a>
+              <a href="thread.html#2558">[ thread ]</a>
+              <a href="subject.html#2558">[ subject ]</a>
+              <a href="author.html#2558">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

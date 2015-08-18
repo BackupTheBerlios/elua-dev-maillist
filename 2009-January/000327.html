@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua API Question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20API%20Question&In-Reply-To=%3CF6BEF188-66DE-4107-AF5F-16F83D9610A3%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000316.html">
+   <LINK REL="Next"  HREF="000315.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua API Question</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20API%20Question&In-Reply-To=%3CF6BEF188-66DE-4107-AF5F-16F83D9610A3%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Lua API Question">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Jan 28 21:36:04 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000316.html">[eLua-dev] Lua API Question
+</A></li>
+        <LI>Next message: <A HREF="000315.html">[eLua-dev] tiny ram patch and luac cross question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#327">[ date ]</a>
+              <a href="thread.html#327">[ thread ]</a>
+              <a href="subject.html#327">[ subject ]</a>
+              <a href="author.html#327">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Ah, I guess somehow I had missed that in the docs, that sounds good.   
+I'll work on making that functional over the coming days.
+
+Without burst, what I've seen so far is that the adcscope, which  
+simply repeatedly asks that a sample be generated in a blocking way  
+gets about 1.8 kHz sampling rate with smoothing enabled and 4 channels  
+being sampled from on each loop.  I think this could go higher, but  
+it's not terrible for a first go-round.  The ceiling for this platform  
+should be around 1 Msample/s.
+
+On Jan 28, 2009, at 2:21 AM, Bogdan Marinescu wrote:
+
+&gt;<i> You could probably use this:
+</I>&gt;<i>
+</I>&gt;<i> =================
+</I>&gt;<i>
+</I>&gt;<i> lua_createtable
+</I>&gt;<i>
+</I>&gt;<i> [-0, +1, m]
+</I>&gt;<i>
+</I>&gt;<i> void lua_createtable (lua_State *L, int narr, int nrec);
+</I>&gt;<i>
+</I>&gt;<i> Creates a new empty table and pushes it onto the stack. The new table
+</I>&gt;<i> has space pre-allocated for narr array elements and nrec non-array
+</I>&gt;<i> elements. This pre-allocation is useful when you know exactly how many
+</I>&gt;<i> elements the table will have. Otherwise you can use the function
+</I>&gt;<i> lua_newtable.
+</I>&gt;<i>
+</I>&gt;<i> =================
+</I>&gt;<i>
+</I>&gt;<i> Then use lua_rawseti to set the elements in your newly created table.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jan 28, 2009 at 3:16 AM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;&gt;<i> Hi -
+</I>&gt;&gt;<i> I've implemented smoothing functionality, which seems to work for  
+</I>&gt;&gt;<i> me on the
+</I>&gt;&gt;<i> Stellaris platform.  I'm sure there are a few bugs in there, and  
+</I>&gt;&gt;<i> cases I
+</I>&gt;&gt;<i> haven't covered, so I'm not quite done with it.  I'm open to  
+</I>&gt;&gt;<i> suggestions if
+</I>&gt;&gt;<i> I've done anything particularly ugly or problematic :-)   I also  
+</I>&gt;&gt;<i> plan to
+</I>&gt;&gt;<i> move the code around a little so that as much as possible is common  
+</I>&gt;&gt;<i> to all
+</I>&gt;&gt;<i> platforms.  I tried to limit platform-specific functionality at  
+</I>&gt;&gt;<i> this go
+</I>&gt;&gt;<i> around, so simlar code with platform specific driver calls changed  
+</I>&gt;&gt;<i> should
+</I>&gt;&gt;<i> work on all platforms, I think.
+</I>&gt;&gt;<i> One thing I haven't implemented yet is the burst sampling  
+</I>&gt;&gt;<i> function.  I
+</I>&gt;&gt;<i> haven't done this yet because I haven't decided how I want to  
+</I>&gt;&gt;<i> return the
+</I>&gt;&gt;<i> results to Lua.  I was originally thinking that I wanted to return  
+</I>&gt;&gt;<i> some sort
+</I>&gt;&gt;<i> of array or table, so that one could do, for example:
+</I>&gt;&gt;<i> res = adc.burst(id, timer_id, freq)
+</I>&gt;&gt;<i> and have res be a table containing the returned samples, however, I  
+</I>&gt;&gt;<i> don't
+</I>&gt;&gt;<i> see a method to push such a thing onto the stack used to transfer  
+</I>&gt;&gt;<i> between
+</I>&gt;&gt;<i> Lua and C.
+</I>&gt;&gt;<i> I suppose the table could be created first in lua, pass that to  
+</I>&gt;&gt;<i> adc.burst
+</I>&gt;&gt;<i> and use the api functions to manipulate the table:
+</I>&gt;&gt;<i> res_table = {}
+</I>&gt;&gt;<i> adc.burst(id,res_table,timer_id,freq)
+</I>&gt;&gt;<i> Of course this option makes returning results in a non-blocking  
+</I>&gt;&gt;<i> manner a
+</I>&gt;&gt;<i> little easier since I assume I can have my interrupt stick values  
+</I>&gt;&gt;<i> into the
+</I>&gt;&gt;<i> table at a later point.  The main thing I don't like about it is  
+</I>&gt;&gt;<i> that if I
+</I>&gt;&gt;<i> accept a table, I don't really know what I'm going to get.  Will it  
+</I>&gt;&gt;<i> be
+</I>&gt;&gt;<i> empty? Do I replace key-&gt;value pairs or only add them?
+</I>&gt;&gt;<i> I suppose another option could be that I accept not a table, but a  
+</I>&gt;&gt;<i> name for
+</I>&gt;&gt;<i> one, and then create that using the API and slot values into it.
+</I>&gt;&gt;<i> Any thoughts on what approach would be the most reasonable?
+</I>&gt;&gt;<i> Thanks!
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> ph: (847) 644-2322
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090128/c39c6395/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090128/c39c6395/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090128/c39c6395/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090128/c39c6395/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000316.html">[eLua-dev] Lua API Question
+</A></li>
+	<LI>Next message: <A HREF="000315.html">[eLua-dev] tiny ram patch and luac cross question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#327">[ date ]</a>
+              <a href="thread.html#327">[ thread ]</a>
+              <a href="subject.html#327">[ subject ]</a>
+              <a href="author.html#327">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

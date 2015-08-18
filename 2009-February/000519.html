@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] A Few Models For Dealing With ADC Samples
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1GM8l15da51242dca0c453d82c0%2C%0A%09jbsnyder%40fanplastic.org%2C%204704947.1691234930141991.J%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000516.html">
+   <LINK REL="Next"  HREF="000521.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] A Few Models For Dealing With ADC Samples</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20A%20Few%20Models%20For%20Dealing%20With%20ADC%20Samples&In-Reply-To=%3CEMEWEMEW2_DELIMl1GM8l15da51242dca0c453d82c0%2C%0A%09jbsnyder%40fanplastic.org%2C%204704947.1691234930141991.J%3E"
+       TITLE="[eLua-dev] A Few Models For Dealing With ADC Samples">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Feb 18 05:08:47 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000516.html">[eLua-dev] Large ADC Commit
+</A></li>
+        <LI>Next message: <A HREF="000521.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#519">[ date ]</a>
+              <a href="thread.html#519">[ thread ]</a>
+              <a href="subject.html#519">[ subject ]</a>
+              <a href="author.html#519">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> I'm still inclined to keep initiation of sampling and picking up of samples separate though, unless there is a way to seriously reduce the number of microseconds each function call takes. If channels:getsamples(10) does both initiation and collection of samples back to lua, the timing between samples collected might be deterministic, but if you're doing that repeatedly, the time in between each call will not be :-) 
+</I>
+
+Let me rephrase the above a little bit with regards to determinisim. This isn't really an argument against or for this alternate approach for setting up and getting values from the ADC module (I really like the ability to tie sampling on multiple channels to one another, as well as the different linguistic style. Both would be excellent!), it's more about some of the complexity that's now present. I think there should be at least the ability to separate initiation of sampling from the command to get those samples because if they're the same you get a few main options (if getting samples must be tied to a function): 
+
+Single Function to Request and Return: 
+1. Simple Model 
+call function to start sampling 
+function waits for sampling to finish 
+function returns samples 
+
+Advantages: 
+- Simple. 
+- No complex buffering issues. 
+- No background resource usage 
+
+Disadvantages 
+- Can't do any work while you wait, regardless of sampling rate 
+- If you just need one sample per loop, timing may vary 10s to 100s of microseconds between each sample. 
+- If you ask for multiple samples, timing between samples may be consistent, but there will be gaps between each time the function is called. 
+
+2. Non-blocking Model (this was present in an earlier version of the ADC module) 
+call function to start sampling, function returns 
+do some other stuff 
+call function again to get samples from the sampling period, and start next set of sampling 
+
+Advantages: 
+- Samples collected in the background, can do other work while samples are collected. 
+- Samples are collected using fairly deterministic timer-based interrupt system. 
+- Time gap between blocks of samples can be minimized because next set of samples can be requested as last set is returned 
+
+Disadvantages: 
+- Slightly more complicated buffering 
+- Initial call returns nothing, but subsequent calls return samples 
+- There will always be samples &quot;left over&quot; because each call requests more (unless some option is passed to indicate it is the last call) 
+
+
+Separate Request &amp; Return Functions: 
+3. Separated Request/Return Model 
+call function to start sampling, function returns 
+do other work 
+use another function to get samples in the buffer (this can be done while sampling is still happening) 
+
+Advantages: 
+- samples collected in the background, other work can be done while samples are collected 
+- samples collected using fairly deterministic timer-based interrupt system 
+- longer deterministic periods can be used where one can request 100 samples, but only pull in 5 at a time while sampling is happening, while still getting low timing jitter 
+- could be extended to support indefinite periods of sampling with buffer wrapping if samples aren't pulled out fast enough, but when you do need samples you can pull out up to the length of the buffer and they're still pretty well-timed 
+
+Disadvantages: 
+- more complicated, including dealing with buffer sizes 
+- multiple commands needed to initiate/get samples 
+
+
+One alternative that I've not mentioned here is that there be two functional models for getting samples. If one wants, one could have a simple getsamples method that follows model 1, and a second pair that follows model 3. i.e.: 
+
+channels = adc.channel(0, 3, 17, 21) 
+
+-- Style 1: Simple Blocking Model 
+a = channels:getsamples(count) 
+
+-- Style 2: Separated Model 
+channels:requestsamples(count, timer, frequency) 
+channels:returnsamples(count) 
+
+In any case, I think there are a few more discussions to have, and I'll hold off for a little bit with code commits until we settle things a little more :-) 
+
+Bogdan, Dado, Jeusus or anyone else: Thoughts/ideas would be appreciated :-) 
+
+-jsnyder 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/1854ec56/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090217/1854ec56/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000516.html">[eLua-dev] Large ADC Commit
+</A></li>
+	<LI>Next message: <A HREF="000521.html">[eLua-dev] Timing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#519">[ date ]</a>
+              <a href="thread.html#519">[ thread ]</a>
+              <a href="subject.html#519">[ subject ]</a>
+              <a href="author.html#519">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

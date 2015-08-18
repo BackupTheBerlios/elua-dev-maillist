@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] collectgarbage(&quot;count&quot;)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3C9F1D90C1-9865-4177-9D64-E99DA831E866%40mac.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001426.html">
+   <LINK REL="Next"  HREF="001447.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] collectgarbage(&quot;count&quot;)</H1>
+    <B>Stefan Brantschen</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20collectgarbage%28%22count%22%29&In-Reply-To=%3C9F1D90C1-9865-4177-9D64-E99DA831E866%40mac.com%3E"
+       TITLE="[eLua-dev] collectgarbage(&quot;count&quot;)">stefan.brantschen at mac.com
+       </A><BR>
+    <I>Fri Jun 11 19:08:45 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001426.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+        <LI>Next message: <A HREF="001447.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1430">[ date ]</a>
+              <a href="thread.html#1430">[ thread ]</a>
+              <a href="subject.html#1430">[ subject ]</a>
+              <a href="author.html#1430">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+
+On 11 Jun 2010, at 15:55, Dado Sutter wrote:
+
+&gt;<i> PS: BTW, I can run about 100 counting agents in parallel with tight garbage collection.
+</I>&gt;<i> 
+</I>&gt;<i> Very impressive for such a tiny board, simple code and on bare metal ! :)
+</I>
+Bear in mind that they don't do anything useful though :-) 
+
+&gt;<i> Meanwhile, does the performance change too much if you let the GC do it's job automatically ? (not forcing collect ...)
+</I>
+Running 50 agents doing their counting and displaying, with
+
+  t-cycle = time to run all agents once
+  c-max = max value of collectgarbage(&quot;count&quot;)
+
+1) GC let alone: t-cycle = 27.7 ms, c-max = 32.2k
+
+2) GC enforced each scheduler cycle: t-cycle = 30.8 ms, c-max = 23.3k
+
+3) GC enforced each 10th cycle: t-cycle = 28.6 ms, c-max = 24.6k
+
+In this set-up, variant 3) looks like a decent compromise.
+
+Times measures with the board's timer and the tmr module.
+
+Cheers
+-- Stefan 
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001426.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+	<LI>Next message: <A HREF="001447.html">[eLua-dev] collectgarbage(&quot;count&quot;)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1430">[ date ]</a>
+              <a href="thread.html#1430">[ thread ]</a>
+              <a href="subject.html#1430">[ subject ]</a>
+              <a href="author.html#1430">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

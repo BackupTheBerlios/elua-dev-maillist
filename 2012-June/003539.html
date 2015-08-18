@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Extending MCU memory with SPI?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Extending%20MCU%20memory%20with%20SPI%3F&In-Reply-To=%3CCANKDJfZSgN%3DQ15w4FjLQcveFQm0_iSUfbdQD_GMzkcp-yZY%3Dhg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003544.html">
+   <LINK REL="Next"  HREF="003541.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Extending MCU memory with SPI?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Extending%20MCU%20memory%20with%20SPI%3F&In-Reply-To=%3CCANKDJfZSgN%3DQ15w4FjLQcveFQm0_iSUfbdQD_GMzkcp-yZY%3Dhg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Extending MCU memory with SPI?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Jun  5 20:31:45 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003544.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+        <LI>Next message: <A HREF="003541.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3539">[ date ]</a>
+              <a href="thread.html#3539">[ thread ]</a>
+              <a href="subject.html#3539">[ subject ]</a>
+              <a href="author.html#3539">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Jun 5, 2012 at 8:56 PM, pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+&gt;<i> According to the IEEE Embedded C standard ISO/IEC TR 18037 (see p.74
+</I>&gt;<i> Annex B - Named address spaces and named-register storage classes) a
+</I>&gt;<i> compiler shall provide a capability for creating such qualifiers
+</I>&gt;<i> thus you may create variables in any kind of a memory device (with
+</I>&gt;<i> any kind of interface to the memory). Such identifier can be then
+</I>&gt;<i> used with any data types, including structures, unions, arrays, and
+</I>&gt;<i> pointers etc. So it is a matter of compiler not the actual hardware.
+</I>&gt;<i> Having such compiler you can extend MCU memory via SPI to
+</I>&gt;<i> fram/mram/sram or a punched card. We do not discuss a potential
+</I>&gt;<i> execution speed penalty here, of course :)
+</I>
+That sounds extremely good. That is, until you manage to cast a
+pointer to a different memory space or simply cast away a &quot;const&quot;
+(something extremely easy to do in C). I actually implemented
+something like this in a compiler a while ago. It's spectacular, but
+also error prone and a nightmare to use and especially maintain. Some
+compilers take this to the extreme, encoding a pointer with an extra
+byte that specifies what memory space the pointer belongs to (I've
+seen this done on 8051, where it actually makes a lot of sense). This
+works nice, but the extra level of indirection has quite an obvious
+impact on the speed. Paul is right: the memory has to be directly
+accesible by the CPU core in order to be useful. And again, as Paul
+said, this isn't generally the case for serial memories on &quot;usual&quot;
+CPUs. I believe some NXP Cortex M3 or M4 core MCUs have this
+capability. In this case, extending the memory with SPI chips would be
+possible, but I'm willing to bet you're going to throw your board away
+after running eLua from a serial RAM for more than 5 minutes. Lua's
+speed is extremely dependent on the RAM speed (which is
+understandable, given the fact that every instance or every type in
+Lua is allocated on the heap). The difference in speed is easily
+visible even when switching from internal SRAM to external SRAM/SDRAM.
+SPI would be inhumanly slow.
+That said, nice idea :) Keep'em coming!
+
+Best,
+Bogdan
+
+&gt;<i> p.
+</I>&gt;<i>
+</I>&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;Paul Curtis&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">plc at rowley.co.uk</A>&gt;
+</I>&gt;<i> Komu: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] Extending MCU memory with SPI?
+</I>&gt;<i> Datum: 5.6.2012 - 17:56:28
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 5 Jun 2012, at 13:36, Patrick wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; I know next to nothing about SPI but I was
+</I>&gt;&gt;<i> &gt; wondering if SPI memory devices might be useful
+</I>&gt;&gt;<i> &gt; for the project?
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt; I was thinking that if SPI devices could be used
+</I>&gt;&gt;<i> &gt; to add ROM and RAM, it might allow devices that
+</I>&gt;&gt;<i> &gt; would otherwise be underspec'd to the project.
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i> &gt; Surely this would deeply complicate bootstraping
+</I>&gt;&gt;<i> &gt; and if the access times were too slow, this
+</I>&gt;&gt;<i> &gt; would be a dead end.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> SPI SRAM/FRAM/EEPROM/flash is a mass storage
+</I>&gt;&gt;<i> medium with the different characteristics of the
+</I>&gt;&gt;<i> underlying physical technology exposed. &#160;SPI SRAM
+</I>&gt;&gt;<i> (like that from Microchip) or MRAM (from Cypress)
+</I>&gt;&gt;<i> is not directly addressable in C code and can't be
+</I>&gt;&gt;<i> used as a generic &quot;add more RAM or flash&quot;
+</I>&gt;&gt;<i> mechanism. (*)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I am learning Kicad now and have had a simple
+</I>&gt;&gt;<i> &gt; design fabricated. Maybe I will be able to
+</I>&gt;&gt;<i> &gt; prototype some boards some day soon. If it was a
+</I>&gt;&gt;<i> &gt; sensible thing to do, i could do an experiment.
+</I>&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is doomed to fail if you want to add &quot;more
+</I>&gt;&gt;<i> memory&quot; that isn't treated as mass storage.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> (*) There are microtrollers that can use quad SPI
+</I>&gt;&gt;<i> memory as general memory, like on a PC BIOS, but
+</I>&gt;&gt;<i> these are few.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -- Paul.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> - - Reklama - - - - - - - - - - - - - -
+</I>&gt;<i> Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice, diplomky... V&#353;e o z&#225;v&#283;ru
+</I>&gt;<i> studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te na port&#225;lu VOLN&#221;.cz na
+</I>&gt;<i> <A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003544.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+	<LI>Next message: <A HREF="003541.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3539">[ date ]</a>
+              <a href="thread.html#3539">[ thread ]</a>
+              <a href="subject.html#3539">[ subject ]</a>
+              <a href="author.html#3539">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

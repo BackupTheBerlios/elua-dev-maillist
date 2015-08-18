@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BPATCH%5D%20Fix%20avr32%20MMCFS%20on%20EVK1100%20and%20MIZAR32&In-Reply-To=%3CAANLkTinMmQdSkE-BAiP-p2neQLTvvYMAV9zM7gGVbo%2BW%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001791.html">
+   <LINK REL="Next"  HREF="001804.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BPATCH%5D%20Fix%20avr32%20MMCFS%20on%20EVK1100%20and%20MIZAR32&In-Reply-To=%3CAANLkTinMmQdSkE-BAiP-p2neQLTvvYMAV9zM7gGVbo%2BW%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Dec 17 00:03:18 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001791.html">[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32
+</A></li>
+        <LI>Next message: <A HREF="001804.html">[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1803">[ date ]</a>
+              <a href="thread.html#1803">[ thread ]</a>
+              <a href="subject.html#1803">[ subject ]</a>
+              <a href="author.html#1803">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Tue, Dec 14, 2010 at 8:16 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+&gt;<i> Problem: If BUILD_MMCFS is enabled on EVK1100 or MIZAR32, the
+</I>&gt;<i> interpreter can be compiler but does not start
+</I>&gt;<i>
+</I>&gt;<i> Reason: MMCFS was never finished in AVR32, and hangs in a while(some
+</I>&gt;<i> SPI register)
+</I>&gt;<i>
+</I>&gt;<i> Diagnosis and problem resolution are by Nuccio Raciti.
+</I>&gt;<i> I've just tested his patches for EVK1100, added and tested Mizar32
+</I>&gt;<i> support, added evk1101 support (untested).
+</I>&gt;<i> With this patch, BUILD_MMCFS is enabled by default for EVK1100 but not
+</I>&gt;<i> for MIZAR32 due to code size contraints and not for EVK1101 as I can
+</I>&gt;<i> only build, not test, that platform.
+</I>
+Thanks. I applied your patch but only partially. The problem is that
+you changed the platform_pio_op operations relative to the SS pin in
+src/elua_mmc.c to platform_spi_select calls and Atmel CPUs are the
+only eLua CPUs that have a way of setting the SPI SS pin using the SPI
+interface directly (not via usual PIO operations), thus your patch
+broke MMC support on all the other platforms. This is why the
+platform_spi_select function was a candidate of the functions to be
+removed from the platform interface for a while now (it could still be
+used by the means of a platform-specific module). Of course you
+couldn't have known this. I guess the proper way to handle this would
+be to make the SELECT and DESELECT call platform interface functions
+specific to the MMC module support. I'll work on this. Until this is
+ready the trunk version of elua_mmc.c won't work properly for Atmel
+CPUs.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001791.html">[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32
+</A></li>
+	<LI>Next message: <A HREF="001804.html">[eLua-dev] [PATCH] Fix avr32 MMCFS on EVK1100 and MIZAR32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1803">[ date ]</a>
+              <a href="thread.html#1803">[ thread ]</a>
+              <a href="subject.html#1803">[ subject ]</a>
+              <a href="author.html#1803">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

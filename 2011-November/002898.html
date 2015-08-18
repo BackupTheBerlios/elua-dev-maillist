@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4_-_max_free_mem_/_ram_size&In-Reply-To=%3CCAJ%3DY9Y3cojAOBm04h2CT63y%2BphCn6JWNFJEvb45AGazD5PXb1g%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002897.html">
+   <LINK REL="Next"  HREF="002900.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4_-_max_free_mem_/_ram_size</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4_-_max_free_mem_/_ram_size&In-Reply-To=%3CCAJ%3DY9Y3cojAOBm04h2CT63y%2BphCn6JWNFJEvb45AGazD5PXb1g%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] stm32f4_-_max_free_mem_/_ram_size">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Nov 11 03:49:46 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002897.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+        <LI>Next message: <A HREF="002900.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2898">[ date ]</a>
+              <a href="thread.html#2898">[ thread ]</a>
+              <a href="subject.html#2898">[ subject ]</a>
+              <a href="author.html#2898">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Well, eLua can certainly work with multiple regions of RAM, however
+I'm not sure if there are any caveats to the usage of that additional
+region of RAM.  I seem to recall some discussion related to it when
+this platform was initially discussed on the list.
+
+In any case, take a look at examples of platforms that have SDRAM like
+some of the avr32 platforms:
+elua/src/platform/avr32/EVK1100/evk1100_conf.h:
+// Allocator data: define your free memory zones here in two arrays
+// (start address and end address)
+#define MEM_START_ADDRESS     { ( void* )end, ( void* )SDRAM }
+#define MEM_END_ADDRESS       { ( void* )( 0x10000 - STACK_SIZE_TOTAL
+- 1 ), ( void* )( SDRAM + SDRAM_SIZE - 1 ) }
+
+As above, you need to define 2 arrays, one for each region.  And then
+you will need to to use allocator=multiple (allocator=newlib might
+work also, since &quot;multiple&quot; is and &quot;newlib&quot; both use dlmalloc, but
+historically at some point at least &quot;multiple&quot; used a newer version of
+dlmalloc).
+
+I think that might be it?  Unless there's something needed for that
+region of SRAM to be usable on the platform?
+
+2011/11/10 Zhanjun Dong &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">yystype at yahoo.ca</A>&gt;:
+&gt;<i> The&#160;F4&#160;has&#160;196K&#160;in&#160;total,&#160;but&#160;it&#160;split&#160;into&#160;2&#160;sections:
+</I>&gt;<i>
+</I>&gt;<i> &#160;&#160;RAM&#160;(xrw)&#160;:&#160;ORIGIN&#160;=&#160;0x20000000,&#160;LENGTH&#160;=&#160;128K&#160;&#160;&#160;&#160;&#160;&#160;//&#160;Major&#160;SRAM
+</I>&gt;<i> &#160;&#160;CCMRAM&#160;(xrw)&#160;:&#160;ORIGIN&#160;=&#160;0x10000000,&#160;LENGTH&#160;=&#160;64K&#160;&#160;&#160;&#160;//&#160;Backup&#160;SRAM
+</I>&gt;<i>
+</I>&gt;<i> As&#160;you&#160;can&#160;see,&#160;the&#160;memory&#160;space&#160;is&#160;not&#160;continually,&#160;change&#160;the&#160;SRAM_SIZE&#160;over&#160;128K&#160;won't&#160;work.
+</I>&gt;<i>
+</I>&gt;<i> Is&#160;there&#160;a&#160;existing&#160;way&#160;to&#160;let&#160;eLua&#160;access&#160;2nd&#160;RAM&#160;segment?
+</I>&gt;<i>
+</I>&gt;<i> Sincerely
+</I>&gt;<i> Zhanjun&#160;Dong
+</I>&gt;<i>
+</I>&gt;<i> =======&#160;2011-11-10&#160;10:57:20&#160;&#65306;=======
+</I>&gt;<i>
+</I>&gt;&gt;<i>Hi,&#160;by&#160;try&#160;and&#160;error&#160;I&#160;try&#160;to&#160;determine&#160;the&#160;max&#160;ram&#160;for&#160;the&#160;bytecode
+</I>&gt;&gt;<i>(using&#160;life.lua&#160;to&#160;fill&#160;it&#160;full).
+</I>&gt;&gt;<i>platform_conf.h:
+</I>&gt;&gt;<i>#define&#160;SRAM_SIZE&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;(&#160;128&#160;*&#160;1024&#160;)&#160;&#160;//was&#160;60
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>With&#160;128&#160;I&#160;get&#160;it&#160;working,&#160;the&#160;140&#160;does
+</I>&gt;&gt;<i>[Hard&#160;fault&#160;handler]------------
+</I>&gt;&gt;<i>R0&#160;=&#160;fffe2274-------------------
+</I>&gt;&gt;<i>R1&#160;=&#160;20002138-------------------
+</I>&gt;&gt;<i>R2&#160;=&#160;134------------------------
+</I>&gt;&gt;<i>R3&#160;=&#160;2001fff8-------------------
+</I>&gt;&gt;<i>R12&#160;=&#160;fffe226c------------------
+</I>&gt;&gt;<i>LR&#160;=&#160;801b06b--------------------
+</I>&gt;&gt;<i>PC&#160;=&#160;801a900--------------------
+</I>&gt;&gt;<i>PSR&#160;=&#160;81000000------------------
+</I>&gt;&gt;<i>BFAR&#160;=&#160;20020000-----------------
+</I>&gt;&gt;<i>CFSR&#160;=&#160;8200--OO-----------------
+</I>&gt;&gt;<i>HFSR&#160;=&#160;40000000-----------------
+</I>&gt;&gt;<i>DFSR&#160;=&#160;8------------------------
+</I>&gt;&gt;<i>AFSR&#160;=&#160;0
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>Is&#160;there&#160;any&#160;good&#160;hint&#160;how&#160;to&#160;set&#160;the&#160;ram&#160;to&#160;&quot;fully&quot;&#160;utilise&#160;the&#160;f4
+</I>&gt;&gt;<i>space?
+</I>&gt;&gt;<i>Thnx,pi.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>--
+</I>&gt;&gt;<i>Jak&#160;se&#160;vyhnout&#160;nachlazen&#237;&#160;a&#160;dal&#353;&#237;m&#160;zdravotn&#237;m&#160;pot&#237;&#382;&#237;m&#160;v&#160;nep&#345;&#237;jemn&#233;m
+</I>&gt;&gt;<i>podzimn&#237;m&#160;obdob&#237;?&#160;&#268;t&#283;te&#160;speci&#225;l&#160;Zdrav&#237;&#160;na&#160;podzim&#160;na
+</I>&gt;&gt;<i><A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>_______________________________________________
+</I>&gt;&gt;<i>eLua-dev&#160;mailing&#160;list
+</I>&gt;&gt;<i><A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i><A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> =&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=&#160;=
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002897.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+	<LI>Next message: <A HREF="002900.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2898">[ date ]</a>
+              <a href="thread.html#2898">[ thread ]</a>
+              <a href="subject.html#2898">[ subject ]</a>
+              <a href="author.html#2898">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

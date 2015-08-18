@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Extending MCU memory with SPI?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FExtending_MCU_memory_with_SPI%3D3F%3F%3D&In-Reply-To=%3C64940d64c202170dfd12e0f9c9eb05ee%40mail2.volny.cz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003549.html">
+   <LINK REL="Next"  HREF="003551.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Extending MCU memory with SPI?</H1>
+    <B>pito</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fiso-8859-2%3Fq%3FExtending_MCU_memory_with_SPI%3D3F%3F%3D&In-Reply-To=%3C64940d64c202170dfd12e0f9c9eb05ee%40mail2.volny.cz%3E"
+       TITLE="[eLua-dev] Extending MCU memory with SPI?">pito at volna.cz
+       </A><BR>
+    <I>Wed Jun  6 09:02:20 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003549.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+        <LI>Next message: <A HREF="003551.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3550">[ date ]</a>
+              <a href="thread.html#3550">[ thread ]</a>
+              <a href="subject.html#3550">[ subject ]</a>
+              <a href="author.html#3550">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Worstcase scenario - random access to &quot;char&quot;:
+Except data/addr preparation there is an overhead with access to a
+standard SPI sram/fram/mram, usualy 4/5bytes +1byte data (22%
+efficiency). Then, the SPI clock is slow, usualy 1/2 to 1/4 of the
+MCU clock max. In total I measured 7usec for a random r/w to a
+single byte in an external 256kByte SPI fram (SPI clocked at
+12.5MHz, no waitstates with r/w,  pic24hj clocked at 50MHz). 
+Internal ram may access the byte in ~40ns (or 20ns?).
+
+With reading larger types the ratio/efficiency goes better, as the
+fram/mram has an autoincrement feature. For example int64 needs
+4/5bytes + 8bytes (63% efficiency). I achieved 1000kBytes//sec with
+r/w to a 512bytes large continous block with above setup. 
+p.
+
+----- P&#366;VODN&#205; ZPR&#193;VA -----
+Od: &quot;Martin Guy&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+Komu: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+P&#345;edm&#283;t: Re: [eLua-dev] Extending MCU memory with SPI?
+Datum: 6.6.2012 - 4:35:42
+
+&gt;<i> On 5 June 2012 19:56, pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+</I>&gt;<i> &gt; According to the IEEE Embedded C standard
+</I>&gt;<i> &gt; ISO/IEC TR 18037 (see p.74
+</I>&gt;<i> &gt; &gt; Annex B - Named address spaces and
+</I>&gt;<i> &gt; named-register storage classes) a
+</I>&gt;<i> &gt; &gt; compiler shall provide a capability for creating
+</I>&gt;<i> &gt; such qualifiers
+</I>&gt;<i> &gt; &gt; thus you may create variables in any kind of a
+</I>&gt;<i> &gt; memory device (with
+</I>&gt;<i> &gt; &gt; any kind of interface to the memory). Such
+</I>&gt;<i> &gt; identifier can be then
+</I>&gt;<i> &gt; &gt; used with any data types, including structures,
+</I>&gt;<i> &gt; unions, arrays, and
+</I>&gt;<i> &gt; &gt; pointers etc. So it is a matter of compiler not
+</I>&gt;<i> &gt; the actual hardware.
+</I>&gt;<i> &gt; &gt; Having such compiler you can extend MCU memory
+</I>&gt;<i> &gt; via SPI to
+</I>&gt;<i> &gt; &gt; fram/mram/sram or a punched card. We do not
+</I>&gt;<i> &gt; discuss a potential
+</I>&gt;<i> &gt; &gt; execution speed penalty here, of course :)
+</I>&gt;<i> 
+</I>&gt;<i> With the AVR32, we found that the speed penalty
+</I>&gt;<i> between executing from
+</I>&gt;<i> internal flash and executing in external SDRAM was
+</I>&gt;<i> a factor of 6.
+</I>&gt;<i> I'd hate to think what the penalty would be for an
+</I>&gt;<i> SPI transfer,
+</I>&gt;<i> albeit only for data accesses. Any figures?
+</I>&gt;<i> 
+</I>&gt;<i> M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>
+-- 
+- - Reklama - - - - - - - - - - - - - -
+Maturity, p&#345;ij&#237;mac&#237; zkou&#353;ky, st&#225;tnice, diplomky... V&#353;e o z&#225;v&#283;ru
+studia na st&#345;edn&#237;ch a vysok&#253;ch &#353;kol&#225;ch &#269;t&#283;te na port&#225;lu VOLN&#221;.cz na
+<A HREF="http://bit.ly/LfImCR">http://bit.ly/LfImCR</A>
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003549.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+	<LI>Next message: <A HREF="003551.html">[eLua-dev] Extending MCU memory with SPI?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3550">[ date ]</a>
+              <a href="thread.html#3550">[ thread ]</a>
+              <a href="subject.html#3550">[ subject ]</a>
+              <a href="author.html#3550">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

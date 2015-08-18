@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] EK-LM3S8962 on Mac OS
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20EK-LM3S8962%20on%20Mac%20OS&In-Reply-To=%3C33644d3c1002270617r70f3efcbo16b218b25a2a4169%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001224.html">
+   <LINK REL="Next"  HREF="001221.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] EK-LM3S8962 on Mac OS</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20EK-LM3S8962%20on%20Mac%20OS&In-Reply-To=%3C33644d3c1002270617r70f3efcbo16b218b25a2a4169%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] EK-LM3S8962 on Mac OS">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sat Feb 27 15:17:35 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001224.html">[eLua-dev] EK-LM3S8962 on Mac OS
+</A></li>
+        <LI>Next message: <A HREF="001221.html">[eLua-dev] Flashing LM3Ss under Linux
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1226">[ date ]</a>
+              <a href="thread.html#1226">[ thread ]</a>
+              <a href="subject.html#1226">[ subject ]</a>
+              <a href="author.html#1226">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Here are examples of what I added to my Info.plist:
+
+        &lt;key&gt;Stellaris Evaluation Board 6965&lt;/key&gt;
+        &lt;dict&gt;
+            &lt;key&gt;CFBundleIdentifier&lt;/key&gt;
+            &lt;string&gt;com.FTDI.driver.FTDIUSBSerialDriver&lt;/string&gt;
+            &lt;key&gt;IOClass&lt;/key&gt;
+            &lt;string&gt;FTDIUSBSerialDriver&lt;/string&gt;
+            &lt;key&gt;IOProviderClass&lt;/key&gt;
+            &lt;string&gt;IOUSBInterface&lt;/string&gt;
+            &lt;key&gt;bConfigurationValue&lt;/key&gt;
+            &lt;integer&gt;1&lt;/integer&gt;
+            &lt;key&gt;bInterfaceNumber&lt;/key&gt;
+            &lt;integer&gt;1&lt;/integer&gt;
+            &lt;key&gt;idProduct&lt;/key&gt;
+            &lt;integer&gt;48345&lt;/integer&gt;
+            &lt;key&gt;idVendor&lt;/key&gt;
+            &lt;integer&gt;1027&lt;/integer&gt;
+        &lt;/dict&gt;
+        &lt;key&gt;Stellaris Evaluation Board 9B92&lt;/key&gt;
+        &lt;dict&gt;
+            &lt;key&gt;CFBundleIdentifier&lt;/key&gt;
+            &lt;string&gt;com.FTDI.driver.FTDIUSBSerialDriver&lt;/string&gt;
+            &lt;key&gt;IOClass&lt;/key&gt;
+            &lt;string&gt;FTDIUSBSerialDriver&lt;/string&gt;
+            &lt;key&gt;IOProviderClass&lt;/key&gt;
+            &lt;string&gt;IOUSBInterface&lt;/string&gt;
+            &lt;key&gt;bConfigurationValue&lt;/key&gt;
+            &lt;integer&gt;1&lt;/integer&gt;
+            &lt;key&gt;bInterfaceNumber&lt;/key&gt;
+            &lt;integer&gt;1&lt;/integer&gt;
+            &lt;key&gt;idProduct&lt;/key&gt;
+            &lt;integer&gt;48346&lt;/integer&gt;
+            &lt;key&gt;idVendor&lt;/key&gt;
+            &lt;integer&gt;1027&lt;/integer&gt;
+        &lt;/dict&gt;
+
+
+Note, that I think you can't just use the hex values for idProduct and
+idVendor, you'll need to convert them to base 10.
+
+In case when you edited the file you changed the permissions and OS X
+isn't happy, you can also try repairing permissions.
+
+On Fri, Feb 26, 2010 at 11:50 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+&gt;<i> I got mine working by adding an entry to the Info.plist file. &#160;I could
+</I>&gt;<i> give you my copy, however, it is for an EK-LM3S6965, so I suspect it
+</I>&gt;<i> may have different device IDs. &#160;You might want to double-check that
+</I>&gt;<i> you have the right contents added to the Info.plist. &#160;Also, I forget
+</I>&gt;<i> whether I needed to reboot after changing the plist, or do anything
+</I>&gt;<i> else special. &#160;If you want, I can send the chunk I modified along with
+</I>&gt;<i> where I found the device ids for mine.
+</I>&gt;<i>
+</I>&gt;<i> You do have another alternative, which is to replace the FTDI device
+</I>&gt;<i> id/settings on the usb-&gt;serial device using FT_PROG:
+</I>&gt;<i> <A HREF="http://www.ftdichip.com/Resources/Utilities.htm#FT_Prog">http://www.ftdichip.com/Resources/Utilities.htm#FT_Prog</A>
+</I>&gt;<i>
+</I>&gt;<i> Here's some relevant forum material, maybe. &#160;FT_Prog replaces
+</I>&gt;<i> functionaly of MProg and VProg:
+</I>&gt;<i> <A HREF="http://www.luminarymicro.com/component/option,com_joomlaboard/Itemid,92/func,view/id,361/catid,8/limit,6/limitstart,6/">http://www.luminarymicro.com/component/option,com_joomlaboard/Itemid,92/func,view/id,361/catid,8/limit,6/limitstart,6/</A>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www.luminarymicro.com/component/option,com_joomlaboard/Itemid,92/func,view/catid,8/id,347/">http://www.luminarymicro.com/component/option,com_joomlaboard/Itemid,92/func,view/catid,8/id,347/</A>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Feb 26, 2010 at 10:21 PM, Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i> I've been trying to make an EK-LM3S8962 board appear on my Mac as a serial
+</I>&gt;&gt;<i> port tty.XXXXX with no success.
+</I>&gt;&gt;<i> I've installed the FTDI drivers, but it seems that the problem is that this
+</I>&gt;&gt;<i> board has a Product ID set on the FTDI chip that
+</I>&gt;&gt;<i> is not the default. I've tryed adding those to the Info.plist file in the
+</I>&gt;&gt;<i> kext but nothing changed ( got this idea from a similar
+</I>&gt;&gt;<i> problem I read in arduino forums ).
+</I>&gt;&gt;<i> Other boards that use FTDI chip work, so i think the driver is OK....
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Has anyone got this working??
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thiago
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> Phone: (847) 448-0386
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+Phone: (847) 448-0386
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001224.html">[eLua-dev] EK-LM3S8962 on Mac OS
+</A></li>
+	<LI>Next message: <A HREF="001221.html">[eLua-dev] Flashing LM3Ss under Linux
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1226">[ date ]</a>
+              <a href="thread.html#1226">[ thread ]</a>
+              <a href="subject.html#1226">[ subject ]</a>
+              <a href="author.html#1226">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

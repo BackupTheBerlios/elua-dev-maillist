@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Question about where to put lua driver modules.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Question%20about%20where%20to%20put%20lua%20driver%20modules.&In-Reply-To=%3C81fbe47d0811150114g54acfe35t8d3fcab56cb165ac%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000085.html">
+   <LINK REL="Next"  HREF="000088.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Question about where to put lua driver modules.</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Question%20about%20where%20to%20put%20lua%20driver%20modules.&In-Reply-To=%3C81fbe47d0811150114g54acfe35t8d3fcab56cb165ac%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Question about where to put lua driver modules.">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat Nov 15 10:14:06 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000085.html">[eLua-dev] Question about where to put lua driver modules.
+</A></li>
+        <LI>Next message: <A HREF="000088.html">[eLua-dev] Question about where to put lua driver modules.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#86">[ date ]</a>
+              <a href="thread.html#86">[ thread ]</a>
+              <a href="subject.html#86">[ subject ]</a>
+              <a href="author.html#86">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Fri, Nov 14, 2008 at 3:57 PM, Mike Panetta &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">panetta.mike at gmail.com</A>&gt;wrote:
+
+&gt;<i> I am going to be adding I2C support to my STM3210 port this weekend so I
+</I>&gt;<i> can start playing around with a smart battery charger/power supply I
+</I>&gt;<i> designed and I need to know where a good place to put the lua code that
+</I>&gt;<i> drives the chips would be.  The code will be generic (obviously) and should
+</I>&gt;<i> work on any platform since its in lua.  Do we currently have any place for
+</I>&gt;<i> files like this?  Should chip drivers be implemented in lua or C?  Which
+</I>&gt;<i> would be more RAM efficient? I would imagine C would be more efficient...
+</I>
+
+Currently we don't have such modules, although there will be coming,
+including Dado's PID module and my (yet to be written) char LCD module. I'd
+put them in a &quot;src/common&quot; directory, with the module code still residing in
+&quot;src/modules&quot; (we're aiming to give the new interface to both Lua and C,
+thus the separation between src/common and src/modules).
+
+
+&gt;<i> Also, do we have a platform interface in mind for I2C yet?
+</I>
+
+Nope. My experience with I2C is quite limited, but let's discuss an
+interface. If you have a first draft, please let us know.
+
+
+&gt;<i> My main reason for asking is, should I even write the chip drivers in lua,
+</I>&gt;<i> or should I do them in C?  The LTC3556 (PMIC) driver will be very small, as
+</I>&gt;<i> it is a write only device and only has 2 registers.  The bq27350 (Fuel
+</I>&gt;<i> Gauge) driver could be quite large as it is a more complex chip with many
+</I>&gt;<i> registers and access modes, so more then likely it should be done in C
+</I>&gt;<i> anyway...
+</I>&gt;<i>
+</I>&gt;<i> Anyway, I hope my questions make sense!
+</I>
+
+Your question makes a lot of sense, and the answer is: it depends. In this
+case, it would make more sense to write the driver itself in C for at least
+two reasons:
+
+- it's quite easy to write it in C, and by writing it in C you take less
+resources from the system
+- you can also offer your interface to C programs, not just to Lua programs
+(as mentioned above). Of course you can later call Lua functions from your C
+code if needed, but offering a direct interface is a better choice IMO.
+
+On the other hand, the scripting webserver I wrote for eLua is written in
+Lua itself, which makes much more sense for a couple of reasons:
+
+- it must execute Lua code directly
+- Lua has very strong string manipulation capabilities, which was gold for
+the &quot;scripting&quot; part
+
+So: in most cases the aim is to write the modules/other parts of the system
+in C, unless it _really_ makes more sense to write them in Lua.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20081115/772aa5bd/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20081115/772aa5bd/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000085.html">[eLua-dev] Question about where to put lua driver modules.
+</A></li>
+	<LI>Next message: <A HREF="000088.html">[eLua-dev] Question about where to put lua driver modules.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#86">[ date ]</a>
+              <a href="thread.html#86">[ thread ]</a>
+              <a href="subject.html#86">[ subject ]</a>
+              <a href="author.html#86">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

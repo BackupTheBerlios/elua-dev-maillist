@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Nolua project proposal, good idea?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3CAANLkTinzV7rWzCc6eDT%3DvpeBNXx8Z4%3DHUwfq1Ws%3DFJzo%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001897.html">
+   <LINK REL="Next"  HREF="001899.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Nolua project proposal, good idea?</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Nolua%20project%20proposal%2C%20good%20idea%3F&In-Reply-To=%3CAANLkTinzV7rWzCc6eDT%3DvpeBNXx8Z4%3DHUwfq1Ws%3DFJzo%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Nolua project proposal, good idea?">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sun Jan 23 13:26:55 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001897.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+        <LI>Next message: <A HREF="001899.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1898">[ date ]</a>
+              <a href="thread.html#1898">[ thread ]</a>
+              <a href="subject.html#1898">[ subject ]</a>
+              <a href="author.html#1898">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Hi Guys
+</I>&gt;<i>
+</I>&gt;<i> I am sorry to say that since discovering the project I have had almost no
+</I>&gt;<i> time to use it let alone contribute anything at all. I've been working like
+</I>&gt;<i> crazy and now expect to be out of debt in the next two weeks. After months
+</I>&gt;<i> of anxiety driven chest pains and breathing issues I plan to slow my
+</I>&gt;<i> business down and have a bit of &quot;me&quot; time. What better way then to do
+</I>&gt;<i> something with eLua :)
+</I>
+Wow, that sounds serious and unpleasant. Glad to hear you're better now.
+
+&gt;<i> Am I correct that the biggest strength of the project is as a rapid
+</I>&gt;<i> development environment?
+</I>
+Yes.
+
+&gt;<i> Having Lua right on a device is great but there is
+</I>&gt;<i> of course a cost of this. What if someone started out with Lua scripts but
+</I>&gt;<i> then little by little moved all the Lua-Lua code into Lua C modules and then
+</I>&gt;<i> eventually jettisoned Lua entirely for a significant speed up and footprint
+</I>&gt;<i> reduction for final deployment.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &quot;&quot;&quot;&quot;
+</I>&gt;<i> #include &quot;lua.h&quot;
+</I>&gt;<i> #include &quot;lauxlib.h&quot;
+</I>&gt;<i> #include &quot;lualib.h&quot;
+</I>&gt;<i>
+</I>&gt;<i> lua_State *L = luaL_newstate();
+</I>&gt;<i>
+</I>&gt;<i> &quot;&quot;&quot;
+</I>&gt;<i> In the above code I believe &quot;L&quot; is now a struct with both data and function
+</I>&gt;<i> pointers. What about this:
+</I>&gt;<i>
+</I>&gt;<i> &quot;&quot;&quot;
+</I>&gt;<i> #include &quot;nolua.h&quot;
+</I>&gt;<i>
+</I>&gt;<i> lua_State *L = luaL_newstate();&quot;&quot;&quot;
+</I>&gt;<i>
+</I>&gt;<i> Where L is now a stripped down struct only containing enough functionality
+</I>&gt;<i> to allow C modules to talk to each other, a stack, a registry the required
+</I>&gt;<i> functions.
+</I>&gt;<i>
+</I>&gt;<i> If this dummy Lua state contained no parsing abilities for source/byte code
+</I>&gt;<i> I would assume there would be a significant reduction in footprint or am I
+</I>&gt;<i> the one in a dummy state!
+</I>&gt;<i>
+</I>&gt;<i> If this is not nuts I could make an attempt in February-March.
+</I>
+This isn't nuts for sure but it's not really in sync with eLua's
+development philosophy. It seems to me that doing what you suggested
+would eliminate eLua's greatest strength (mentioned earlier) which is
+rapid development. Moving things to the C side requires both effort
+and a different methodology (as you won't be able to simply enter your
+program as you go, you'd have to compile it somewhere and then upload
+it somehow). Plus, C development on embedded platforms is already very
+well covered by a number of libraries and tools. All in all I don't
+see many advantages of such an approach, although the idea is
+definitely interesting.
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001897.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+	<LI>Next message: <A HREF="001899.html">[eLua-dev] Nolua project proposal, good idea?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1898">[ date ]</a>
+              <a href="thread.html#1898">[ thread ]</a>
+              <a href="subject.html#1898">[ subject ]</a>
+              <a href="author.html#1898">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

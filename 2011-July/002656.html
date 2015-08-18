@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua IDE &quot;brainstorming&quot;
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20IDE%20%22brainstorming%22&In-Reply-To=%3CCAJ%3DY9Y1N1HNpPymAtKjAD%3DCrHb%3DeP3ieKEEzcK3w8XcM_NOqJg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002658.html">
+   <LINK REL="Next"  HREF="002657.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua IDE &quot;brainstorming&quot;</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20IDE%20%22brainstorming%22&In-Reply-To=%3CCAJ%3DY9Y1N1HNpPymAtKjAD%3DCrHb%3DeP3ieKEEzcK3w8XcM_NOqJg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua IDE &quot;brainstorming&quot;">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jul 15 21:53:36 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002658.html">[eLua-dev] eLua IDE &quot;brainstorming&quot;
+</A></li>
+        <LI>Next message: <A HREF="002657.html">[eLua-dev] eLua IDE &quot;brainstorming&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2656">[ date ]</a>
+              <a href="thread.html#2656">[ thread ]</a>
+              <a href="subject.html#2656">[ subject ]</a>
+              <a href="author.html#2656">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Jul 15, 2011 at 1:17 PM, Mike King &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mkwired at gmail.com</A>&gt; wrote:
+&gt;&gt;&gt;<i> &#160;For
+</I>&gt;&gt;&gt;<i> one of my larger projects I have done, I developed a philosophy to
+</I>&gt;&gt;&gt;<i> guide me in future decisions. &#160;I decided I was making a &quot;tool&quot; and not
+</I>&gt;&gt;&gt;<i> a &quot;solution.&quot; &#160;This meant to me that I wouldn't add features that
+</I>&gt;&gt;&gt;<i> would place restrictions on how the user used the program. &#160;I
+</I>&gt;&gt;&gt;<i> eventually had to add such features but they were options that could
+</I>&gt;&gt;&gt;<i> be turned off. &#160;This may not make sense for this project but I think
+</I>&gt;&gt;&gt;<i> we can create an outline of what the program will and will not do at a
+</I>&gt;&gt;&gt;<i> higher level than specific features.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks a lot for the guidelines.
+</I>&gt;&gt;<i> I think this is the way to go and the best way to make a truly
+</I>&gt;&gt;<i> community-oriented project.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The tools we have to develop such a Roadmap are the same we've been trying
+</I>&gt;&gt;<i> for the other specifications:
+</I>&gt;&gt;<i> - A thread here on the list
+</I>&gt;&gt;<i> - A page on the Wiki
+</I>&gt;&gt;<i> - An entry or/and a wiki page on the Tracker
+</I>&gt;&gt;<i> - A Google Document with side-comments
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Any other suggestions are welcomed, as long as it promotes community
+</I>&gt;&gt;<i> collaboration.
+</I>&gt;<i>
+</I>&gt;<i> I'll start with the following:
+</I>&gt;<i> - The IDE should be &quot;lightweight.&quot;
+</I>&gt;<i> - The IDE shouldn't load things that won't be used.
+</I>&gt;<i> - The IDE and tools should be &quot;cross platform&quot; (Win, Mac, and Linux/UNIX).
+</I>&gt;<i> - The IDE should work well with other supporting programs (ex.
+</I>&gt;<i> terminal emulators and compilers).
+</I>&gt;<i> - Features should be available through a command line interface
+</I>&gt;<i> whenever possible.
+</I>&gt;<i> - We should try to incorporate/reuse code from other projects instead
+</I>&gt;<i> writing new code whenever possible.
+</I>&gt;<i> - We should strive to write code in Lua instead of C when possible.
+</I>
+I think these are fairly good reference points.
+
+I would also add this:
+- easy contextual access to online documentation
+
+This doesn't have to be horribly complicated or involved, even
+help/man &lt;command/function&gt; if there's a command-line interface/REPL
+in the IDE and having that pop up the relevant section of
+documentation would be immensely useful.  I'd also love something like
+the way that ipython works for displaying docstrings from the command
+line (this is very useful when you can recall the function name, but
+can't remember how to invoke it) and maybe tab autocompletion with
+multiple tabbing showing available options.
+
+I think at least for the modules reference this sort of thing should
+be fairly painless since we already have module documentation in Lua
+tables with a schema that would probably work well for this
+(plus/minus markup issues if the response were dumped at the
+terminal).
+
+I might experiment a bit with LuaRPC's desktop side providing
+functionality like this if I have time.  I think there are already
+some Lua shells that head in the direction of iPython, and our line
+editing lib on Linux/OS X does have support for some sort of
+autocompletion built in as well...
+
+&gt;<i>
+</I>&gt;&gt;<i> &lt;OT&gt;
+</I>&gt;&gt;<i> I'm still in NYC, strugling with some (minor and not worrying) health issues
+</I>&gt;&gt;<i> and I'll have to stay for one more month but I expect to have more time to
+</I>&gt;&gt;<i> help with this and other important pending topics on the project on these
+</I>&gt;&gt;<i> next few weeks.
+</I>&gt;&gt;<i> I'll be out in vacations by the end of august and september, hopefully
+</I>&gt;&gt;<i> traveling with my wife in Europe. If anyone is ready for a beer here or on
+</I>&gt;&gt;<i> the old world, just let me know :)
+</I>&gt;&gt;<i> &lt;/ OT&gt;
+</I>&gt;<i>
+</I>&gt;<i> Sorry to hear you&#8217;re having health issues. &#160;Hope things get better.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002658.html">[eLua-dev] eLua IDE &quot;brainstorming&quot;
+</A></li>
+	<LI>Next message: <A HREF="002657.html">[eLua-dev] eLua IDE &quot;brainstorming&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2656">[ date ]</a>
+              <a href="thread.html#2656">[ thread ]</a>
+              <a href="subject.html#2656">[ subject ]</a>
+              <a href="author.html#2656">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua vs Lua on RTOS
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs%20Lua%20on%20RTOS&In-Reply-To=%3C201101260336.19386.bobby%40sharedrealm.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001920.html">
+   <LINK REL="Next"  HREF="001909.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua vs Lua on RTOS</H1>
+    <B>Robert G. Jakabosky</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs%20Lua%20on%20RTOS&In-Reply-To=%3C201101260336.19386.bobby%40sharedrealm.com%3E"
+       TITLE="[eLua-dev] eLua vs Lua on RTOS">bobby at sharedrealm.com
+       </A><BR>
+    <I>Wed Jan 26 12:36:19 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001920.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+        <LI>Next message: <A HREF="001909.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1921">[ date ]</a>
+              <a href="thread.html#1921">[ thread ]</a>
+              <a href="subject.html#1921">[ subject ]</a>
+              <a href="author.html#1921">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wednesday 26, John Hind wrote:
+&gt;<i> I must say that having taken a close look at this mechanism and even
+</I>&gt;<i> developed it further to allow C interrupt handlers to force a coroutine
+</I>&gt;<i> yield between any two virtual machine opcodes, I became concerned about the
+</I>&gt;<i> safety of this approach. Incidently, if we can force coroutine yields
+</I>&gt;<i> safely in this way we already have all the mechanisms for an RTOS built-in
+</I>&gt;<i> to Lua in the threads provided for coroutines.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> There are really three concerns I have (note that in the following, by
+</I>&gt;<i> &quot;interrupt&quot; I mean the eLua mechanism for &quot;splicing&quot; extra Lua VM opcodes
+</I>&gt;<i> at runtime, not asynchronous interrupts at the processor level):
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 1. Are we sure that Lua VM operations are always atomic at the opcode
+</I>&gt;<i> level? For example if we interrupt in the middle of processing some complex
+</I>&gt;<i> mathematical expression and the code in the interrupt operates on some of
+</I>&gt;<i> the same variables?
+</I>
+Interrupts between opcodes should be safe.  You can even yield a coroutine 
+from a debug hook.
+
+If the &quot;complex mathematical expression&quot; (i.e. multiple VM opcodes) needs to 
+run atomically, then it should use a critical section like you described 
+below.
+
+&gt;<i> 2. Do we allow the interrupt code itself to be further interrupted? If so
+</I>&gt;<i> things could become very complex, if not, we have potentially unbounded
+</I>&gt;<i> latencies.
+</I>
+Maybe this should be configurable?  An interrupt handler could be marked as 
+un-interruptable when it is registered, or is could use critical sections.
+
+&gt;<i> 3. I believe we will need a Lua-level &quot;critical section&quot; operator which
+</I>&gt;<i> allows the Lua programmer to disable interrupts. For example, you might
+</I>&gt;<i> write a Ring Buffer structure using a Lua table and some pointers. You
+</I>&gt;<i> might want to read this buffer in interrupt code and write it in the main
+</I>&gt;<i> code. You cannot allow the interrupt code to run while the main code is in
+</I>&gt;<i> the middle of writing to the buffer (which will involve a table write, some
+</I>&gt;<i> bounds checks and a pointer write).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I feel we need someone who really understands the design of the Lua
+</I>&gt;<i> interpreter and can code-review what we are doing, because it will be
+</I>&gt;<i> virtually impossible to devise an adequate test set to prove this is safe
+</I>&gt;<i> in all cases.
+</I>
+I could help some with code-reviewing, when I have spare time.
+
+
+-- 
+Robert G. Jakabosky
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001920.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+	<LI>Next message: <A HREF="001909.html">[eLua-dev] eLua vs Lua on RTOS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1921">[ date ]</a>
+              <a href="thread.html#1921">[ thread ]</a>
+              <a href="subject.html#1921">[ subject ]</a>
+              <a href="author.html#1921">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

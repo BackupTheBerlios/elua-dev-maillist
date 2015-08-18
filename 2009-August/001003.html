@@ -1,0 +1,373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problem with SSI port in LM3S8962
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20with%20SSI%20port%20in%20LM3S8962&In-Reply-To=%3CEC38EEC4-5714-4234-95AC-8095FA5B7D42%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000998.html">
+   <LINK REL="Next"  HREF="000982.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problem with SSI port in LM3S8962</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20with%20SSI%20port%20in%20LM3S8962&In-Reply-To=%3CEC38EEC4-5714-4234-95AC-8095FA5B7D42%40fanplastic.org%3E"
+       TITLE="[eLua-dev] Problem with SSI port in LM3S8962">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Aug 14 00:49:40 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000998.html">[eLua-dev] Problem with SSI port in LM3S8962
+</A></li>
+        <LI>Next message: <A HREF="000982.html">[eLua-dev] SD/MMC testing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1003">[ date ]</a>
+              <a href="thread.html#1003">[ thread ]</a>
+              <a href="subject.html#1003">[ subject ]</a>
+              <a href="author.html#1003">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hmm.. I'm actually no longer having trouble with my setup.  Are you  
+running the latest revision from trunk? Have you tried using a scope  
+in triggered mode to see if anything is happening on the lines in  
+question?  You should see something on the SSICLK line for the clock,  
+and if you write some data out, you should see some oscillations on  
+your SSITX.
+
+The following works for me on a 6965:
+
+-- Note that PA_7 on my board is SDA1, which I'm using for chip select
+
+spi.setup(0,spi.MASTER,100000,0,1,16)
+pio.pin.setdir(pio.OUTPUT, pio.PA_7)
+
+pio.pin.setval(0, pio.PA_7)
+freshdata = spi.readwrite(0,23)
+pio.pin.setval(1, pio.PA_7)
+
+Side note: I'll likely just write a few lined function to do this, but  
+it would be nice to be able to tie a particular pin to be chip select  
+such that when readwrite is executed it toggles it automatically.
+
+On Aug 12, 2009, at 1:55 PM, C&#233;sar Ra&#250;l Mamani Choquehuanca wrote:
+
+&gt;<i> Hi All,
+</I>&gt;<i>
+</I>&gt;<i> I had some problem with my computer well i return.
+</I>&gt;<i>
+</I>&gt;<i>              Does your clock line work for you?
+</I>&gt;<i> James, It doesnt work for me too :(
+</I>&gt;<i>
+</I>&gt;<i> I maked
+</I>&gt;<i>
+</I>&gt;<i>              pio.pin.setdir(pio.OUTPUT, pio.PA_7)
+</I>&gt;<i>              pio.pin.setval(0, pio.PA_7)
+</I>&gt;<i>              freshdata = spi.readwrite(id,data)
+</I>&gt;<i>              pio.pin.setval(1, pio.PA_7)
+</I>&gt;<i> but if the clock doesnt work, i think i cant read anything of my  
+</I>&gt;<i> sensor (it need a clock from controller). i tested my sensor with  
+</I>&gt;<i> signal generator.
+</I>&gt;<i>
+</I>&gt;<i> the good new is the module PWM and ADC working very good for me.
+</I>&gt;<i>
+</I>&gt;<i> Any idea of SSI problem? well i think the clock problem. I help a  
+</I>&gt;<i> lot :(
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2009/8/7 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Aug 7, 2009 at 5:40 PM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> Thanks!  I'll try it out again.
+</I>&gt;<i>
+</I>&gt;<i> One quick thought regarding the following however:
+</I>&gt;<i>  // FIXME: not sure this is always &quot;right&quot;
+</I>&gt;<i> -  MAP_GPIOPadConfigSet(spi_gpio_base[ id ], spi_gpio_clk_pin[ id ],  
+</I>&gt;<i> GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
+</I>&gt;<i> +  // MAP_GPIOPadConfigSet(spi_gpio_base[ id ],  
+</I>&gt;<i> spi_gpio_clk_pin[ id ], GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
+</I>&gt;<i>
+</I>&gt;<i> I see from some of the other SPI examples that all of the SPI pins  
+</I>&gt;<i> are put into pullup with either 8MA or 4MA strength is this what  
+</I>&gt;<i> ultimately broke/fixed the issue?
+</I>&gt;<i>
+</I>&gt;<i> It's actually an array that was declared with a &quot;|&quot; instead of a &quot;,&quot;  
+</I>&gt;<i> a few lines higher :D I don't really think that the strength is  
+</I>&gt;<i> relevant, 4mA should be more than enough to drive any SPI  
+</I>&gt;<i> peripheral. About the pullup, see below.
+</I>&gt;<i>
+</I>&gt;<i> I'm not sure what the default pin configuration is, but I would  
+</I>&gt;<i> assume that this might be relevant if someone, say, switch one of  
+</I>&gt;<i> the pins to manual control and then want to switch back to SPI  
+</I>&gt;<i> (which is done during setup of the RIT display, for example).
+</I>&gt;<i>
+</I>&gt;<i> I don't see why one would want to pull up the clock, since depending  
+</I>&gt;<i> on the SPI configuration (the CPOL/CPHA combination) the clock might  
+</I>&gt;<i> be in the &quot;idle&quot; state if it is high OR low. And declaring the clock  
+</I>&gt;<i> pin as a regular push/pull line (which is the default) should do the  
+</I>&gt;<i> trick just fine. Maybe I don't understand that line good enough.
+</I>&gt;<i> The manual control, on the other hand, might indeed be an issue. We  
+</I>&gt;<i> should test this.
+</I>&gt;<i>
+</I>&gt;<i> I'll do a bit of testing since I'm working on some SPI interfacing  
+</I>&gt;<i> today.
+</I>&gt;<i>
+</I>&gt;<i> Please let me know how (if?) it works.
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Aug 7, 2009, at 4:21 AM, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;<i> OK, found an error there that prevented the SPI interface from  
+</I>&gt;<i> working :) Please update the sources, rebuild and try again.
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Aug 7, 2009 at 10:32 AM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A> 
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> On Fri, Aug 7, 2009 at 4:35 AM, James Snyder  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+</I>&gt;<i> I've just been experimenting with SPI myself a little on LM3S, and  
+</I>&gt;<i> for some reason the clock pin doesn't seem to be doing anything.
+</I>&gt;<i>
+</I>&gt;<i> This is indeed weird. It looks as though the SPI interface isn't  
+</I>&gt;<i> initialized properly, or it somehow gets initialized into slave mode  
+</I>&gt;<i> for some reason. I'll try to check a SPI example from the official  
+</I>&gt;<i> LM3S peripheral library. If that works (and I suspect it does) we  
+</I>&gt;<i> need to look for errors in our platform code.
+</I>&gt;<i>
+</I>&gt;<i> then, say, if there's only one 12-bit chunk returned, presumably you  
+</I>&gt;<i> just need to do:
+</I>&gt;<i> term.putstr(string.format(&quot;letura gyroscopio: %02d\n&quot;,freshdata[1]))
+</I>&gt;<i>
+</I>&gt;<i> (at least I think so :-)
+</I>&gt;<i>
+</I>&gt;<i> Yup, that's how it should work (I didn't work with the SPI module  
+</I>&gt;<i> too much tough).
+</I>&gt;<i>
+</I>&gt;<i> Also, sson &amp; ssoff don't actually control a pin on LM3S at the  
+</I>&gt;<i> moment, so you may need to toggle a pin yourself, i.e.:
+</I>&gt;<i>
+</I>&gt;<i> I think I'll remove that from the spi interface module and add it  
+</I>&gt;<i> only as platform-specific modules if needed, as it seems that sson/ 
+</I>&gt;<i> ssoff don't do anything on most platforms.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Aug 4, 2009, at 7:10 AM, C&#233;sar Ra&#250;l Mamani Choquehuanca wrote:
+</I>&gt;<i>
+</I>&gt;<i> Hi Bogdan,
+</I>&gt;<i>
+</I>&gt;<i> You right, i not explained very well my problem. My problem was what  
+</I>&gt;<i> i can write anything in the hyperterminal windows, but after read  
+</I>&gt;<i> the datasheet of lm3s8962 i can repair that, i forgot to remove the  
+</I>&gt;<i> J9 (SSIFss) in the target of luminary, well now i can program but i  
+</I>&gt;<i> cant use the port SS well im using of module SPI as explain in the  
+</I>&gt;<i> site of elua. i dont sure if im doing right.
+</I>&gt;<i>
+</I>&gt;<i> My code is :
+</I>&gt;<i>
+</I>&gt;<i> if pd.board()~=&quot;EK-LM3S8962&quot; then
+</I>&gt;<i>       print &quot;Unsoported board&quot;
+</I>&gt;<i>       return
+</I>&gt;<i> end
+</I>&gt;<i> id=0
+</I>&gt;<i> type=spi.MASTER
+</I>&gt;<i> clock=200000
+</I>&gt;<i> cpol=1
+</I>&gt;<i> cpha=0
+</I>&gt;<i> databits=12
+</I>&gt;<i>
+</I>&gt;<i> --clock=spi.setup(id,type,clock,cpol,cpha,databits)
+</I>&gt;<i>
+</I>&gt;<i> --Draw static text on terminal
+</I>&gt;<i> term.clrscr()
+</I>&gt;<i> term.gotoxy(1,1)
+</I>&gt;<i> term.putstr(&quot;Letura do SSI Gyroscopio\n&quot;)
+</I>&gt;<i>
+</I>&gt;<i> local data
+</I>&gt;<i> local key
+</I>&gt;<i>
+</I>&gt;<i> while true do
+</I>&gt;<i>       clock=spi.setup(id,type,clock,cpol,cpha,databits)
+</I>&gt;<i> --      spi.sson(id)
+</I>&gt;<i>       spi.readwrite(id,data)
+</I>&gt;<i> --      spi.ssoff(id)
+</I>&gt;<i>       term.gotoxy(1,4)
+</I>&gt;<i>       term.putstr(string.format(&quot;letura gyroscopio: %02d\n&quot;,data))
+</I>&gt;<i>       key=term.getch(term.NOWAIT)
+</I>&gt;<i>       if key==term.KC_ESC then break end --exit if user hits Escape
+</I>&gt;<i> end
+</I>&gt;<i> term.clrscr()
+</I>&gt;<i> term.gotoxy(1,1)
+</I>&gt;<i>
+</I>&gt;<i> I read in some forum what for data acquisition the target have to be  
+</I>&gt;<i> in slave mode but i dont sure again.
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> -- 
+</I>&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2009/8/3 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> I'm sorry, I'm afraid I didn't understand your problem. Could you  
+</I>&gt;<i> please explain it in more detail?
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Sun, Aug 2, 2009 at 11:08 AM, C&#233;sar Ra&#250;l Mamani Choquehuanca &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesarmamani82 at gmail.com</A> 
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> Hi All,
+</I>&gt;<i>
+</I>&gt;<i> Im working with module Ek-LM3S8962, i need to use SSI port for data  
+</I>&gt;<i> acquisition but i cant program that when i have plugged my sensor  
+</I>&gt;<i> (gyroscopic) to target without energy in the sensor. I can program  
+</I>&gt;<i> when i have unplugged the sensor of the target. Im using the  
+</I>&gt;<i> hyperterminal for that. Any suggestion for that? i need to see  
+</I>&gt;<i> online my data in the hyperterminal.
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: 847.448.0386
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: 847.448.0386
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: 847.448.0386
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 4012 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090813/c47bc575/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090813/c47bc575/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000998.html">[eLua-dev] Problem with SSI port in LM3S8962
+</A></li>
+	<LI>Next message: <A HREF="000982.html">[eLua-dev] SD/MMC testing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1003">[ date ]</a>
+              <a href="thread.html#1003">[ thread ]</a>
+              <a href="subject.html#1003">[ subject ]</a>
+              <a href="author.html#1003">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

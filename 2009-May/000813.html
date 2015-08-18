@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GC Parameters &amp; Emergency Collection
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3C200905111929.34824.bobby%40sharedrealm.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000812.html">
+   <LINK REL="Next"  HREF="000808.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GC Parameters &amp; Emergency Collection</H1>
+    <B>Robert G. Jakabosky</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3C200905111929.34824.bobby%40sharedrealm.com%3E"
+       TITLE="[eLua-dev] GC Parameters &amp; Emergency Collection">bobby at sharedrealm.com
+       </A><BR>
+    <I>Tue May 12 04:29:34 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000812.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+        <LI>Next message: <A HREF="000808.html">[eLua-dev] Device Manager
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#813">[ date ]</a>
+              <a href="thread.html#813">[ thread ]</a>
+              <a href="subject.html#813">[ subject ]</a>
+              <a href="author.html#813">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Monday 11, Bogdan Marinescu wrote:
+&gt;<i> &gt; I agree.  Does the performance hit only show up during a GC (emergency or
+</I>&gt;<i> &gt; no)?  I've not clocked any of this yet.
+</I>&gt;<i>
+</I>&gt;<i> Yes, the performance hit happens only during GC, which becomes a visible
+</I>&gt;<i> problem when GC is called too often. But hey, at least your program is
+</I>&gt;<i> running :)
+</I>
+The only performance hit during a normal GC is the in-place resizing.  During 
+an emergency (out of memory) you can choice between throwing an error or 
+taking a performance hit and calling the GC.
+
+The in-place resizing should be the only change in EGC that can cause slow 
+downs (I wasn't able to messure any slow downs on my desktop, maybe the 
+in-place resizing was helped by the L2 cache).  Also only the hashpart 
+resizing will require extra cpu work (it is also the most complex part of the 
+EGC patch).  Re-ordering the strings into the correct hash bucket was easy 
+for the string table, since the buckets are normal linked lists.  The 
+hashpart of tables are more difficult to resize since the chain of nodes for 
+each bucket are nodes from a single array instead of each node being 
+allocated as a seperate block of memory.
+
+The other 1/3 of the EGC patch is just bug fixes to make it safe to call the 
+GC from any place in Lua (i.e. on any allocation).  Those changes were mostly 
+moving code arround and not adding more work.  Basically you just have to 
+make sure the GC can find all GC'able objects, this means keeping atleast a 
+reference to them on the Lua stack and not just the C-stack.
+
+&gt;<i> &gt; The other side is that if the penalty is only at GC time, people could
+</I>&gt;<i> &gt; disable collection during time-critical operations.
+</I>&gt;<i>
+</I>&gt;<i> Definitely, part II :)
+</I>
+You can disable the GC from happening durimg time-critical ops and it will 
+also stop it from happening during an emergency.
+
+You could override the default Lua allocator and tune it to your needs.
+
+One way would be to reserve some memory for use when the GC is blocked.  Use 
+the memlimit as a softmark, that will call the GC during allocations only if 
+the memory usage is above the memory limit but not throw an error if the GC 
+can't free enough memory to lower the usage to below the softmark.  Then 
+during time-critical ops the GC will be blocked and there should still be 
+some free memory to handle allocations during that time.
+
+&gt;<i> &gt; I haven't taken a deep look to understand how every part of the patch
+</I>&gt;<i> &gt; works yet, but I see that it does provide a configurable of a memory
+</I>&gt;<i> &gt; limit.  Maybe another interesting tunable might be how many GC steps to
+</I>&gt;<i> &gt; take when an emergency GC is called (i.e.: just enough for the allocation
+</I>&gt;<i> &gt; pending, full gc, or something else?)  I'm also still curious about the
+</I>&gt;<i> &gt; idea of running GC in fixed timesteps,
+</I>&gt;<i>
+</I>&gt;<i> I did quite a few tests with Robert's patch a while ago, I really need to
+</I>&gt;<i> look for my messages related to this subject on the Lua list and repost
+</I>&gt;<i> them here. They're quite interesting.
+</I>
+The default Lua allocator was change to call the luaC_step() multiple times 
+untill just enough memory was freed to handle the current allocation or 
+untill atleast one full GC cycle is completed.  That is if the memory usage + 
+allocation size is greater then the set memory limit.
+
+If realloc() returns NULL, then a real emergency full GC cycle is done.
+
+A fixed timestep based GC would be very easy to do with a count debug hook.  
+You could call the singlestep() from lgc.c once every X Lua ops.
+
+looking at the luaC_step() function again, it looks like it might be doing to 
+much work to be used from the Lua allocator.  I might look into creating a 
+more flexible/simple GC step function.
+
+&gt;<i> &gt; In the interests of pragmatism, I don't think I'd pursue anything more
+</I>&gt;<i> &gt; detailed here unless I run up against some situation where it doesn't
+</I>&gt;<i> &gt; work as desired. I think, overall, a default of sane incremental
+</I>&gt;<i> &gt; collection (maybe with the GCPAUSE set to 110) and a backstop emergency
+</I>&gt;<i> &gt; GC should be a good solution for most cases.
+</I>&gt;<i>
+</I>&gt;<i> I'd say a configurable emergency GC should be a good solution for most
+</I>&gt;<i> cases. That is, the user should be able to define how the emergency GC will
+</I>&gt;<i> run, which will give him a choice between speed and memory usage. Not hard
+</I>&gt;<i> to do, fortunately. Again, things will probably be more clear after I post
+</I>&gt;<i> the results of Robert's patch here.
+</I>
+Your posts helped me alot with developing the EGC patch, thanks.
+
+Another place to tune Lua's memory usage is the size of the internal string 
+table.  Right now the table will grow to twice the old size when the number 
+of unique strings equals the old table size.  This is not required for the 
+string table since it uses buckets that chain together nodes that are 
+allocated seperately (unlike the hashpart of Lua tables).  The string tables 
+bucket array can be many times smaller then the total number of unique 
+strings.  Having a smaller number of buckets will only slow down new string 
+creation.  Once strings are internalized they don't touch the string table.
+
+some quiuck tests with life.lua:
+1Mbyte of memory without EGC patch:
+str count = 257, max buckets 512
+
+1Mbyte of memory with EGC:
+str count = 256, max buckets 512
+64Kbyte of memory with EGC:
+str count = 128, max buckets 256
+
+1Mbyte of memory with EGC and allow bucket count &lt; 2 * str count:
+str count = 273, max buckets 256
+64Kbyte of memory with EGC and allow bucket count &lt; 2 * str count:
+str count = 145, max buckets 128
+
+1Mbyte of memory with EGC and allow bucket count &lt; 4 * str count:
+str count = 273, max buckets 128
+64Kbyte of memory with EGC and allow bucket count &lt; 4 * str count:
+str count = 145, max buckets 64
+
+Each bucket is a pointer so 512 buckets would equal 2Kbytes with 32bit 
+pointers.
+
+I only timed two tests to see the difference in speed:
+
+64Kbyte of memory with EGC:
+str count = 128, max buckets 256
+real time = 11.035 seconds
+
+64Kbyte of memory with EGC and allow bucket count &lt; 4 * str count:
+str count = 145, max buckets 64
+real time = 8.832 seconds
+
+I was very surpised to see that the run time decrease with a smaller number of 
+buckets, I guess the EGC didn't have to run as many times since there was an 
+extra 768 bytes of memory.  Also notice that the string count is higher on 
+the faster test, life.lua creates a lot of temp strings to render the output, 
+so with more memory available to hold the string it doesn't have to recreate 
+them as much.
+
+The attached patch has the changes to allow bucket count &lt; 4 * str count and 
+the fprintf I used to get the above string &amp; bucket counts.
+
+I think it would be good to add support for tunning the low &amp; high water marks 
+for shrinking/growing the string table.
+
+Atleast this shows that it is possible to squeeze more memory out of the Lua 
+core.
+
+-- 
+Robert G. Jakabosky
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: tune_string_table.patch
+Type: text/x-diff
+Size: 1935 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/6d491225/attachment.patch">https://lists.berlios.de/pipermail/elua-dev/attachments/20090511/6d491225/attachment.patch</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000812.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+	<LI>Next message: <A HREF="000808.html">[eLua-dev] Device Manager
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#813">[ date ]</a>
+              <a href="thread.html#813">[ thread ]</a>
+              <a href="subject.html#813">[ subject ]</a>
+              <a href="author.html#813">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

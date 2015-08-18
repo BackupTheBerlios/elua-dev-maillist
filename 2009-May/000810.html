@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GC Parameters &amp; Emergency Collection
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3C81fbe47d0905111517m451b1e34i458044c9fe8d8c43%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000807.html">
+   <LINK REL="Next"  HREF="000812.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GC Parameters &amp; Emergency Collection</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3C81fbe47d0905111517m451b1e34i458044c9fe8d8c43%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] GC Parameters &amp; Emergency Collection">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue May 12 00:17:50 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000807.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+        <LI>Next message: <A HREF="000812.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#810">[ date ]</a>
+              <a href="thread.html#810">[ thread ]</a>
+              <a href="subject.html#810">[ subject ]</a>
+              <a href="author.html#810">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>OK, this is what I was talking about:
+
+<A HREF="http://lua-users.org/lists/lua-l/2008-05/msg00229.html">http://lua-users.org/lists/lua-l/2008-05/msg00229.html</A>
+
+(it might be worth to follow the whole thread that starts here:
+<A HREF="http://lua-users.org/lists/lua-l/2008-05/msg00023.html">http://lua-users.org/lists/lua-l/2008-05/msg00023.html</A>)
+
+You can probably see now that there are different parameters that can be
+configured for the patch, with different time/space results: when it runs
+(on allocation failure/on low memory mark/before any allocation (quite
+extreme)) amd how it runs (step or full). And probably other parameters that
+I can't find at this late time :)
+
+Best,
+Bogdan
+
+On Tue, May 12, 2009 at 12:44 AM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> I agree.  Does the performance hit only show up during a GC (emergency or
+</I>&gt;&gt;<i> no)?  I've not clocked any of this yet.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Yes, the performance hit happens only during GC, which becomes a visible
+</I>&gt;<i> problem when GC is called too often. But hey, at least your program is
+</I>&gt;<i> running :)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> In practice I would say since we have a fixed amount of memory, it's
+</I>&gt;&gt;<i> really undesirable to fail simply because a garbage collection event wasn't
+</I>&gt;&gt;<i> called in time.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Definitely.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> The other side is that if the penalty is only at GC time, people could
+</I>&gt;&gt;<i> disable collection during time-critical operations.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Definitely, part II :)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> I haven't taken a deep look to understand how every part of the patch
+</I>&gt;&gt;<i> works yet, but I see that it does provide a configurable of a memory limit.
+</I>&gt;&gt;<i>  Maybe another interesting tunable might be how many GC steps to take when
+</I>&gt;&gt;<i> an emergency GC is called (i.e.: just enough for the allocation pending,
+</I>&gt;&gt;<i> full gc, or something else?)  I'm also still curious about the idea of
+</I>&gt;&gt;<i> running GC in fixed timesteps,
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I did quite a few tests with Robert's patch a while ago, I really need to
+</I>&gt;<i> look for my messages related to this subject on the Lua list and repost them
+</I>&gt;<i> here. They're quite interesting.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> In the interests of pragmatism, I don't think I'd pursue anything more
+</I>&gt;&gt;<i> detailed here unless I run up against some situation where it doesn't work
+</I>&gt;&gt;<i> as desired. I think, overall, a default of sane incremental collection
+</I>&gt;&gt;<i> (maybe with the GCPAUSE set to 110) and a backstop emergency GC should be a
+</I>&gt;&gt;<i> good solution for most cases.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I'd say a configurable emergency GC should be a good solution for most
+</I>&gt;<i> cases. That is, the user should be able to define how the emergency GC will
+</I>&gt;<i> run, which will give him a choice between speed and memory usage. Not hard
+</I>&gt;<i> to do, fortunately. Again, things will probably be more clear after I post
+</I>&gt;<i> the results of Robert's patch here.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090512/d4b4291c/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090512/d4b4291c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000807.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+	<LI>Next message: <A HREF="000812.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#810">[ date ]</a>
+              <a href="thread.html#810">[ thread ]</a>
+              <a href="subject.html#810">[ subject ]</a>
+              <a href="author.html#810">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

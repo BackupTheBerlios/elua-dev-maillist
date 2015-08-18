@@ -1,0 +1,325 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] I2C for LM3S devices
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20I2C%20for%20LM3S%20devices&In-Reply-To=%3C4deb93d3.41c6e30a.2d29.ffffaf0c%40mx.google.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002443.html">
+   <LINK REL="Next"  HREF="002446.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] I2C for LM3S devices</H1>
+    <B>Laurent Dufrechou</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20I2C%20for%20LM3S%20devices&In-Reply-To=%3C4deb93d3.41c6e30a.2d29.ffffaf0c%40mx.google.com%3E"
+       TITLE="[eLua-dev] I2C for LM3S devices">laurent.dufrechou at gmail.com
+       </A><BR>
+    <I>Sun Jun  5 16:33:53 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002443.html">[eLua-dev] I2C for LM3S devices
+</A></li>
+        <LI>Next message: <A HREF="002446.html">[eLua-dev] I2C for LM3S devices
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2444">[ date ]</a>
+              <a href="thread.html#2444">[ thread ]</a>
+              <a href="subject.html#2444">[ subject ]</a>
+              <a href="author.html#2444">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Forget my previous email it is too specific to my i2c chips.
+
+ 
+
+Just to clarify my issue,
+
+ 
+
+LM3S device works like this:
+
+ 
+
+setI2C address( address, read_write) -&gt; set address in a specific register
+
+ 
+
+then you do either:
+
+sendSingle/receive single -&gt; send start, address and send or receive a
+single byte and send stop
+
+ 
+
+or in case of long transfer you would do:
+
+ 
+
+sendStart or receiveStart -&gt; send start + address + send/receive data
+
+then do multiple times:
+
+sendContinous or receiveContinous -&gt; start(?) + send/receive next data
+
+then finish with:
+
+sendfinish or receiveFinish -&gt; send/receive next data + stop bit
+
+ 
+
+As you can see the idea of start/stop is merged with send/receiving notion,
+and I hardly see how to match current API.
+
+(Current API is ok for me (quite logical), just LM3S behavior is hard to
+match with it...)
+
+ 
+
+Any idea welcomed...
+
+Ps: Perhaps I'm wrong somewhere, I'm open to any remarks.
+
+ 
+
+Laurent
+
+ 
+
+De : Laurent Dufrechou [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">laurent.dufrechou at gmail.com</A>] 
+Envoy&#233; : dimanche 5 juin 2011 15:03
+&#192; : 'Laurent Dufrechou'; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+Objet : RE: I2C for LM3S devices
+
+ 
+
+Just to add more idea, I got a I2C lib with these functions:
+
+ 
+
+extern tBool I2CC0M_ReadRegister(u32 base, u8 address, u8 reg, u8* pdata);
+
+extern tBool I2CC0M_ReadMultiple(u32 base, u8 address, u8 reg, u8* pdata, u8
+length);
+
+extern tBool I2CCOM_WriteRegister(u32 base, u8 address, u8 reg, u8 data);
+
+extern tBool I2CC0M_WriteMultiple(u32 base, u8 address, u8 reg, u8* pdata,
+u8 length);
+
+ 
+
+Low level protocol handling is hidden inside these functions.
+
+In my usecase, user only want to send to and read from a specific address.
+
+ 
+
+This can also be reduced to a set of two function if length is set to 1.
+
+And as Lua seems to support variable length function, it could be quite
+interesting...
+
+ 
+
+Laurent
+
+ 
+
+De : Laurent Dufrechou [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">laurent.dufrechou at gmail.com</A>] 
+Envoy&#233; : dimanche 5 juin 2011 14:16
+&#192; : '<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>'
+Objet : I2C for LM3S devices
+
+ 
+
+Hi all,
+
+ 
+
+I'm new to this dev list.
+
+I've just ported eLua for LM3S9B96 and my board.
+
+I'm willing to put I2C code in place for lm3s devices.
+
+ 
+
+I've got a little problem with current API definition.
+
+lm3s have a sort of i2c automata that don't give you direct control of
+sending start/stop signals.
+
+ 
+
+Quoting the doc:
+
+**************************************************************************
+
+Master Operations
+
+When using this API to drive the I2C master module, the user must first
+initialize the I2C master
+
+module with a call to ROM_I2CMasterInitExpClk(). That function will set the
+bus speed and enable
+
+the master module.
+
+The user may transmit or receive data after the successful initialization of
+the I2C master module.
+
+Data is transferred by first setting the slave address using
+ROM_I2CMasterSlaveAddrSet(). That
+
+function is also used to define whether the transfer is a send (a write to
+the slave from the master) or
+
+a receive (a read from the slave by the master). Then, if connected to an
+I2C bus that has multiple
+
+masters, the Stellaris I2C master must first call ROM_I2CMasterBusBusy()
+before attempting to
+
+initiate the desired transaction. After determining that the bus is not
+busy, if trying to send data, the
+
+user must call the ROM_I2CMasterDataPut() function. The transaction can then
+be initiated on the
+
+bus by calling the ROM_I2CMasterControl() function with any of the following
+commands:
+
+I2C_MASTER_CMD_SINGLE_SEND
+
+I2C_MASTER_CMD_SINGLE_RECEIVE
+
+I2C_MASTER_CMD_BURST_SEND_START
+
+I2C_MASTER_CMD_BURST_RECEIVE_START
+
+Any of those commands will result in the master arbitrating for the bus,
+driving the start sequence
+
+onto the bus, and sending the slave address and direction bit across the
+bus. The remainder of the
+
+transaction can then be driven using either a polling or interrupt-driven
+method.
+
+For the single send and receive cases, the polling method will involve
+looping on the return
+
+from ROM_I2CMasterBusy(). Once that function indicates that the I2C master
+is
+
+no longer busy, the bus transaction has been completed and can be checked
+for errors
+
+March 21, 2011 123
+
+Inter-Integrated Circuit (I2C)
+
+using ROM_I2CMasterErr(). If there are no errors, then the data has been
+sent or is
+
+ready to be read using ROM_I2CMasterDataGet(). For the burst send and
+receive cases,
+
+the polling method also involves calling the ROM_I2CMasterControl() function
+for each
+
+byte transmitted or received (using either the
+I2C_MASTER_CMD_BURST_SEND_CONT
+
+or I2C_MASTER_CMD_BURST_RECEIVE_CONT commands), and for the last byte
+
+sent or received (using either the I2C_MASTER_CMD_BURST_SEND_FINISH or
+
+I2C_MASTER_CMD_BURST_RECEIVE_FINISH commands). If any error is detected
+
+during the burst transfer, the ROM_I2CMasterControl() function should be
+called using
+
+the appropriate stop command (I2C_MASTER_CMD_BURST_SEND_ERROR_STOP or
+
+I2C_MASTER_CMD_BURST_RECEIVE_ERROR_STOP).
+
+For the interrupt-driven transaction, the user must register an interrupt
+handler for the I2C devices
+
+and enable the I2C master interrupt; the interrupt will occur when the
+master is no longer busy.
+
+**************************************************************************
+
+ 
+
+As you can see,
+
+A better API for _it_ would be something like:
+
+setI2C address( address, read_write)
+
+send_byte( data)
+
+send_multiples_bytes( *data[], length )
+
+receive_byte( data)
+
+receive_multiples_bytes( *data[], length )
+
+ 
+
+Is there a strict need of giving user access to start/stop control?
+
+I mean start/stop can be easily embedded into send/receive function no?
+
+ 
+
+Any suggestions welcomed J
+
+ 
+
+Regards,
+
+ 
+
+Laurent
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: winmail.dat
+Type: application/ms-tnef
+Size: 12778 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110605/9090e20d/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20110605/9090e20d/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002443.html">[eLua-dev] I2C for LM3S devices
+</A></li>
+	<LI>Next message: <A HREF="002446.html">[eLua-dev] I2C for LM3S devices
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2444">[ date ]</a>
+              <a href="thread.html#2444">[ thread ]</a>
+              <a href="subject.html#2444">[ subject ]</a>
+              <a href="author.html#2444">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

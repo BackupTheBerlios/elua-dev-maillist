@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] DAC Module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2014-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20DAC%20Module&In-Reply-To=%3C20140107064103.113550%40gmx.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004355.html">
+   <LINK REL="Next"  HREF="004357.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] DAC Module</H1>
+    <B>scdr at gmx.com</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20DAC%20Module&In-Reply-To=%3C20140107064103.113550%40gmx.com%3E"
+       TITLE="[eLua-dev] DAC Module">scdr at gmx.com
+       </A><BR>
+    <I>Tue Jan  7 07:41:03 CET 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004355.html">[eLua-dev] KS0108, not found 'cvfonts.lua'
+</A></li>
+        <LI>Next message: <A HREF="004357.html">[eLua-dev] Pure Lua multitasking with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4356">[ date ]</a>
+              <a href="thread.html#4356">[ thread ]</a>
+              <a href="subject.html#4356">[ subject ]</a>
+              <a href="author.html#4356">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Some initial thoughts on the DAC interfaces. &#160;(Haven't fully digested, so will be more later).
+
+Suggestions:
+
+General thoughts:
+
+Might be worth looking at i2s APIs to see what similar functions might be desirable. &#160;(Not saying need to do i2s now, just
+makes sense to consider what an i2s eLua module might look like, since it probably has somewhat similar function to DAC.)
+
+Might also look at some other libraries (e.g. Arduino audio library) for ideas on approach/functions that my be desirable.
+(if haven't already done).
+
+Interface described seems to only cover synchronous case, should extend to handle asynchronous (i.e. specify the DAC data
+and then let the eLua program keep running, issuing control instructions as needed).
+ &#160;So add procedures to start, stop, loop, clear buffer, set buffer length, etc.
+
+Interrupt handling, buffering, etc. should probably be moved to the platform code, rather than having in the 
+eLua module. &#160;The platform interface is at such a low level that could be hard to take advantage of special hardware on various platforms.
+(Not clear how could use DMA, DAC interrupts, built in buffers, etc.)
+
+Consider separating the scaling (offset, range adjustment, etc.) from the DAC code?
+General purpose scaling lib./function, which can apply to data before presenting to the DAC. &#160;(I think Arduino library uses something similar.)
+Could be useful elsewhere, e.g. in graphics, ADC, etc.
+Do some DACs provide offset, etc. in hardware?
+
+
+--
+More specific:
+
+Simplify this 
+&gt;<i> num_samples_output, num_underflows = putsamples( dac_id, data_source, rate, [bits_per_sample, [channels, [bias, [timer_id]]]] )
+</I>
+to something like
+num_samples_output = putsamples( dac_id, data_source )
+
+Where data source can be any of the items you gave, or can be several numbers, or mix of the above.
+
+so could say dac.putsamples( 0, 5, 9, 15, 25, 15, 9, 5)
+To send the sequence 5, 9, 15, etc. to DAC 0.
+
+Provide separate interface(s) to specify the other parameters (bias, timer_id, bits_per_sample, and rate are all likely to stay constant in most applications). &#160;(Also interface to get/reset number of buffer underflows.)
+(If need to have interface that specifies everything, can add a function that combines all the setup plus the putsamples).
+
+Rather than specifying frequency (rate), might make more sense to give period (1,000,000 / rate).
+(Depends what various hardware needs, but no sense in requiring an expensive divide in the code if we can easily avoid it.)
+
+Timer ID - look at how ADC handles timers. &#160;Make clear how to handle systems that do not need a timer for the DAC
+(i.e. what should relevant functions return, etc.) &#160;Unlikely to need to change this for each call.
+
+Provide interface to set size of DAC buffer (or at least make it a compile time configuration option).
+(e.g. the 16 element buffer).
+
+&gt;<i> &#160;bits_per_sample 8, 16, etc. (default is 8)
+</I>Instead of defining this as 8, leave the default to be defined by the platform. &#160;If the DAC on a particular platform only does
+12 bits per sample (e.g.), then it doesn't make sense to give it a default which can not work and always has to be changed.
+(The module could provide a built in constant, something like DEFAULT_BITS_PER_SAMPLE, which informs the code what the default is.)
+
+Caveat on this - if the intention is that the interface can provide data with a different number of bits than the platform's DAC
+and that such data will be scaled to fit (e.g. if you give 8 bits but the DAC is 12 bits, then your data will be left shifted by 4 before
+it is output, conversely if you provide 12 bit data but the DAC is only 8 bits, then it will shift right by 4 to throw away the excess
+detail), then it should be clarified that such Procrustean scaling takes place automatically.
+(In that case there probably should not be a default value, and the user should always specify the range of their data.)
+
+Bitarray seems like another natural possability for storing/presenting the data to the DAC module. &#160;Might consider how to incorporate that cleanly.
+
+Taking a function to generate the data to be written is nice. &#160;Could be nice to extend it a bit, accept a function that returns numbers (or a sequence of numbers). &#160;(e.g. if I want to generate a sine wave, how about if I feed it a sin function (with appropriate scaling, offset, and some kind of input generator, etc.)).
+
+
+Using a bitmask in platform_dac_put_sample looks like it might be a bottleneck? &#160;May be hard to quickly decode a bitmask,
+and at the moment that procedure is called for every sample going out to the DAC (so the decode is done a lot).
+May not be much of an issue if only have 2 channels, but some audio applications use 6 channels, etc.
+
+Is the added complexity really worth it (maybe offer simple version where specify 1 channel id, and complex version to use
+when needed.)
+One option is to have samples be tagged with which channel (e.g. in padding bits) - SAM3 does this in some cases.
+Does STM do anything similar?
+Have you considered varargs?
+
+
+Once I look at adapting this to work with the SAM3 I may have other thoughts (what works well/doesn't work well with that
+platform).
+
+
+
+&gt;<i> ----- Original Message -----
+</I>&gt;<i> From: Mark Burton
+</I>&gt;<i> Sent: 01/03/14 06:43 AM
+</I>&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> Subject: Re: [eLua-dev] DAC Module
+</I>&gt;<i> 
+</I>&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> I have reworked the DAC module and the Lua functions. The biggest change is that dac.putsamples() can now
+</I>&gt;<i> be passed the sample data as either an array of integers, a string of bytes or a function that should return
+</I>&gt;<i> a string of bytes every time it is called until all the data has been read when it should return an empty
+</I>&gt;<i> string or nil.
+</I>&gt;<i> 
+</I>&gt;<i> -------------
+</I>&gt;<i> 
+</I>&gt;<i> setup( dac_id, [bits_per_sample] )
+</I>&gt;<i> 
+</I>&gt;<i> Initialise a single DAC (only required if you are going to call dac.putsample())
+</I>&gt;<i> 
+</I>&gt;<i> &#160;dac_id = id of DAC to initialise
+</I>&gt;<i> &#160;bits_per_sample = 8, 16, etc. (default is 8)
+</I>&gt;<i> 
+</I>&gt;<i> putsample( dac_id, val )
+</I>&gt;<i> 
+</I>&gt;<i> Output a single sample to a DAC
+</I>&gt;<i> 
+</I>&gt;<i> &#160;dac_id = id of DAC to send output to
+</I>&gt;<i> &#160;val = value to output
+</I>&gt;<i> 
+</I>&gt;<i> num_samples_output, num_underflows = 
+</I>&gt;<i> &#160;putsamples( dac_id, data_source, rate, [bits_per_sample, [channels, [bias, [timer_id]]]] )
+</I>&gt;<i> 
+</I>&gt;<i> Output a stream of samples to one or more DACs at a specific rate
+</I>&gt;<i> 
+</I>&gt;<i> &#160;dac_id = id of DAC to send output to
+</I>&gt;<i> &#160;data_source = the source of the data to send to the DAC - can be either an array of integers,
+</I>&gt;<i> &#160;a string of bytes or a function that returns a string of bytes - the function will be called
+</I>&gt;<i> &#160;repeatedly until it returns nil or an empty string
+</I>&gt;<i> &#160;rate = the sample rate in Hz
+</I>&gt;<i> &#160;bits_per_sample 8, 16, etc. (default is 8)
+</I>&gt;<i> &#160;channels = the number of channels (consecutive DACs) to output to (default = 1)
+</I>&gt;<i> &#160;bias = a value that is added to each output value before it is written to the DAC (default = 0)
+</I>&gt;<i> &#160;timer_id = the id of the timer used to generate the clock (defaults to 1st acceptable timer)
+</I>&gt;<i> 
+</I>&gt;<i> &#160;returns 2 values, the number of samples output and the number of times buffer underflow occurred.
+</I>&gt;<i> 
+</I>&gt;<i> Note that dac.putsamples() calls dac.setup() so you don't need to explicitly call dac.setup() first.
+</I>&gt;<i> 
+</I>&gt;<i> ---------------
+</I>&gt;<i> 
+</I>&gt;<i> I have removed the wav playing function and written it in Lua, here's the bit of it that calls dac.putsamples():
+</I>&gt;<i> 
+</I>&gt;<i> &#160;local num_samp, num_uf = dac.putsamples(dac_id, function () return f:read(256) end, sample_rate, bytes_per_sample * 8, num_channels, 0x8000)
+</I>&gt;<i> &#160;f:close()
+</I>&gt;<i> &#160;print(string.format(&quot;%d samples output, %d underflows&quot;, num_samp, num_uf));
+</I>&gt;<i> 
+</I>&gt;<i> ---------------
+</I>&gt;<i> 
+</I>&gt;<i> As before, the code can be found at <A HREF="https://github.com/smartavionics/elua">https://github.com/smartavionics/elua</A>
+</I>&gt;<i> 
+</I>&gt;<i> Cheers,
+</I>&gt;<i> 
+</I>&gt;<i> Mark
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004355.html">[eLua-dev] KS0108, not found 'cvfonts.lua'
+</A></li>
+	<LI>Next message: <A HREF="004357.html">[eLua-dev] Pure Lua multitasking with eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4356">[ date ]</a>
+              <a href="thread.html#4356">[ thread ]</a>
+              <a href="subject.html#4356">[ subject ]</a>
+              <a href="author.html#4356">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

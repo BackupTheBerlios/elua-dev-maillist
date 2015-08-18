@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4_-_max_free_mem_/_ram_size&In-Reply-To=%3CCANKDJfYobkib99VsZfWrOx1EOFFQ%2BqKEfnYcGQ-LH1bhNpkp9g%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002900.html">
+   <LINK REL="Next"  HREF="002902.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] stm32f4_-_max_free_mem_/_ram_size</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20stm32f4_-_max_free_mem_/_ram_size&In-Reply-To=%3CCANKDJfYobkib99VsZfWrOx1EOFFQ%2BqKEfnYcGQ-LH1bhNpkp9g%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] stm32f4_-_max_free_mem_/_ram_size">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Nov 11 09:28:40 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002900.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+        <LI>Next message: <A HREF="002902.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2901">[ date ]</a>
+              <a href="thread.html#2901">[ thread ]</a>
+              <a href="subject.html#2901">[ subject ]</a>
+              <a href="author.html#2901">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Fri, Nov 11, 2011 at 10:23 AM, pito &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pito at volna.cz</A>&gt; wrote:
+
+&gt;<i> Two regions - maybe compiler/linker can do that as well.. My naive
+</I>&gt;<i> understanding has been we can use the ram in a continuos way.. Would
+</I>&gt;<i> be nice to have 196k handy..p.
+</I>&gt;<i>
+</I>
+The compiler/linker can't do anything if the memory regions are not
+_physically_ contiguous in the MCU address space (which is the case here).
+The allocator, though, can work with two or more isolated memory blocks. It
+will never be able to allocate 196k in a single piece, but it will be able
+to allocate smaller pieces from both regions.
+
+Best,
+Bogdan
+
+
+&gt;<i> ----- P&#366;VODN&#205; ZPR&#193;VA -----
+</I>&gt;<i> Od: &quot;James Snyder&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> Komu: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> P&#345;edm&#283;t: Re: [eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</I>&gt;<i> Datum: 11.11.2011 - 3:49:46
+</I>&gt;<i>
+</I>&gt;<i> &gt; Well, eLua can certainly work with multiple
+</I>&gt;<i> &gt; regions of RAM, however
+</I>&gt;<i> &gt; I'm not sure if there are any caveats to the usage
+</I>&gt;<i> &gt; of that additional
+</I>&gt;<i> &gt; region of RAM.  I seem to recall some discussion
+</I>&gt;<i> &gt; related to it when
+</I>&gt;<i> &gt; this platform was initially discussed on the list.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; In any case, take a look at examples of platforms
+</I>&gt;<i> &gt; that have SDRAM like
+</I>&gt;<i> &gt; some of the avr32 platforms:
+</I>&gt;<i> &gt; elua/src/platform/avr32/EVK1100/evk1100_conf.h:
+</I>&gt;<i> &gt; // Allocator data: define your free memory zones
+</I>&gt;<i> &gt; here in two arrays
+</I>&gt;<i> &gt; // (start address and end address)
+</I>&gt;<i> &gt; #define MEM_START_ADDRESS     { ( void* )end, (
+</I>&gt;<i> &gt; void* )SDRAM }
+</I>&gt;<i> &gt; #define MEM_END_ADDRESS       { ( void* )( 0x10000
+</I>&gt;<i> &gt; - STACK_SIZE_TOTAL
+</I>&gt;<i> &gt; - 1 ), ( void* )( SDRAM + SDRAM_SIZE - 1 ) }
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; As above, you need to define 2 arrays, one for
+</I>&gt;<i> &gt; each region.  And then
+</I>&gt;<i> &gt; you will need to to use allocator=multiple
+</I>&gt;<i> &gt; (allocator=newlib might
+</I>&gt;<i> &gt; work also, since &quot;multiple&quot; is and &quot;newlib&quot; both
+</I>&gt;<i> &gt; use dlmalloc, but
+</I>&gt;<i> &gt; historically at some point at least &quot;multiple&quot;
+</I>&gt;<i> &gt; used a newer version of
+</I>&gt;<i> &gt; dlmalloc).
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I think that might be it?  Unless there's
+</I>&gt;<i> &gt; something needed for that
+</I>&gt;<i> &gt; region of SRAM to be usable on the platform?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 2011/11/10 Zhanjun Dong &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">yystype at yahoo.ca</A>&gt;:
+</I>&gt;<i> &gt; &gt; The F4 has 196K in total, but it split into 2 sections:
+</I>&gt;<i> &gt; &gt; &gt;
+</I>&gt;<i> &gt; &gt;   RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K      // Major SRAM
+</I>&gt;<i> &gt; &gt; &gt; &gt; &gt;
+</I>&gt;<i>   CCMRAM (xrw) : ORIGIN = 0x10000000, LENGTH = 64K    // Backup SRAM
+</I>&gt;<i> &gt; &gt; &gt; &gt; &gt; &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> As you can see, the memory space is not continually, change the SRAM_SIZE over 128K won't work.
+</I>&gt;<i> &gt; &gt; &gt; &gt; &gt;
+</I>&gt;<i> &gt; &gt; Is there a existing way to let eLua access 2nd RAM segment?
+</I>&gt;<i> &gt; &gt; &gt;
+</I>&gt;<i> &gt; &gt; Sincerely
+</I>&gt;<i> &gt; &gt; Zhanjun Dong
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; ======= 2011-11-10 10:57:20 &#65306;=======
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt;&gt;Hi, by try and error I try to determine the max ram for the bytecode
+</I>&gt;<i> &gt; &gt;&gt;&gt; &gt;&gt;&gt;&gt;(using life.lua to fill it full).
+</I>&gt;<i> &gt; &gt;&gt;platform_conf.h:
+</I>&gt;<i> &gt; &gt;&gt;#define SRAM_SIZE             ( 128 * 1024 )  //was 60
+</I>&gt;<i> &gt; &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt; &gt;&gt;With 128 I get it working, the 140 does
+</I>&gt;<i> &gt; &gt;&gt;[Hard fault handler]------------
+</I>&gt;<i> &gt; &gt;&gt;R0 = fffe2274-------------------
+</I>&gt;<i> &gt; &gt;&gt;R1 = 20002138-------------------
+</I>&gt;<i> &gt; &gt;&gt;R2 = 134------------------------
+</I>&gt;<i> &gt; &gt;&gt;R3 = 2001fff8-------------------
+</I>&gt;<i> &gt; &gt;&gt;R12 = fffe226c------------------
+</I>&gt;<i> &gt; &gt;&gt;LR = 801b06b--------------------
+</I>&gt;<i> &gt; &gt;&gt;PC = 801a900--------------------
+</I>&gt;<i> &gt; &gt;&gt;PSR = 81000000------------------
+</I>&gt;<i> &gt; &gt;&gt;BFAR = 20020000-----------------
+</I>&gt;<i> &gt; &gt;&gt;CFSR = 8200--OO-----------------
+</I>&gt;<i> &gt; &gt;&gt;HFSR = 40000000-----------------
+</I>&gt;<i> &gt; &gt;&gt;DFSR = 8------------------------
+</I>&gt;<i> &gt; &gt;&gt;AFSR = 0
+</I>&gt;<i> &gt; &gt;&gt;
+</I>&gt;<i> &gt; &gt;&gt;Is there any good hint how to set the ram to &quot;fully&quot; utilise the f4
+</I>&gt;<i> &gt; &gt;&gt;&gt; &gt;&gt;&gt;&gt;space?
+</I>&gt;<i> &gt; &gt;&gt;Thnx,pi.
+</I>&gt;<i> &gt; &gt;&gt;
+</I>&gt;<i> &gt; &gt;&gt;
+</I>&gt;<i> &gt; &gt;&gt;--
+</I>&gt;<i> &gt; &gt;&gt;Jak se vyhnout nachlazen&#237; a dal&#353;&#237;m zdravotn&#237;m pot&#237;&#382;&#237;m v nep&#345;&#237;jemn&#233;m
+</I>&gt;<i> &gt; &gt;&gt;&gt; &gt;&gt;&gt;&gt;podzimn&#237;m obdob&#237;? &#268;t&#283;te speci&#225;l Zdrav&#237; na podzim na
+</I>&gt;<i> &gt; &gt;&gt;&gt;&gt;<A HREF="http://web.volny.cz/data/click.php?id=1290">http://web.volny.cz/data/click.php?id=1290</A>
+</I>&gt;<i> &gt; &gt;&gt;
+</I>&gt;<i> &gt; &gt;&gt;
+</I>&gt;<i> &gt; &gt;&gt;
+</I>&gt;<i> &gt; &gt;&gt;_______________________________________________
+</I>&gt;<i> &gt; &gt;&gt;eLua-dev mailing list
+</I>&gt;<i> &gt; &gt;&gt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; &gt;&gt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; &gt;&gt;&gt;
+</I>&gt;<i> &gt; &gt; = = = = = = = = = = = = = = = = = = = =
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;<i> &gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; &gt; &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Jak co nejl&#233;pe p&#345;ichystat automobil na provoz v nadch&#225;zej&#237;c&#237; zimn&#237;
+</I>&gt;<i> sez&#243;n&#283;? &#268;t&#283;te speci&#225;l P&#345;&#237;prava auta na zimu na
+</I>&gt;<i> <A HREF="http://web.volny.cz/data/click.php?id=1292">http://web.volny.cz/data/click.php?id=1292</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111111/5dfdb697/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20111111/5dfdb697/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002900.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+	<LI>Next message: <A HREF="002902.html">[eLua-dev] stm32f4_-_max_free_mem_/_ram_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2901">[ date ]</a>
+              <a href="thread.html#2901">[ thread ]</a>
+              <a href="subject.html#2901">[ subject ]</a>
+              <a href="author.html#2901">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

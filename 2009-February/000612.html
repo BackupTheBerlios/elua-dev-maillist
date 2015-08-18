@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Re&#65306; disp module revision
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fbig5%3Fb%3FUmWhRyBkaXNwIG1vZHVsZSByZXZpc2lvbg%3D%3D%3F%3D&In-Reply-To=%3Cd3b6d880902261748v2c29da17yd63d7219a56f7034%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000609.html">
+   <LINK REL="Next"  HREF="000615.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Re&#65306; disp module revision</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%3D%3Fbig5%3Fb%3FUmWhRyBkaXNwIG1vZHVsZSByZXZpc2lvbg%3D%3D%3F%3D&In-Reply-To=%3Cd3b6d880902261748v2c29da17yd63d7219a56f7034%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Re&#65306; disp module revision">dadosutter at gmail.com
+       </A><BR>
+    <I>Fri Feb 27 02:48:42 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000609.html">[eLua-dev] Re&#65306;  disp module revision
+</A></li>
+        <LI>Next message: <A HREF="000615.html">[eLua-dev] disp module revision
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#612">[ date ]</a>
+              <a href="thread.html#612">[ thread ]</a>
+              <a href="subject.html#612">[ subject ]</a>
+              <a href="author.html#612">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+   You're right CF. *off* releases the SPI channel for other uses and *
+disable* simply turns off the dc/dc converter, to &quot;blank&quot; (and save!) the
+screen (or maybe the oposite, I always forget :)
+   We would &quot;loose&quot; these two separate &quot;features&quot;, combining them in just
+one. But IMO this would not be a problem for the final user, much on the
+contrary, this would hide this and make it simpler.
+   But if anyone think it is really necessary/usefull to keep both features
+in separate functions, we can keep *disp* the way we first wrote it, binding
+exactly the low-level driver functions. My vote is to KISS.
+
+Best
+Dado
+
+
+
+
+
+2009/2/26 CF Kwok &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">kcfkwok2003 at yahoo.com.hk</A>&gt;
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i>  In my experience of using the LM3S8962, the off and disable have different
+</I>&gt;<i> effect. When I disable the display, the oled still keep turn on but any
+</I>&gt;<i> drawing to screen is ignored. I worry about the merge of on/enable and
+</I>&gt;<i> off/disable might cause any effect but I am not sure.
+</I>&gt;<i>
+</I>&gt;<i> I think on/off is more useful than enable/disable IMHO. Since OLED has a
+</I>&gt;<i> quite limited life time when always on.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> CF
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i> *&#23492;&#20214;&#20154;&#65109;* Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+</I>&gt;<i> *&#25910;&#20214;&#20154;* eLua Users and Development List &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> *&#20659;&#36865;&#26085;&#26399;&#65109;* 2009 &#24180; 2&#26376; 27 &#26085; &#26143;&#26399;&#20116; &#19978;&#21320; 4:38:43
+</I>&gt;<i> *&#20027;&#38988;&#65306;* [eLua-dev] disp module revision
+</I>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i>    For the sake of kiss on the platform-dependent *disp* module, I was
+</I>&gt;<i> thinking about reducing our current:
+</I>&gt;<i>
+</I>&gt;<i> *init
+</I>&gt;<i> on
+</I>&gt;<i> off
+</I>&gt;<i> enable
+</I>&gt;<i> disable
+</I>&gt;<i> print
+</I>&gt;<i> draw*  (pls note that drawString and drawImage are beeing renamed for
+</I>&gt;<i> print and draw respectively, on v0.6)
+</I>&gt;<i>
+</I>&gt;<i> ..... to simply:
+</I>&gt;<i>
+</I>&gt;<i> *on
+</I>&gt;<i> off
+</I>&gt;<i> print
+</I>&gt;<i> draw*
+</I>&gt;<i>
+</I>&gt;<i> on/enable and off/disable functionalities would be merged (spi channel
+</I>&gt;<i> setup and release, dc/dc converter powering on/off)
+</I>&gt;<i> also, init would be combined with on/enable, initializing the spi clock
+</I>&gt;<i> always to 1000000. It is very unlikely that this spi channel would be used
+</I>&gt;<i> concurrently for another function.
+</I>&gt;<i> A typical diplay usage would be:
+</I>&gt;<i>
+</I>&gt;<i> *disp.on()*  and
+</I>&gt;<i> *disp.print() *and/or *disp.draw()* at will...........
+</I>&gt;<i>
+</I>&gt;<i> The user would not care anymore for the concept of an &quot;spi frequency&quot;,
+</I>&gt;<i> display/channel initialization and would simply use *on* to begin use the
+</I>&gt;<i> display. *disp.off* would be used only in some cases and mostly at the
+</I>&gt;<i> very end of the program.
+</I>&gt;<i>
+</I>&gt;<i> The only functionality that we seem to loose is that an off-on cicle would
+</I>&gt;<i> force a clear (I think so, if init forces a clear) and contents would have
+</I>&gt;<i> to be rewritten/redrawn in case of a &quot;screen-saver&quot; usage. But again, this
+</I>&gt;<i> doesn't seem to hurt or frequently used.
+</I>&gt;<i>
+</I>&gt;<i> Comments are welcome.
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------
+</I>&gt;<i> Yahoo!&#39321;&#28207;&#25552;&#20379;&#32178;&#19978;&#23433;&#20840;&#25915;&#30053;&#65292;&#25945;&#20320;&#22914;&#20309;&#38450;&#31684;&#40657;&#23458;!*&#20102;&#35299;&#26356;&#22810;* &lt;<A HREF="http://hk.promo.yahoo.com/security/">http://hk.promo.yahoo.com/security/</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090226/63d4038d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090226/63d4038d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000609.html">[eLua-dev] Re&#65306;  disp module revision
+</A></li>
+	<LI>Next message: <A HREF="000615.html">[eLua-dev] disp module revision
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#612">[ date ]</a>
+              <a href="thread.html#612">[ thread ]</a>
+              <a href="subject.html#612">[ subject ]</a>
+              <a href="author.html#612">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

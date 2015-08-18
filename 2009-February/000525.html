@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Microcontroller Filesystem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Microcontroller%20Filesystem&In-Reply-To=%3Cd3b6d880902180319h76a45c56nb9314e3bfebfc1%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000524.html">
+   <LINK REL="Next"  HREF="000529.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Microcontroller Filesystem</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Microcontroller%20Filesystem&In-Reply-To=%3Cd3b6d880902180319h76a45c56nb9314e3bfebfc1%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Microcontroller Filesystem">dadosutter at gmail.com
+       </A><BR>
+    <I>Wed Feb 18 12:19:47 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000524.html">[eLua-dev] Timing
+</A></li>
+        <LI>Next message: <A HREF="000529.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#525">[ date ]</a>
+              <a href="thread.html#525">[ thread ]</a>
+              <a href="subject.html#525">[ subject ]</a>
+              <a href="author.html#525">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+   John, sorry for the delay on this.
+   I think we have very interesting sugestions here. I see it more as a
+separate persistency/function proxy scheme, that could be
+extended/integrated for/with an RPC architecture, than as an alternative
+File System.
+   The overhead of our current FS and the r/w planned ones (we actually have
+mmc/sd already ! :) is very small, it is really a lightweight FS, so you
+your suggestions could work perfectly well upon any of them.
+   The scenario for which you plan your sugestions seem to be a more complex
+one and I'd like to hear more about it.
+
+Regards
+Dado
+
+
+
+
+On Tue, Feb 17, 2009 at 12:36, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+
+&gt;<i>  OK, let me try to explain this half-thought-out idea a bit more clearly!
+</I>&gt;<i> I feel a &quot;hello world&quot; coming on!
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Starting with an empty LuaStamp, I load something like the following into
+</I>&gt;<i> its RAM:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> app = flash(function() print(&quot;hello world&quot;) end, &quot;autorun&quot;)
+</I>&gt;<i>
+</I>&gt;<i> app()
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> This will print (whatever that means in this context) &quot;hello world&quot;
+</I>&gt;<i> immediately.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Now I cycle the power on the controller and it powers up and prints &quot;hello
+</I>&gt;<i> world&quot; again.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The new &quot;flash&quot; library function takes a function and does a string.dump
+</I>&gt;<i> operation on it saving the resulting byte code string in flash memory along
+</I>&gt;<i> with an initial &quot;flags&quot; byte which in this case has the &quot;autorun&quot; flag set.
+</I>&gt;<i> &quot;flash&quot; returns a userdata (app) containing the address of the string in
+</I>&gt;<i> flash memory and having a metatable with a _call metafunction defined.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The final line of the original chunk calls the app userdata, invoking the
+</I>&gt;<i> _call metafunction which loadstring's the function from flash and tail-calls
+</I>&gt;<i> it. (More complexly the userdata might point to the original function cached
+</I>&gt;<i> in RAM for performance reasons at this stage). This step could be omitted, I
+</I>&gt;<i> just put it in to show what is going on.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Now we turn power off, killing the original chunk and any cached copy of
+</I>&gt;<i> the function.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> When we power up again, the system looks through the part of the flash
+</I>&gt;<i> memory used to store functions. It sees the persisted version of our
+</I>&gt;<i> function and that it's &quot;autorun&quot; flag is set. So it loadstring's it from
+</I>&gt;<i> flash, re-creates the userdata proxy and executes it printing &quot;hello world&quot;
+</I>&gt;<i> again.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> In a more complex scenario, the autorun function might create whole library
+</I>&gt;<i> tables of userdata &quot;function proxies&quot;  pointing to additional functions in
+</I>&gt;<i> flash which are not autorun. These get loaded into RAM when they are first
+</I>&gt;<i> called, and may be flushed at any time to conserve RAM.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> *From:* <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] *On Behalf Of *Bogdan Marinescu
+</I>&gt;<i> *Sent:* 17 February 2009 14:31
+</I>&gt;<i> *To:* eLua Users and Development List
+</I>&gt;<i> *Subject:* Re: [eLua-dev] Microcontroller Filesystem
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  The discussion of the eLua file system and autoruns is very interesting.
+</I>&gt;<i> Sorry if this goes over old ground but I have not actually started working
+</I>&gt;<i> with eLua yet (planning to start with the next release &#8211; I'm waiting to see
+</I>&gt;<i> which hardware to buy!)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Currently, the LM3S CPU has the most features implemented for eLua. This
+</I>&gt;<i> might or might not hold true in the future, I can't give any guarantees on
+</I>&gt;<i> this.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>  One idea I had when I was working on this on my own was to dispense with
+</I>&gt;<i> a file system altogether and use persistence instead. You would load source
+</I>&gt;<i> code over a network or serial link into a RAM buffer and compile it from
+</I>&gt;<i>
+</I>&gt;<i>  eLua can already upload code into RAM via XMODEM. Not exactly what you
+</I>&gt;<i> meant, but a good start :)
+</I>&gt;<i>
+</I>&gt;<i>  there. Then there would be a feature added to Lua to back functions in
+</I>&gt;<i> tables off into flash memory in dump (byte-code) format. The value in the
+</I>&gt;<i> table would be replaced by a userdata containing a pointer into the flash. A
+</I>&gt;<i> __call metamethod on the userdata would recover the function into RAM
+</I>&gt;<i> whenever it was called (this could be a caching system so it would be
+</I>&gt;<i> retained in RAM until flushed). Alternatively, the runtime could be modified
+</I>&gt;<i> to execute the function in flash. There could be some flags on each function
+</I>&gt;<i> dumped to flash including a &quot;run at boot&quot; flag. On boot, the system would
+</I>&gt;<i> search the flash function store and run any functions with this flag set.
+</I>&gt;<i>
+</I>&gt;<i>  I'm not sure I understood this, can you give a simple example (maybe
+</I>&gt;<i> together with an equally simple usage scenario)? I just can't grasp the
+</I>&gt;<i> concept apparently :)
+</I>&gt;<i>
+</I>&gt;<i>  Sorry again if I've just re-invented the wheel!
+</I>&gt;<i>
+</I>&gt;<i>  I don't think you did; on the contrary, you probably came up with
+</I>&gt;<i> something new that I'm just unable to understand yet :)
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/d2bc63b9/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/d2bc63b9/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000524.html">[eLua-dev] Timing
+</A></li>
+	<LI>Next message: <A HREF="000529.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#525">[ date ]</a>
+              <a href="thread.html#525">[ thread ]</a>
+              <a href="subject.html#525">[ subject ]</a>
+              <a href="author.html#525">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

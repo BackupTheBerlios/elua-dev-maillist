@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Mizar32: Enable serial console input buffer by	default
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mizar32%3A%20Enable%20serial%20console%20input%20buffer%20by%0A%09default&In-Reply-To=%3CAANLkTinp7T2BXMMmd0uei3en3LOMu%3DP3z3ApR3--71JR%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001890.html">
+   <LINK REL="Next"  HREF="001895.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Mizar32: Enable serial console input buffer by	default</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Mizar32%3A%20Enable%20serial%20console%20input%20buffer%20by%0A%09default&In-Reply-To=%3CAANLkTinp7T2BXMMmd0uei3en3LOMu%3DP3z3ApR3--71JR%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Mizar32: Enable serial console input buffer by	default">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sun Jan 16 20:39:59 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001890.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+        <LI>Next message: <A HREF="001895.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1891">[ date ]</a>
+              <a href="thread.html#1891">[ thread ]</a>
+              <a href="subject.html#1891">[ subject ]</a>
+              <a href="author.html#1891">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> It doesn't surprise me much. An easy way to handle text, data and BSS
+</I>&gt;<i> is just to write everything to flash as a single stream of bytes,
+</I>&gt;<i> including the the BSS as 0s, then in the C startup code (crt0.o)
+</I>&gt;<i> blindly copy the data+bss area to the start of RAM before jumping to
+</I>&gt;<i> main(). It's relatively easy to bind the size/location/target_address
+</I>&gt;<i> of the data section while linking of the object file.
+</I>&gt;<i>
+</I>&gt;<i> Doing more than this means preserving more information from the ELF
+</I>&gt;<i> file into the flash image and having a more intelligent crt0.o.
+</I>
+I see. Well this approach works but obviously not very well ...
+
+&gt;&gt;<i> What tool are you using to write the image to flash ?
+</I>&gt;<i> &quot;avr32program&quot; command line tool, which reads elf files.
+</I>
+Never used that one. And I don't regret that :)
+I tried something here, please let me know if this works for you:
+
+(this is how the elf file looks like initially)
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdanm at bogdanm-desktop</A>:~/work/elua/trunk2$ avr32-readelf -S
+elua_lualong_at32uc3a0128.elf
+There are 18 section headers, starting at offset 0x82888:
+
+Section Headers:
+  [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            00000000 000000 000000 00      0   0  0
+  [ 1] .text             PROGBITS        80002000 000400 01da00 00  AX
+ 0   0 512
+  [ 2] .rela.got         RELA            8001fa00 01e600 000000 0c   A  0   0  4
+  [ 3] .data             PROGBITS        00000004 01e004 000554 00  WA  0   0  4
+  [ 4] .bss              NOBITS          00000558 01e958 0005c8 00  WA  0   0  4
+  [ 5] .debug_frame      PROGBITS        00000000 01e600 00a414 00      0   0  4
+  [ 6] .comment          PROGBITS        00000000 028a14 001756 00      0   0  1
+  [ 7] .debug_abbrev     PROGBITS        00000000 02a16a 008e97 00      0   0  1
+  [ 8] .debug_info       PROGBITS        00000000 033001 03010b 00      0   0  1
+  [ 9] .debug_line       PROGBITS        00000000 06310c 00dc8d 00      0   0  1
+  [10] .debug_loc        PROGBITS        00000000 070d99 00b073 00      0   0  1
+  [11] .debug_pubnames   PROGBITS        00000000 07be0c 00146a 00      0   0  1
+  [12] .debug_aranges    PROGBITS        00000000 07d276 0010a8 00      0   0  1
+  [13] .debug_ranges     PROGBITS        00000000 07e31e 0011e0 00      0   0  1
+  [14] .debug_str        PROGBITS        00000000 07f4fe 0032d3 01  MS  0   0  1
+  [15] .shstrtab         STRTAB          00000000 0827d1 0000b5 00      0   0  1
+  [16] .symtab           SYMTAB          00000000 082b58 004fb0 10     17 694  4
+  [17] .strtab           STRTAB          00000000 087b08 003bec 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings)
+  I (info), L (link order), G (group), x (unknown)
+  O (extra OS processing required) o (OS specific), p (processor specific)
+
+(now I'll create a new one stripping some sections from the original
+(the debug sections (-S) and the bss (-R .bss))
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdanm at bogdanm-desktop</A>:~/work/elua/trunk2$ avr32-objcopy -O
+elf32-avr32 -S -R .bss elua_lualong_at32uc3a0128.elf elua2.elf
+BFD: elua_lualong_at32uc3a0128.elf: warning: Empty loadable segment
+detected, is this intentional ?
+
+(ignore the warning)
+(this is how the new file looks like)
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdanm at bogdanm-desktop</A>:~/work/elua/trunk2$ avr32-readelf -S elua2.elf
+There are 6 section headers, starting at offset 0x8003f180:
+
+Section Headers:
+  [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            00000000 000000 000000 00      0   0  0
+  [ 1] .text             PROGBITS        80002000 000400 01da00 00  AX
+ 0   0 512
+  [ 2] .rela.got         RELA            8001fa00 8003da00 000000 0c
+A  0   0  4
+  [ 3] .data             PROGBITS        00000004 01e004 000554 00  WA  0   0  4
+  [ 4] .comment          PROGBITS        00000000 8003da00 001756 00
+   0   0  1
+  [ 5] .shstrtab         STRTAB          00000000 8003f156 00002a 00
+   0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings)
+  I (info), L (link order), G (group), x (unknown)
+  O (extra OS processing required) o (OS specific), p (processor specific)
+
+The new elf file has the same useful data as the original but without
+the .bss section. You can try to feed elua2.elf to avr32program, it
+might work and it will save the part of the flash that would be
+normally overwritten by .bss. If you try this please let me know the
+outcome, I'm curious :)
+
+Best,
+Bogdan
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001890.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+	<LI>Next message: <A HREF="001895.html">[eLua-dev] Mizar32: Enable serial console input buffer by	default
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1891">[ date ]</a>
+              <a href="thread.html#1891">[ thread ]</a>
+              <a href="subject.html#1891">[ subject ]</a>
+              <a href="author.html#1891">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

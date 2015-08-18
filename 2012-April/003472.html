@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problem to import module in eLua - LM3S
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20to%20import%20module%20in%20eLua%20-%20LM3S&In-Reply-To=%3CCAKoW%3DmARN8B0JCG%3Dyt2_Cbujcst4Wa0X7hWBmaG8GRKqZC0nwg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003471.html">
+   <LINK REL="Next"  HREF="003473.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problem to import module in eLua - LM3S</H1>
+    <B>Marcus Vinicius Costa</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20to%20import%20module%20in%20eLua%20-%20LM3S&In-Reply-To=%3CCAKoW%3DmARN8B0JCG%3Dyt2_Cbujcst4Wa0X7hWBmaG8GRKqZC0nwg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Problem to import module in eLua - LM3S">marcusvc.costa at gmail.com
+       </A><BR>
+    <I>Wed Apr 11 14:45:52 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003471.html">[eLua-dev] Problem to import module in eLua - LM3S
+</A></li>
+        <LI>Next message: <A HREF="003473.html">[eLua-dev] Problem to import module in eLua - LM3S
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3472">[ date ]</a>
+              <a href="thread.html#3472">[ thread ]</a>
+              <a href="subject.html#3472">[ subject ]</a>
+              <a href="author.html#3472">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Bogdan, thanks for the prompt response.
+
+I have tested with 2 differents SD cards and i try to send the files direct
+by terminal and using a PC with windows, but i have the same problem in
+both...
+
+I will test the command 'cat /mmc/http.lua' to see the result.
+
+Thanks
+Marcus Vinicius
+
+2012/4/11 Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Apr 11, 2012 at 3:18 PM, Marcus Vinicius Costa
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">marcusvc.costa at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; Hi all...
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; It has to do something different to import modules in eLua, I put in my
+</I>&gt;<i> code
+</I>&gt;<i> &gt; the &quot;require&quot;, but always i have a error in the execution.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Source in file &quot;main.lua&quot;
+</I>&gt;<i> &gt; ...
+</I>&gt;<i> &gt; require &quot;http&quot;
+</I>&gt;<i> &gt; ...
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; -- In terminal using a IDE Goat
+</I>&gt;<i> &gt; With the LS command I list all files in mmc card and the 2 files found
+</I>&gt;<i> are
+</I>&gt;<i> &gt; correct, &quot;main.lua&quot; and &quot;http.lua&quot;.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     eLua v0.8  Copyright (C) 2007-2011 www.eluaproject.net
+</I>&gt;<i> &gt;     eLua# ls
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     /rom
+</I>&gt;<i> &gt;     Total on /rom: 0 bytes
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     /mmc
+</I>&gt;<i> &gt;     http.lua                       5439 bytes
+</I>&gt;<i> &gt;     main.lua                       7799 bytes
+</I>&gt;<i> &gt;     Total on /mmc: 13238 bytes
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; When I run the file &quot;main.lua&quot; an error occurs and says that the module
+</I>&gt;<i> was
+</I>&gt;<i> &gt; not found
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     eLua# lua /mmc/main.lua
+</I>&gt;<i> &gt;     Press CTRL+Z to exit Lua
+</I>&gt;<i> &gt;     lua: /mmc/main.lua:87: module 'http' not found:
+</I>&gt;<i> &gt;             no field package.preload['http']
+</I>&gt;<i> &gt;             no file '/mmc/http.lua'
+</I>&gt;<i> &gt;             no file '/mmc/http.lc'
+</I>&gt;<i> &gt;             no file '/rom/http.lua'
+</I>&gt;<i> &gt;             no file '/rom/http.lc'
+</I>&gt;<i> &gt;     stack traceback:
+</I>&gt;<i> &gt;             [C]: in function 'require'
+</I>&gt;<i> &gt;             /mmc/main.lua:87: in main chunk
+</I>&gt;<i> &gt;             [C]: ?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; After the error, if I ask to list the files again nothing is found, as if
+</I>&gt;<i> &gt; the card was &quot;ejected&quot; by the system, only to reset it back to normal.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     eLua# ls
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     /rom
+</I>&gt;<i> &gt;     Total on /rom: 0 bytes
+</I>&gt;<i> &gt;     /mmc
+</I>&gt;<i> &gt;     Total on /mmc: 0 bytes
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     eLua#
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Someone tell me what might be happening to him can not find the module,
+</I>&gt;<i> what
+</I>&gt;<i> &gt; can I do to try to solve the problem?
+</I>&gt;<i>
+</I>&gt;<i> That sounds like an SD card issue. Have you tried a different SD card?
+</I>&gt;<i> What happens if you do 'cat /mmc/http.lua' ?
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks in advance by the help
+</I>&gt;<i> &gt; Marcus Vinicius
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20120411/066d970e/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20120411/066d970e/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003471.html">[eLua-dev] Problem to import module in eLua - LM3S
+</A></li>
+	<LI>Next message: <A HREF="003473.html">[eLua-dev] Problem to import module in eLua - LM3S
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3472">[ date ]</a>
+              <a href="thread.html#3472">[ thread ]</a>
+              <a href="subject.html#3472">[ subject ]</a>
+              <a href="author.html#3472">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

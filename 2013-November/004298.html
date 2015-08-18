@@ -1,0 +1,353 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] assembling commands for SPI
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20assembling%20commands%20for%20SPI&In-Reply-To=%3CCAJ%3DY9Y0dOLveoE3qBV1ce989pdc%2BDzF6VB94JtTDgOU4VXBwdg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004297.html">
+   <LINK REL="Next"  HREF="004287.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] assembling commands for SPI</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20assembling%20commands%20for%20SPI&In-Reply-To=%3CCAJ%3DY9Y0dOLveoE3qBV1ce989pdc%2BDzF6VB94JtTDgOU4VXBwdg%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] assembling commands for SPI">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Nov 20 00:40:32 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004297.html">[eLua-dev] assembling commands for SPI
+</A></li>
+        <LI>Next message: <A HREF="004287.html">[eLua-dev] porting to STM32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4298">[ date ]</a>
+              <a href="thread.html#4298">[ thread ]</a>
+              <a href="subject.html#4298">[ subject ]</a>
+              <a href="author.html#4298">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Nov 19, 2013 at 4:28 PM, Richard Graham &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> Thanks for that. I think I should be able to manage with just the bit
+</I>&gt;<i> module.
+</I>&gt;<i>
+</I>&gt;<i> I didn't see the bitarrays module before. Looks like it might work,
+</I>&gt;<i> though I couldn't find any documentation about this and the source is
+</I>&gt;<i> not that easy to read at a quick look. Presumably this module is used
+</I>&gt;<i> internally somewhere?
+</I>&gt;<i>
+</I>
+Not sure if we use it internally anywhere, it may just not have gotten
+documented.  Here's one example of its usage to take a binary image put it
+in a bit array and then rotate it to be shown on an OLED display:
+<A HREF="http://wiki.eluaproject.net/Logo">http://wiki.eluaproject.net/Logo</A>
+
+Here's a first pass at the API just from skimming the source a bit:
+
+arrays are created either with a specific capacity, a source byte array
+(string) or an existing Lua array, packed into a uniform element size array
+// Lua: array = bitarray.new( capacity, [element_size_bits], [fill] ), or
+//      array = bitarray.new( &quot;string&quot;, [element_size_bits] ), or
+//      array = bitarray.new( lua_array, [element_size_bits] )
+
+fields can be indexed like a lua table:
+// Lua: value = array[ idx ]
+
+can be assigned like a table:
+// Lua: array[ key ] = value
+
+get length similar to how one would do so for a string:
+// Lua : size = #array
+
+arrays can be converted into a string.  not sure what raw/seq means
+// Lua: string = bitarray.tostring( array, [&quot;raw&quot;|&quot;seq&quot;] )
+
+or a table (again, not sure about raw/seq):
+// Lua: table = bitarray.totable( array, [&quot;raw&quot;|&quot;seq&quot;] )
+
+And it looks like you can use bitarray.pairs which looks like it should
+behave like the built-in Lua pairs.
+
+
+
+&gt;<i> Another thing, I was wondering if anyone has compiled the elua modules
+</I>&gt;<i> so they can be used with lua on the desktop? I would prefer to do most
+</I>&gt;<i> of the development on the desktop but since some libraries are
+</I>&gt;<i> different, i.e. the bit and bitlib api that is not to easy.
+</I>&gt;<i>
+</I>
+One quick way that should work is to build the luarpc desktop binary as
+described here:
+<A HREF="http://www.eluaproject.net/doc/master/en_using.html#rpc">http://www.eluaproject.net/doc/master/en_using.html#rpc</A>
+
+If you already have the build environment for using the lua-based build
+system and you have compilers on your system to build native binaries you
+should be able to just run:
+lua rpc-lua.lua
+
+When you run the resulting binary (luarpc) you'll get a Lua REPL and the
+binary should include the modules like bit/pack/bitarray.
+
+Best.
+
+-jsnyder
+
+
+&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> --
+</I>&gt;<i> Richard Graham
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On 11/18/2013 03:08 PM, James Snyder wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Mon, Nov 18, 2013 at 2:01 PM, Richard Graham &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>
+</I>&gt;<i> &gt; &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>&gt;&gt; wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     Thanks James and Thiago for your replies.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     I am aware of the bit module, though as far as I can tell it is not
+</I>&gt;<i> &gt;     especially useful for me. As an example I need to assemble a 16 bit
+</I>&gt;<i> &gt;     command of the form:
+</I>&gt;<i> &gt;       2 1-bit flags, followed by a 6-bit number followed by an 8-bit
+</I>&gt;<i> number.
+</I>&gt;<i> &gt;     This could be done with bit shifts but is cumbersome when I have a
+</I>&gt;<i> lot
+</I>&gt;<i> &gt;     of commands to do. There doesn't seem to be an easy way to cast a lua
+</I>&gt;<i> &gt;     number to a given precision. lua-bitstring seems to be a lot easier
+</I>&gt;<i> if
+</I>&gt;<i> &gt;     it can be made to work.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The syntax for that looks nice to work with for packing and unpacking of
+</I>&gt;<i> &gt; definable length fields.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Depending on how it was written it might not be too hard to compile that
+</I>&gt;<i> &gt; as a module for eLua if it's generally ANSI C + the Lua API, but there
+</I>&gt;<i> &gt; might be other issues with its memory usage assumptions or total code
+</I>&gt;<i> &gt; size.  It does look like a nice way to pack data though.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; With the current modules though you'd be looking at using the bit module
+</I>&gt;<i> &gt; with shifts or some abstraction on top of that.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     Also, from a quick look at the SPI code it seems that if you pass a
+</I>&gt;<i> &gt;     number as in your example, it will use lua_tointeger on the number
+</I>&gt;<i> and
+</I>&gt;<i> &gt;     send that. It then seems from luaconf.h that the actual number of
+</I>&gt;<i> bits
+</I>&gt;<i> &gt;     sent would depend on the platform or how lua is compiled. I suspect
+</I>&gt;<i> if I
+</I>&gt;<i> &gt;     need to control the number of bytes sent I would need to send the
+</I>&gt;<i> data
+</I>&gt;<i> &gt;     as a string.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The actual SPI word size will be defined when you call spi.setup, but
+</I>&gt;<i> &gt; you're correct that the integer size defined at compile time would need
+</I>&gt;<i> &gt; to be large enough to hold each word.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; As far as I know all of our platforms will have a lua integer size of
+</I>&gt;<i> &gt; 32-bits (a long) which is plenty for the word sizes most of the SPI
+</I>&gt;<i> &gt; interfaces support of 8 and 16-bits. You can check individual platforms
+</I>&gt;<i> &gt; in the type.h file.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I believe what should happen on each platform is that the lowest
+</I>&gt;<i> &gt; wordsize bits of the &quot;data&quot; parameter will be used out of the size of
+</I>&gt;<i> &gt; the number passed.  This will be regardless of the native Lua type which
+</I>&gt;<i> &gt; could be be double-precision floating point or 32-bit/64-bit integer.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I took a quick look at the string approach and that looks like it goes
+</I>&gt;<i> &gt; byte-by-byte so that may actually only work with 8-bit SPI wordsize.  We
+</I>&gt;<i> &gt; should probably do something about that or document it unless I've
+</I>&gt;<i> &gt; misinterpreted something.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I haven't  investigated ecdr's bitarrays suggestion
+</I>&gt;<i> &gt; (<A HREF="https://github.com/elua/elua/blob/master/src/modules/bitarray.c">https://github.com/elua/elua/blob/master/src/modules/bitarray.c</A>) but I
+</I>&gt;<i> &gt; think that has a fixed field size?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     Let me know if I have this wrong or if you have any thoughts.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     Thanks,
+</I>&gt;<i> &gt;     --
+</I>&gt;<i> &gt;     Richard Graham
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     On 11/18/2013 10:51 AM, James Snyder wrote:
+</I>&gt;<i> &gt;     &gt; There is a bit module included with eLua but it's actually based on
+</I>&gt;<i> &gt;     &gt; bitlib and the API is a little different:
+</I>&gt;<i> &gt;     &gt; <A HREF="http://www.eluaproject.net/doc/master/en_refman_gen_bit.html">http://www.eluaproject.net/doc/master/en_refman_gen_bit.html</A>
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt; On Mon, Nov 18, 2013 at 6:48 AM, Thiago Naves
+</I>&gt;<i> &gt;     &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;
+</I>&gt;<i> &gt;     &gt; &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;&gt;&gt;
+</I>&gt;<i> &gt;     wrote:
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;     Hi Richard,
+</I>&gt;<i> &gt;     &gt;     You can use the bit module to do the usual bit operations (or,
+</I>&gt;<i> &gt;     and,
+</I>&gt;<i> &gt;     &gt;     xor, ...):
+</I>&gt;<i> &gt;     &gt;     <A HREF="http://bitop.luajit.org/api.html">http://bitop.luajit.org/api.html</A>
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;     To assemble multiple bytes, you could do
+</I>&gt;<i> &gt;     &gt;     a = 3
+</I>&gt;<i> &gt;     &gt;     b = 5
+</I>&gt;<i> &gt;     &gt;     c = a..b
+</I>&gt;<i> &gt;     &gt;     and have c = &quot;35&quot;
+</I>&gt;<i> &gt;     &gt;     or spi.write(0, a, b)
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;     --
+</I>&gt;<i> &gt;     &gt;     Thiago
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;     On Mon, Nov 18, 2013 at 4:06 AM, Richard Graham &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>
+</I>&gt;<i> &gt;     &gt;     &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">richard at rdg.cc</A>&gt;&gt;&gt; wrote:
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;         Hi elua people,
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;         I am just getting started with elua. Looks pretty nice so
+</I>&gt;<i> far.
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;         I need to pack together data to make some commands for
+</I>&gt;<i> setting
+</I>&gt;<i> &gt;     &gt;         various
+</I>&gt;<i> &gt;     &gt;         registers on a device connected via SPI. I need to be able
+</I>&gt;<i> &gt;     to set
+</I>&gt;<i> &gt;     &gt;         individual bits and also pack 8 and 16 bit numbers. This
+</I>&gt;<i> seems
+</I>&gt;<i> &gt;     &gt;         like it
+</I>&gt;<i> &gt;     &gt;         should be a common problem and I was wondering what the
+</I>&gt;<i> usual
+</I>&gt;<i> &gt;     &gt;         approach
+</I>&gt;<i> &gt;     &gt;         to this is.
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;         I see the 'pack' module, though it looks like it only
+</I>&gt;<i> supports
+</I>&gt;<i> &gt;     &gt;         packing
+</I>&gt;<i> &gt;     &gt;         whole bytes at a minimum. Packing and unpacking at the
+</I>&gt;<i> &gt;     &gt;         individual bit
+</I>&gt;<i> &gt;     &gt;         level is going to get messy.
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;         I have found lua-bitstring, which looks like it should be
+</I>&gt;<i> &gt;     great
+</I>&gt;<i> &gt;     &gt;         for this
+</I>&gt;<i> &gt;     &gt;         purpose -- though I can hardly find any documentation or
+</I>&gt;<i> &gt;     others
+</I>&gt;<i> &gt;     &gt;         using
+</I>&gt;<i> &gt;     &gt;         it. I was wondering if anyone has managed to use this in
+</I>&gt;<i> &gt;     elua? Or is
+</I>&gt;<i> &gt;     &gt;         there something else I am missing?
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;         Thanks,
+</I>&gt;<i> &gt;     &gt;         --
+</I>&gt;<i> &gt;     &gt;         Richard
+</I>&gt;<i> &gt;     &gt;         _______________________________________________
+</I>&gt;<i> &gt;     &gt;         eLua-dev mailing list
+</I>&gt;<i> &gt;     &gt;         <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;     &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>&gt; &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;     &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>&gt;&gt;
+</I>&gt;<i> &gt;     &gt;         <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;     _______________________________________________
+</I>&gt;<i> &gt;     &gt;     eLua-dev mailing list
+</I>&gt;<i> &gt;     &gt;     <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> &gt;     &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;     &gt;     <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt; --
+</I>&gt;<i> &gt;     &gt; James Snyder
+</I>&gt;<i> &gt;     &gt; Biomedical Engineering
+</I>&gt;<i> &gt;     &gt; Northwestern University
+</I>&gt;<i> &gt;     &gt; ph: (847) 448-0386 &lt;tel:%28847%29%20448-0386&gt;
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;     &gt; _______________________________________________
+</I>&gt;<i> &gt;     &gt; eLua-dev mailing list
+</I>&gt;<i> &gt;     &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> &gt;     &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;     &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     _______________________________________________
+</I>&gt;<i> &gt;     eLua-dev mailing list
+</I>&gt;<i> &gt;     <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> &gt;     <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; James Snyder
+</I>&gt;<i> &gt; Biomedical Engineering
+</I>&gt;<i> &gt; Northwestern University
+</I>&gt;<i> &gt; ph: (847) 448-0386
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+James Snyder
+Biomedical Engineering
+Northwestern University
+ph: (847) 448-0386
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20131119/e044c681/attachment-0001.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20131119/e044c681/attachment-0001.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004297.html">[eLua-dev] assembling commands for SPI
+</A></li>
+	<LI>Next message: <A HREF="004287.html">[eLua-dev] porting to STM32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4298">[ date ]</a>
+              <a href="thread.html#4298">[ thread ]</a>
+              <a href="subject.html#4298">[ subject ]</a>
+              <a href="author.html#4298">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

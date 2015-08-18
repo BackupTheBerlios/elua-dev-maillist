@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] [ANN] Source control versioning system migration to	GIT
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BANN%5D%20Source%20control%20versioning%20system%20migration%20to%0A%09GIT&In-Reply-To=%3CAANLkTikuJERSsMwSLYS8nJ4Pf%2Bc5azXjMuwrUpZ2uEMX%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002022.html">
+   <LINK REL="Next"  HREF="002031.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] [ANN] Source control versioning system migration to	GIT</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20%5BANN%5D%20Source%20control%20versioning%20system%20migration%20to%0A%09GIT&In-Reply-To=%3CAANLkTikuJERSsMwSLYS8nJ4Pf%2Bc5azXjMuwrUpZ2uEMX%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] [ANN] Source control versioning system migration to	GIT">dadosutter at gmail.com
+       </A><BR>
+    <I>Mon Feb 14 19:40:04 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002022.html">[eLua-dev] [ANN] Source control versioning system migration to GIT
+</A></li>
+        <LI>Next message: <A HREF="002031.html">[eLua-dev] [ANN] Source control versioning system migration to GIT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2030">[ date ]</a>
+              <a href="thread.html#2030">[ thread ]</a>
+              <a href="subject.html#2030">[ subject ]</a>
+              <a href="author.html#2030">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+
+On Sun, Feb 13, 2011 at 14:54, cbayona &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cbayona at cbayona.com</A>&gt; wrote:
+
+&gt;<i> I'm new to the list and new to Lua so I don't have any fantastic
+</I>&gt;<i> application but I'll tell you what I'm planning to try with eLua.
+</I>&gt;<i>
+</I>&gt;<i> I have several compatible boards on their way for two separate projects,
+</I>&gt;<i> the ET-SMT32 from Futurlec, they are pretty reasonable at $25.
+</I>&gt;<i> &lt; &lt;<A HREF="http://www.futurlec.com/ET-STM32_Stamp.shtml">http://www.futurlec.com/ET-STM32_Stamp.shtml</A>&gt;
+</I>&gt;<i> <A HREF="http://www.futurlec.com/ET-STM32_Stamp.shtml">http://www.futurlec.com/ET-STM32_Stamp.shtml</A>  &gt;
+</I>&gt;<i>
+</I>
+And the instructions on how to use them with eLua are at
+<A HREF="http://www.eluaproject.net/en_installing_stm32.html">http://www.eluaproject.net/en_installing_stm32.html</A>
+
+
+
+&gt;<i> Project #1 a PID controller for an oven to solder SMT boards, this will
+</I>&gt;<i> control an ovens heater element to ramp up and down the temperature in an
+</I>&gt;<i> oven in a controlled way so that a PCB board is soldered properly while
+</I>&gt;<i> avoiding damaging the components.
+</I>
+
+Very nice
+
+
+&gt;<i> It will interface to a 20 key pad
+</I>
+
+There's a nice $3.95 model from Sparkfun at
+<A HREF="http://www.sparkfun.com/products/8653">http://www.sparkfun.com/products/8653</A>  (of course there's always cheaper
+options elsewhere).
+
+, a graphic display,
+
+
+We have a couple of drivers working already and would love to have more,
+including touch screen support, quickly appearing on some units now.
+
+a A/D port reading a K thermocouple amplifier, sound alarms, and an
+&gt;<i> optically isolated Solid state relay to control the heater elements. I will
+</I>&gt;<i> graphically show the temperature live and be able to store calibrating data
+</I>&gt;<i> as to what the behavior of the heater is like so it will not overshoot is
+</I>&gt;<i> temperature. I don't have too many doubts that this will work since the
+</I>&gt;<i> control loop does not need to be very fast dues to the slow nature of the
+</I>&gt;<i> process.
+</I>&gt;<i>
+</I>
+Sounds like a very well fitted project for eLua
+
+
+
+&gt;<i> Project #2 is the control element of a homemade radio transceiver. This
+</I>&gt;<i> will use a PC keyboard
+</I>
+
+for which Thiago Naves wrote a nice C driver for eLua already. It is
+documented on our wiki at <A HREF="http://wiki.eluaproject.net/eLuaPCKBD">http://wiki.eluaproject.net/eLuaPCKBD</A>
+
+
+&gt;<i> , mouse, Graphic display, and USB port and RS232 Port to communicate with a
+</I>&gt;<i> PC or  a DSP processor. The controller will provide control of filters,
+</I>&gt;<i> timing control as the radios switches between receive and transmit
+</I>&gt;<i> functions.
+</I>&gt;<i>
+</I>&gt;<i> Project #2 is more questionable since I have not actually tried eLua so I
+</I>&gt;<i> don't know how fast it is,
+</I>
+
+Lua code in eLua, for obvious reasons, will never be as fast as C code. But
+we want to make it easy (easier than what it is today) for users like
+yourself, to code in C where you need more performance and easily integrate
+this into your application, be it as a loadable C binary module (a roadmap
+feature) or as a driver statically linked to the eLua image built for your
+platform (already available but still a bit hard to use. We're currently
+working on making it easier).
+
+also for this to work I need access to i2c hardware and possible USB ports
+&gt;<i> which support are not yet available for the ARM controller that I will use.
+</I>&gt;<i>
+</I>
+You can try to go with UARTS and FTDI for USB, if you don't need a true USB
+host/slave architecture.
+You can mention the modules you need that are not yet supported on our Wish
+List (<A HREF="http://wiki.eluaproject.net/Wish%20List">http://wiki.eluaproject.net/Wish%20List</A>). I2C libs are available for
+most platforms and it is just a matter of extending the support for it.
+
+Since these are new projects and I don't have Lua experience compatibility
+&gt;<i> is not an issue for me, although it would be nice to not deviate from the PC
+</I>&gt;<i> versions of Lua.
+</I>&gt;<i>
+</I>
+We strive to be full Lua and we actually think that this is one of the main
+characteristics of eLua. Most of the embedding high-level languages
+initiatives end up with a sub-sub-sub-set of the language and we don't want
+this from the start. There are will always be some modules where differences
+will be found (ie: the &quot;os&quot; module, once we don't have an OS below but
+still, we'll have it linked to our file-systems in the future) but the main
+functionality is completely implemented, including some embedded-oriented
+extensions (like romable tables and functions, emergency garbage collection,
+...).
+
+I'm looking forward to this experiment and I'm hoping it all works out as an
+&gt;<i> interactive system is a great help in working out the problems.
+</I>&gt;<i>
+</I>&gt;<i> Thanks for providing the software.
+</I>
+
+Thank you very much for using and for supporting eLua.
+
+Please don't forget to add your credentials to our Who is Using eLua growing
+list at <A HREF="ttp://wiki.eluaproject.net/Who%20is%20using">ttp://wiki.eluaproject.net/Who%20is%20using</A>
+
+Best
+Dado
+
+
+
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> At 09:44 AM 2/13/2011, you wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hello,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2011/2/13 Ronan Paix&#227;o &lt;&lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ronan at dapaixao.com.br</A>&gt;
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ronan at dapaixao.com.br</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Possibly the term is &quot;legacy support&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>   We don't know what people that don't share results here on the list are
+</I>&gt;&gt;<i> doing with eLua, although we do know that there are some.
+</I>&gt;&gt;<i>   I think that until we have something that we will be able to (and be
+</I>&gt;&gt;<i> proud of) call eLua v1.0, changes that can break some legacy behavior are
+</I>&gt;&gt;<i> possible. We can be more careful even before that, when we hear actual
+</I>&gt;&gt;<i> reasons to do some extra work to support it and this is what we're hearing
+</I>&gt;&gt;<i> now.
+</I>&gt;&gt;<i>   It is nice to know people are using eLua and we'll do our best to
+</I>&gt;&gt;<i> support any use of what we're creating.
+</I>&gt;&gt;<i>   I also want to publish on the site or here on the list, something I
+</I>&gt;&gt;<i> should have done a long time ago, which is an &quot;eLua Roadmap&quot; to make clear
+</I>&gt;&gt;<i> the directions we're going and to make possible people to contribute for it.
+</I>&gt;&gt;<i> It will come with the new site (hopefully 3~5 weeks from now) or even before
+</I>&gt;&gt;<i> that on the wiki.
+</I>&gt;&gt;<i>   We will also have to find a way to make available the old links to the
+</I>&gt;&gt;<i> (current) doc, that people may have bookmarked. In one way or another, they
+</I>&gt;&gt;<i> will be linked to the main site.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i> Dado
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Cecil
+</I>&gt;<i> k5nwa
+</I>&gt;<i> &lt;  www.softrockradio.org  &gt; &lt;  www.qrpradio.com  &gt;
+</I>&gt;<i> &lt;  <A HREF="http://parts.softrockradio.org/">http://parts.softrockradio.org/</A>  &gt;
+</I>&gt;<i>
+</I>&gt;<i> Never take life seriously. Nobody gets out alive anyway.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110214/1ed8ad09/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110214/1ed8ad09/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002022.html">[eLua-dev] [ANN] Source control versioning system migration to GIT
+</A></li>
+	<LI>Next message: <A HREF="002031.html">[eLua-dev] [ANN] Source control versioning system migration to GIT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2030">[ date ]</a>
+              <a href="thread.html#2030">[ thread ]</a>
+              <a href="subject.html#2030">[ subject ]</a>
+              <a href="author.html#2030">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

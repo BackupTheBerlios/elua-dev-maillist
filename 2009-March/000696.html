@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua with Olimex SAM7-P256 board
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20with%20Olimex%20SAM7-P256%20board&In-Reply-To=%3C81fbe47d0903250118lf8be496l9b06223f710736c3%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000695.html">
+   <LINK REL="Next"  HREF="000697.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua with Olimex SAM7-P256 board</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20with%20Olimex%20SAM7-P256%20board&In-Reply-To=%3C81fbe47d0903250118lf8be496l9b06223f710736c3%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua with Olimex SAM7-P256 board">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Mar 25 09:18:09 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000695.html">[eLua-dev] eLua with Olimex SAM7-P256 board
+</A></li>
+        <LI>Next message: <A HREF="000697.html">[eLua-dev] eLua with Olimex SAM7-P256 board
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#696">[ date ]</a>
+              <a href="thread.html#696">[ thread ]</a>
+              <a href="subject.html#696">[ subject ]</a>
+              <a href="author.html#696">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Very good work there. Funny though, I didn't expect the two CPUs to be that
+different.
+Note that the AT91SAM7 platforms needs some special defines (for the Atmel
+library). Look at conf.py:
+
+if cputype == 'AT91SAM7X256':
+  ldscript = &quot;flash256.lds&quot;
+  cdefs = cdefs + &quot; -Dat91sam7x256&quot;
+elif cputype == 'AT91SAM7X512':
+  ldscript = &quot;flash512.lds&quot;
+  cdefs = cdefs + &quot; -Dat91sam7x512&quot;
+else:
+  print &quot;Invalid AT91SAM7X CPU %s&quot; % cputype
+  sys.exit( -1 )
+
+Can't remember where they are used, but a simple grep in the at91sam7x
+directory should give you a good hint probably. You should probably add a
+&quot;-Dat91sam7s256&quot; just like above, but please verify this first, it's just an
+unverified assumption.
+
+Best,
+Bogdan
+
+On Wed, Mar 25, 2009 at 7:31 AM, mpthompson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpthompson at gmail.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> To get an understanding of how eLua works at a low level I'm starting with
+</I>&gt;<i> getting it running on an Olimex SAM7-P256 board that I purchased from
+</I>&gt;<i> SparkFun.
+</I>&gt;<i> ...
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I know it's poor form to respond to my own email, but I guess I'll do it
+</I>&gt;<i> anyways.  After a bit of head scratching and scouring the internet to
+</I>&gt;<i> understand subtleties of Arm initialization I've managed to add the
+</I>&gt;<i> AT91SAM7S and Olimex SAM7-P256 as a new platform for eLua.  Fortunately, the
+</I>&gt;<i> AT91SAM7S is closely related to the AT91SAM7X so examining that project that
+</I>&gt;<i> got me 75% of the way there, but I needed to dig up some of the Atmel
+</I>&gt;<i> specific configuration files for this specific chip and make minor changes
+</I>&gt;<i> throughout the platform.c file.  A board.h for the SAM7-P256 needed to be
+</I>&gt;<i> created as well.  Things are working to the point where I get the Lua prompt
+</I>&gt;<i> on the serial port and I can run the demos on the romfs.
+</I>&gt;<i>
+</I>&gt;<i> I'll be happy to share these files with anyone wanting to work specifically
+</I>&gt;<i> with the AT91SAM7S.  Hopefully over time I'll be able to merge this work
+</I>&gt;<i> with pieces of pbLua to create both a generic AT91SAM7S platform as well one
+</I>&gt;<i> specifically tailored to the LEGO NXT Brick with it's unique peripherals.
+</I>&gt;<i>
+</I>&gt;<i> Mike
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> View this message in context:
+</I>&gt;<i> <A HREF="http://n2.nabble.com/eLua-with-Olimex-SAM7-P256-board-tp2529137p2530834.html">http://n2.nabble.com/eLua-with-Olimex-SAM7-P256-board-tp2529137p2530834.html</A>
+</I>&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090325/436974d2/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090325/436974d2/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000695.html">[eLua-dev] eLua with Olimex SAM7-P256 board
+</A></li>
+	<LI>Next message: <A HREF="000697.html">[eLua-dev] eLua with Olimex SAM7-P256 board
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#696">[ date ]</a>
+              <a href="thread.html#696">[ thread ]</a>
+              <a href="subject.html#696">[ subject ]</a>
+              <a href="author.html#696">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

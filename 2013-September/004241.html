@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Issue with the mbed_pio platform module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Issue%20with%20the%20mbed_pio%20platform%20module&In-Reply-To=%3CCANKDJfYrSJ0V3-4ZA%2Bk4%3Dng_Fv0ykKS%2BChutfYq09W2g75jsmA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004240.html">
+   <LINK REL="Next"  HREF="004242.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Issue with the mbed_pio platform module</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Issue%20with%20the%20mbed_pio%20platform%20module&In-Reply-To=%3CCANKDJfYrSJ0V3-4ZA%2Bk4%3Dng_Fv0ykKS%2BChutfYq09W2g75jsmA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Issue with the mbed_pio platform module">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Sep  2 09:15:56 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004240.html">[eLua-dev] Happy Birthdays!
+</A></li>
+        <LI>Next message: <A HREF="004242.html">[eLua-dev] Issue with the mbed_pio platform module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4241">[ date ]</a>
+              <a href="thread.html#4241">[ thread ]</a>
+              <a href="subject.html#4241">[ subject ]</a>
+              <a href="author.html#4241">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+That is not bad, it's logical :) It's called a platform specific
+module before it is specific to the PLATFORM (lpc17xx in this case),
+not the BOARD (mbed). If you take your program and try to run in on
+another board with a LPC17XX, it will work as expected if you use (for
+example) lpc17xx.pio as opposed to mbed.pio, which wouldn't work
+anymore on your new board. A very simple &quot;fix&quot; would be to add this
+line at the beginning of your program:
+
+local mbed = lpc17xx
+
+Then you can use mbed.&lt;module&gt; as usual.
+
+HTH,
+Bogdan
+
+On Sat, Aug 31, 2013 at 8:42 PM, Gabriel Duarte &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A>&gt; wrote:
+&gt;<i> Owwwwww that is bad... Do you know where is the definition to change the
+</I>&gt;<i> nama back to mbed??
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2013/8/31 Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm trying to fix that...
+</I>&gt;&gt;<i> What I've found out so far is that the module IS there, but it's called
+</I>&gt;&gt;<i> lpc17xx instead of mbed:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; return lpc17xx.pio.configpin
+</I>&gt;&gt;<i> lightfunction: 0x19a81
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Thiago
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Thu, Aug 29, 2013 at 7:33 PM, patrick pollet &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">patrick.pollet at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks,
+</I>&gt;&gt;&gt;<i> despite my research i miss this page.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Concerning the problem i found an almost fix :
+</I>&gt;&gt;&gt;<i> - file build_elua.lua line 130 change &quot;false&quot; by &quot;true&quot; ( skip conf
+</I>&gt;&gt;&gt;<i> attribute, to avoid file board_mbed.h to be overwritten)
+</I>&gt;&gt;&gt;<i> - file auxmods.h, add line 63
+</I>&gt;&gt;&gt;<i> #define AUXLIB_MBEDPIO &quot;mbed&quot; LUALIB_API int (luaopen_mbed_pio)(
+</I>&gt;&gt;&gt;<i> lua_State *L );
+</I>&gt;&gt;&gt;<i> -file board_mbed.h, add line 217
+</I>&gt;&gt;&gt;<i> #define MODULE_MBEDPIO_LINE               _ROM( AUXLIB_MBEDPIO,
+</I>&gt;&gt;&gt;<i> luaopen_mbed_pio, mbed_pio_map )
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> and few lines below, add
+</I>&gt;&gt;&gt;<i> MODULE_MBEDPIO_LINE
+</I>&gt;&gt;&gt;<i> after
+</I>&gt;&gt;&gt;<i> MODULE_PD_LINE\
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> (from memories, that's all)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> after recompiling mbed module sdeems to works, but only
+</I>&gt;&gt;&gt;<i> mbed.configpin(....) or ledpin = mbed.LED1 (for example) works, instead of
+</I>&gt;&gt;&gt;<i> mbed.pio.configpin(...) or ledpin = mbed.pio.LED1
+</I>&gt;&gt;&gt;<i> So i think that i missed something somewhere but like that i could wait
+</I>&gt;&gt;&gt;<i> for an official fix.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Patrick Pollet
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> 2013/8/29 Gabriel Duarte &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">confusosk8 at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> We have reported this issue here:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://github.com/elua/elua/issues/23">https://github.com/elua/elua/issues/23</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I guess it's a problem with the build system, but no one has assigned to
+</I>&gt;&gt;&gt;&gt;<i> fix it.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> 2013/8/29 patrick pollet &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">patrick.pollet at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Dear all,
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> i am curently working on the eLua release for mbed, i succeed in adding
+</I>&gt;&gt;&gt;&gt;&gt;<i> mmcfs and spi support (currently working on i2c), but i have a problem with
+</I>&gt;&gt;&gt;&gt;&gt;<i> mbed_pio platform module.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> The source for this module is in my source tree and it seems that it's
+</I>&gt;&gt;&gt;&gt;&gt;<i> well compiled, but if i use something like mbed.pio.configpin(....) in a lua
+</I>&gt;&gt;&gt;&gt;&gt;<i> script, i have the error : attempt to index global 'mbed' (a nil value)
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> The mbed &quot;object&quot; does not exist.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> If i use the .bin available on the eLua web page about mbed, it works
+</I>&gt;&gt;&gt;&gt;&gt;<i> well.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> So, i think that something is missing in my build environement and the
+</I>&gt;&gt;&gt;&gt;&gt;<i> mbed_pio module is not really integrated. But i can not find what is
+</I>&gt;&gt;&gt;&gt;&gt;<i> missing.
+</I>&gt;&gt;&gt;&gt;&gt;<i> My release of eLua is : v0.9-89-g803bea8
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Every help will be appreciated.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Regards.
+</I>&gt;&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;&gt;<i> Patrick Pollet
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Ce message et toutes les pi&#232;ces jointes sont confidentiels et exclusifs
+</I>&gt;&gt;&gt;&gt;&gt;<i> pour le destinataire du message. N'importe quelle autre distribution,
+</I>&gt;&gt;&gt;&gt;&gt;<i> utilisation ou reproduction est non autoris&#233;e et interdite. Si vous receviez
+</I>&gt;&gt;&gt;&gt;&gt;<i> ce message par erreur, informez svp l'exp&#233;diteur imm&#233;diatement et supprimez
+</I>&gt;&gt;&gt;&gt;&gt;<i> le message de votre syst&#232;me.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> This message and any attachments are confidential, for the exclusive
+</I>&gt;&gt;&gt;&gt;&gt;<i> use of the addressee and may be legally privileged. Any other distribution,
+</I>&gt;&gt;&gt;&gt;&gt;<i> use or reproduction is unauthorised and prohibited. If you received this
+</I>&gt;&gt;&gt;&gt;&gt;<i> message in error, please notify the sender immediately and delete the
+</I>&gt;&gt;&gt;&gt;&gt;<i> message from your system.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;<i> Gabriel Duarte
+</I>&gt;&gt;&gt;&gt;<i> Linux User #471185
+</I>&gt;&gt;&gt;&gt;<i> Rio de Janeiro / RJ
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> Patrick Pollet
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Ce message et toutes les pi&#232;ces jointes sont confidentiels et exclusifs
+</I>&gt;&gt;&gt;<i> pour le destinataire du message. N'importe quelle autre distribution,
+</I>&gt;&gt;&gt;<i> utilisation ou reproduction est non autoris&#233;e et interdite. Si vous receviez
+</I>&gt;&gt;&gt;<i> ce message par erreur, informez svp l'exp&#233;diteur imm&#233;diatement et supprimez
+</I>&gt;&gt;&gt;<i> le message de votre syst&#232;me.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> This message and any attachments are confidential, for the exclusive use
+</I>&gt;&gt;&gt;<i> of the addressee and may be legally privileged. Any other distribution, use
+</I>&gt;&gt;&gt;<i> or reproduction is unauthorised and prohibited. If you received this message
+</I>&gt;&gt;&gt;<i> in error, please notify the sender immediately and delete the message from
+</I>&gt;&gt;&gt;<i> your system.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Gabriel Duarte
+</I>&gt;<i> Linux User #471185
+</I>&gt;<i> Rio de Janeiro / RJ
+</I>&gt;<i> <A HREF="http://genericdev.wordpress.com/">http://genericdev.wordpress.com/</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004240.html">[eLua-dev] Happy Birthdays!
+</A></li>
+	<LI>Next message: <A HREF="004242.html">[eLua-dev] Issue with the mbed_pio platform module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4241">[ date ]</a>
+              <a href="thread.html#4241">[ thread ]</a>
+              <a href="subject.html#4241">[ subject ]</a>
+              <a href="author.html#4241">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

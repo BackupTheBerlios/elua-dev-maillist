@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua vs Python on Microcontrollers
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20vs%20Python%20on%20Microcontrollers&In-Reply-To=%3C3529FB34-C9AD-44C8-818F-BA5255642D54%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000303.html">
+   <LINK REL="Next"  HREF="000306.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua vs Python on Microcontrollers</H1>
+    <B>Dean Hall</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20vs%20Python%20on%20Microcontrollers&In-Reply-To=%3C3529FB34-C9AD-44C8-818F-BA5255642D54%40gmail.com%3E"
+       TITLE="[eLua-dev] Lua vs Python on Microcontrollers">dwhall256 at gmail.com
+       </A><BR>
+    <I>Fri Jan 23 20:46:44 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000303.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+        <LI>Next message: <A HREF="000306.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#304">[ date ]</a>
+              <a href="thread.html#304">[ thread ]</a>
+              <a href="subject.html#304">[ subject ]</a>
+              <a href="author.html#304">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Good questions and discussion points, James.  I'd be happy to  
+elaborate on PyMite.
+
+First, PyMite's first targets were 8-bit AVR microcontrollers with 64  
+KB Flash and 8 KB RAM.  So the resources were *much* smaller than even  
+eLua is targeting.  However, I have found that 8 KB of RAM is too  
+small to do anything useful.  32 KB seems to be enough to do useful  
+things according to 2 different reports from researchers in Germany  
+and MIT.  But this means attaching external RAM to the AVR which is  
+beyond the scope of the hobbyist (at whom I am targeting PyMite).   
+Since PyMite's first incarnation in 2002, the variety of 32-bit  
+microcontrollers has increased and their prices have fallen; now, 32  
+and even 64 KB of SRAM is available on-board both ARM7 and AVR32  
+devices.  These new devices are on par with what eLua runs on.  Right  
+now PyMite (and a few developers) are begging me to develop PyMite to  
+run on these devices with greater resources.
+
+In my early background research, I found previous attempts to reduce  
+Python (Pippy, PythonCE) required around 256 KB of RAM and 1 M of  
+program memory... so a total rewrite was necessary.  I rewrote the  
+internal datastructures to reduce runtime memory requirements.  I  
+rewrote the core interpreter, picking one at a time which bytecodes  
+would make the cut to be included.  And I wrote the tools needed to  
+take a .pyc compiled on a PC and compress it to a smaller format for  
+inclusion into the program memory.  Literally, EVERY design decision  
+was to reduce size.  Python was a very hard language to make small...  
+and I'd say I still don't have it quite right.
+
+One thing I added to PyMite was a pretty slick and easy way to call C  
+functions from Python.  I call them native functions.  Briefly stated,  
+you write a Python module with function defs, but put the C code in  
+the docstring of the function and &quot;pass&quot; for the function body.  An  
+included, automated tool finds these native functions and builds them  
+into the executable and makes the lookup tables so it just works.   
+This method was a lot better for smaller targets than CPython's  
+method.  Using SWIG was never an option.  Lua has an easy way to write  
+C functions and call them.
+
+Lua was designed from the very start to be embedded (into other  
+programs as well as into smaller systems).  Python was designed for  
+the desktop and is rather big.  Even if I grow PyMite to use 256 KB  
+Flash and 64 KB SRAM, I don't think I'll be able to fit every Python  
+feature into PyMite.  Whereas, just recently, I showed that the eLua  
+interpreter (minus its parser/lexer) will fit in 64 KB Flash and 16 KB  
+SRAM.  So, in this respect, I believe Lua has the edge for size.   
+However, I believe that due to my focus on internal data structure  
+size, a PyMite program will use less RAM during runtime (but I admit  
+this is difficult to quantify).
+
+PyMite is stack based, like CPython.  tinypy is register based, like  
+Lua.  I joined the tinypy maillist specifically because it's approach  
+(follow the Lua design, but use Python syntax) was what I thought I  
+wanted to do for the next version of PyMite.  However, tinypy's  
+developer is focused on the desktop target and speed for gaming.   
+tinypy would need a fairly significant rewrite for it to run in a low- 
+ram environment.
+
+At this point, I believe eLua is in a great position: it offers the  
+Lua language and useful modules.  I believe with further development  
+PyMite could achieve a comparable level of ability as eLua on the same  
+devices, but still not offer all of CPython's features (decorators,  
+multiple inheritance, etc).  As a final note, I believe that since  
+PyMite is completely re-implemented from scratch, it stands to  
+introduce more design defects into the language.  So that is a  
+drawback.  I haven't diffed eLua's src/lua directory against the  
+standard Lua source tree, but I don't believe them to be vastly  
+different.  So eLua has a high fidelity to the  Lua language and a  
+common code base (fewer defects).
+
+!!Dean
+
+
+On Jan 23, 2009, at 12:36 , James Snyder wrote:
+
+&gt;<i> When I started looking around at interpreted languages on  
+</I>&gt;<i> microcontrollers I ran across not only eLua, but also PyMite (<A HREF="http://pymite.python-hosting.com/">http://pymite.python-hosting.com/</A> 
+</I>&gt;<i> ), the author of which (Dean) is now currently on this list.
+</I>&gt;<i>
+</I>&gt;<i> I thought I would take this as an opportunity to strike up a little  
+</I>&gt;<i> discussion on the merits and difficulties associated with  
+</I>&gt;<i> implementing one language or the other (or any other interpreted  
+</I>&gt;<i> languages, if it might be useful) on these devices with rather  
+</I>&gt;<i> limited resources.
+</I>&gt;<i>
+</I>&gt;<i> Lua seems naturally suited to limitations of an MCU, being pretty  
+</I>&gt;<i> friendly to low resource situations out of the box.  I'm sure there  
+</I>&gt;<i> are some modifications that were necessary to make eLua work in  
+</I>&gt;<i> these environments in the first place, but sounds as if it didn't  
+</I>&gt;<i> require much shoe-horning :-)
+</I>&gt;<i>
+</I>&gt;<i> Python, on the other hand, being a &quot;batteries included&quot; language is  
+</I>&gt;<i> quite large if you include all the standard modules and whatnot.  I  
+</I>&gt;<i> certainly wouldn't expect that all of these would fit in an  
+</I>&gt;<i> environment like the ones eLua or PyMite run on.  I would assume  
+</I>&gt;<i> however, that some subset of libraries, and maybe core features of  
+</I>&gt;<i> the language itself would fit reasonably (something like the array  
+</I>&gt;<i> of modules that come with Lua?).
+</I>&gt;<i>
+</I>&gt;<i> I'm wondering if those who have worked on implementing these  
+</I>&gt;<i> environments could speak more intelligently about what is or is not  
+</I>&gt;<i> reasonable, and maybe what some of the challenges are?  From my  
+</I>&gt;<i> understanding PyMite implements a stripped down (maybe re- 
+</I>&gt;<i> implemented from scratch?) version of Python's virtual machine.  I'm  
+</I>&gt;<i> not sure if some of the opcodes are stripped out, or not, but I'm  
+</I>&gt;<i> pretty sure that Python has way more opcodes than Lua does.  Also,  
+</I>&gt;<i> lua makes use of a register-based VM rather than a more traditional  
+</I>&gt;<i> stack-based VM.  Do these issues play a major role in how well these  
+</I>&gt;<i> languages run and/or fit on a microcontroller?  Any thoughts on how  
+</I>&gt;<i> these might relate to RAM, storage or CPU requirements?  On the  
+</I>&gt;<i> python side, there is also TinyPy, which is supposedly modeled after  
+</I>&gt;<i> lua in terms of the VM (not sure if it is register or stack based).   
+</I>&gt;<i> I've seen discussions on the TinyPy list about the current situation  
+</I>&gt;<i> on getting it to run on micros (including needing to deal with  
+</I>&gt;<i> filesystem ops for loading modules), but I'm not sure if it is  
+</I>&gt;<i> reasonable or not to think that it might be a good solution.
+</I>&gt;<i>
+</I>&gt;<i> I come from a background in a variety of languages, but have been  
+</I>&gt;<i> using Python the most lately for desktop programming tasks.  I like  
+</I>&gt;<i> it quite a bit as a language, and it has replaced MATLAB, C and  
+</I>&gt;<i> other languages that I would have normally used otherwise to get  
+</I>&gt;<i> something done.  I don't imagine writing much Lua for the types of  
+</I>&gt;<i> things I use Python for on the desktop, but it sounds like it is  
+</I>&gt;<i> better suited to MCUs without having to carve out any large portions  
+</I>&gt;<i> of functionality.  In particular, this means that the standard Lua  
+</I>&gt;<i> documentation applies broadly to eLua, and that one can pretty much  
+</I>&gt;<i> copy and paste a standard Lua script into eLua and have it work (so  
+</I>&gt;<i> long as it doesn't use external modules not provided, or if the MCU  
+</I>&gt;<i> doesn't have enough RAM).
+</I>&gt;<i>
+</I>&gt;<i> Thanks!
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 644-2322
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000303.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+	<LI>Next message: <A HREF="000306.html">[eLua-dev] Lua vs Python on Microcontrollers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#304">[ date ]</a>
+              <a href="thread.html#304">[ thread ]</a>
+              <a href="subject.html#304">[ subject ]</a>
+              <a href="author.html#304">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua Simulator
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Simulator&In-Reply-To=%3CAANLkTimPCMNiuJW%3D%3DZPbj5jdupdcEr79hUdnq5SamgiS%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001697.html">
+   <LINK REL="Next"  HREF="001682.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua Simulator</H1>
+    <B>Marcelo Politzer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Simulator&In-Reply-To=%3CAANLkTimPCMNiuJW%3D%3DZPbj5jdupdcEr79hUdnq5SamgiS%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua Simulator">mpolitzer.c at gmail.com
+       </A><BR>
+    <I>Wed Nov 10 16:59:00 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001697.html">[eLua-dev] eLua Simulator
+</A></li>
+        <LI>Next message: <A HREF="001682.html">[eLua-dev] [ANN eLua Web Builder v0.2.2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1699">[ date ]</a>
+              <a href="thread.html#1699">[ thread ]</a>
+              <a href="subject.html#1699">[ subject ]</a>
+              <a href="author.html#1699">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2010/11/10 Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt;
+
+&gt;<i>
+</I>&gt;<i> 2010/11/9 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i> I remember looking at this at some time in the past since CodeSourcery
+</I>&gt;&gt;<i> (which maintains the ARM GCC port) uses qemu for some of its automated
+</I>&gt;&gt;<i> testing suites.  I never got to the stage where I had working
+</I>&gt;&gt;<i> configuration though.  I would be interested in any details you have
+</I>&gt;&gt;<i> on how you did your build and command line options if you get this to
+</I>&gt;&gt;<i> a working state.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Note:  the emulator, I believe, emulates _some_ of the peripheral
+</I>&gt;&gt;<i> features of the device, but might not emulate all.  You may be
+</I>&gt;&gt;<i> encountering issues due to eLua trying to init some of these
+</I>&gt;&gt;<i> facilities on startup.  As Bogdan points out however looking at the
+</I>&gt;&gt;<i> program counter and a dump might be the most useful way to figure out
+</I>&gt;&gt;<i> where it has failed.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, Nov 8, 2010 at 8:03 AM, Bogdan Marinescu
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; On Mon, Nov 8, 2010 at 3:48 PM, Marcelo Politzer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">mpolitzer.c at gmail.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt;&gt; Hello eLuers,
+</I>&gt;&gt;<i> &gt;&gt; I've recently found out that qemu is able to simulate the lm3s6965evb
+</I>&gt;&gt;<i> which
+</I>&gt;&gt;<i> &gt;&gt; is compatible with eLua ( did any one knew? good news huh? :) ).
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Never tried it, I actually didn't know that qemu emulates something
+</I>&gt;&gt;<i> &gt; else than x86. Good to know :)
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; But i've got into a little problem, After removing some examples from
+</I>&gt;&gt;<i> &gt;&gt; SConstruct ( wasn't fitting when building codesourcery ). I've tried
+</I>&gt;&gt;<i> running
+</I>&gt;&gt;<i> &gt;&gt; qemu like this:
+</I>&gt;&gt;<i> &gt;&gt; `qemu-system-arm -M lm3s6965evb -kernel elua_lua_lm3s6965.bin'
+</I>&gt;&gt;<i> &gt;&gt; qemu: hardware error: ssys_read: Bad offset 0x70
+</I>&gt;&gt;<i> &gt;&gt; CPU #0:
+</I>&gt;&gt;<i> &gt;&gt; R00=01c00380 R01=400fe060 R02=400fe070 R03=078e3ac0
+</I>&gt;&gt;<i> &gt;&gt; R04=01c00380 R05=00000000 R06=00000000 R07=00000000
+</I>&gt;&gt;<i> &gt;&gt; R08=00000000 R09=00000000 R10=00000000 R11=00000000
+</I>&gt;&gt;<i> &gt;&gt; R12=00000000 R13=2000ffb0 R14=00004101 R15=00004402
+</I>&gt;&gt;<i> &gt;&gt; PSR=20000173 --C- T svc32
+</I>&gt;&gt;<i> &gt;&gt; Aborted
+</I>&gt;&gt;<i> &gt;&gt; Any one have ever tried this? Does it work? Does it worth trying?
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Did you try disassembling the elf file (arm-none-eabi-objdump -d
+</I>&gt;&gt;<i> &gt; elua_lua_lm3s6965.elf) and see where the actualy error is (PC equals
+</I>&gt;&gt;<i> &gt; 0x4402, as shown above, so it can easily identify the error location).
+</I>&gt;&gt;<i> &gt; I have a feeling that while qemu might emulate the CPU just fine, it
+</I>&gt;&gt;<i> &gt; most likely have issues with peripheral emulation. This is just of the
+</I>&gt;&gt;<i> &gt; many possible causes of error I guess.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Best,
+</I>&gt;&gt;<i> &gt; Bogdan
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> James Snyder
+</I>&gt;&gt;<i> Biomedical Engineering
+</I>&gt;&gt;<i> Northwestern University
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at gmail.com</A>
+</I>&gt;&gt;<i> PGP: <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;&gt;<i> Phone: (847) 448-0386
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I've folowed this tutorial and got a hello world on my &quot;screen&quot;.
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://balau82.wordpress.com/2010/02/14/simplest-bare-metal-program-for-arm/">http://balau82.wordpress.com/2010/02/14/simplest-bare-metal-program-for-arm/</A>
+</I>&gt;<i>
+</I>&gt;<i> I won't be able to work on this until next week because of the end of
+</I>&gt;<i> period at my university.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Marcelo
+</I>&gt;<i>
+</I>&gt;<i> I gave the wrong link, this is the one about qemu
+</I>
+<A HREF="http://balau82.wordpress.com/2010/02/28/hello-world-for-bare-metal-arm-using-qemu/">http://balau82.wordpress.com/2010/02/28/hello-world-for-bare-metal-arm-using-qemu/</A>
+
+Best,
+Marcelo
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20101110/f9465c93/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20101110/f9465c93/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001697.html">[eLua-dev] eLua Simulator
+</A></li>
+	<LI>Next message: <A HREF="001682.html">[eLua-dev] [ANN eLua Web Builder v0.2.2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1699">[ date ]</a>
+              <a href="thread.html#1699">[ thread ]</a>
+              <a href="subject.html#1699">[ subject ]</a>
+              <a href="author.html#1699">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

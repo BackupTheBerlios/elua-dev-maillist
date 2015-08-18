@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and PE_*
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20GPIO%3A%20Use%20PX_00%20pin%20names%20instead%20of%20PD_%2A%20and%20PE_%2A&In-Reply-To=%3CAANLkTikGU8o%2BdVYiqsYpAYK4t0BPCjRBZd2hqGQubeQW%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001861.html">
+   <LINK REL="Next"  HREF="001881.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and PE_*</H1>
+    <B>Martin Guy</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20AVR32%20GPIO%3A%20Use%20PX_00%20pin%20names%20instead%20of%20PD_%2A%20and%20PE_%2A&In-Reply-To=%3CAANLkTikGU8o%2BdVYiqsYpAYK4t0BPCjRBZd2hqGQubeQW%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and PE_*">martinwguy at gmail.com
+       </A><BR>
+    <I>Sat Jan 15 22:51:48 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001861.html">[eLua-dev] Mizar32 Hardware
+</A></li>
+        <LI>Next message: <A HREF="001881.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1863">[ date ]</a>
+              <a href="thread.html#1863">[ thread ]</a>
+              <a href="subject.html#1863">[ subject ]</a>
+              <a href="author.html#1863">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This patch removes the &quot;PD_nn&quot; and PE_nn&quot; names for port X on AVR32
+AT32UC3A0 parts and lets the user say &quot;pio.PX_16&quot; or whatever.
+The &quot;PX port&quot; doesn't really exist in the hardware: its 40 pins are
+mapped to random inverted ranges of pins on ports 2 and 3.
+internally we use the real port and pin pair, which also corresponds
+to AVR32's &quot;GPIO number&quot;ing scheme.
+
+Naming these pins as &quot;PC_31&quot; or &quot;PD_00&quot; is disallowed in the name
+decoding code instead of when the pin/port is used.
+
+This patch leaves pio.port operations available on ports C and &quot;D&quot;
+(ports 2 and 3), though port operations are unlikely to be useful on
+AVR32 AT32UC3 parts since the peripherals and RAM use a random
+selection of pins from all four ports, leaving just a few actual GPIO
+pins here and there.  At most, pio.port.getval() might be useful to
+sample several PX GPIO pins simultaneously if they happen to be on the
+same hardware port; the user can then figure out which bits to inspect
+of which port from the GPIO pin numbers.
+
+As a size effect, this patch also fixes NUM_PIO and PIO_PIN_ARRAY[] on
+EVK1101, which only has ports A and B. The PC and PX syntax remains
+available on that part, but return nil.
+
+     M
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: elua-avr32-PX.patch
+Type: text/x-patch
+Size: 8897 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110115/7a44f108/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20110115/7a44f108/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001861.html">[eLua-dev] Mizar32 Hardware
+</A></li>
+	<LI>Next message: <A HREF="001881.html">[eLua-dev] AVR32 GPIO: Use PX_00 pin names instead of PD_* and	PE_*
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1863">[ date ]</a>
+              <a href="thread.html#1863">[ thread ]</a>
+              <a href="subject.html#1863">[ subject ]</a>
+              <a href="author.html#1863">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

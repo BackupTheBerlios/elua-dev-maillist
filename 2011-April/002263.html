@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Peripheral%20Function%20Side%20Effects%20%28was%3A%20eLua%0A%20design%20change%20to%20allow%20synchronized%20PWM%20channel%20start%3F%29&In-Reply-To=%3CBANLkTinBYcXWynp4ssUq6b3yXBO8W2uSDA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002262.html">
+   <LINK REL="Next"  HREF="002264.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20Peripheral%20Function%20Side%20Effects%20%28was%3A%20eLua%0A%20design%20change%20to%20allow%20synchronized%20PWM%20channel%20start%3F%29&In-Reply-To=%3CBANLkTinBYcXWynp4ssUq6b3yXBO8W2uSDA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Fri Apr  8 15:16:55 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002262.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+        <LI>Next message: <A HREF="002264.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2263">[ date ]</a>
+              <a href="thread.html#2263">[ thread ]</a>
+              <a href="subject.html#2263">[ subject ]</a>
+              <a href="author.html#2263">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Apr 8, 2011 at 3:52 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 8 April 2011 14:13, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; Why would the objectives conflict?
+</I>&gt;<i>
+</I>&gt;<i> In general, a system that is &quot;easy to use&quot; cannot be powerful and vice
+</I>&gt;<i> versa.
+</I>&gt;<i>
+</I>
+I make it my mission to prove this wrong :) Which of course I'll never be
+able to do, as &quot;easy to use&quot; is a fairly subjective matter. But at least I
+can try :) In this particular case, for example, a warning system which is
+parallel to the actual peripheral API shouldn't make the system less
+powerful. As long as you design your warnings system to follow your API and
+not the other way around you shouldn't have to worry about performance.
+
+I never used PWM in my life before, which is probably why I find it so
+&gt;<i> difficult to understand how it should behave.
+</I>&gt;<i>
+</I>
+Ah, OK. My bad.
+
+
+&gt;<i> &gt; The safest thing to do is to round to the nearest value in either
+</I>&gt;<i> direction and let the user
+</I>&gt;<i> &gt; know about this.
+</I>&gt;<i>
+</I>&gt;<i> OK. That sounds like a good general guideline.
+</I>&gt;<i> Unfortunately, in the SPI case, the difference between the chosen
+</I>&gt;<i> frequency and the actual frequency can be quite large. In a few tests
+</I>&gt;<i> I ran, if you set the maximum SPI data rate for an SD card (400kHz)
+</I>&gt;<i> the result was something like 35% higher because of the coarse
+</I>&gt;<i> precision of the dividers when they are at small values. But to the
+</I>&gt;<i> code, this seemed like the arithmetically closest value.
+</I>&gt;<i>
+</I>
+This is unavoidable unfortunately. Even with a very good API you're still
+stuck with the platform-specific hardware limitations.
+
+
+&gt;<i> On the second point, since the API returns the integer value closest
+</I>&gt;<i> to the actual frequency selected, we have already achieved the &quot;let
+</I>&gt;<i> the user know&#176; part in this case.
+</I>&gt;<i>
+</I>&gt;<i> &gt; As specified above I'm not a big fan on imposing policies in general.
+</I>&gt;<i>
+</I>&gt;<i> If you don't make a policy, you get chaos with every individual case
+</I>&gt;<i> behaving in a different, random way. That is the current case in eLua.
+</I>&gt;<i> But maybe we mean different things by the word &quot;policy&quot;.  I'm meaning
+</I>&gt;<i> &quot;a guideline on how to make decisions when you're not sure what to
+</I>&gt;<i> do&quot;, which then gets interpreted according to each case when you have
+</I>&gt;<i> to make a decision.  In this case, the policy decision seems to be
+</I>&gt;<i> changing from &quot;do whatever you like&quot; to &quot;if you can't do exactly what
+</I>&gt;<i> the user asked for, print a warning&quot;.
+</I>&gt;<i>
+</I>
+Ideally we would have a combination of the two: choose a reasonable
+aproximation of the input (what &quot;reasonable&quot; means needs to be decided) and
+also issue a warning if the aproximation and the input have different
+values. Once again, the warnings themselves shouldn't have any influence on
+the actual functionality. In OOP terms, they should be simple observers. An
+observer never modifies the state or functionality of the system it
+observes, it just reads its internal state and executes some actions based
+on this.
+Agreed on the &quot;random way&quot; issue. For example, the return value of
+platform_spi_setup  has this description:
+
+*Returns*: the actual clock set for the SPI interface. Depending on the
+hardware, this may have a different value than the *clock* argument.
+
+A simple change like this:
+
+*Returns*: the actual clock set for the SPI interface. Depending on the
+hardware, this may have a different value than the *clock* argument. In this
+case, the highest value which is lower than *clock* will be returned.
+
+would be enough to make the policy clear. I always had this on my mind but I
+found it so obvious that I forgot to specify it :) (except for the &quot;lower
+than clock&quot; part which I completely missed until now). And you're right,
+this isn't really policy. Or maybe it's that lowest level of policy that
+ensures things aren't completely random. I don't know how to call it, but I
+agree this minimal set of rules should be enforced.
+
+
+&gt;<i> Linux device drivers are a very different world from a programming
+</I>&gt;<i> system for beginners, so the policy there (of not enforcing one way of
+</I>&gt;<i> driving a peripheral, but of having a complex programmer interface
+</I>&gt;<i> that allows the caller to set the device up with as much precision and
+</I>&gt;<i> flexibility as possible) is made according to the world of Linux
+</I>&gt;<i> device drivers.
+</I>&gt;<i>
+</I>
+Sure. It's a good generic principle though and I'm trying to follow it as
+much as I can.
+
+
+&gt;<i>
+</I>&gt;<i> &gt;&gt; Issuing a warning when the value is not precise creates the question
+</I>&gt;<i> &gt;&gt; &quot;How much imprecision is not precise?&quot; More than an integer different?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; You can always say &quot;Warning: clock set to y instead of requested x&quot;.
+</I>&gt;<i> That's
+</I>&gt;<i> &gt; pretty precise :) and it lets the user decide on the actual implications
+</I>&gt;<i> of
+</I>&gt;<i> &gt; this.
+</I>&gt;<i>
+</I>&gt;<i> Example: at 1MHz PWM clock rate, the same frequency as you asked for
+</I>&gt;<i> is returned for every frequency &lt;= 1kHz.
+</I>&gt;<i> Above 1kHz, most frequencies set (and return) something different,
+</I>&gt;<i> with the granularity increasing as the frequency increases.
+</I>&gt;<i> So if the system works by varying the frequency, most settings will
+</I>&gt;<i> provoke a warning.
+</I>&gt;<i>
+</I>
+Which is perfectly fine. Once you're aware that something is wrong you can
+turn off that warning (my original proposal included something like this)
+and move on.  I can understand that a lot of warnings could quickly become
+annoying but having a simple way to turn them on/off should help with this.
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110408/375bcc38/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110408/375bcc38/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002262.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+	<LI>Next message: <A HREF="002264.html">[eLua-dev] eLua Peripheral Function Side Effects (was: eLua design change to allow synchronized PWM channel start?)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2263">[ date ]</a>
+              <a href="thread.html#2263">[ thread ]</a>
+              <a href="subject.html#2263">[ subject ]</a>
+              <a href="author.html#2263">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] IO Pin Initialization
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IO%20Pin%20Initialization&In-Reply-To=%3CEMEWEMEW2_DELIMl5PBpF09e29205c8326cd96b341c%2C%0A%09jbsnyder%40fanplastic.org%2C%20081652FF-B95D-4EA2-980A-6F3%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000905.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] IO Pin Initialization</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IO%20Pin%20Initialization&In-Reply-To=%3CEMEWEMEW2_DELIMl5PBpF09e29205c8326cd96b341c%2C%0A%09jbsnyder%40fanplastic.org%2C%20081652FF-B95D-4EA2-980A-6F3%3E"
+       TITLE="[eLua-dev] IO Pin Initialization">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri Jun 26 18:51:23 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000905.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#906">[ date ]</a>
+              <a href="thread.html#906">[ thread ]</a>
+              <a href="subject.html#906">[ subject ]</a>
+              <a href="author.html#906">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I may have missed this in the new documentation, but I have a question  
+regarding what policy one should use for initializing devices that  
+take over function of IO pins and either are essential or non- 
+essential for getting a functional session up and running.
+
+What I mean by this is the following:
+Say I have a device that can use the same pin set for an additional  
+UART or an SPI interface, or certain pins can be used for ADC or CAN.   
+If the device is an essential UART, for the console, I can see  
+including that in the uarts_init() for example, but if the pins are  
+reconfigurable, should that automatically go in the setup for that  
+type of peripheral?  i.e. pin configuration happens when I call  
+spi.setup(...).  I would figure that the answer to this would be yes,  
+but I'm unsure.
+
+Also, for the pin configuration itself, should general practice  
+dictate that the pin configuration itself is done through  
+platform_pio_op?  I would guess yes? Perhaps with platform_pio_op  
+providing some standardized mechanisms for this setup so that setup  
+code for peripherals could be generalized slightly?
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: 847.448.0386
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 4012 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090626/0adda29e/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090626/0adda29e/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000905.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#906">[ date ]</a>
+              <a href="thread.html#906">[ thread ]</a>
+              <a href="subject.html#906">[ subject ]</a>
+              <a href="author.html#906">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] LM3S8962 Timer Input Capture Mode
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LM3S8962%20Timer%20Input%20Capture%20Mode&In-Reply-To=%3C1332800135566-7407691.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003406.html">
+   <LINK REL="Next"  HREF="003413.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] LM3S8962 Timer Input Capture Mode</H1>
+    <B>jrambo316</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20LM3S8962%20Timer%20Input%20Capture%20Mode&In-Reply-To=%3C1332800135566-7407691.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] LM3S8962 Timer Input Capture Mode">jrambo316 at yahoo.com
+       </A><BR>
+    <I>Tue Mar 27 00:15:35 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003406.html">[eLua-dev] LM3S8962 Timer Input Capture Mode
+</A></li>
+        <LI>Next message: <A HREF="003413.html">[eLua-dev] LM3S8962 Timer Input Capture Mode
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3409">[ date ]</a>
+              <a href="thread.html#3409">[ thread ]</a>
+              <a href="subject.html#3409">[ subject ]</a>
+              <a href="author.html#3409">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Mauricio Henrique Bomfim wrote
+&gt;<i> 
+</I>&gt;<i> Bogdan has implemented a very customized timer capture module for
+</I>&gt;<i> str9. We use it at PUC-Rio to implement a pulse counter from a truck
+</I>&gt;<i> odometer. Below, follows how we use its API:
+</I>&gt;<i> 
+</I>&gt;<i> -- setup the timer id for timer capture
+</I>&gt;<i> str9.cap.setup( TIMER_ID, str9.cap.NEGEDGE )
+</I>&gt;<i> 
+</I>&gt;<i> -- just for compatibility with eLua interruption API
+</I>&gt;<i> cpu.set_int_handler( cpu.INT_TMR_CAPTURE, function() end )
+</I>&gt;<i> 
+</I>&gt;<i> -- enable the timer capture interruption
+</I>&gt;<i> cpu.sei( cpu.INT_TMR_CAPTURE, TIMER_ID )
+</I>&gt;<i> 
+</I>&gt;<i> -- gets the current counting and restart the counter to zero
+</I>&gt;<i> str9.cap.getcount( TIMER_ID )
+</I>&gt;<i> 
+</I>&gt;<i> I hope it helps.
+</I>&gt;<i> 
+</I>&gt;<i> []s
+</I>&gt;<i> 
+</I>&gt;<i> Mauricio
+</I>&gt;<i> 
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks,
+</I>&gt;&gt;<i> Jim
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> View this message in context:
+</I>&gt;&gt;<i> <A HREF="http://elua-development.2368040.n2.nabble.com/LM3S8962-Timer-Input-Capture-Mode-tp7399429p7399429.html">http://elua-development.2368040.n2.nabble.com/LM3S8962-Timer-Input-Capture-Mode-tp7399429p7399429.html</A>
+</I>&gt;&gt;<i> Sent from the eLua Development mailing list archive at Nabble.com.
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at .berlios</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at .berlios</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>
+
+Perfect!  Do you have a link where I can look more closely at that
+implementation on github?  That is the same purpose that I need the timer
+capture. 
+
+Thanks,
+Jim
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/LM3S8962-Timer-Input-Capture-Mode-tp7399429p7407691.html">http://elua-development.2368040.n2.nabble.com/LM3S8962-Timer-Input-Capture-Mode-tp7399429p7407691.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003406.html">[eLua-dev] LM3S8962 Timer Input Capture Mode
+</A></li>
+	<LI>Next message: <A HREF="003413.html">[eLua-dev] LM3S8962 Timer Input Capture Mode
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3409">[ date ]</a>
+              <a href="thread.html#3409">[ thread ]</a>
+              <a href="subject.html#3409">[ subject ]</a>
+              <a href="author.html#3409">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

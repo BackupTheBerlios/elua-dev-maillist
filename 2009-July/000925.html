@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] can.c missing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20can.c%20missing&In-Reply-To=%3CFEA144BC-1C18-41E1-A747-322AC33AB0C2%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000923.html">
+   <LINK REL="Next"  HREF="000926.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] can.c missing</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20can.c%20missing&In-Reply-To=%3CFEA144BC-1C18-41E1-A747-322AC33AB0C2%40fanplastic.org%3E"
+       TITLE="[eLua-dev] can.c missing">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Jul  7 14:25:02 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000923.html">[eLua-dev] can.c missing
+</A></li>
+        <LI>Next message: <A HREF="000926.html">[eLua-dev] can.c missing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#925">[ date ]</a>
+              <a href="thread.html#925">[ thread ]</a>
+              <a href="subject.html#925">[ subject ]</a>
+              <a href="author.html#925">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi -
+
+Have you updated your subversion checkout?
+
+svn up
+
+It should be present in the currently checked in version.
+
+-jsnyder
+
+On Jul 7, 2009, at 2:57 AM, C&#233;sar Ra&#250;l Mamani Choquehuanca wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> Im trying to building in trunk for board=EK-LM3S8962 too, i have  
+</I>&gt;<i> similar problem, check this plz
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:~/elua/trunk$ sudo scons board=EK-LM3S8962 prog -c
+</I>&gt;<i> scons: Reading SConscript files ...
+</I>&gt;<i> scons: done reading SConscript files.
+</I>&gt;<i> scons: Cleaning targets ...
+</I>&gt;<i> scons: done cleaning targets.
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:~/elua/trunk$ sudo scons board=EK-LM3S8962 prog
+</I>&gt;<i> scons: Reading SConscript files ...
+</I>&gt;<i>
+</I>&gt;<i> *********************************
+</I>&gt;<i> Compiling eLua ...
+</I>&gt;<i> CPU:          LM3S8962
+</I>&gt;<i> Board:        EK-LM3S8962
+</I>&gt;<i> Platform:     lm3s
+</I>&gt;<i> Allocator:    newlib
+</I>&gt;<i> Target:       fplua
+</I>&gt;<i> Toolchain:    arm-gcc
+</I>&gt;<i> *********************************
+</I>&gt;<i>
+</I>&gt;<i> Building filesystem...
+</I>&gt;<i> Encoded file bisect.lua (646 bytes)
+</I>&gt;<i> Encoded file hangman.lua (3750 bytes)
+</I>&gt;<i> Encoded file index.pht (1654 bytes)
+</I>&gt;<i> Encoded file lhttpd.lua (3911 bytes)
+</I>&gt;<i> Encoded file test.lua (137 bytes)
+</I>&gt;<i> Encoded file pong.lua (2605 bytes)
+</I>&gt;<i> Encoded file LM3S.lua (357 bytes)
+</I>&gt;<i> Encoded file led.lua (997 bytes)
+</I>&gt;<i> Encoded file piano.lua (2948 bytes)
+</I>&gt;<i> Encoded file pwmled.lua (634 bytes)
+</I>&gt;<i> Encoded file tvbgone.lua (1739 bytes)
+</I>&gt;<i> Encoded file codes.bin (7780 bytes)
+</I>&gt;<i> Encoded file hello.lua (23 bytes)
+</I>&gt;<i> Encoded file info.lua (134 bytes)
+</I>&gt;<i> Encoded file morse.lua (3449 bytes)
+</I>&gt;<i> Encoded file adcscope.lua (2104 bytes)
+</I>&gt;<i> Encoded file adcpoll.lua (1473 bytes)
+</I>&gt;<i> Done, total size is 34552 bytes
+</I>&gt;<i>
+</I>&gt;<i> scons: done reading SConscript files.
+</I>&gt;<i> scons: Building targets ...
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc - 
+</I>&gt;<i> Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip - 
+</I>&gt;<i> ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962 - 
+</I>&gt;<i> DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128 - 
+</I>&gt;<i> DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c  
+</I>&gt;<i> src/main.c -o src/main.o
+</I>&gt;<i> sh: arm-elf-gcc: not found
+</I>&gt;<i> scons: *** [src/main.o] Error 127
+</I>&gt;<i> scons: building terminated because of errors.
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:~/elua/trunk$
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> and my PATH is :
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:~/elua/trunk$ $PATH
+</I>&gt;<i> bash: /usr/local/cross-cortex/bin:/usr/local/sbin:/usr/local/bin:/ 
+</I>&gt;<i> usr/sbin:/usr/bin:/sbin:/bin:/usr/games: No such file or directory
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:~/elua/trunk$
+</I>&gt;<i>
+</I>&gt;<i> So i always write with SUDO, is normally that? If i not doing that  
+</I>&gt;<i> then :
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:~/elua/trunk$ scons board=EK-LM3S8962 prog
+</I>&gt;<i> scons: Reading SConscript files ...
+</I>&gt;<i>
+</I>&gt;<i> *********************************
+</I>&gt;<i> Compiling eLua ...
+</I>&gt;<i> CPU:          LM3S8962
+</I>&gt;<i> Board:        EK-LM3S8962
+</I>&gt;<i> Platform:     lm3s
+</I>&gt;<i> Allocator:    newlib
+</I>&gt;<i> Target:       fplua
+</I>&gt;<i> Toolchain:    arm-gcc
+</I>&gt;<i> *********************************
+</I>&gt;<i>
+</I>&gt;<i> Building filesystem...
+</I>&gt;<i> Unable to create output file
+</I>&gt;<i>
+</I>&gt;<i> mv: cannot stat `romfiles.h': No such file or directory
+</I>&gt;<i> scons: done reading SConscript files.
+</I>&gt;<i> scons: Building targets ...
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc - 
+</I>&gt;<i> Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip - 
+</I>&gt;<i> ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962 - 
+</I>&gt;<i> DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128 - 
+</I>&gt;<i> DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c  
+</I>&gt;<i> src/main.c -o src/main.o
+</I>&gt;<i> Assembler messages:
+</I>&gt;<i> Fatal error: can't create src/main.o: Permission denied
+</I>&gt;<i> scons: *** [src/main.o] Error 1
+</I>&gt;<i> scons: building terminated because of errors.
+</I>&gt;<i> IOError: [Errno 13] Permission denied: '.sconsign.tmp':
+</I>&gt;<i>   File &quot;/usr/lib/scons/SCons/Script/Main.py&quot;, line 1171:
+</I>&gt;<i>     _exec_main(parser, values)
+</I>&gt;<i>   File &quot;/usr/lib/scons/SCons/Script/Main.py&quot;, line 1144:
+</I>&gt;<i>     _main(parser)
+</I>&gt;<i>   File &quot;/usr/lib/scons/SCons/Script/Main.py&quot;, line 1105:
+</I>&gt;<i>     SCons.SConsign.write()
+</I>&gt;<i>   File &quot;/usr/lib/scons/SCons/SConsign.py&quot;, line 109:
+</I>&gt;<i>     syncmethod()
+</I>&gt;<i>   File &quot;/usr/lib/scons/SCons/dblite.py&quot;, line 78:
+</I>&gt;<i>     f = _open(self._tmp_name, &quot;wb&quot;, self._mode)
+</I>&gt;<i> Exception exceptions.TypeError: &quot;'NoneType' object is not callable&quot;  
+</I>&gt;<i> in &lt;bound method dblite.__del__ of &lt;SCons.dblite.dblite instance at  
+</I>&gt;<i> 0x8580f0c&gt;&gt; ignored
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesar at cesar-laptop</A>:~/elua/trunk$
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i>
+</I>&gt;<i> Cesar
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2009/7/4 James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt;
+</I>&gt;<i> Oops... it is in there now.
+</I>&gt;<i>
+</I>&gt;<i> Sorry about that :-)
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Jul 4, 2009, at 10:24 AM, Dado Sutter wrote:
+</I>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i>   Snyder, I'm afraid you forgot to upload your can.c module to  
+</I>&gt;<i> trunk, or maybe we need to tell scons not to build it for LM3S yet.
+</I>&gt;<i>   Trunk is not building, for board=LM3S8962:
+</I>&gt;<i>
+</I>&gt;<i> .......................
+</I>&gt;<i> arm-elf-gcc -mcpu=cortex-m3 -mthumb -Os -fomit-frame-pointer -Iinc - 
+</I>&gt;<i> Iinc/newlib -Isrc/lua -Isrc/modules -Isrc/platform/lm3s -Isrc/uip - 
+</I>&gt;<i> ffunction-sections -fdata-sections -DELUA_CPU=LM3S8962 - 
+</I>&gt;<i> DELUA_BOARD=EK-LM3S8962 -DELUA_PLATFORM=LM3S -D__BUFSIZ__=128 - 
+</I>&gt;<i> DLUA_OPTIMIZE_MEMORY=2 -DENABLE_DISP -DFORLM3S8962 -Dgcc -Wall -c  
+</I>&gt;<i> src/modules/adc.c -o src/modules/adc.o
+</I>&gt;<i> src/modules/adc.c: In function &#8216;adc_insertsamples&#8217;:
+</I>&gt;<i> src/modules/adc.c:196: warning: unused variable &#8216;zcount&#8217;
+</I>&gt;<i> scons: *** [src/modules/can.o] Source `src/modules/can.c' not found,  
+</I>&gt;<i> needed by target `src/modules/can.o'.
+</I>&gt;<i> scons: building terminated because of errors.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: 847.448.0386
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: 847.448.0386
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 4012 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090707/44672688/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20090707/44672688/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000923.html">[eLua-dev] can.c missing
+</A></li>
+	<LI>Next message: <A HREF="000926.html">[eLua-dev] can.c missing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#925">[ date ]</a>
+              <a href="thread.html#925">[ thread ]</a>
+              <a href="subject.html#925">[ subject ]</a>
+              <a href="author.html#925">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

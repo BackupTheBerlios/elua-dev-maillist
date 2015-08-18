@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua vs. .net MF
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs.%20.net%20MF&In-Reply-To=%3C65898.4777.qm%40web161204.mail.bf1.yahoo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002354.html">
+   <LINK REL="Next"  HREF="002358.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua vs. .net MF</H1>
+    <B>Tim michals</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20vs.%20.net%20MF&In-Reply-To=%3C65898.4777.qm%40web161204.mail.bf1.yahoo.com%3E"
+       TITLE="[eLua-dev] eLua vs. .net MF">tcmichals at yahoo.com
+       </A><BR>
+    <I>Thu May  5 06:20:56 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002354.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+        <LI>Next message: <A HREF="002358.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2356">[ date ]</a>
+              <a href="thread.html#2356">[ thread ]</a>
+              <a href="subject.html#2356">[ subject ]</a>
+              <a href="author.html#2356">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've been asked the same question many times over the past few months, Why eLua on a FEZ board? Why? Stupid or something?&#160; Why PIC32 open source port using gcc? ;)
+I think the goals for eLua and MicroFramework are the same:
+- Support for a high level language with source level debugger
+- Easy environment to develop applications.&#160; 
+
+- Board support packages for boards
+
+eLua is a a pure open source embedded project:
+Code:&#160; 
+
+&#160;&#160;&#160;&#160; - Core code.&#160; Kernel, makefile system, etc.
+
+&#160;&#160;&#160;&#160; - Good documentation on the code base
+
+&#160;&#160;&#160;&#160; - BSP(Board Support Package), drivers,&#160; libraries (TCP/IP, USB, crypto(SSL), etc.&#160;&#160;&#160;&#160;&#160; 
+
+
+Packaging eLua:
+
+&#160;&#160;&#160;&#160; - Having eLua already loaded on hardware to allows the end user to start writing applications out of the box, no porting, no creating a BSP. No issues with voiding support or warranty if loading different binary, etc.&#160; eLua is already on the board, why load anything else?&#160; ;)
+&#160;&#160;&#160;&#160; - Upgrade firmware with web, or simple interface
+&#160;&#160;&#160;&#160; 
+
+Just image if&#160; .NET Micro Framework did not run on the FEZ boards? 
+
+What if mbed, just had simple examples? No web development tool to compile apps, no drivers, no framework, etc.&#160; Would it sell?&#160; 
+
+Why does microchip do so well? Offers a complete package, drivers, source, boards and chips.
+
+FYI, Microsoft stopped support for .NET Micro Framework. It is hard sell Micro-framework for $5 a board, when the board is only $5.&#160; But package&#160; .NET Microframe work with hardware, it is a good combination, great out of the box experience.&#160; Same holds for Arduino, great HW with development tools, i.e. GUI, libraries etc.&#160; 
+
+
+I think having eLua run on FEZ boards will offer .NET Micro framework developers a new tool to help develop applications. Does it compete with C#? It offers a different way to program.&#160; Just like using Python instead of C#, both are programming languages but offer different ways of doing it.&#160; 
+
+
+It will take time to have complete package.&#160; 
+
+I've got my work cut out to deliver a&#160; complete FEZ port, documentation, loader etc.&#160; eLua has a place holder on the GHI web site at <A HREF="http://wiki.tinyclr.com/index.php?title=ELua">http://wiki.tinyclr.com/index.php?title=ELua</A> 
+
+
+Hope this email makes more sense than some of my others as of late....
+
+
+
+________________________________
+From: Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+To: eLua Users and Development List (www.eluaproject.net) &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+Sent: Wednesday, May 4, 2011 2:35 PM
+Subject: Re: [eLua-dev] eLua vs. .net MF
+
+
+
+2011/5/4 Ronan Paix&#227;o &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ronan at dapaixao.com.br</A>&gt;
+
+Actually, the problem with eLua not having better device driver
+&gt;<i>support (which is already very good) is because it's incredibly harder
+</I>&gt;<i>to make modules which work in a single way for multiple boards.
+</I>&gt;<i>
+</I>&gt;<i>You see, FEZ can have good device drivers because they have only a
+</I>&gt;<i>bunch of boards, with the same or very similar chips, which usually
+</I>&gt;<i>have the same way of doing things.
+</I>&gt;<i>
+</I>
+Yes. Kind of the difference between Windows and OS X on an incredibly smaller scale :) All joke aside, I sometimes question the decision of making eLua as portable as possible instead of focusing on one or two platforms at most (from a project management perspective, that is). Most of the time I don't though. Going from general to particular is generally easy, the other way around is much harder.&#160;
+&#160;
+eLua supports multiple chips, with multiple architectures, each having
+&gt;<i>multiple peripherals, some that perform the same way, but are
+</I>&gt;<i>configured differently. That said, the eLua team tries very hard to
+</I>&gt;<i>make to abstract all that away, in favor of the user. With that, one
+</I>&gt;<i>can use the same code in different boards. So, if a developer starts
+</I>&gt;<i>with one board and finds he needs more processing power in the middle
+</I>&gt;<i>of the application, he won't have to port all of his code, as long as
+</I>&gt;<i>he used the hardware abstraction layer.
+</I>&gt;<i>
+</I>&gt;<i>I, myself, prefer to write C code for my projects (haven't had time to
+</I>&gt;<i>learn to code Lua yet), but I like eLua's idea very much and keep a
+</I>&gt;<i>look at how things go.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+Hopefully you'll be able to work with C code inside eLua much easier in the not-so-distant future.
+
+Best,
+Bogdan
+
+2011/5/4 John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt;:
+&gt;<i>
+</I>&gt;&gt;<i> How to put this delicately ...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I've noticed a lot of activity with people using FEZ boards (like the Panda)
+</I>&gt;&gt;<i> and baseline .NET MF boards like the NetDuino for eLua. What advantages do
+</I>&gt;&gt;<i> you see with eLua over using the .NET MF environment they are designed for?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm afraid that having tried hard to get off the ground with eLua and also
+</I>&gt;&gt;<i> with the MBED environment, I bought a FEZ Domino and found the .NET
+</I>&gt;&gt;<i> environment (particularly with the GHI Electronics FEZ extensions) very much
+</I>&gt;&gt;<i> more capable than either. I'm now actually writing application code rather
+</I>&gt;&gt;<i> than trying to get device drivers working! Have you guys run into
+</I>&gt;&gt;<i> limitations that are causing you to go with eLua or is it just for the
+</I>&gt;&gt;<i> challenge of doing things from scratch?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I wish eLua well and hope it will soon get up to the level of functionality
+</I>&gt;&gt;<i> offered by FEZ, which I think should serve as a benchmark for what needs to
+</I>&gt;&gt;<i> be achieved. I like the following features:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 1. You can buy single chips with the runtime already loaded and so do not
+</I>&gt;&gt;<i> require a JTAG or other specialist development hardware to get going.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2. Unlike MBED, it is a genuine single-chip solution using on-chip USB
+</I>&gt;&gt;<i> resources for its development link.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 3. There is a free development system with support for both emulated and
+</I>&gt;&gt;<i> target debugging (although I am actually using the paid-for Visual Studio
+</I>&gt;&gt;<i> 2010 as I already had that).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 4. There are libraries / device drivers for all the I/O resources on the
+</I>&gt;&gt;<i> chips as well as for TCP/IP using an external chip. This includes more
+</I>&gt;&gt;<i> esoteric stuff like CAN and SD Card file systems. There is also full USB,
+</I>&gt;&gt;<i> both device and host.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 5. Multitasking is natively built-in.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Set against this, I would prefer the elegant minimalism of Lua to the rather
+</I>&gt;&gt;<i> bloated C# and full non-commercial open source would be preferable to the
+</I>&gt;&gt;<i> Corporate open source compromise, but for the moment, the other advantages
+</I>&gt;&gt;<i> outweigh this.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>_______________________________________________
+</I>&gt;<i>eLua-dev mailing list
+</I>&gt;<i><A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i><A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110504/5804e630/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110504/5804e630/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002354.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+	<LI>Next message: <A HREF="002358.html">[eLua-dev] eLua vs. .net MF
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2356">[ date ]</a>
+              <a href="thread.html#2356">[ thread ]</a>
+              <a href="subject.html#2356">[ subject ]</a>
+              <a href="author.html#2356">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

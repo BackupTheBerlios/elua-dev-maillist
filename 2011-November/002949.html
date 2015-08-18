@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] build tcp support
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20build%20tcp%20support&In-Reply-To=%3CCAJ%3DY9Y2A04WLs0FF0y6ir%3DxKXe3NwXcjxGHS%2BcMgsthGqDN7gA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002947.html">
+   <LINK REL="Next"  HREF="002948.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] build tcp support</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20build%20tcp%20support&In-Reply-To=%3CCAJ%3DY9Y2A04WLs0FF0y6ir%3DxKXe3NwXcjxGHS%2BcMgsthGqDN7gA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] build tcp support">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Nov 15 00:24:15 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002947.html">[eLua-dev] build tcp support
+</A></li>
+        <LI>Next message: <A HREF="002948.html">[eLua-dev] Finally! A small-footprint text editor written in Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2949">[ date ]</a>
+              <a href="thread.html#2949">[ thread ]</a>
+              <a href="subject.html#2949">[ subject ]</a>
+              <a href="author.html#2949">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Nov 14, 2011 at 9:06 AM, james osburn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jjosburn at gmail.com</A>&gt; wrote:
+&gt;<i> I am now succesfully building elua for the EKC-LM3S9B92 board using the lite
+</I>&gt;<i> tool chain from mentor graphics.
+</I>&gt;<i> I have been able to use TeraTerm to communicate to the instrument.
+</I>&gt;<i> However I have not been able to establish a TCP connection to board.
+</I>&gt;<i> IT seems that i have tcp build turn on in the configs header file.
+</I>&gt;<i> have i missed something in the build or is it that that i have tried to
+</I>&gt;<i> correct static ip address to
+</I>&gt;<i> try?
+</I>
+A few things:
+Are you attempting to ping the board or log into the shell over TCP?
+The shell can only be set to either UART or TCP/IP.
+
+This particular port has DHCP off by default and it picks this IP:
+192.168.100.90
+netmask: 255.255.255.0
+Gateway: 192.168.100.20
+DNS: 192.168.100.20
+
+You might want to check out this in the docs to adjust the default
+configuration in platform_conf.h:
+<A HREF="http://www.eluaproject.net/doc/v0.8/en_arch_tcpip.html">http://www.eluaproject.net/doc/v0.8/en_arch_tcpip.html</A>
+
+You can change the IP or switch to DHCP and probably look for the
+&quot;elua&quot; host on your network.
+
+For console configuration check out this page:
+<A HREF="http://www.eluaproject.net/doc/v0.8/en_arch_con_term.html">http://www.eluaproject.net/doc/v0.8/en_arch_con_term.html</A>
+
+Note that there are some conditionals in platform_conf.h for
+particular targets that get set automatically, but the 6965 will
+certainly do the shell over tcp/ip, do dhcp, etc..
+
+&gt;<i> James
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002947.html">[eLua-dev] build tcp support
+</A></li>
+	<LI>Next message: <A HREF="002948.html">[eLua-dev] Finally! A small-footprint text editor written in Lua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2949">[ date ]</a>
+              <a href="thread.html#2949">[ thread ]</a>
+              <a href="subject.html#2949">[ subject ]</a>
+              <a href="author.html#2949">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

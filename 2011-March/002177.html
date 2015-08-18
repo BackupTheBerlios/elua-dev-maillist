@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Fwd%3A%20%5BGitHub%5D%20Decrease%20AVR32%20stack%20size%20from%208192%20to%0A%202048%2C%20the%20same%20as%20the%20other%20small%20%5Belua/elua%209a3abb6%5D&In-Reply-To=%3CAANLkTi%3DSMocZ437UPxo3agHAv1kVPDksb8Zckv01kO%3D%2B%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002169.html">
+   <LINK REL="Next"  HREF="002186.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Fwd%3A%20%5BGitHub%5D%20Decrease%20AVR32%20stack%20size%20from%208192%20to%0A%202048%2C%20the%20same%20as%20the%20other%20small%20%5Belua/elua%209a3abb6%5D&In-Reply-To=%3CAANLkTi%3DSMocZ437UPxo3agHAv1kVPDksb8Zckv01kO%3D%2B%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Mar 15 20:51:20 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002169.html">[eLua-dev] a new github project: https://github.com/nuccioraciti/eLuaWebServer
+</A></li>
+        <LI>Next message: <A HREF="002186.html">[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2177">[ date ]</a>
+              <a href="thread.html#2177">[ thread ]</a>
+              <a href="subject.html#2177">[ subject ]</a>
+              <a href="author.html#2177">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>---------- Forwarded message ----------
+From: martinwguy &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">reply+c-302863-3eabcf2dbedfaea5509bf690972bf58ce798fb38 at reply.github.com</A>&gt;
+Date: Tue, Mar 15, 2011 at 9:45 PM
+Subject: Re: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same
+as the other small [elua/elua 9a3abb6]
+
+
+Hi
+  Can we follow the usual good practise of keeping technical
+discussions on public lists?
+
+Sure, my bad. Forwarding to the list.
+
+Best,
+Bogdan
+
+On 15 March 2011 20:24, bogdanm
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">reply at reply.github.com</A>&gt;
+wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Mar 15, 2011 at 9:14 PM, martinwguy &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">reply at reply.github.com</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On 15 March 2011 08:32, bogdanm
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">reply at reply.github.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt; The Lua parser is definitely not going to like this. Setting the stack
+</I>to
+&gt;&gt;<i> anything less than 4K is asking for stack overflow trouble in my
+</I>experience.
+&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks. Do you have an example that demonstrates usage of stack &gt; 2K?
+</I>&gt;&gt;<i> I don't have any real figures or is this just a feeling?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The romfs/ directory used to contain a version of life.lua that I used
+</I>&gt;<i> precisely for stack-related tests. I'm not sure where it is now :) You can
+</I>&gt;<i> probably find it in older commits.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Me, I'm just following the setting used in almost all the other
+</I>platforms.
+&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Sure. But the reason I'm trying to keep it small in other platforms (even
+</I>&gt;<i> with the risk of stack overflows) is the lack of memory. Mizar32 doesn't
+</I>&gt;<i> have this problem, this is why I set the stack to a value that gives me
+</I>&gt;<i> piece of mind.
+</I>&gt;<i> At some point I'd like to take a deeper look into this issue. I don't
+</I>really
+&gt;<i> understand the need for this much stack especially since I manually moved
+</I>&gt;<i> many of the Lua parser internal data structures from heap to stack. Or
+</I>maybe
+&gt;<i> the stack problem moved from the parser to some other part of the code.
+</I>The
+&gt;<i> Lua call stack is dynamically allocated just like about everything else
+</I>&gt;<i> related to Lua, so the problem must still exist in the C code somewhere.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Reply to this email directly or view it on GitHub:
+</I>&gt;<i>
+</I><A HREF="https://github.com/elua/elua/commit/9a3abb6b1025814875a73753a11ceb1401f67d82#commitcomment-302840">https://github.com/elua/elua/commit/9a3abb6b1025814875a73753a11ceb1401f67d82#commitcomment-302840</A>
+&gt;<i>
+</I>
+--
+Reply to this email directly or view it on GitHub:
+<A HREF="https://github.com/elua/elua/commit/9a3abb6b1025814875a73753a11ceb1401f67d82#commitcomment-302863">https://github.com/elua/elua/commit/9a3abb6b1025814875a73753a11ceb1401f67d82#commitcomment-302863</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110315/d0e0a48f/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110315/d0e0a48f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002169.html">[eLua-dev] a new github project: https://github.com/nuccioraciti/eLuaWebServer
+</A></li>
+	<LI>Next message: <A HREF="002186.html">[eLua-dev] Fwd: [GitHub] Decrease AVR32 stack size from 8192 to 2048, the same as the other small [elua/elua 9a3abb6]
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2177">[ date ]</a>
+              <a href="thread.html#2177">[ thread ]</a>
+              <a href="subject.html#2177">[ subject ]</a>
+              <a href="author.html#2177">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

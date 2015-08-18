@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] QEI Module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20QEI%20Module&In-Reply-To=%3C146C96A0-4E0A-4A11-B27E-DD15A01CDF43%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003402.html">
+   <LINK REL="Next"  HREF="003359.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] QEI Module</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20QEI%20Module&In-Reply-To=%3C146C96A0-4E0A-4A11-B27E-DD15A01CDF43%40fanplastic.org%3E"
+       TITLE="[eLua-dev] QEI Module">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Sun Mar 25 20:30:46 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003402.html">[eLua-dev] QEI Module
+</A></li>
+        <LI>Next message: <A HREF="003359.html">[eLua-dev] QEI Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3401">[ date ]</a>
+              <a href="thread.html#3401">[ thread ]</a>
+              <a href="subject.html#3401">[ subject ]</a>
+              <a href="author.html#3401">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+On Mar 18, 2012, at 23:05, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 19 March 2012 00:03, jrambo316 &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jrambo316 at yahoo.com</A>&gt; wrote:
+</I>&gt;&gt;<i> I tried:
+</I>&gt;&gt;<i> lm3s.qei.init( lm3s.qei.CH0, lm3s.qei.PHA, lm3s.qei.NO_SWAP,
+</I>&gt;&gt;<i> lm3s.qei.NO_INDEX, 10000 )
+</I>&gt;<i> 
+</I>&gt;<i> Hi.  Can I make some suggestions for this module that is being born?
+</I>
+Yep. One FYI on this module is that I converted it to platform specific form for now until we can boil it down to a generic model.
+
+I somewhat like some of the simplicity of the stm32 quadrature module's simplicity and functionality but it's extremely basic.
+
+&gt;<i> 
+</I>&gt;<i> One is to avid all this verbose and repetitive syntax by using a
+</I>&gt;<i> string for multi-valued parameters instead of these verbose constants.
+</I>&gt;<i> Not only is that more Lua-like and shorter to code, but it is also
+</I>&gt;<i> faster as these &quot;platform constants&quot; require several table lookups,
+</I>&gt;<i> whereas comparing strings is a single instruction. Numerical values
+</I>&gt;<i> are appropriate at the C level: there is a Lua function to convert
+</I>&gt;<i> string parameters into integers: for example:
+</I>&gt;<i> 
+</I>&gt;<i>  static const char const *args[] =
+</I>&gt;<i>    { &quot;off&quot;, &quot;on&quot;, &quot;left&quot;, &quot;right&quot;, NULL };
+</I>&gt;<i> 
+</I>&gt;<i>  switch ( luaL_checkoption( L, 1, NULL, args ) )
+</I>&gt;<i>  {
+</I>&gt;<i>  case 0: ...
+</I>&gt;<i>  case 1: ...
+</I>&gt;<i>  case 2: ...
+</I>&gt;<i>  case 3: ...
+</I>&gt;<i>  default: return luaL_argerror( L, 1, NULL );
+</I>&gt;<i>  }
+</I>&gt;<i> 
+</I>&gt;<i> Since we now have qei modules on two platforms i would also suggest
+</I>&gt;<i> making a generic qei.*() module rather than ending up with a different
+</I>&gt;<i> interfaces on each platform. After all, qei can ultimately be
+</I>&gt;<i> implemented on any platform using GPIO interrupts.
+</I>
+Yep. I'll have to comb through this thread a little more ( I've been out of town), but we could lay out a proposed API based on discussions and then have some discussion then just implement that on current qei platforms. 
+
+It would be great to not bike shed that thread and maybe set a date for wrapping up the module for a first rev. I think I'll do the proposal in eLua documentation format. 
+
+&gt;<i> 
+</I>&gt;<i> These two suggestions would  turn the above code into:
+</I>&gt;<i> 
+</I>&gt;<i> qei.init(&quot;CH0&quot;, &quot;PHA&quot;, &quot;NO_SWAP&quot;, &quot;NO_INDEX&quot;. 10000)
+</I>&gt;<i> 
+</I>&gt;<i> For yes/no values it is more Lua-like just to use true and false, not
+</I>&gt;<i> verbose constants. Of course, they may not be boolean values - I don't
+</I>&gt;<i> know as I could find no documentation.
+</I>
+There's some other discussion I'll need to dig into before commenting on this. 
+
+&gt;<i> 
+</I>&gt;<i> So my 3rd suggestion: would be for elua-devs always to update the
+</I>&gt;<i> manual at the same time as they implement the interface - as part of
+</I>&gt;<i> the exact same commit that extends or changes the Lua interface, not
+</I>&gt;<i> as a final afterthought. That also ensuring that the manual remains
+</I>&gt;<i> complete and correct.
+</I>&gt;<i> You can still decide to change the Lua interface when it turns out not
+</I>&gt;<i> to be right - then you also change tha manual again.
+</I>
+The module was a contribution originally, and so far all I've done is convert it to a platform specific module (which is another thing we might want to make more clear on how to do since varying platforms have some messiness in platform specific module table setup in platform.c). Regardless this will need docs before it is merged. I think I neglected to document the stm32 module. I'll bump both up to be the next set of commits to get in. 
+
+&gt;<i> 
+</I>&gt;<i> Thanks and happy hacking
+</I>&gt;<i> 
+</I>&gt;<i>   M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I></PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003402.html">[eLua-dev] QEI Module
+</A></li>
+	<LI>Next message: <A HREF="003359.html">[eLua-dev] QEI Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3401">[ date ]</a>
+              <a href="thread.html#3401">[ thread ]</a>
+              <a href="subject.html#3401">[ subject ]</a>
+              <a href="author.html#3401">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

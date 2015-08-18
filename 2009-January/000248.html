@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Latest eLua developments
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Latest%20eLua%20developments&In-Reply-To=%3C81fbe47d0901071231g5c2e47afkd4179cb4341490ba%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000245.html">
+   <LINK REL="Next"  HREF="000249.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Latest eLua developments</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Latest%20eLua%20developments&In-Reply-To=%3C81fbe47d0901071231g5c2e47afkd4179cb4341490ba%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Latest eLua developments">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Jan  7 21:31:30 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000245.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+        <LI>Next message: <A HREF="000249.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#248">[ date ]</a>
+              <a href="thread.html#248">[ thread ]</a>
+              <a href="subject.html#248">[ subject ]</a>
+              <a href="author.html#248">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>First of all, I apologise for the huge svn commit message. Hope I'll keep
+them shorter in the future.
+
+Common code from all backends was factored out in src/common.c, and each
+backend's platform_conf.h/platform.c fils were updated for this. Take a look
+at any of them, it's quite easy to understand what happened there.
+
+There's a new feature available for all platforms: virtual timers. Currently
+implemented for LM3S, AVR32 and AT91SAM, they're a very good way to get long
+delays (especially on platforms with 16-bit timers) if accuracy is not an
+issue. It's easy to use them: declare VTMR_NUM_TIMERS and VTMR_FREQ_HZ in
+platform_conf.h, then call cmn_virtual_timer_cb() from a timer interrupts
+that happens at a frequency of VTMR_FREQ_HZ. You use these timers just as
+the regular timers, but their IDs are not 0, 1, ..., but rather tmr.VIRT0,
+tmr.VIRT1...
+
+Tested on: everything but LPC2888 (can't burn it right now, but there's no
+reason for it to fail) and STM32 (*Mike*, please test the new image on your
+board, I can't do that).
+
+To come (in order of priority, in an ideal world):
+
+- more AVR32 (PWM, external memory)
+- Lua Tiny Ram patch (hopefully you're gonna love this one :) )
+- fix eLua stack overflow(s) (yes, we have those)
+- new XMODEM implementation (the current one is GPL, thus it prevents us
+from changing the license to BSD).
+- generic buffering system for &quot;char&quot; devices (UART, SPI, I2C, ADC...)
+
+... and many others. If only I had the time ...
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090107/3d640f09/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090107/3d640f09/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000245.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+	<LI>Next message: <A HREF="000249.html">[eLua-dev] Preprocessor Stuff
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#248">[ date ]</a>
+              <a href="thread.html#248">[ thread ]</a>
+              <a href="subject.html#248">[ subject ]</a>
+              <a href="author.html#248">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,467 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for	LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%0A%09LM3S%09devices%29&In-Reply-To=%3C4df33716.53cce30a.3903.ffffc379%40mx.google.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002466.html">
+   <LINK REL="Next"  HREF="002500.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for	LM3S	devices)</H1>
+    <B>Laurent Dufrechou</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%0A%09LM3S%09devices%29&In-Reply-To=%3C4df33716.53cce30a.3903.ffffc379%40mx.google.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for	LM3S	devices)">laurent.dufrechou at gmail.com
+       </A><BR>
+    <I>Sat Jun 11 11:37:01 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002466.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002500.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2498">[ date ]</a>
+              <a href="thread.html#2498">[ thread ]</a>
+              <a href="subject.html#2498">[ subject ]</a>
+              <a href="author.html#2498">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+ 
+
+So we end with address inside write and read funtions ?
+
+That&#146;s ok for me.
+
+ 
+
+So if I read everything well:
+
+i2c.setspeed(id, speed)
+i2c.write(id, address, data)
+i2c.read(id, address, maxbytes)
+
+
+
+For repeated start case, I think there is no issue with such device, because
+repeated start is a trick to avoid to send a stop and thus permit to  keep
+the control in case of multiple master.
+
+So devices that support repeated start ALSO supports &#147;stop and resend
+start&#148;.
+
+I&#146;ve read it on a website, but can&#146;t re-find the address.
+
+ 
+
+Bogdan are you ok with this?
+
+If yes can we define the C interface so we could have a try?
+
+I&#146;ve got 5 I2C device to test here, that can be a good test J
+
+ 
+
+Reading their doc so far, I see no issue with such interface.
+
+ 
+
+Regards,
+
+Laurent
+
+ 
+
+De : <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] De la part de Bogdan Marinescu
+Envoy&#233; : mardi 7 juin 2011 08:31
+&#192; : eLua Users and Development List (www.eluaproject.net)
+Objet : Re: [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S
+devices)
+
+ 
+
+Hi,
+
+On Tue, Jun 7, 2011 at 12:24 AM, Tony &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">tony.elua at gmail.com</A>&gt; wrote:
+
+Wouldn't the I2C bus specifications be a better starting place than
+Wikipedia?  It looks like they're available via here
+&lt;<A HREF="http://www.i2c-bus.org/references/">http://www.i2c-bus.org/references/</A>&gt; 
+
+ 
+
+You are right, however Wikipedia is an easier read (at least for me) than a
+formal spec.
+
+ 
+
+What would be really nice is an I2C book equivalent to Wilfred Voss's  A
+Comprehensive Guide to the Controller Area Network, which discusses
+&quot;gotchas&quot; in the CAN standards document.  I did some searching, and didn't
+find anything equivalent.
+
+ 
+
+That's probably because I2C is really an extremely simple bus, orders of
+magnitude less complex than CAN. I imagine that it's a bit hard to fill a
+book with only I2C material :) The fact that different manufacturers choose
+to implement it in an overly complex manner is a different problem.
+
+ 
+
+Best,
+
+Bogdan
+
+ 
+
+ 
+
+On Mon, Jun 6, 2011 at 11:05 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+On 6 June 2011 08:21, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+&gt;<i> It limits the functionality a bit (for example the master could in theory
+</I>&gt;<i> send a START at any time to a slave in order to reset it if anything goes
+</I>&gt;<i> wrong with the comunication)
+</I>
+True. In reality, I2C does not define the data protocol format at all
+- that is left to the device manufacturers to decide.
+
+It seems to me that we're looking at the three controllers we know,
+the handful of devices we have seen, and are trying to find common
+patterns between them. The risk with this is the devices we don't know
+about - and if you're implementing a generic I2C interface for a
+world-class language, we're only likely to succeed in covering the few
+cases we've seen.
+
+A different way to approach the problem is to start from the
+definition of I2C protocol and make primitives that reflect that,
+ensuring that we cover all possibilities including devices that are
+not among those we happen to have used so far.
+
+Wikipedia says:
+
+----------
+There are four potential modes of operation for a given bus device,
+although most devices only use a single role and its two modes:
+   master transmit &#151; master node is sending data to a slave
+   master receive &#151; master node is receiving data from a slave
+   slave transmit &#151; slave node is sending data to the master
+   slave receive &#151; slave node is receiving data from the master
+----------
+
+Ok, nothing very new here.  Then it says:
+
+----------
+I&#178;C defines three basic types of messages, each of which begins with a
+START and ends with a STOP:
+   Single message where a master writes data to a slave;
+   Single message where a master reads data from a slave;
+   Combined messages, where a master issues at least two reads and/or
+writes to one or more slaves.
+
+In a combined message, each read or write begins with a START and the
+slave address. After the first START, these are also called repeated
+START bits; repeated START bits are not preceded by STOP bits, which
+is how slaves know the next transfer is part of the same message.
+----------
+
+Then there are some other protocols built using I2C which further
+limit the message structures:
+
+----------
+Pure I&#178;C systems support arbitrary message structures.
+SMBus is restricted to nine of those structures, such as read word N
+and write word N, involving a single slave.
+PMBus extends SMBus with a Group protocol, allowing multiple such
+SMBus transactions to be sent in one combined message. The terminating
+STOP indicates when those grouped actions should take effect.
+----------
+
+Let's assume for the moment that we want to provide an I2C interface,
+not an SMBus or PMBus one. If we get our I2C primitives right, we can
+be sure that these more highly defined protocols can be implemented as
+a Lua library that uses it if necessary.
+
+
+&gt;<i> 1. init( id, speed )
+</I>&gt;<i> 2. write( id, i2caddr, devaddr, bytes ) (could be simply 'write( id,
+</I>&gt;<i> i2caddr, bytes )' but I want to make it symetrical with number 3 below).
+</I>
+Why?
+
+
+&gt;<i> 3. read( id, i2caddr, devaddr, numbytes )
+</I>
+&gt;<i> 4. query (id, i2caddr)
+</I>
+I had been considering the register address inside the slave device as
+just part of the transmitted data, not as part of I2C protocol.
+In particular, the device register address, in the examples I've seen,
+can be one, two or three bytes, so you'd need to include a devaddr_len
+field as well. But that has nothing to do with I2C, just with the way
+that certain devices we have seen use it.
+I2C does not define the data format in use; the
+write-address-then-read-data is just the way that one or two specific
+devices use it.
+
+That said, the AVR32 hardware also mimics this, allowing you to send
+one, two or three bytes of addressing info and then automatically
+sending a second start bit and address and switching into reading
+mode.
+
+10-bit slave addressing (instead of 7-bit slave addressing) is another
+issue.  It is done thus:
+Slave address = 1 1 1 1 0 a9 a8 R/W
+First data byte = a7 a6 a5 a4 a3 a2 a1 a0
+(Slave addresses 1111XXXX are reserved for extensions like this)
+
+But both of these can be covered by a 7-bit address and arbitrary
+data, leaving it up to the user:
+to put the device register address at the start of their data
+packet(s) or, for 10-bit addressing, to specify the reserved 11110AAR
+address and put the other byte of the address into the start of the
+data.
+Again, if the Lua I2C interface is right, we know that we will be able
+to write Lua functions to cover these cases.
+
+
+So what does that leave us with?  Well, the I2C specification, which
+has three primitives:
+   Single message where a master writes data to a slave;
+   Single message where a master reads data from a slave;
+   Combined messages, where a master issues at least two reads and/or
+writes to one or more slaves.
+
+The &quot;one or more slaves&quot; is a bit surprising: it implies that a
+combined message with multiple starts can address several different
+slavesand that we've only seen examples that use the same slave
+address (read device register, or read EEPROM contents at a specified
+address).
+
+It's asp interesting that the first two cases, the single messages,
+are special cases of the combined messages, with only one data item
+inside them, so if we provide a single combined message primitive,
+that allows us to do everything I2C.
+Anything less that this only addresses a subset of I2C devices - the
+ones that we happen to have seen.
+
+What does that suggest for a Lua interface? Well, we can encoding a
+single message as a table and the combined message either as a table
+of single messages or as a varargs list of them.
+
+The single message would contain the 7-bit slave address, a bool
+saying whether we are reading or writing (true for &quot;reading&quot;, since
+the I2C &quot;read/write&quot; bit is high for a read).
+If it's a read, we'll then need the maximum number of bytes to read.
+It it's a write, we'll then need the number of bytes to send and the
+data itself, which can both be encoded in a singLua string.
+
+The return value for each message would be:
+For each read message, the number of bytes actually read and the data
+itself (these two can be expressed as a string, since Lua strings are
+8-bit clean and encode the string length)
+For each write message, the number of bytes actually written.
+
+The combined messages are then either a table of single messages
+returning a table of results, or a varargs list of them returning a
+varargs list of results.
+I don't have enough practice with Lua to know which is more
+convenient, or if it's practical to accept both variants.
+
+So, as an example, to write a byte value to a location in a 24LC32
+EEPROM we need a single message, For clarity, I'll use the vargargs
+and multiple return syntax:
+
+function eeprom_write_byte(id, chip_select, address, datum)
+ -- id = i2c bus id
+ -- chip_select = 0..7
+ -- address = 0..65535
+ -- datum = 0..255 (a number)
+ local slave_address = 0x50 + chip_select
+ local ah, al = bit.rshift( address, 8 ), bit.band( address, 255)
+ nwritten = i2c.transfer( id, [ i2c.WRITE, slave_address,
+string.char(ah, al, datum) ] )
+ assert( nwritten == 3 )
+end
+
+To read a byte from such an EEPROM we need a combined message with a
+write and a read:
+
+function eeprom_read_byte(id, chip_select, address)
+ -- id = i2c bus id
+ -- chip_select = 0..7
+ -- address = 0..65535
+ local slave_address = 0x50 + chip_select
+ local ah, al = bit.rshift( address, 8 ), bit.band( address, 255)
+ wresult, rresult = i2c.transfer( id,
+   [ i2c.WRITE, slave_address, string.char(ah, al) ],
+   [ i2c.READ, slave_address, 1 ]
+ )
+ if ( wresult ~= 2 or #rresult ~= 1) then return nil end
+ return string.code(rresult)
+end
+
+Here, I'm using 7-bit addresses so write 7-bit address 0x50 to encode
+the 8-bit EEPROM command byte 1010aaaR.
+
+The &quot;query&quot; or &quot;probe&quot; operation is implemented in the example code
+I've seen as a write message with 0 data in it, which succeeds or
+fails according to whether the slave address gets acked or not. To add
+this to the above model, we could say that if nobody acknowledges the
+command byte (containing the slave address), we return nil instead of
+0.
+
+
+Well, thanks for following my thought process, but the result looks
+very different from all the other eLua module interfaces, none of
+which take tables as parameters, and none of which return multiple
+results.
+Anything less than this is not capable of expressing the full I2C
+protocol, so the next choice is whether we want to be able to express
+the I2C protocol or just the common cases of it for the devices we
+know?
+
+I know the rest of the eLua modules just provide the things that most
+people want most frequently with minimum fuss, so restricting the I2C
+interface to the common cases that we know is more in keeping with the
+other eLua module interfaces.
+
+Another option is simply not to support combined data packets.   I see
+you can use the 24LC32 EEPROMs just by writing the memory address in
+one packet with no data bytes to write, then issuing a &quot;read&quot; command
+in a second and it remembers the memory address from one operation to
+the next.
+The DS1337 Real Time Clock can be used the same way and on the AVR32
+we can just not use their clever self-reversing hardware.
+
+Does anyone know of an I2C device that *needs* combined messages (with
+repeated start bits) to work?  If not, Bogdan's suggestion is close
+(modulo the strange desire for read/write function parameter symmetry
+and without the variable-length device register address, which is just
+data).
+
+If we can dump combine messages, we can use:
+
+i2c.setspeed(id, speed)
+id = which I2C bus to talk on
+speed = a number in Hz.
+Returns: the actual speed set (or nil on error?)
+
+i2c.write(id, address, data)
+address = the 7-bit slave address
+data = a string
+Returns: an integer if the write was successful, reflecting the number
+of bytes written
+       nil if the slave did not respond to its address
+
+i2c.read(id, address, maxbytes)
+maxbytes = the maximum number of bytes to read (and acknowledge)
+Returns: a string containing the data that was returned.
+       nil if the address byte was not acknowledged
+
+It would then be an option to provide packet assemblers to do the
+other things that can be implemented using these:
+- probe(id, address) is write(id, address, &quot;&quot;)
+- read/write value from/to device register with address of length 1, 2
+or 3 bytes
+- other?
+but these can be written in Lua or C, as you prefer, using the
+single-message read/write primitives.
+
+The EEPROM examples then become:
+
+-- Write a byte to a 24LS32, returning true on success, false on failure
+function eeprom_write_byte(id, chip_select, address, datum)
+ -- id = i2c bus id
+ -- chip_select = 0..7
+ -- address = 0..65535
+ -- datum = 0..255 (a number)
+ local slave_address = 0x50 + chip_select
+ local ah, al = bit.rshift( address, 8 ), bit.band( address, 255)
+ return ( i2c.write( id, slave_address, string.char(ah, al, datum) ) == 3 )
+end
+
+-- Read a byte from a 24LS32, returning a 1-byte string on success or
+nil on failure
+function eeprom_read_byte(id, chip_select, address)
+ -- id = i2c bus id
+ -- chip_select = 0..7
+ -- address = 0..65535
+ local slave_address = 0x50 + chip_select
+ local ah, al = bit.rshift( address, 8 ), bit.band( address, 255 )
+ if i2c.write( id, slave_address, string.char(ah, al) ) ~= 2 then
+   return nil
+ end
+ local result = i2c.read( id, slave_address, 1 )
+ if #result ~= 1 then return nil end
+ return result
+end
+
+
+
+&gt;&gt;<i> My own difficulty with changing the i2c interfaces is that I wouldn't
+</I>&gt;&gt;<i> want to reimplement the existing str9 code and I don't have str9 (or
+</I>&gt;&gt;<i> lm3s) hardware to test such hings on
+</I>&gt;<i>
+</I>&gt;<i> Don't worry about that, I'll be happy to implement them myself once we
+</I>agree
+&gt;<i> on an interface. I'm actually glad this happens now, when the only
+</I>&gt;<i> (official) implementation of I2C is on STR9 :)
+</I>
+That's a relief!
+
+
+   M
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+ 
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110611/beab9ba8/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110611/beab9ba8/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002466.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002500.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2498">[ date ]</a>
+              <a href="thread.html#2498">[ thread ]</a>
+              <a href="subject.html#2498">[ subject ]</a>
+              <a href="author.html#2498">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

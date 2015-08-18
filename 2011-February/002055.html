@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New build system and Premake
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20build%20system%20and%20Premake&In-Reply-To=%3CAANLkTikQ2HO4oScgFmDuZ8hVYOstB3AMdVxw9ZLpFnCV%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002054.html">
+   <LINK REL="Next"  HREF="002057.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New build system and Premake</H1>
+    <B>Kevin Vermeer</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20build%20system%20and%20Premake&In-Reply-To=%3CAANLkTikQ2HO4oScgFmDuZ8hVYOstB3AMdVxw9ZLpFnCV%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] New build system and Premake">reemrevnivek at gmail.com
+       </A><BR>
+    <I>Tue Feb 22 16:34:32 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002054.html">[eLua-dev] New build system and Premake
+</A></li>
+        <LI>Next message: <A HREF="002057.html">[eLua-dev] New build system and Premake
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2055">[ date ]</a>
+              <a href="thread.html#2055">[ thread ]</a>
+              <a href="subject.html#2055">[ subject ]</a>
+              <a href="author.html#2055">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Premake *is* Lua-based.   The build scripts are full=featured Lua scripts,
+and Premake itself is implemented in Lua.
+
+I read some of the Lua build system code, and it looks like you're
+re-implementing a lot of the features of Premake.  I wanted to (1) save you
+some work re-implementing those features (the source for Premake is
+here&lt;<A HREF="https://bitbucket.org/premake/premake-dev">https://bitbucket.org/premake/premake-dev</A>&gt;),
+and (2) propose that we separate the implementation from the
+configuration.   If we did (2), we'd basically be re-inventing Premake.
+
+Where can I learn about the build structure refactoring project?
+--
+Kevin Vermeer
+
+
+On Tue, Feb 22, 2011 at 9:51 AM, Bogdan Marinescu &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Feb 21, 2011 at 6:42 PM, Kevin Vermeer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">reemrevnivek at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; Oops, used the wrong website.  Their new site is at:
+</I>&gt;<i> &gt; <A HREF="http://industriousone.com/what-premake">http://industriousone.com/what-premake</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; So that this post isn't purely noise, I'll add that they're working on a
+</I>&gt;<i> new
+</I>&gt;<i> &gt; --platform option:
+</I>&gt;<i> &gt; <A HREF="http://industriousone.com/platforms">http://industriousone.com/platforms</A>
+</I>&gt;<i> &gt; This feature is under active development; users of eLua can probably
+</I>&gt;<i> &gt; contribute some good information and ideas!
+</I>&gt;<i>
+</I>&gt;<i> Thanks for the tips. However we're looking for a Lua based solution at
+</I>&gt;<i> this point, this is part of a much larger topic which has to do with
+</I>&gt;<i> build structure refactoring. There is already some code in the trunk
+</I>&gt;<i> that uses a Lua based builder.
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> &gt; On Mon, Feb 21, 2011 at 11:37 AM, Kevin Vermeer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">reemrevnivek at gmail.com</A>&gt;
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; I've been seeing a lot of messages about a new Lua-based build system.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; I didn't see the discussion that lead to the development of this system,
+</I>&gt;<i> &gt;&gt; but I wondered if you'd considered Premake in your development:
+</I>&gt;<i> &gt;&gt; <A HREF="http://premake.sourceforge.net/">http://premake.sourceforge.net/</A>
+</I>&gt;<i> &gt;&gt; It's an open-source, cross-platform, Lua-based build script generator
+</I>&gt;<i> and
+</I>&gt;<i> &gt;&gt; project management utility.  It can generate raw GNU makefiles, or
+</I>&gt;<i> integrate
+</I>&gt;<i> &gt;&gt; with CodeLite or CodeBlocks to set up a project for those IDEs.   It
+</I>&gt;<i> also
+</I>&gt;<i> &gt;&gt; generates Windows Visual Studio project files, though I'm not sure
+</I>&gt;<i> that's
+</I>&gt;<i> &gt;&gt; very useful unless you have the non-express edition of VS2010 and want
+</I>&gt;<i> to
+</I>&gt;<i> &gt;&gt; try to get cross-compilation working (which might be nice for some
+</I>&gt;<i> people).
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; It's somewhat targeted at keeping cross-platform projects happy on both
+</I>&gt;<i> &gt;&gt; sides, without having to maintain two or three or more configurations.
+</I>&gt;<i> &gt;&gt; However, I think it could be adapted to eLua's needs, and I think it
+</I>&gt;<i> would
+</I>&gt;<i> &gt;&gt; be a useful reference for constructing the new build system.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Hope that helps,
+</I>&gt;<i> &gt;&gt; --
+</I>&gt;<i> &gt;&gt; Kevin Vermeer
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110222/7385a896/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110222/7385a896/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002054.html">[eLua-dev] New build system and Premake
+</A></li>
+	<LI>Next message: <A HREF="002057.html">[eLua-dev] New build system and Premake
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2055">[ date ]</a>
+              <a href="thread.html#2055">[ thread ]</a>
+              <a href="subject.html#2055">[ subject ]</a>
+              <a href="author.html#2055">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

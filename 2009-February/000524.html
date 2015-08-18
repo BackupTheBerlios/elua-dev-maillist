@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Timing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Timing&In-Reply-To=%3Cd3b6d880902180220g5539e1efw5bd41dd2c3f14b07%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000522.html">
+   <LINK REL="Next"  HREF="000525.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Timing</H1>
+    <B>Dado Sutter</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Timing&In-Reply-To=%3Cd3b6d880902180220g5539e1efw5bd41dd2c3f14b07%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Timing">dadosutter at gmail.com
+       </A><BR>
+    <I>Wed Feb 18 11:20:06 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000522.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+        <LI>Next message: <A HREF="000525.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#524">[ date ]</a>
+              <a href="thread.html#524">[ thread ]</a>
+              <a href="subject.html#524">[ subject ]</a>
+              <a href="author.html#524">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Feb 18, 2009 at 02:19, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>&gt; wrote:
+
+&gt;<i> So, one of the things I've been doing recently is tracking timing data for
+</I>&gt;<i> adcscope.lua when running it.  I've found certain things that increase or
+</I>&gt;<i> decrease the amount of time spent getting samples, but I hadn't actually
+</I>&gt;<i> checked what the bare minimum time would be for a dry loop like the
+</I>&gt;<i> following:
+</I>&gt;<i>
+</I>&gt;<i> term.clrscr()
+</I>&gt;<i>
+</I>&gt;<i> while 1 do
+</I>&gt;<i>  t1 = tmr.start(0)
+</I>&gt;<i>  t2 = tmr.read(0)
+</I>&gt;<i>  dtime = tmr.diff(0,t2,t1)
+</I>&gt;<i>  term.gotoxy(1,1)
+</I>&gt;<i>  term.putstr(string.format(&quot;Time (us): %06d&quot;,dtime))
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> For LM3S6965, I get 79 us.  Is this correct?
+</I>
+
+What is the MCLK freq on your board/kit pls ?
+I'll check the timming on my EK-LM3S8962 asap.
+
+Thanks for showing me that we not always need a tmr.stop() !! :)
+
+
+&gt;<i> I get generally the same results if I start the timer outside the loop and
+</I>&gt;<i> do two subsequent reads.
+</I>&gt;<i> Making t1 and t2 locals shaves off a little but not much.  If I make
+</I>&gt;<i> tmr.start and tmr.read locals, things get down to 13 us.
+</I>
+
+Wow, what a difference ! I knew locals were faster (I think Roberto mentions
+this and other gems in <A HREF="http://www.lua.org/gems/sample.pdf">http://www.lua.org/gems/sample.pdf</A>) but that seems
+quite a difference.
+
+Does this jibe with everyone else's findings?
+
+
+asap
+
+
+&gt;<i> If I do a local function between the two timers like math.sqrt, I get a
+</I>&gt;<i> stable 48 us/cycle:
+</I>
+
+Good !!! Determinism is welcome here :)
+(pls note this can obviously vary, depending on the function used here, at
+least for different arguments, as you've done in your example below)
+
+term.clrscr()
+&gt;<i>
+</I>&gt;<i> local t1, t2, s2
+</I>&gt;<i> local tstart = tmr.start
+</I>&gt;<i> local tread = tmr.read
+</I>&gt;<i> local speedfun = math.sqrt
+</I>&gt;<i>
+</I>&gt;<i> while 1 do
+</I>&gt;<i>  s2 = 23
+</I>&gt;<i>  t1 = tstart(0)
+</I>&gt;<i>  s2 = speedfun(s2)
+</I>&gt;<i>  t2 = tread(0)
+</I>&gt;<i>  dtime = tmr.diff(0,t2,t1)
+</I>&gt;<i>  term.gotoxy(1,1)
+</I>&gt;<i>  term.putstr(string.format(&quot;Delay (us): %06d&quot;,dtime))
+</I>&gt;<i> en
+</I>&gt;<i>
+</I>&gt;<i> Making all the timing and sampling functions and variables local, here are
+</I>&gt;<i> the timings I'm looking at for adcscope.lua when getting samples from 4
+</I>&gt;<i> channels.
+</I>&gt;<i>
+</I>&gt;<i> Pass table to getsamples, modify specified index (
+</I>&gt;<i> adc.getsamples(v,1,adcvals,i ): 293 us (stable)
+</I>&gt;<i> Convert returned table to integer, insert into table (adcvals[i] =
+</I>&gt;<i> adc.getsamples(v,1)[1]): ~470 us (fluctuates)
+</I>&gt;<i> Replace nested table of values within adcvalues table (adcvals[i] =
+</I>&gt;<i> adc.getsamples(v,1)): ~450 (fluctuates, sometimes maybe up to 1000-2000 us)
+</I>
+
+gc seems to be working on 3rd test :(
+
+Very nice !! Thanks for the precise report again !!
+Still, it seems a bit too slow to me :( for a Cortex-M3. I hope this is just
+a bad impression.
+
+-jsnyder
+
+
+Dado
+
+
+
+
+
+
+
+&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/65d73e57/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090218/65d73e57/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000522.html">[eLua-dev] A Few Models For Dealing With ADC Samples
+</A></li>
+	<LI>Next message: <A HREF="000525.html">[eLua-dev] Microcontroller Filesystem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#524">[ date ]</a>
+              <a href="thread.html#524">[ thread ]</a>
+              <a href="subject.html#524">[ subject ]</a>
+              <a href="author.html#524">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

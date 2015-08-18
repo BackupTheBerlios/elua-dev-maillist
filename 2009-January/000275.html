@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20Tiny%20RAM%20patch%20%28finally%29%20added%20to%20eLua&In-Reply-To=%3C690470971.1157851231729581997.JavaMail.root%40mail-1.01.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000274.html">
+   <LINK REL="Next"  HREF="000276.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Lua Tiny RAM patch (finally) added to eLua</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Lua%20Tiny%20RAM%20patch%20%28finally%29%20added%20to%20eLua&In-Reply-To=%3C690470971.1157851231729581997.JavaMail.root%40mail-1.01.com%3E"
+       TITLE="[eLua-dev] Lua Tiny RAM patch (finally) added to eLua">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jan 12 04:06:22 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000274.html">[eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+</A></li>
+        <LI>Next message: <A HREF="000276.html">[eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#275">[ date ]</a>
+              <a href="thread.html#275">[ thread ]</a>
+              <a href="subject.html#275">[ subject ]</a>
+              <a href="author.html#275">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Wow, this is amazing :-) 
+
+Based on a cursory look through, it sounds as if some tables and maybe functions are now classed as read-only? Is this so they don't have to be allocated in SRAM? If the numbers below are accurate, it seems there's quite a benefit to doing so. Is there much of a performance hit? 
+
+-jsnyder 
+
+----- Original Message ----- 
+From: &quot;Bogdan Marinescu&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; 
+To: &quot;eLua Users and Development List&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt; 
+Sent: Sunday, January 11, 2009 2:57:19 PM GMT -06:00 US/Canada Central 
+Subject: [eLua-dev] Lua Tiny RAM patch (finally) added to eLua 
+
+Hi, 
+
+If you've been wondering why I suddenly stopped replying in the threads about the platform specific modules/ADC platform interface/whatever else, here's your answer: in the last couple of days I've been working like a crazy maniac on integrating my Lua Tiny RAM (LTR) patch in eLua. I'll send a larger e-mail explaining what's LTR later, for now let's review the svn commit log: 
+
+- Lua Tiny RAM (LTR) patch is now integrated in eLua and is enabled by default 
+- all eLua modules updated to work with LTR 
+
+And now for something really interesting: the results! The table below summarizes the RAM usage in kbytes (as obtained by running lua -e &quot;print(collectgarbage'count')&quot; from the eLua shell). OPT=0 is LTR's &quot;compatibility mode&quot; (basically this means that the patch is disabled, so you're running plain Lua) and OPT=2 is the patch in action. 
+
+|<i>=============|============|============| 
+</I>|<i> PLATFORM | OPT=0 | OPT=2 | 
+</I>|<i>=============|============|============| 
+</I>|<i> AVR32 | 23.75 | 5.42 | 
+</I>|<i> AT91SAM7X | 25.16 | 5.42 | 
+</I>|<i> STR7 | 24.92 | 5.42 | 
+</I>|<i> STR9 | 22.23 | 5.42 | 
+</I>|<i> LPC2888 | 22.23 | 5.42 | 
+</I>|<i> I386 | 16.90 | 5.42 | 
+</I>|<i> LM3S | 27.14 | 5.42 | 
+</I>|<i> STM32 | ????? | ???? | (hint: 5.42:)) 
+</I>|<i>=============|============|============| 
+</I>
+Beautiful, no? :) 
+
+Mike , please test this on your STM3210 board (yes, I also modified your port) and let me know how it works. 
+
+- &quot;cpu&quot; module added to avr32, at91sam7x, str7 
+
+Pretty self-explanatory. 
+
+- &quot;disp&quot; module no longer generic (now stays in src/modules/lm3s). For this reason, the &quot;disp&quot; platform interface was also removed. 
+
+This concludes an older discussion on the list. The &quot;disp&quot; module was specific to the LM3S boards, and its platform interface wasn't generic enough, so it was moved to the LM3S backend and the platform interface was removed. 
+
+- the &quot;modcommon&quot; mechanism in STM32 (ROM loader) was depreciated in favour of the Lua Tiny RAM patch (and the &quot;stm3210lcd&quot; module from the STM32 backend now uses LTR). 
+
+Sorry, Mike :), but I really think this is the better way to go with this. Maybe we can still use parts of your mechanism in other parts of eLua. 
+
+- small bugfixes 
+
+I'll be coming back to our API-related threads after I manage to breathe a bit :) and after I send more information about LTR to the world. 
+
+Best, 
+Bogdan 
+
+
+
+
+_______________________________________________ Elua-dev mailing list <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090111/b6229038/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090111/b6229038/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000274.html">[eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+</A></li>
+	<LI>Next message: <A HREF="000276.html">[eLua-dev] Lua Tiny RAM patch (finally) added to eLua
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#275">[ date ]</a>
+              <a href="thread.html#275">[ thread ]</a>
+              <a href="subject.html#275">[ subject ]</a>
+              <a href="author.html#275">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

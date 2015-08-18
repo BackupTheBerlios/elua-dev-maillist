@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLuaMIDI
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLuaMIDI&In-Reply-To=%3C81fbe47d1002022345v45a5a69ehd23253468ca32eb%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001176.html">
+   <LINK REL="Next"  HREF="001178.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLuaMIDI</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLuaMIDI&In-Reply-To=%3C81fbe47d1002022345v45a5a69ehd23253468ca32eb%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLuaMIDI">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Feb  3 08:45:28 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001176.html">[eLua-dev] eLuaMIDI
+</A></li>
+        <LI>Next message: <A HREF="001178.html">[eLua-dev] eLuaMIDI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1177">[ date ]</a>
+              <a href="thread.html#1177">[ thread ]</a>
+              <a href="subject.html#1177">[ subject ]</a>
+              <a href="author.html#1177">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Good luck with your project! I can't wait to see (well, hear) some eLua
+music, so I can finally tell everybody &quot;eLua is music to my ears!&quot; :) Of
+course, there's already piano.lua (and I can actually play part of the
+&quot;Afraid to Shoot Strangers&quot; solo with it :) ) but MIDI is much, much cooler.
+Also of course, we'll help along the way if you need any kind of support
+from the project itself (new features, bug fixes, stuff like this).
+
+Best,
+Bogdan
+
+On Wed, Feb 3, 2010 at 5:00 AM, Vaughan McAlley &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">ockegheim at gmail.com</A>&gt; wrote:
+
+&gt;<i> I&#8217;m working on an algorithm (in Lua) to process MIDI data, mainly to
+</I>&gt;<i> do with tuning. The reason I joined this list was that eventually I
+</I>&gt;<i> want to move it from my Mac to an embedded board, but I want to get
+</I>&gt;<i> the algorithm right first...
+</I>&gt;<i>
+</I>&gt;<i> So I know Lua and MIDI pretty well, but not much about embedded
+</I>&gt;<i> boards. I understand what you&#8217;re trying to do with eLuaMIDI.
+</I>&gt;<i>
+</I>&gt;<i> One thing I&#8217;ve found is that MIDI messages fit very neatly into Lua
+</I>&gt;<i> strings, as embedded zeros are allowed. This allows you to parse
+</I>&gt;<i> messages using the string library. For example, instead of lines
+</I>&gt;<i> 364-370 (validating sysex messages):
+</I>&gt;<i>
+</I>&gt;<i> -- Validate data ( i.e look for bytes with the bit #7 set )
+</I>&gt;<i>  for i=1, string.len( data ) do
+</I>&gt;<i>    if string.byte( string.sub( data, i, i) ) &gt; 127 then
+</I>&gt;<i>      error( &quot;Error: Invalid byte in data pos &quot; .. i .. &quot;\n&quot; )
+</I>&gt;<i>      return false
+</I>&gt;<i>    end
+</I>&gt;<i>  end
+</I>&gt;<i>
+</I>&gt;<i> ... you could use string.find:
+</I>&gt;<i>
+</I>&gt;<i> local i = string.find(data, &quot;[\128-\255]&quot;)
+</I>&gt;<i> if i then
+</I>&gt;<i>    error( &quot;Error: Invalid byte in data pos &quot; .. i .. &quot;\n&quot; )
+</I>&gt;<i>    return false
+</I>&gt;<i> end
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i> Vaughan
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On 28 January 2010 20:32, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; Very cool! I've been thinking about something like this too, but my MIDI
+</I>&gt;<i> &gt; knowledge is quite limited. I'm willing to help as much as possible with
+</I>&gt;<i> the
+</I>&gt;<i> &gt; coding part, so we can get some serious music out of eLua :)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Thu, Jan 28, 2010 at 2:12 AM, Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Hello eLuers,
+</I>&gt;<i> &gt;&gt;    Thiago Naves is developing a Lua Module that implements a MIDI
+</I>&gt;<i> protocol
+</I>&gt;<i> &gt;&gt; API for eLua.
+</I>&gt;<i> &gt;&gt;    It is hosted in Google Code @ <A HREF="https://code.google.com/p/eluamidi/and">https://code.google.com/p/eluamidi/and</A>
+</I>&gt;<i> &gt;&gt; we'll be glad to grant commit access for those who want to collaborate.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Best
+</I>&gt;<i> &gt;&gt; Dado
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; Elua-dev mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; Elua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100203/18cf8a36/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100203/18cf8a36/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001176.html">[eLua-dev] eLuaMIDI
+</A></li>
+	<LI>Next message: <A HREF="001178.html">[eLua-dev] eLuaMIDI
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1177">[ date ]</a>
+              <a href="thread.html#1177">[ thread ]</a>
+              <a href="subject.html#1177">[ subject ]</a>
+              <a href="author.html#1177">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

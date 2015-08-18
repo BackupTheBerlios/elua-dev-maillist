@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] C library
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20C%20library&In-Reply-To=%3CBANLkTi%3DUa-aUb%2BV4seEw051PL0MKeNL_JA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002551.html">
+   <LINK REL="Next"  HREF="002560.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] C library</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20C%20library&In-Reply-To=%3CBANLkTi%3DUa-aUb%2BV4seEw051PL0MKeNL_JA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] C library">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Mon Jun 20 19:18:33 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002551.html">[eLua-dev] C library
+</A></li>
+        <LI>Next message: <A HREF="002560.html">[eLua-dev] C library
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2556">[ date ]</a>
+              <a href="thread.html#2556">[ thread ]</a>
+              <a href="subject.html#2556">[ subject ]</a>
+              <a href="author.html#2556">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Jun 19, 2011 at 6:25 PM, Robert G. Jakabosky
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bobby at sharedrealm.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> On Sunday 19, James Snyder wrote:
+</I>&gt;&gt;<i> $ arm-none-eabi-nm elua_lua_lm3s6965.elf --size-sort -r -t d
+</I>&gt;&gt;<i> 00004548 T _vfprintf_r
+</I>&gt;&gt;<i> 00004344 T _svfprintf_r
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> 00003080 T _dtoa_r
+</I>&gt;&gt;<i> 00003040 T _strtod_r
+</I>&gt;<i>
+</I>&gt;<i> I haven't tried it, but somewhere I heard about this dtoa() &amp; strtod()
+</I>&gt;<i> implementation (MIT licensed):
+</I>&gt;<i> <A HREF="http://www.netlib.org/fp/dtoa.c">http://www.netlib.org/fp/dtoa.c</A>
+</I>
+Interesting.  I hadn't looked into dtoa or strtod implementations
+before.  I'd expect those to be generally large if they're done
+carefully and without error.  There's some discussion on that here as
+well as links to some experiments with quick and dirty floating point
+conversion:
+<A HREF="http://stackoverflow.com/questions/3173056/why-does-dtoa-c-contain-so-much-code/3173426#3173426">http://stackoverflow.com/questions/3173056/why-does-dtoa-c-contain-so-much-code/3173426#3173426</A>
+
+Discussions on cheaper/smaller approaches and under what conditions
+they make errors:
+<A HREF="http://www.exploringbinary.com/quick-and-dirty-floating-point-to-decimal-conversion/">http://www.exploringbinary.com/quick-and-dirty-floating-point-to-decimal-conversion/</A>
+<A HREF="http://www.exploringbinary.com/15-digit-quick-and-dirty-conversions-dont-round-trip/">http://www.exploringbinary.com/15-digit-quick-and-dirty-conversions-dont-round-trip/</A>
+
+Interesting that sqlite apparently limits conversions to 15 digits..
+For eLua there are likely cases where it might be worth it to trade a
+few kB for this type of limitation, but I don't really like the idea
+of making it default especially since there are plenty of devices
+where this space tradeoff wouldn't make it worth it.
+
+Also, apparently newlib is using an older version of that same dtoa.c
+written by David M. Gay:
+<A HREF="http://sourceware.org/cgi-bin/cvsweb.cgi/~checkout~/src/newlib/libc/stdlib/dtoa.c?rev=1.5&amp;content-type=text/plain&amp;cvsroot=src">http://sourceware.org/cgi-bin/cvsweb.cgi/~checkout~/src/newlib/libc/stdlib/dtoa.c?rev=1.5&amp;content-type=text/plain&amp;cvsroot=src</A>
+
+avr-libc does have a dtoa currently, but it's dependent on assembler
+code.  Previously I think they just used what was provided by gcc.
+I'm not sure how much is easily usable from there for other functions.
+ There's definitely some avr-specific functionality even in ones that
+are all C code.
+
+&gt;<i>
+</I>&gt;<i> There is a lot more code on that site that might be useful:
+</I>&gt;<i> <A HREF="http://www.netlib.org/liblist.html">http://www.netlib.org/liblist.html</A>
+</I>
+Thanks.  I think I've definitely borrowed
+
+&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Robert G. Jakabosky
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002551.html">[eLua-dev] C library
+</A></li>
+	<LI>Next message: <A HREF="002560.html">[eLua-dev] C library
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2556">[ date ]</a>
+              <a href="thread.html#2556">[ thread ]</a>
+              <a href="subject.html#2556">[ subject ]</a>
+              <a href="author.html#2556">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

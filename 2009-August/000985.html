@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] SD/MMC testing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20SD/MMC%20testing&In-Reply-To=%3C4A820B16.6090500%40micromint.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000984.html">
+   <LINK REL="Next"  HREF="000986.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] SD/MMC testing</H1>
+    <B>Jesus Alvarez</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20SD/MMC%20testing&In-Reply-To=%3C4A820B16.6090500%40micromint.com%3E"
+       TITLE="[eLua-dev] SD/MMC testing">jalvarez at micromint.com
+       </A><BR>
+    <I>Wed Aug 12 02:21:42 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000984.html">[eLua-dev] SD/MMC testing
+</A></li>
+        <LI>Next message: <A HREF="000986.html">[eLua-dev] SD/MMC testing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#985">[ date ]</a>
+              <a href="thread.html#985">[ thread ]</a>
+              <a href="subject.html#985">[ subject ]</a>
+              <a href="author.html#985">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE> &gt;&gt; If not, were you able to read it using the sd_card example
+ &gt;&gt; from the StellarisWare driver library?
+ &gt;
+ &gt; We did not test this.
+
+That is a very simple test and would confirm if your microSD card is 
+working properly. The eagle_mmc branch uses the same FatFs module used 
+by the StellarisWare sd_card example. If the sd_card example works, the 
+eLua MMC functionality should work too.
+
+ &gt; But I think we have reduced the possibility of kit hardware
+ &gt; errors, because I've tested your eagle_mmc image in at least
+ &gt; 3 different LM3S8962 boards.
+
+The image I use for testing is built for a Micromint Eagle with the 
+LM3S6918 processor. You need to rebuild from source for your target 
+board. The MMC driver uses the SPI interface. The SPI chip select pin 
+used for MMC on your LM3S8962 card is not the same. A binary image built 
+for a board that uses a different SPI port or a different SPI chip 
+select will not work on your board.
+
+Regards,
+Jesus Alvarez
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000984.html">[eLua-dev] SD/MMC testing
+</A></li>
+	<LI>Next message: <A HREF="000986.html">[eLua-dev] SD/MMC testing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#985">[ date ]</a>
+              <a href="thread.html#985">[ thread ]</a>
+              <a href="subject.html#985">[ subject ]</a>
+              <a href="author.html#985">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

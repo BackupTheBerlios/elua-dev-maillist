@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] New user introduction!
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-December/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20user%20introduction%21&In-Reply-To=%3CCAMHCYBfEwvmXjiMPb4pzRdQzjpVFHnMJh63CVHhpH22OnEvwqA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003065.html">
+   <LINK REL="Next"  HREF="003067.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] New user introduction!</H1>
+    <B>Thiago Naves</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20New%20user%20introduction%21&In-Reply-To=%3CCAMHCYBfEwvmXjiMPb4pzRdQzjpVFHnMJh63CVHhpH22OnEvwqA%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] New user introduction!">naves.thiago at gmail.com
+       </A><BR>
+    <I>Sun Dec  4 05:00:13 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003065.html">[eLua-dev] New user introduction!
+</A></li>
+        <LI>Next message: <A HREF="003067.html">[eLua-dev] New user introduction!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3066">[ date ]</a>
+              <a href="thread.html#3066">[ thread ]</a>
+              <a href="subject.html#3066">[ subject ]</a>
+              <a href="author.html#3066">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Dec 3, 2011 at 9:22 PM, Brent Picasso &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">brent at autosportlabs.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Thanks for the quick reply. I interpreted the SAM7x port being incompatible
+</I>&gt;<i> with the SAM7s - admittedly I haven't worked with the SAM7X - will it
+</I>&gt;<i> require a recompile or should the binary work right away?
+</I>
+I actually read wrong and thought you wrote sam7x...sorry about that.
+But, as they both are a ARM7TDMI architecture, it may be an easy port.
+A quick search showed that those are highly code compatible.
+I just did a quick comparison between the AT91SAM7S64 and the
+AT91SAM7x256 header files and they are almost identical.
+
+In fact as I was writing this email I decided to try to build to the
+AT91SAM7s256 .... I replaced the AT91SAM7x256 files with the files for
+the SAM7S and after a fiew tweeks it built =)
+
+So, here is the image. Give it a try and letme know if worked ( as I
+have no way to test this ).
+I have no idea if its going to work.
+
+
+
+Thiago
+
+
+&gt;<i>
+</I>&gt;<i> Brent
+</I>&gt;<i>
+</I>&gt;<i> Connected by DROID on Verizon Wireless
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> -----Original message-----
+</I>&gt;<i>
+</I>&gt;<i> From: Thiago Naves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">naves.thiago at gmail.com</A>&gt;
+</I>&gt;<i> To: &quot;eLua Users and Development List (www.eluaproject.net)&quot;
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>&gt;
+</I>&gt;<i> Sent: Sat, Dec 3, 2011 22:35:41 GMT+00:00
+</I>&gt;<i> Subject: Re: [eLua-dev] New user introduction!
+</I>&gt;<i>
+</I>&gt;<i> On Sat, Dec 3, 2011 at 6:12 PM, Brent Picasso wrote:
+</I>&gt;&gt;<i> Hello!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Just signed up on the list and wanted to introduce myself and some
+</I>&gt;&gt;<i> projects
+</I>&gt;&gt;<i> I've been working on.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Last night I installed eLua on an mbed module I've been sitting on for
+</I>&gt;&gt;<i> quite
+</I>&gt;&gt;<i> a while. Super impressed with how well it works!! Love the ROM filesystem
+</I>&gt;&gt;<i> implementation, the hardware integration and especially the tiny RAM mods!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> In the process of developing an intelligent RaceCar data acquisition /
+</I>&gt;&gt;<i> control system, I wanted an easy to use way to control behaviours in the
+</I>&gt;&gt;<i> system that would affect race car operation. e.g.:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &quot;activate warning light if RPM &gt; 8000&quot;
+</I>&gt;&gt;<i> &quot;change logging frequency to 100Hz if within these GPS coordinates&quot;
+</I>&gt;&gt;<i> &quot;reduce engine power if slippage between driven wheels (traction control)&quot;
+</I>&gt;&gt;<i> &quot;adjust aerodynamic wing to 80% angle if GPS speed &gt; 120KPH and not
+</I>&gt;&gt;<i> cornering (accelerometer X channel &lt; .2g)&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> and so on. I *DID NOT* want to create a GUI boolean logic builder- the
+</I>&gt;&gt;<i> thought makes me cringe - so Lua was chosen as an easy to use scripting
+</I>&gt;&gt;<i> language. I separately ported Lua to the Atmel SAM7s256 micro we're using
+</I>&gt;&gt;<i> in
+</I>&gt;&gt;<i> the design. So far it's worked well in conjunction with FreeROTS - but
+</I>&gt;&gt;<i> after
+</I>&gt;&gt;<i> a lot of work refining my memory management issues.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> In my port I provided a simple way to upload a lua script and flash it to
+</I>&gt;&gt;<i> a
+</I>&gt;&gt;<i> special memory segment (not a file system, just a buffer in memory). Does
+</I>&gt;&gt;<i> the eLua project support flashing scripts?
+</I>&gt;<i>
+</I>&gt;<i> No. We can upload files to the RAM or to the /semi file system on mbed
+</I>&gt;<i> or to a MMC via xmodem
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also, has the SAM7s been considered for a port for the eLua project? has
+</I>&gt;&gt;<i> it
+</I>&gt;&gt;<i> simply not been picked up yet, or were technological constraints
+</I>&gt;&gt;<i> perceived?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> eLua has ports to AT91SAM7X256 and AT91SAM7X512.
+</I>&gt;<i> You can view the status of all supportes platforms at
+</I>&gt;<i> <A HREF="http://www.eluaproject.net/doc/v0.8/en_status.html">http://www.eluaproject.net/doc/v0.8/en_status.html</A>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Brent Picasso
+</I>&gt;&gt;<i> Autosport Labs
+</I>&gt;&gt;<i> Technology for Race and Street
+</I>&gt;&gt;<i> autosportlabs.com | twitter.com/AutosportLabs
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: elua_lua_at91sam7s256.bin
+Type: application/octet-stream
+Size: 177000 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111204/80c0f74c/attachment.bin">https://lists.berlios.de/pipermail/elua-dev/attachments/20111204/80c0f74c/attachment.bin</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: elua_lua_at91sam7s256.elf
+Type: application/octet-stream
+Size: 343206 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20111204/80c0f74c/attachment.obj">https://lists.berlios.de/pipermail/elua-dev/attachments/20111204/80c0f74c/attachment.obj</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003065.html">[eLua-dev] New user introduction!
+</A></li>
+	<LI>Next message: <A HREF="003067.html">[eLua-dev] New user introduction!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3066">[ date ]</a>
+              <a href="thread.html#3066">[ thread ]</a>
+              <a href="subject.html#3066">[ subject ]</a>
+              <a href="author.html#3066">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

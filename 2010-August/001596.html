@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] optimisation for 16 bits system
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20optimisation%20for%2016%20bits%20system&In-Reply-To=%3CBLU150-w44D7E83340074D36F3C690BA820%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001595.html">
+   <LINK REL="Next"  HREF="001597.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] optimisation for 16 bits system</H1>
+    <B>veb veb</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20optimisation%20for%2016%20bits%20system&In-Reply-To=%3CBLU150-w44D7E83340074D36F3C690BA820%40phx.gbl%3E"
+       TITLE="[eLua-dev] optimisation for 16 bits system">vebveb at hotmail.fr
+       </A><BR>
+    <I>Mon Aug 23 14:24:45 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001595.html">[eLua-dev] optimisation for 16 bits system
+</A></li>
+        <LI>Next message: <A HREF="001597.html">[eLua-dev] optimisation for 16 bits system
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1596">[ date ]</a>
+              <a href="thread.html#1596">[ thread ]</a>
+              <a href="subject.html#1596">[ subject ]</a>
+              <a href="author.html#1596">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hello,
+
+To explain how it read an opcode, I will explain with an example:
+
+On A 16 bits system:
+
+Normal GETARG_A:
+#define GETARG_A(i)    (cast(int, ((i)&gt;&gt;POS_A) &amp; MASK1(SIZE_A,0)))
+-&gt; #define GETARG_A(i)   (int)  ((i)&gt;&gt;8) &amp; 0xFF)
+
+So, if we have (in binary):
+11100011 11011011 10011001 10001000
+it is rotated bit per bit to:       (this part is slow, because it use a loop with a scrolling 1 per 1 bit (8*2 scrolling here)
+00000000 11100011 11011011 10011001   ((i)&gt;&gt;8)
+and it becomes:
+00000000 00000000 00000000 10011001    (&amp; 0xFF)
+and it is cast to an int (16 bits)
+00000000 10011001
+
+Optimised GETARG_A:
+#define GETARG_A(i)    (cast(int, ((((struct f16 *)&amp;i)-&gt; word1)&gt;&gt;POS_A) &amp; MASK1(SIZE_A,0)))
+-&gt; #define GETARG_A(i)  (int) (((register_right)&gt;&gt;8) &amp; 0xFF)
+
+So, if we have (in binary):
+
+11100011 11011011 10011001 10001000
+
+it is rotated with one scrolling only: (register_right is 16 bits)
+
+00000000 10011001   ((register_right)&gt;&gt;8)
+
+and it becomes:
+00000000 10011001    (&amp; 0xFF) (we don't need it for GETARG_A)
+
+and it is cast to an int if it wasn't (16 bits)
+
+00000000 10011001 (we don't need it for GETARG_A)
+
+Instead of scrolling everything in an slow way, we scroll in one time only what we need.
+It is fast the same way for the other GETARG_B, ... (but a bit more complex because we use register_left and register_right)
+
+
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">pedrobittencourt87 at gmail.com</A>
+Date: Mon, 23 Aug 2010 08:50:35 -0300
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+Subject: Re: [eLua-dev] optimisation for 16 bits system
+
+Hi vebveb!
+
+Can you please explain this &quot;cast&quot; function that you are using? 
+--Pedro Bittencourt
+
+
+
+On Mon, Aug 23, 2010 at 7:38 AM, veb veb &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">vebveb at hotmail.fr</A>&gt; wrote:
+
+
+
+
+
+
+
+Hello everybody,
+
+I've programmed a lua intepretor on a 16 bits system, and I find a big optimisation to read opcodes.
+
+I saw with obj2asm how compilers (I tested 3: digital mars, borland C++, open watcom) code to read the opcodes, and it wasn't optimised at all for 16 bits system.
+
+
+
+With my code, the opcodes are read more than 10 times faster on a 16 bits system (exept if your compilers are better than mines)
+My lua interpretor runs 2 times faster!
+
+
+To have an optimised code outpout:
+
+
+In lopcodes.h
+
+
+struct f16
+ {
+         unsigned int word1; // instead of reading 1 long (2 16 bits registers 'emulating' like 1 32 bits (non optimised at all because it use a loop to scrolling one per one bits)
+
+
+         unsigned int word2; // it divide the opcode in two 16 bits registers with one scrolling per register (no loops)
+ };
+
+#define GETARG_A(i)    (cast(int, ((((struct f16 *)&amp;i)-&gt; word1)&gt;&gt;POS_A) &amp; MASK1(SIZE_A,0)))
+
+
+
+#define GETARG_B(i)    cast(int, ((((struct f16 *)&amp;i)-&gt; word2)&gt;&gt;(POS_B-16) &amp; MASK1(SIZE_B,0)))
+
+#define GETARG_C(i)    (cast(int, ( ( (((struct f16 *)&amp;i)-&gt; word2)&lt;&lt;(16-POS_C)) | (( ((struct f16 *)&amp;i)-&gt; word1)&gt;&gt;(POS_C)) ) &amp; MASK1(SIZE_C,0)))
+
+
+
+#define GETARG_Bx(i) (cast(int, ( ( (((struct f16 *)&amp;i)-&gt; word2)&lt;&lt;(16-POS_C)) | (( ((struct f16 *)&amp;i)-&gt; word1)&gt;&gt;(POS_C)) ) &amp; MASK1(SIZE_Bx,0)))
+
+
+#define GETARG_sBx(i)    (GETARG_Bx(i)-MAXARG_sBx)
+
+
+
+I posted this code to le you increase perfomance of eLua for 16 bits system.
+
+If you use the code I would like to be inform.
+
+vebveb
+
+ 		 	   		  
+
+_______________________________________________
+
+eLua-dev mailing list
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+
+
+
+
+
+_______________________________________________
+eLua-dev mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A> 		 	   		  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100823/8c25a2e2/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100823/8c25a2e2/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001595.html">[eLua-dev] optimisation for 16 bits system
+</A></li>
+	<LI>Next message: <A HREF="001597.html">[eLua-dev] optimisation for 16 bits system
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1596">[ date ]</a>
+              <a href="thread.html#1596">[ thread ]</a>
+              <a href="subject.html#1596">[ subject ]</a>
+              <a href="author.html#1596">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

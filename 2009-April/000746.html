@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Simple eLua flash file system
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Simple%20eLua%20flash%20file%20system&In-Reply-To=%3C49D86061.9000901%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000745.html">
+   <LINK REL="Next"  HREF="000747.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Simple eLua flash file system</H1>
+    <B>Mike Thompson</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Simple%20eLua%20flash%20file%20system&In-Reply-To=%3C49D86061.9000901%40gmail.com%3E"
+       TITLE="[eLua-dev] Simple eLua flash file system">mpthompson at gmail.com
+       </A><BR>
+    <I>Sun Apr  5 09:40:17 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000745.html">[eLua-dev] Simple eLua flash file system
+</A></li>
+        <LI>Next message: <A HREF="000747.html">[eLua-dev] Simple eLua flash file system
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#746">[ date ]</a>
+              <a href="thread.html#746">[ thread ]</a>
+              <a href="subject.html#746">[ subject ]</a>
+              <a href="author.html#746">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Bogdan Marinescu wrote:
+&gt;<i> We will have such a FS at some point (I have a proof of concept ready), 
+</I>&gt;<i> but I can't tell you why, as right now I'm so busy that I don't even get 
+</I>&gt;<i> to work on the 0.6 docs anymore (hope this will change soon).
+</I>&gt;<i> I do not recommend using FAT on Flash directly. You might kill your 
+</I>&gt;<i> Flash soon. FAT was not designed to work directly with a medium such as 
+</I>&gt;<i> Flash that generally needs a wear leveling algorithm for a nice, long 
+</I>&gt;<i> life :)
+</I>
+Just a follow up on this, I did take Bogdan's warning to heart about 
+using the FAT file system over raw NAND flash.  After scouring the 
+Internet with Google and not finding anything suitable (small, free and 
+easy to use) I've put together my own simple linear file store system 
+for the AT91SAM7 EFC.  It should correctly implement a wear leveling 
+strategy whereby it keeps track of the order of writes to the underlying 
+flash to distribute them evenly across all blocks in the filestore -- 
+even when rewriting portions of an existing file.
+
+Because there is no central table at the top of the filesystem it won't 
+win any speed contests as all searches for file blocks are linear across 
+the filestore.  I took this approach to minimize bookkeeping structures 
+in SRAM which other linear file stores will typically use.  This 
+strategy should work fine for small file systems on the order of a few 
+hundred flash pages.
+
+It's very simple and just supports a root directory with an arbitrary 
+number of files, but it should get the job done.  It will intergrate 
+with eLua as a filesystem connected via newlib just as FatFs does so the 
+usual open, close, read, write, etc. calls should work.
+
+I want to spend a few days cleaning up code and performing unit testing, 
+but I'll be happy to share it with others who may find it useful.  I'm 
+sure a few other sets of eyes looking it over would help with ideas for 
+making it more portable and more efficient.
+
+I'll be using this to store Lua byte code and other resources on the 
+internal flash of the AT91SAM7S of the NXT Lego brick.  I wanted 
+something well integrated with the file system, but reasonable for the 
+raw NAND flash.
+
+Mike Thompson
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000745.html">[eLua-dev] Simple eLua flash file system
+</A></li>
+	<LI>Next message: <A HREF="000747.html">[eLua-dev] Simple eLua flash file system
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#746">[ date ]</a>
+              <a href="thread.html#746">[ thread ]</a>
+              <a href="subject.html#746">[ subject ]</a>
+              <a href="author.html#746">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

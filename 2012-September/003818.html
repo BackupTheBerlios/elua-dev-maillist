@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Luachips
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2012-September/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Luachips&In-Reply-To=%3Cmemo.20120928104357.5096F%40myshkin.cix.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003816.html">
+   <LINK REL="Next"  HREF="003819.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Luachips</H1>
+    <B>David Collier</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Luachips&In-Reply-To=%3Cmemo.20120928104357.5096F%40myshkin.cix.co.uk%3E"
+       TITLE="[eLua-dev] Luachips">myshkin at cix.co.uk
+       </A><BR>
+    <I>Fri Sep 28 11:43:00 CEST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003816.html">[eLua-dev] A question: Cross compilation feature
+</A></li>
+        <LI>Next message: <A HREF="003819.html">[eLua-dev] Luachips
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3818">[ date ]</a>
+              <a href="thread.html#3818">[ thread ]</a>
+              <a href="subject.html#3818">[ subject ]</a>
+              <a href="author.html#3818">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Martin,
+
+I've seen most RTS/CTS issues over the years.
+
+I have a patch in my AVR32 linux serial driver I really ought to
+contribute!
+
+I do need outgoing CTS control, though I would assume it should work
+character by character. I found that you can talk to GSM modems without
+it, but it falls over at awkward moments.
+
+My experience with incoming comms is that the best strategy is to assign
+an oodle of RAM to the buffer - of course the definition of that can be a
+bit woolly :-)
+
+The RTS/CTS stuff on the AP7000 CPU is pretty special overall, I love
+that it even includes a mode to interface to an RS485 driver!
+
+But thanks for the heads-up.
+
+&gt;<i> *From:* &quot;martinwguy&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt;
+</I>&gt;<i> *To:* &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">myshkin at cix.co.uk</A>&gt;
+</I>&gt;<i> *Date:* Thu, 27 Sep 2012 19:39:32 +0200
+</I>&gt;<i> 
+</I>&gt;<i> On 27 September 2012 19:31, martinwguy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt; So no screen.... certainly one model with no Ethernet.
+</I>&gt;<i> &gt;&gt; Couple of UARTS
+</I>&gt;<i> &gt;&gt; Ethernet would be good to run Modbus TCPIP if it is simple 
+</I>&gt;<i> enough.
+</I>&gt;<i> 
+</I>&gt;<i> Sorry, forgot to comment on this:
+</I>&gt;<i> 
+</I>&gt;<i> The AVR32UC3A0 chip has two UARTS, both available on Mizar's bus
+</I>&gt;<i> headers, but hardware flow control does not work in eLua with this
+</I>&gt;<i> chip. I got as far as figuring out what was needed but not as far as
+</I>&gt;<i> implementing it.
+</I>&gt;<i>   The issue is 
+</I>&gt;<i> <A HREF="https://code.google.com/p/mizar32/issues/detail?id=29">https://code.google.com/p/mizar32/issues/detail?id=29</A> -
+</I>&gt;<i> in summary, HW flow control only works automatically when you use 
+</I>&gt;<i> DMA
+</I>&gt;<i> to drive the UART. Without DMA, if you enable HW flow control, the
+</I>&gt;<i> device will respect CTS before sending data, but code is needed to
+</I>&gt;<i> wiggle RTS up and down manually to stop the other end from flooding
+</I>&gt;<i> you.
+</I>&gt;<i> 
+</I>&gt;<i> If you need RTSCTS hardware flow control, that suggests using a 
+</I>&gt;<i> different SoC.
+</I>&gt;<i> 
+</I>&gt;<i>    M
+</I>&gt;<i> 
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003816.html">[eLua-dev] A question: Cross compilation feature
+</A></li>
+	<LI>Next message: <A HREF="003819.html">[eLua-dev] Luachips
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3818">[ date ]</a>
+              <a href="thread.html#3818">[ thread ]</a>
+              <a href="subject.html#3818">[ subject ]</a>
+              <a href="author.html#3818">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

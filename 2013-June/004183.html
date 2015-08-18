@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Bug%20in%20builder%20for%20LM3%20platform%20Re%3A%20IMPORTANT%3A%20new%0A%20build%20system%20in%20master&In-Reply-To=%3C1371837025543-7578077.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004182.html">
+   <LINK REL="Next"  HREF="004184.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master</H1>
+    <B>raman</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Bug%20in%20builder%20for%20LM3%20platform%20Re%3A%20IMPORTANT%3A%20new%0A%20build%20system%20in%20master&In-Reply-To=%3C1371837025543-7578077.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master">ramangopalan at gmail.com
+       </A><BR>
+    <I>Fri Jun 21 19:50:25 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004182.html">[eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master
+</A></li>
+        <LI>Next message: <A HREF="004184.html">[eLua-dev] Port to Atmel SAM3/4 MCU (arduino due)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4183">[ date ]</a>
+              <a href="thread.html#4183">[ thread ]</a>
+              <a href="subject.html#4183">[ subject ]</a>
+              <a href="author.html#4183">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+* I wrote this mail in the morning. I thought I posted this but I just saw
+it and apparently I didn't. My apologies.
+
+Hello,
+
+&gt;<i> One thing that was lost in transition to the new build system were
+</I>&gt;<i> the switches telling the compiler and the assembler about the target
+</I>&gt;<i> CPU.  (-mcpu=cortex-m3 -mthumb )
+</I>
+It is not a bug. We simply don't have the `cpu' option anymore. You
+now build the code base by specifying the `board' option. In your case
+that would look like this:
+
+./build_elua.lua board=ek-lm3s8962 prog
+
+&gt;<i>From another post:
+</I>&quot;In other words, the old invocation 'scons cpu=&lt;...&gt;&quot; doesn't work at
+all anymore. This makes sense, since eLua is generally built to run on
+a board, not a CPU.&quot;
+
+Please check the documentation [1] for more information on this.
+
+&gt;<i> Not sure if this omission affects other cortex platforms as well.
+</I>
+The build process is common for all targets. You specify `board'.
+
+&gt;<i> One downside of the new build system, it seems to assume that
+</I>&gt;<i> all boards that use the same platform will also use the same CPU
+</I>&gt;<i> architecture. [...] has the aforementioned assumption built into it.
+</I>
+That is not true. eLua currently doesn't support any Cortex-M4 clone
+for LM3S and hence you don't see a reference to arch=`cortexm4'
+in the platform_list table (from build_data.lua) you mentioned.
+
+&gt;<i> How do I add the LM4F120, making it use the LM3s platform, but tell
+</I>&gt;<i> the build system that it is a cortex m4 processor? Some tweaking of
+</I>&gt;<i> build_data.lua should make it possible to handle this situation
+</I>&gt;<i> gracefully.
+</I>
+Getting eLua to run on the LM4F120 involves a bit of work (assuming
+you have the perquisites [2]). You will need to touch various files and
+add a few.
+
+1. You may start off with build_data.lua and add the your new cpu
+under the lm3s entry and include reference to Cortex-M4 for the
+architecture (but it isn't the real deal yet).
+
+2. Touch lm3s/build_config.lua to include board specific details. This is
+generally used to specify configuration which is not available on other
+platforms/boards. For example: The OLED module is not available on
+all LM3S targets. So, the macro `ENABLE_DISP' is only defined (-D on
+gcc) for the boards that support it.
+
+3. You must also include your device specific files (should be supplied
+by TI) like device specific headers and other platform libraries in lm3s/
+See lm3s/driverlib for an example; this will give you an idea.
+
+3. Add your linker file (something like lm4f-120.ld) and hack lm3s/conf.lua
+to include this by checking for your board. Include the path to your device
+specific files and add other compiler specific options like -mcpu=cortex-m4
+here.
+
+4. Your must also add a new file for your board in boards/known. This
+contains the build configuration for your board.
+
+5. Hopefully, if everything goes well, you should be able to run eLua on
+your LM4F Cortex-M4 board.
+
+I would suggest that you look into the code [3] for the other LM3S cpus.
+This might give you an idea on how to extend the same for your new
+target.
+
+Good luck! Have fun with your board.
+
+Best,
+Raman
+
+Links:
+[1]: <A HREF="http://www.eluaproject.net/doc/master/en_building.html">http://www.eluaproject.net/doc/master/en_building.html</A>
+[2]: <A HREF="http://www.eluaproject.net/doc/v0.9/en_arch_newport.html">http://www.eluaproject.net/doc/v0.9/en_arch_newport.html</A>
+[3]: <A HREF="https://github.com/elua/elua/tree/master/src/platform/lm3s">https://github.com/elua/elua/tree/master/src/platform/lm3s</A>
+
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/Bug-in-builder-for-LM3-platform-Re-IMPORTANT-new-build-system-in-master-tp7578075p7578077.html">http://elua-development.2368040.n2.nabble.com/Bug-in-builder-for-LM3-platform-Re-IMPORTANT-new-build-system-in-master-tp7578075p7578077.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004182.html">[eLua-dev] Bug in builder for LM3 platform Re: IMPORTANT: new build system in master
+</A></li>
+	<LI>Next message: <A HREF="004184.html">[eLua-dev] Port to Atmel SAM3/4 MCU (arduino due)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4183">[ date ]</a>
+              <a href="thread.html#4183">[ thread ]</a>
+              <a href="subject.html#4183">[ subject ]</a>
+              <a href="author.html#4183">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

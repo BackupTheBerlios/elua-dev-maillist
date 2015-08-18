@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] io.open nil return on mBed?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-November/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20io.open%20nil%20return%20on%20mBed%3F&In-Reply-To=%3C1385828513488-7578212.post%40n2.nabble.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004310.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] io.open nil return on mBed?</H1>
+    <B>Jim_Thorpe</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20io.open%20nil%20return%20on%20mBed%3F&In-Reply-To=%3C1385828513488-7578212.post%40n2.nabble.com%3E"
+       TITLE="[eLua-dev] io.open nil return on mBed?">james.thorpe at experiormicrotech.com
+       </A><BR>
+    <I>Sat Nov 30 17:21:53 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004310.html">[eLua-dev] STM32F4
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4311">[ date ]</a>
+              <a href="thread.html#4311">[ thread ]</a>
+              <a href="subject.html#4311">[ subject ]</a>
+              <a href="author.html#4311">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all
+
+I'm new this forum and have just discovered eLua for mBed :-)
+
+I have a question regarding the following code, which I would like to use to
+assess if a file is present on the mBed built-in flash-drive (/SEMI/):
+
+pathandfile = &quot;/semi/1.txt&quot;
+
+file = io.open(pathandfile, 'r')
+
+if file == nil then
+
+	print(&quot;File not found&quot;)
+	io.close()
+
+else
+
+	print(&quot;File found&quot;)
+	file:close()
+
+end
+
+When I execute the code, it always returns &quot;File Found&quot;, even if the file
+'1.txt' is not present. To my understanding, io.open should return a nil
+when there is an issue opening a file (e.g. it does not exist), however,
+here it doesn't seem to be the case.
+
+If I remove the filename in the 'pathandfile' string altogether (e.g.
+pathandfile = &quot;/semi/&quot;), then I get a File not Found, however pathandfile =
+&quot;/semi/blah.txt&quot; when blah.txt doesn't exist still returns 'File found'
+
+Any ideas what I'm doing wrong here?
+
+Regards
+
+Jim 
+
+
+
+--
+View this message in context: <A HREF="http://elua-development.2368040.n2.nabble.com/io-open-nil-return-on-mBed-tp7578212.html">http://elua-development.2368040.n2.nabble.com/io-open-nil-return-on-mBed-tp7578212.html</A>
+Sent from the eLua Development mailing list archive at Nabble.com.
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004310.html">[eLua-dev] STM32F4
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4311">[ date ]</a>
+              <a href="thread.html#4311">[ thread ]</a>
+              <a href="subject.html#4311">[ subject ]</a>
+              <a href="author.html#4311">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

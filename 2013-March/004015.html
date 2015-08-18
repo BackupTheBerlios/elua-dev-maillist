@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] elua on Omnima STM32 Expander board post message
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20elua%20on%20Omnima%20STM32%20Expander%20board%20post%20message&In-Reply-To=%3C5152C045.4040205%40cyberphoria.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004014.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] elua on Omnima STM32 Expander board post message</H1>
+    <B>Bj&#246;rn Kalkbrenner</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20elua%20on%20Omnima%20STM32%20Expander%20board%20post%20message&In-Reply-To=%3C5152C045.4040205%40cyberphoria.org%3E"
+       TITLE="[eLua-dev] elua on Omnima STM32 Expander board post message">terminar at cyberphoria.org
+       </A><BR>
+    <I>Wed Mar 27 10:47:49 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004014.html">[eLua-dev] elua on Omnima STM32 Expander board post message
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4015">[ date ]</a>
+              <a href="thread.html#4015">[ thread ]</a>
+              <a href="subject.html#4015">[ subject ]</a>
+              <a href="author.html#4015">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+i ordered the stm32expander some weeks ago and tried to find out nearly
+the same questions.
+
+The website of Omnima stated that elua is preloaded but mine didn't work.
+- I tried to register on the Omnima forum to ask some questions -
+registration deactivated, can't be used.
+- I tried to write to the support (via contact form and mail) but didn't
+receive an answer yet.
+- I tried to ask here at the mailing list about the stm32 expander - no
+answer (but that's ok, this list is not an official omnima help list)
+
+My progress:
+--------------
+I was now able to identify the BOOT0 and BOOT1 pins on the expander and
+used stm32flash to flash a new firmware to the stm32.
+
+But be warned. The version Omnima mentioned from their google code svn
+is not working (and can not be working due to the fact that the
+sourcecode which is needed to do the flashing is missing).
+
+You need to use the version at <A HREF="http://code.google.com/p/stm32flash/">http://code.google.com/p/stm32flash/</A>
+That worked for me, doesn't mean that it is working for you.
+
+I was then able to flash a new firmware but currently, i am not sure if
+my created elua &quot;firmware&quot; is broken or my device is because it is still
+doesn't work.
+I can't connect to the UART port to get a working console...
+
+Currently my &quot;interest&quot; at the stm32expander is really low, the
+not-existing support of Omnima made me a little bit angry and i don't
+think i will try to invest more of my time into that thing.
+
+The stm32expander really looked great and before i buyed that little
+thing i looked at the PDF overview from their website and looked at
+their forum, it seems to be active - and is even mentioned on the elua
+website as &quot;suppported&quot;. The reality seems different (but i can only
+talk about myself).
+
+Regarding to elua itself there is a really good documentation at the
+website about how script &quot;files&quot; hand be handled in different situations.
+
+<A HREF="http://wiki.eluaproject.net/eLua%20File%20Systems">http://wiki.eluaproject.net/eLua%20File%20Systems</A>
+
+If i remember correct, you can also put a file into the romfs/ file
+section called autorun.lua or something like that, that file is called
+on booting the elua system.
+
+Take a look at the src/main.c:
+
+// Define here your autorun/boot files,
+// in the order you want eLua to search for them
+char *boot_order[] = {
+#if defined(BUILD_MMCFS)
+  &quot;/mmc/autorun.lua&quot;,
+  &quot;/mmc/autorun.lc&quot;,
+#endif
+#if defined(BUILD_ROMFS)
+  &quot;/rom/autorun.lua&quot;,
+  &quot;/rom/autorun.lc&quot;,
+#endif
+};
+
+
+Bye
+Bj&#246;rn
+
+
+On 27.03.2013 08:52, Whee Min TAN (NYP) wrote:
+&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> I&#8217;m new to elua and scripting language. I wonder anyone can advise me
+</I>&gt;<i>  on the below.
+</I>&gt;<i> 
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> -Does Omnima STM32 Expander comes with elua pre-loaded image? If not,
+</I>&gt;<i> how do I pre-loaded the elua to start programming?
+</I>&gt;<i> 
+</I>&gt;<i> -Does Omnima STM32 Expander comes with pre-installed elua library? If
+</I>&gt;<i> yes, any additional info on how to use it?
+</I>&gt;<i> 
+</I>&gt;<i> - Is there a special file location that I need to place a elua written
+</I>&gt;<i> source programs so that to execute it even when board is powered-up? Do
+</I>&gt;<i> we have to write a batch file using Make command?
+</I>&gt;<i> 
+</I>&gt;<i> -How to burn/jtag a elua file written in notepad eg xxx.elua into the
+</I>&gt;<i> STM32 Expander? What is the command?
+</I>&gt;<i> 
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> Thks &amp; rgds,
+</I>&gt;<i> 
+</I>&gt;<i> *Tan Whee Min*| Development Engineer
+</I>&gt;<i> 
+</I>&gt;<i> Tel:65-65500583   Fax:65-64520400  |  <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Tan_Whee_Min at nyp.gov.sg</A>
+</I>&gt;<i> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Darryl_Koh_Eng_Kian at nyp.gov.sg</A>&gt;  |  www.nyp.edu.sg
+</I>&gt;<i> &lt;<A HREF="http://www.nyp.edu.sg/">http://www.nyp.edu.sg/</A>&gt;
+</I>&gt;<i> 
+</I>&gt;<i> v2_SIRS_email-signature_20120918.png
+</I>&gt;<i> 
+</I>&gt;<i>  
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> 
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004014.html">[eLua-dev] elua on Omnima STM32 Expander board post message
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4015">[ date ]</a>
+              <a href="thread.html#4015">[ thread ]</a>
+              <a href="subject.html#4015">[ subject ]</a>
+              <a href="author.html#4015">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] TI Stellaris Launchpad
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20TI%20Stellaris%20Launchpad&In-Reply-To=%3C20130220032002.20090%40gmx.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="003959.html">
+   <LINK REL="Next"  HREF="003962.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] TI Stellaris Launchpad</H1>
+    <B>scdr at gmx.com</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20TI%20Stellaris%20Launchpad&In-Reply-To=%3C20130220032002.20090%40gmx.com%3E"
+       TITLE="[eLua-dev] TI Stellaris Launchpad">scdr at gmx.com
+       </A><BR>
+    <I>Wed Feb 20 04:20:01 CET 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="003959.html">[eLua-dev] TI Stellaris Launchpad
+</A></li>
+        <LI>Next message: <A HREF="003962.html">[eLua-dev] TI Stellaris Launchpad
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3961">[ date ]</a>
+              <a href="thread.html#3961">[ thread ]</a>
+              <a href="subject.html#3961">[ subject ]</a>
+              <a href="author.html#3961">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+I have done a bunch of work on a port for the Stellaris Launchpad.
+Some other things came up so haven't gotten it posted on git yet
+(if you look in the archives you will see a little bit of discussion of this a month or 2 back).
+Got it to the point of compiling mostly (using Code Composer Studio), 
+but haven't put together tool chain to compile it for real, or tried linking/running.
+
+What I have done is mostly adapting the LM3S code to the LM4F (handling differences in the peripherals, etc.)
+I did that before I found out that the big limitation will probably be the limited memory available on the launchpad.
+I would suggest that looking at how to trim the eLua memory footprint might be the first place you might want to 
+concentrate on.
+
+Will try to post what I have done soon.
+
+
+&gt;<i> ----- Original Message -----
+</I>&gt;<i> From: Andres Molina-Markham
+</I>&gt;<i> Sent: 02/19/13 03:34 PM
+</I>&gt;<i> To: eLua Users and Development List (www.eluaproject.net)
+</I>&gt;<i> Subject: Re: [eLua-dev] TI Stellaris Launchpad
+</I>&gt;<i> 
+</I>&gt;<i> Thank you Bogdan,
+</I>&gt;<i> 
+</I>&gt;<i> I will give it a shot.
+</I>&gt;<i> 
+</I>&gt;<i> Cheers,
+</I>&gt;<i> 
+</I>&gt;<i> Andres
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Feb 19, 2013, at 04:59 PM, Bogdan Marinescu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bogdan.marinescu at gmail.com</A>&gt; wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Tue, Feb 19, 2013 at 10:49 PM, Andres Molina-Markham &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">a.mm at me.com</A>&gt; wrote:
+</I>&gt;<i> &gt; &gt; Hi all,
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I am interested in running eLua on a TI Stellaris Launchpad (<A HREF="http://www.ti.com/ww/en/launchpad/stellaris_head.html?DCMP=stellaris-launchpad&amp;HQS=stellaris-launchpad-b">http://www.ti.com/ww/en/launchpad/stellaris_head.html?DCMP=stellaris-launchpad&amp;HQS=stellaris-launchpad-b</A>).
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Can anyone kindly suggest how I can tackle this port?
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Should I start from the Kinetis port (<A HREF="https://github.com/elua/elua/tree/kinetis">https://github.com/elua/elua/tree/kinetis</A>)? or perhaps from the STM32F4DISCOVERY port (<A HREF="http://wiki.eluaproject.net/STM32F4DISCOVERY">http://wiki.eluaproject.net/STM32F4DISCOVERY</A>)?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Neither. The Cortex M3 and M4 architectures are not that different, so
+</I>&gt;<i> &gt; I would suggest starting from the LM3S platform port and build on that
+</I>&gt;<i> &gt; (I don't know how much the TI support library has changed from M3 to
+</I>&gt;<i> &gt; M4 parts though).
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Or perhaps there is a general template to base a port on?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; No. Even if it was, I doubt it would be much help in this case, since
+</I>&gt;<i> &gt; the LM3S backend should provide a much better code base.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Best,
+</I>&gt;<i> &gt; Bogdan
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Thank you,
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Andres
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;<i> &gt; &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="003959.html">[eLua-dev] TI Stellaris Launchpad
+</A></li>
+	<LI>Next message: <A HREF="003962.html">[eLua-dev] TI Stellaris Launchpad
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3961">[ date ]</a>
+              <a href="thread.html#3961">[ thread ]</a>
+              <a href="subject.html#3961">[ subject ]</a>
+              <a href="author.html#3961">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

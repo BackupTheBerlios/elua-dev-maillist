@@ -1,0 +1,363 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] eLua STM32 support and general questions
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20STM32%20support%20and%20general%20questions&In-Reply-To=%3C81fbe47d0907150038p7848df4j9c64180a25ac244f%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000937.html">
+   <LINK REL="Next"  HREF="000940.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] eLua STM32 support and general questions</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20eLua%20STM32%20support%20and%20general%20questions&In-Reply-To=%3C81fbe47d0907150038p7848df4j9c64180a25ac244f%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] eLua STM32 support and general questions">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Wed Jul 15 09:38:49 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000937.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+        <LI>Next message: <A HREF="000940.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#938">[ date ]</a>
+              <a href="thread.html#938">[ thread ]</a>
+              <a href="subject.html#938">[ subject ]</a>
+              <a href="author.html#938">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This looks fine, I don't think the problem is here.
+Hmmmm. Come to think of it, I never really uploaded an elf to a board
+before. Just binary or hex file that I get from the elf after running
+objcopy on it. I don't know how the elf uploader in Crossworks works. Do you
+have an option to specify what sections you can upload, or something
+similar?
+
+Best,
+Bogdan
+
+On Wed, Jul 15, 2009 at 10:34 AM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">lua at wienand.net</A>&gt; wrote:
+
+&gt;<i> After playing around with platform_conf.h, I attached wrong version.
+</I>&gt;<i> #define BUILD_CON_GENERIC is included so it looks like:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> #define BUILD_XMODEM
+</I>&gt;<i> #define BUILD_SHELL
+</I>&gt;<i> #define BUILD_ROMFS
+</I>&gt;<i> #define BUILD_TERM
+</I>&gt;<i> //#define BUILD_UIP
+</I>&gt;<i> //#define BUILD_DHCPC
+</I>&gt;<i> //#define BUILD_DNS
+</I>&gt;<i> #define BUILD_CON_GENERIC
+</I>&gt;<i> #define BUILD_ADC
+</I>&gt;<i> //#define BUILD_CON_TCP
+</I>&gt;<i>
+</I>&gt;<i>   Hi,
+</I>&gt;<i>
+</I>&gt;<i> in the meantime I got an Eval-Board (MCBSTM32E). I've downloaded the
+</I>&gt;<i> elf-file to the board with Crossworks environment (JTAG&lt;-&gt;USB CrossConnect).
+</I>&gt;<i> I guess it works, but I'm not 100% sure on that.
+</I>&gt;<i> Now I expected something happens at serial interface after rebooting the
+</I>&gt;<i> device.
+</I>&gt;<i> But nothing happens. Do you have any idea? As I'm not familiar with this
+</I>&gt;<i> board, it might be the case that I've done stupid beginner's mistake(s).
+</I>&gt;<i>
+</I>&gt;<i> My platform_conf.h:
+</I>&gt;<i>
+</I>&gt;<i> // ******************************************************
+</I>&gt;<i> // Define here what components you want for this platform
+</I>&gt;<i>
+</I>&gt;<i> #define BUILD_XMODEM
+</I>&gt;<i> #define BUILD_SHELL
+</I>&gt;<i> #define BUILD_ROMFS
+</I>&gt;<i> #define BUILD_TERM
+</I>&gt;<i> //#define BUILD_UIP
+</I>&gt;<i> //#define BUILD_DHCPC
+</I>&gt;<i> //#define BUILD_DNS
+</I>&gt;<i> //#define BUILD_CON_GENERIC
+</I>&gt;<i> #define BUILD_ADC
+</I>&gt;<i> //#define BUILD_CON_TCP
+</I>&gt;<i>
+</I>&gt;<i> // **************************************************
+</I>&gt;<i> // UART/Timer IDs configuration data (used in main.c)
+</I>&gt;<i>
+</I>&gt;<i> #define CON_UART_ID           0
+</I>&gt;<i> #define CON_UART_SPEED        115200
+</I>&gt;<i> #define CON_TIMER_ID          0
+</I>&gt;<i> #define TERM_LINES            25
+</I>&gt;<i> #define TERM_COLS             80
+</I>&gt;<i>
+</I>&gt;<i> The only jumper on board, which is set is J3 - to enable the speaker.
+</I>&gt;<i>
+</I>&gt;<i> Best Regards,
+</I>&gt;<i> Joerg
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>   Hi Bogdan,
+</I>&gt;<i>
+</I>&gt;<i> you're right there was something wrong in one (or more) of the previous
+</I>&gt;<i> steps.
+</I>&gt;<i> After performing them all once again, everything works fine.
+</I>&gt;<i> I've just created an elua_lua_stm32f103ze.elf :-)
+</I>&gt;<i>
+</I>&gt;<i> Unfortunatelly I've no Eval-Board on my desk, to test.
+</I>&gt;<i>
+</I>&gt;<i> Best Regards,
+</I>&gt;<i> Joerg
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> You're right, I misunderstood you, sorry about that. Still, the problem is
+</I>&gt;<i> the same: the last step of the GCC build is using &quot;gcc&quot; instead of
+</I>&gt;<i> &quot;arm-elf-gcc&quot;, which means that it can't find arm-elf-gcc. Are you sure it
+</I>&gt;<i> is in your $PATH? Are you sure that all the &quot;make install&quot;s up to this point
+</I>&gt;<i> completed succesfully? If so, I don't really know what the problem is. The
+</I>&gt;<i> same advice holds here though: try with a precompiled toolchain if this
+</I>&gt;<i> doesn't work. CodeSourcery has versions for both Windows and Linux.
+</I>&gt;<i>
+</I>&gt;<i> Best,
+</I>&gt;<i> Bogdan
+</I>&gt;<i>
+</I>&gt;<i> On Fri, May 29, 2009 at 12:21 PM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">lua at wienand.net</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi Bogdan,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> thanks for your fast answer and sorry for german output.
+</I>&gt;&gt;<i> I set LANG=C and did the same step again.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I guess you missunderstood me. The output was created in Linux
+</I>&gt;&gt;<i> environment.
+</I>&gt;&gt;<i> After everything works fine on Linux I will try it again with Windows.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So, here's the english output:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  make CFLAGS=&quot;-mcpu=cortex-m3 -mthumb&quot; CXXFLAGS=&quot;-mcpu=cortex-m3 -mthumb&quot;
+</I>&gt;&gt;<i> LIBCXXFLAGS=&quot;-mcpu=cortex-m3 -mthumb&quot; all
+</I>&gt;&gt;<i>  make[1]: Entering directory
+</I>&gt;&gt;<i> `/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build'
+</I>&gt;&gt;<i> make[2]: Entering directory
+</I>&gt;&gt;<i> `/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build/libiberty'
+</I>&gt;&gt;<i> if [ x&quot;&quot; != x ]; then \
+</I>&gt;&gt;<i>       gcc -c -DHAVE_CONFIG_H -mcpu=cortex-m3 -mthumb -I.
+</I>&gt;&gt;<i> -I../../libiberty/../include  -W -Wall -Wwrite-strings -Wc++-compat
+</I>&gt;&gt;<i> -Wstrict-prototypes -pedantic   ../../libiberty/regex.c -o pic/regex.o; \
+</I>&gt;&gt;<i>     else true; fi
+</I>&gt;&gt;<i> gcc -c -DHAVE_CONFIG_H -mcpu=cortex-m3 -mthumb -I.
+</I>&gt;&gt;<i> -I../../libiberty/../include  -W -Wall -Wwrite-strings -Wc++-compat
+</I>&gt;&gt;<i> -Wstrict-prototypes -pedantic  ../../libiberty/regex.c -o regex.o
+</I>&gt;&gt;<i> `-mcpu=' is deprecated. Use `-mtune=' or '-march=' instead.
+</I>&gt;&gt;<i>  cc1: error: unrecognized command line option &quot;-mthumb&quot;
+</I>&gt;&gt;<i> ../../libiberty/regex.c:1: error: bad value (cortex-m3) for -mtune= switch
+</I>&gt;&gt;<i> make[2]: *** [regex.o] Error 1
+</I>&gt;&gt;<i> make[2]: Leaving directory
+</I>&gt;&gt;<i> `/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build/libiberty'
+</I>&gt;&gt;<i> make[1]: *** [all-libiberty] Error 2
+</I>&gt;&gt;<i> make[1]: Leaving directory
+</I>&gt;&gt;<i> `/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build'
+</I>&gt;&gt;<i> make: *** [all] Error 2
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I don't speak German at all, so I don't really understand what that error
+</I>&gt;&gt;<i> means, but something got screwed up in your gcc's &quot;configure&quot; step, since
+</I>&gt;&gt;<i> it's trying to use regular &quot;gcc&quot; instead of &quot;arm-elf-gcc&quot; as it should. I
+</I>&gt;&gt;<i> don't know the cause of this error, unfortunately, as I never tried to
+</I>&gt;&gt;<i> compile the toolchain on Windows.
+</I>&gt;&gt;<i> May I suggest downloading a precompiled toolchain (like CodeSourcery's
+</I>&gt;&gt;<i> freeware ARM toolchain) and working with that? eLua has support for using
+</I>&gt;&gt;<i> this toolchain, details here:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://elua.berlios.de/beta/en/building.html">http://elua.berlios.de/beta/en/building.html</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best,
+</I>&gt;&gt;<i> Bogdan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Fri, May 29, 2009 at 11:57 AM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">lua at wienand.net</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I have tried to build eLau in my Windows Crossworks environment.
+</I>&gt;&gt;&gt;<i> After some trouble I tried to use the &quot;standard&quot; way described in your
+</I>&gt;&gt;&gt;<i> doc.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The last step (&quot;Step4: full GCC&quot;) leads into the following error message:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jars at jars-desktop</A>:/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build$ make
+</I>&gt;&gt;&gt;<i> CFLAGS=&quot;-mcpu=cortex-m3 -mthumb&quot; CXXFLAGS=&quot;-mcpu=cortex-m3 -mthumb&quot;
+</I>&gt;&gt;&gt;<i> LIBCXXFLAGS=&quot;-mcpu=cortex-m3 -mthumb&quot; all
+</I>&gt;&gt;&gt;<i> make[1]: Betrete Verzeichnis
+</I>&gt;&gt;&gt;<i> '/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build'
+</I>&gt;&gt;&gt;<i> make[2]: Betrete Verzeichnis
+</I>&gt;&gt;&gt;<i> '/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build/libiberty'
+</I>&gt;&gt;&gt;<i> if [ x&quot;&quot; != x ]; then \
+</I>&gt;&gt;&gt;<i>  gcc -c -DHAVE_CONFIG_H -mcpu=cortex-m3 -mthumb -I.
+</I>&gt;&gt;&gt;<i> -I../../libiberty/../include -W -Wall -Wwrite-strings -Wc++-compat
+</I>&gt;&gt;&gt;<i> -Wstrict-prototypes -pedantic ../../libiberty/regex.c -o pic/regex.o;
+</I>&gt;&gt;&gt;<i> \
+</I>&gt;&gt;&gt;<i>  else true; fi
+</I>&gt;&gt;&gt;<i> gcc -c -DHAVE_CONFIG_H -mcpu=cortex-m3 -mthumb -I.
+</I>&gt;&gt;&gt;<i> -I../../libiberty/../include -W -Wall -Wwrite-strings -Wc++-compat
+</I>&gt;&gt;&gt;<i> -Wstrict-prototypes -pedantic ../../libiberty/regex.c -o regex.o
+</I>&gt;&gt;&gt;<i> `-mcpu=' is deprecated. Use `-mtune=' or '-march=' instead.
+</I>&gt;&gt;&gt;<i> cc1: Fehler: nicht erkannte Kommandozeilenoption &#187;-mthumb&#171;
+</I>&gt;&gt;&gt;<i> ../../libiberty/regex.c:1: Fehler: Falscher Wert (cortex-m3) f&#252;r
+</I>&gt;&gt;&gt;<i> Schalter -mtune=
+</I>&gt;&gt;&gt;<i> make[2]: *** [regex.o] Fehler 1
+</I>&gt;&gt;&gt;<i> make[2]: Verlasse Verzeichnis
+</I>&gt;&gt;&gt;<i> '/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build/libiberty'
+</I>&gt;&gt;&gt;<i> make[1]: *** [all-libiberty] Fehler 2
+</I>&gt;&gt;&gt;<i> make[1]: Verlasse Verzeichnis
+</I>&gt;&gt;&gt;<i> '/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build'
+</I>&gt;&gt;&gt;<i> make: *** [all] Fehler 2
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jars at jars-desktop</A>:/mnt/hgfs/shared/ARM_toolchain/gcc-4.3.3/build$
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> It sounds like there's a problem with parameter -mcpu and -mthumb.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I use the same version as your doc describes.
+</I>&gt;&gt;&gt;<i> binutils-2.19.50
+</I>&gt;&gt;&gt;<i> gcc-4.3.3
+</I>&gt;&gt;&gt;<i> newlib-1.17.0
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Any idea?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best Regards
+</I>&gt;&gt;&gt;<i> Joerg
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> First idea was to write a small script language on my own, but after some
+</I>&gt;&gt;&gt;&gt;<i> research,
+</I>&gt;&gt;&gt;&gt;<i> I decided to try Lua - even if it is much more powerful than my needs. I
+</I>&gt;&gt;&gt;&gt;<i> tried to
+</I>&gt;&gt;&gt;&gt;<i> get Lua 5.1.4 running, but it was not that easy as I thought. Main
+</I>&gt;&gt;&gt;&gt;<i> problem was the
+</I>&gt;&gt;&gt;&gt;<i> need for a filesystem, which is not avaialble.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> It should be possible to make Lua run without a file system, although I
+</I>&gt;&gt;&gt;<i> didn't try this myself (you can try searching for this on the Lua list).
+</I>&gt;&gt;&gt;<i> It's true though that you should modify the code, or at least provide a
+</I>&gt;&gt;&gt;<i> &quot;dummy&quot; buffered I/O library tailored to your needs.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   eLua seems to solve my problem, and even more I got a filesystem,
+</I>&gt;&gt;&gt;&gt;<i> terminal mode,
+</I>&gt;&gt;&gt;&gt;<i> and more. I haven't checked eLua until now, because I'm not sure if this
+</I>&gt;&gt;&gt;&gt;<i> is the
+</I>&gt;&gt;&gt;&gt;<i> right direction. I get more than I need, which have to be paid with ROM.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> eLua is highly configurable, in most cases you can specify what you want
+</I>&gt;&gt;&gt;<i> to be built into your image and what you don't. eLua without terminal mode,
+</I>&gt;&gt;&gt;<i> for example, is as easy as not defining BUILD_TERM in your platform's
+</I>&gt;&gt;&gt;<i> platform_conf.h file. Other components are equally easy to remove.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Do you think Lua | eLua is the right thing to put a small script
+</I>&gt;&gt;&gt;&gt;<i> language to a limited
+</I>&gt;&gt;&gt;&gt;<i> device?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> eLua is quite OK for this configuration, as it was built with this kind
+</I>&gt;&gt;&gt;<i> of requirements in mind. You might also try some variant of Forth (which is
+</I>&gt;&gt;&gt;<i> a completely different language though) or PyMite (
+</I>&gt;&gt;&gt;<i> <A HREF="http://pymite.python-hosting.com/">http://pymite.python-hosting.com/</A>).
+</I>&gt;&gt;&gt;<i>  Lua is also probably good enough for you, as long as you can figure
+</I>&gt;&gt;&gt;<i> your filesystem dependency problem. Compared to Lua though, eLua is
+</I>&gt;&gt;&gt;<i> optimized for usage on small devices, including (important) memory
+</I>&gt;&gt;&gt;<i> allocation tunings and a patch called LTR (Lua Tiny RAM) that can have an
+</I>&gt;&gt;&gt;<i> important impact on your RAM usage.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Do I have to use eLua (which is under GPL/BSD license)? Or should it be
+</I>&gt;&gt;&gt;&gt;<i> even
+</I>&gt;&gt;&gt;&gt;<i> possible to use &quot;plain&quot; Lua (which offers more flexible MIT license)?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> eLua is MIT at this point, although this isn't specified in the license
+</I>&gt;&gt;&gt;<i> file. We are planning to make the official announcement to MIT starting with
+</I>&gt;&gt;&gt;<i> the next release, but you can use the code as you want even now. If you need
+</I>&gt;&gt;&gt;<i> it, I'll change the LICENSE file right away.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> As I wrote, I neither need a FS, GUI nor a terminal mode. Lua scripts
+</I>&gt;&gt;&gt;&gt;<i> are written to
+</I>&gt;&gt;&gt;&gt;<i> the device with a proprietary mechanism. Maximum length of Lua script is
+</I>&gt;&gt;&gt;&gt;<i> ~250 lines.
+</I>&gt;&gt;&gt;&gt;<i> At the end each LOC is stored in one separate string.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The upcoming documentation for 0.6, although not 100% complete, contains
+</I>&gt;&gt;&gt;<i> a lot of information about eLua in general and about how to configure its
+</I>&gt;&gt;&gt;<i> components at compile time it in particular. It also contains information
+</I>&gt;&gt;&gt;<i> about the LTR patch and other important parts of eLua. I'll upload it to a
+</I>&gt;&gt;&gt;<i> temporary location today when I have some time and then come back to the
+</I>&gt;&gt;&gt;<i> list with the link, maybe this will be help.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best,
+</I>&gt;&gt;&gt;<i> Bogdan
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Elua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090715/7c80d1c1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090715/7c80d1c1/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000937.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+	<LI>Next message: <A HREF="000940.html">[eLua-dev] eLua STM32 support and general questions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#938">[ date ]</a>
+              <a href="thread.html#938">[ thread ]</a>
+              <a href="subject.html#938">[ subject ]</a>
+              <a href="author.html#938">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

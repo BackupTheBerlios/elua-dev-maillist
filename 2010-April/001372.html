@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Problem with space memory in Lm3s8962
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20with%20space%20memory%20in%20Lm3s8962&In-Reply-To=%3Cz2g7e5a21901004281324i73175121y61a97beea226a0f6%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001371.html">
+   <LINK REL="Next"  HREF="001373.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Problem with space memory in Lm3s8962</H1>
+    <B>C&#233;sar Ra&#250;l Mamani Choquehuanca</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Problem%20with%20space%20memory%20in%20Lm3s8962&In-Reply-To=%3Cz2g7e5a21901004281324i73175121y61a97beea226a0f6%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Problem with space memory in Lm3s8962">cesarmamani82 at gmail.com
+       </A><BR>
+    <I>Wed Apr 28 22:24:41 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001371.html">[eLua-dev] Problem with space memory in Lm3s8962
+</A></li>
+        <LI>Next message: <A HREF="001373.html">[eLua-dev] Problem with space memory in Lm3s8962
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1372">[ date ]</a>
+              <a href="thread.html#1372">[ thread ]</a>
+              <a href="subject.html#1372">[ subject ]</a>
+              <a href="author.html#1372">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE> Thanks Dado,
+
+
+i guess, I got the problem, well when i try to send my file (using recv) i
+get the message &quot;got 211 bytes&quot; but when i build (mode autorun file) the
+lm3s8962 works normally. Dado, Do you remember that you modified some file
+of my elua directory for make to job of &quot;mode autorun&quot; ? I think the file
+&quot;SConstruc&quot;. I guess thats the problem.
+
+I try to send the next code (using recv):
+
+if pd.board()~=&quot;EK-LM3S8962&quot; then
+ print &quot;Placa nao suportada&quot;
+ return
+end
+
+then, i have of message &quot;got 87 bytes&quot;
+
+Best
+
+C&#233;sar
+
+
+
+2010/4/28 Dado Sutter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">dadosutter at gmail.com</A>&gt;
+
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i>  On Wed, Apr 28, 2010 at 12:23, C&#233;sar Ra&#250;l Mamani Choquehuanca &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">cesarmamani82 at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i>    Hello all,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm using a LM3S8962 for my programming, but i understand why comments
+</I>&gt;&gt;<i> take up space in memory controller.
+</I>&gt;&gt;<i>
+</I>&gt;<i> I didn't understand exactly if you _do_ understand or if you _don't_
+</I>&gt;<i> understand why comments in programs take up space in memory.
+</I>&gt;<i> Files stored in the ROMFS occupies Flash memory, whether if it is code,
+</I>&gt;<i> comments or whatever.
+</I>&gt;<i> You can save Flash space if your source files are well commented using the
+</I>&gt;<i> &quot;romfs&quot; build parameter. It currently supports two diferent modes, other
+</I>&gt;<i> than the default &quot;verbatim&quot; that is means store the files as they are.
+</I>&gt;<i> 1 - *scons board=EK-LM3S8962 romfs=compress prog*
+</I>&gt;<i>      Files are stored as source (Lua will compile them at load-time) but an
+</I>&gt;<i> algorithm removes comments, spaces, compresses var names and everything
+</I>&gt;<i> possible. The file stays semantically identical to your original but it now
+</I>&gt;<i> occupies much less space.
+</I>&gt;<i> 2 - *scons board=EK-LM3S8962 romfs=compile prog
+</I>&gt;<i>     *Lua source files are compiled and only the bytecodes are stored in
+</I>&gt;<i> the ROMFS. You don't have access to your source code anymore (i.e.: can't
+</I>&gt;<i> io.read it as string lines...) but it takes even less space in the ROMFS and
+</I>&gt;<i> it also loads a bit faster, because Lua doesn't have to parse and compile it
+</I>&gt;<i> before executing.
+</I>&gt;<i>
+</I>&gt;<i> Pls note that the examples above are for your EK-LM3S8962 kit but the romfs
+</I>&gt;<i> option works for any target. It works from eLua v0.7 on.
+</I>&gt;<i>
+</I>&gt;<i>  Also I deleted almost files of ROMFS and can't send my lua file to
+</I>&gt;&gt;<i> lm3s8962 cause it send me the next message for example &quot;got 4883 bytes&quot;
+</I>&gt;&gt;<i>
+</I>&gt;<i> This is usually a message sent from the &quot;recv&quot; shell command right ?
+</I>&gt;<i> In this case we don't have support yet to send Lua bytecodes over XModem
+</I>&gt;<i> and you need to remove manually your comments from your source or get a kit
+</I>&gt;<i> with some more ram :(
+</I>&gt;<i> This is easially (and fun !) done in Lua using string.gsub or similar
+</I>&gt;<i> techniques. You can also search the web for the Lua lib that does source
+</I>&gt;<i> code compressing and use it.
+</I>&gt;<i>
+</I>&gt;<i>  even i reduce my code or remove os comments.
+</I>&gt;&gt;<i>
+</I>&gt;<i> Do you mean, you have removed all your comments already and you still can't
+</I>&gt;<i> transmit the source via XModem from a terminal ? I have to check if we have
+</I>&gt;<i> some constraints like a &quot;file buffer&quot; limitation but I don't think so.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Before i dont have that problem. Im using the svn public repository.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Maybe your program have been growing too much since then ?
+</I>&gt;<i>
+</I>&gt;<i> And congrats again for your great project !!!!!!!!
+</I>&gt;<i> <A HREF="http://wiki.eluaproject.net/Anubisway">http://wiki.eluaproject.net/Anubisway</A>
+</I>&gt;<i>
+</I>&gt;<i>  Best
+</I>&gt;&gt;<i> C&#233;sar R. Mamani Ch.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Best
+</I>&gt;<i> Dado
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> eLua-dev mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100428/b88ec319/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100428/b88ec319/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001371.html">[eLua-dev] Problem with space memory in Lm3s8962
+</A></li>
+	<LI>Next message: <A HREF="001373.html">[eLua-dev] Problem with space memory in Lm3s8962
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1372">[ date ]</a>
+              <a href="thread.html#1372">[ thread ]</a>
+              <a href="subject.html#1372">[ subject ]</a>
+              <a href="author.html#1372">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

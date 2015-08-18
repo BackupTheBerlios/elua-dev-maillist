@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Multitasking Proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Multitasking%20Proposal&In-Reply-To=%3C00b101cbc1f4%247306af30%2459140d90%24%40hind%40zen.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001954.html">
+   <LINK REL="Next"  HREF="001962.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Multitasking Proposal</H1>
+    <B>John Hind</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Multitasking%20Proposal&In-Reply-To=%3C00b101cbc1f4%247306af30%2459140d90%24%40hind%40zen.co.uk%3E"
+       TITLE="[eLua-dev] Multitasking Proposal">john.hind at zen.co.uk
+       </A><BR>
+    <I>Tue Feb  1 10:43:15 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001954.html">[eLua-dev] Multitasking Proposal
+</A></li>
+        <LI>Next message: <A HREF="001962.html">[eLua-dev] Multitasking Proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1958">[ date ]</a>
+              <a href="thread.html#1958">[ thread ]</a>
+              <a href="subject.html#1958">[ subject ]</a>
+              <a href="author.html#1958">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for your comments and time, Mike.
+
+ 
+
+You need to register and then ask one of the admins to add you to the
+project before you can edit the WiKi. I had to ask - the system we are using
+is not very helpful. You also have to be a bit sneaky to work out how to add
+a page as the index pages are not editable even when you are authorised!
+
+ 
+
+The locking scheme *should* be mostly automatic and deadlock free. I
+included an explicit, Lua level lock only for 'unusual' situations where
+there are application level data dependencies in Lua (such as a linked list
+or ring buffer with pointers held to entries in a table). If one coroutine
+takes the lock (it is one global lock) and does not release it, the
+asynchronous yield will remain blocked. Probably, the lock should be forced
+off each time context is switched and perhaps an exception raised if it is
+on when a coroutine explicitly yields. There is also a separate, fully
+automatic, lock to protect Lua's internal data structures and it should be
+impossible for that to deadlock (if I have coded it right).
+
+ 
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>] On Behalf Of King, Mike
+Sent: 01 February 2011 02:44
+To: eLua Users and Development List (www.eluaproject.net)
+Subject: Re: [eLua-dev] Multitasking Proposal
+
+ 
+
+I would have added this to the Discussion Page if I knew how to.
+
+ 
+
+This seems like a good idea.
+
+
+When I first red the proposal, I didn't understand the problem.  The &quot;big
+loop&quot; approach seemed fine until I realized this is really about interrupt
+handling.  Of course, it could be used in a broader sense.  At first, I was
+thinking why add a level of indirection on a microcontroller platform.  I
+was stuck on the word multitasking.  I understand now.
+
+
+I haven't followed all your implementation details as of yet.  Will the
+locking scheme prevent deadlocks?  Is it possible to just use one &quot;big&quot; lock
+that protects global state?
+
+ 
+
+  _____  
+
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A>]
+On Behalf Of John Hind [<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>]
+Sent: Monday, January 31, 2011 11:01 AM
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+Subject: [eLua-dev] Multitasking Proposal
+
+Hi Everybody,
+
+ 
+
+I have just published a proposal paper here:
+
+ 
+
+<A HREF="http://tracker.eluaproject.net/projects/elua/wiki/PreemptiveCoroutinesPropos">http://tracker.eluaproject.net/projects/elua/wiki/PreemptiveCoroutinesPropos</A>
+al
+
+ 
+
+outlining my ideas (standing on the shoulders of giants) on how preemptive
+multitasking could be provided in eLua. Please read and comment and
+particularly criticise any flaws or weaknesses I may have missed. I also
+believe this provides an alternative approach which ought to be considered
+before the INT module (on which my proposal builds) is set in stone within
+eLua.
+
+ 
+
+Best regards,
+
+ 
+
+John Hind.
+
+ 
+
+CONFIDENTIALITY NOTICE: This e-mail message, including any attachments, is
+for the sole use of the intended recipient(s) and may contain information
+that is confidential or proprietary to K&amp;L Microwave, Inc. Any unauthorized
+review, use, disclosure or distribution is prohibited. If this communication
+has been transmitted from a U.S. location it may also contain data subject
+to the International Traffic in Arms Regulations or U.S. Export
+Administration Regulations and, if so, cannot be disseminated, distributed
+or copied to foreign nationals, residing in the U.S. or abroad, without the
+prior approval of the U.S. Department of State or appropriate export
+licensing authority. If you have received this communication in error,
+please notify the sender by reply e-mail and delete or destroy all copies of
+this e-mail message and/or any file attachment(s). 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110201/9c8f3ccd/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110201/9c8f3ccd/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001954.html">[eLua-dev] Multitasking Proposal
+</A></li>
+	<LI>Next message: <A HREF="001962.html">[eLua-dev] Multitasking Proposal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1958">[ date ]</a>
+              <a href="thread.html#1958">[ thread ]</a>
+              <a href="subject.html#1958">[ subject ]</a>
+              <a href="author.html#1958">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

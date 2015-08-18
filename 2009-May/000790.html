@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] GC Parameters &amp; Emergency Collection
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3CEMEWEMEW2_DELIMl47DJN6e8a377c56d156efd4e648%2C%0A%09jbsnyder%40fanplastic.org%2C%204BF62DF8-42E4-4ED1-85BF-086%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000789.html">
+   <LINK REL="Next"  HREF="000791.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] GC Parameters &amp; Emergency Collection</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20GC%20Parameters%20%26%20Emergency%20Collection&In-Reply-To=%3CEMEWEMEW2_DELIMl47DJN6e8a377c56d156efd4e648%2C%0A%09jbsnyder%40fanplastic.org%2C%204BF62DF8-42E4-4ED1-85BF-086%3E"
+       TITLE="[eLua-dev] GC Parameters &amp; Emergency Collection">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Fri May  8 20:18:59 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000789.html">[eLua-dev] Device Manager
+</A></li>
+        <LI>Next message: <A HREF="000791.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#790">[ date ]</a>
+              <a href="thread.html#790">[ thread ]</a>
+              <a href="subject.html#790">[ subject ]</a>
+              <a href="author.html#790">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi -
+
+I was wondering whether there might be any objection to adjusting the  
+LUAI_GCPAUSE variable, decreasing the value from 200 to 110?  This  
+will cause GC to run after a 10% increase in memory allocated by Lua  
+as opposed to a doubling.
+
+I'm not sure where I'm spinning off objects, but I've recently been  
+finding that for running my ADC example scripts over long periods of  
+time they will sometimes bail out when Lua is unable to allocate more  
+memory.  If I have the scripts periodically run a full GC however,  
+they never bail.  This particular GCPAUSE value is what Ralph Hempel  
+is using in pbLua (just got a copy of Lua Gems).  One case that this  
+made me think about was that if I have 32k of RAM, and I've just  
+allocated more than 16k of that already, I won't GC until I exceed  
+available memory?  Of course, since we don't have emergency GC, this  
+just means that we get an &quot;out of memory&quot; error and get dumped to the  
+prompt.
+
+Additionally: I've looked at the emergency GC patch minimally, and it  
+looks fairly extensive.  I suppose this wouldn't work in all cases  
+(presumably since GC may sometimes require memory to grow a bit before  
+shrinking), but would it not be useful to attempt a GC when a new  
+allocation fails?  I've thought about attempting to apply the  
+emergency GC patch to eLua, but I've not bothered because 5.2 is  
+intended to include some sort of emergency GC.
+
+Another thought:  One of the reasons we don't have determinism in  
+execution times is because of GC.  I've not dug into how the Lua GC  
+works, but is there some way that we could have it operate in some  
+sort of fixed execution time mode where with debug hooks where we  
+could run it for a fixed length of time at that frequency to control  
+latency?
+
+Just some thoughts... :-)
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 448-0386
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090508/e111a2a0/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090508/e111a2a0/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000789.html">[eLua-dev] Device Manager
+</A></li>
+	<LI>Next message: <A HREF="000791.html">[eLua-dev] GC Parameters &amp; Emergency Collection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#790">[ date ]</a>
+              <a href="thread.html#790">[ thread ]</a>
+              <a href="subject.html#790">[ subject ]</a>
+              <a href="author.html#790">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTim1XWzG2FLzhvDh-mjv%2BW%3DswOdajw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="002454.html">
+   <LINK REL="Next"  HREF="002452.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Redefining%20the%20I2C%20Lua%20interface%20%28was%3A%20I2C%20for%20LM3S%0A%09devices%29&In-Reply-To=%3CBANLkTim1XWzG2FLzhvDh-mjv%2BW%3DswOdajw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Mon Jun  6 08:21:04 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="002454.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+        <LI>Next message: <A HREF="002452.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2450">[ date ]</a>
+              <a href="thread.html#2450">[ thread ]</a>
+              <a href="subject.html#2450">[ subject ]</a>
+              <a href="author.html#2450">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On Sun, Jun 5, 2011 at 11:12 PM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 5 June 2011 17:47, Laurent Dufrechou &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">laurent.dufrechou at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; Ok here is a proposal to allow the lm3s and str912 to work altogether:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; void platform_i2c_send_start( unsigned id )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; void platform_i2c_send_stop( unsigned id )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; int platform_i2c_send_address( unsigned id, u16 address, int direction )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; int platform_i2c_send_byte( unsigned id, u8 data )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; int platform_i2c_recv_byte( unsigned id, int ack )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; +
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; int platform_i2c_send_byte_and_stop( unsigned id, u8 data )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; int platform_i2c_recv_byte_and_stop( unsigned id, int ack )
+</I>&gt;<i> [...]
+</I>&gt;<i> &gt; int platform_i2c_start_and_send_address( unsigned id, u16 address, int
+</I>&gt;<i> &gt; direction )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> Hi Laurent
+</I>&gt;<i>
+</I>&gt;<i> &gt; Am I missing any use case?
+</I>&gt;<i> On the contrary, you have too many and inappropriate ones!
+</I>&gt;<i>
+</I>&gt;<i> I am currently looking at implementing I2C on avr32 platforms, so
+</I>&gt;<i> maybe we can define a common platform interface for the i2c platform
+</I>&gt;<i> interface.
+</I>&gt;<i>
+</I>&gt;<i> The ideal would be the smallest set of primitives that
+</I>&gt;<i> 1) allows us to generate all possible I2C protocols, reacting to (and
+</I>&gt;<i> informing the caller about) all possible error conditions during
+</I>&gt;<i> reception/transmission, such as lack of ACK when it is required, or
+</I>&gt;<i> loss of bus arbitration.
+</I>&gt;<i> 2) covers all hardware implementations, from the highest level
+</I>&gt;<i> intelligent hardware that does everything for you automatically, down
+</I>&gt;<i> to bit-banging interfaces where you toggle and read the signals
+</I>&gt;<i> explicitly.
+</I>&gt;<i>
+</I>&gt;<i> An example of the lowest level can be found at
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://secure.wikimedia.org/wikipedia/en/wiki/I2C#Example_of_bit-banging_the_I2C_Master_protocol">https://secure.wikimedia.org/wikipedia/en/wiki/I2C#Example_of_bit-banging_the_I2C_Master_protocol</A>
+</I>&gt;<i> whose user interface to this code fragment seems to consist of two
+</I>&gt;<i> byte-oriented functions:
+</I>&gt;<i>  bool nak = i2c_write_byte(bool send_start, bool send_stop, unsigned char
+</I>&gt;<i> data)
+</I>&gt;<i>  unsigned char data = i2c_read_byte(bool nack, bool send_stop).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>I agree with you; however, many chip manufacturers take a different approach
+on this. They implement a sort of hardware I2C state machine which makes
+things quite weird (at least for me) and hard to use. For example, on
+STR9/STM32 there are different flags one most look for in order to detect
+events such as &quot;address byte sent OK and acknowledged&quot; and &quot;data sent OK and
+acknowledged&quot;, even though they are conceptually identical from the
+transmitter side. I have no idea why they've chosen to make such a simple
+interface so cumbersome to use (except maybe for some strange multi-master
+configurations that are seldom used in practice), but we don't have many
+choices here.
+
+
+&gt;<i> For the AVR32, to send data you program the 7-bit device address and
+</I>&gt;<i> the direction bit into one control register, then write you write the
+</I>&gt;<i> first byte of data to be transmitted into another and this second
+</I>&gt;<i> write triggers the hardware to do the whole sequence: start, address
+</I>&gt;<i> and the first data byte all in one go. You then have to poke more data
+</I>&gt;<i> into the second register while the first set of data is being
+</I>&gt;<i> transmitted if you want to transmit multiple bytes in one message:
+</I>&gt;<i> failure to do so automatically ends the current packet with a STOP.
+</I>&gt;<i>
+</I>
+LOL. And I though STR9 was weird :) This is a very bad restriction, as I2C
+itself doesn't have this kind of timing constraint (send bytes in sequence
+without pauses).
+
+
+&gt;<i> Unfortunately, the current elua module interface is too low level for
+</I>&gt;<i> either of these implementations in that it has i2c.start(),
+</I>&gt;<i> i2c.address() and i2c.write() as separate functions.  For both of
+</I>&gt;<i> these above interfaces, the bit-banging and the AVR32, this forces the
+</I>&gt;<i> driver to collect up information from a predefined sequence of start()
+</I>&gt;<i> address() read() write() calls, storing them in private, persistent
+</I>&gt;<i> data, and then use these data when the final call happens (read or
+</I>&gt;<i> write) that gives sense to the single I2C operation.
+</I>&gt;<i>  It also creates the question of whether the driver should detect
+</I>&gt;<i> improper sequences of these Lua primitives, or how it should react to
+</I>&gt;<i> them, for example, you call read() without a preceding address() or
+</I>&gt;<i> address() without a preceding start().
+</I>&gt;<i>
+</I>
+I'd let the user worry about that for the moment, but you're right, it might
+be something worth implementing.
+
+
+&gt;<i> It also fails to allow you to detect loss of bus arbitration when
+</I>&gt;<i> there are multiple masters on the same bus.
+</I>&gt;<i>
+</I>
+This is on purpose :) I thought there wasn't much point in making the
+interface more complex for a situation so rare in practice (the multiple
+master configuration).
+
+
+&gt;<i> The interface in wikipedia seems to be about the lowest possible
+</I>&gt;<i> sensible level: (read/write byte with optional start, stop, ack/nak
+</I>&gt;<i> bits), though it doesn't really handle loss of bus arbitration, and
+</I>&gt;<i> there is no distinction between addresses and data.
+</I>&gt;<i>
+</I>&gt;<i> By comparison, the AVR32 hardware performs combined write/read
+</I>&gt;<i> sequences with a second start bit in a single operation, such as are
+</I>&gt;<i> used to access EEPROMs. Trying to map a sequence of
+</I>&gt;<i> i2c.start/address/write/read calls into this single operation would
+</I>&gt;<i> require a semi-intelligent state machine to parse the sequence of
+</I>&gt;<i> calls.
+</I>&gt;<i>
+</I>
+The low-level interface is as generic as it gets (as usual). The higher
+level interfaces I read here (LM3S included) seem to address specifically
+the common use scenarios over I2C interfaces:
+
+1. write: send start, send I2C address+w, send device register address, send
+bytes to write, send stop
+2. read: send start, send I2C address+w, send device register address, send
+start, send I2C address+r, read and ACK everything except the last byte,
+send stop
+
+It limits the functionality a bit (for example the master could in theory
+send a START at any time to a slave in order to reset it if anything goes
+wrong with the comunication) but since this is what we have in most hardware
+it seems the right thing to implement.
+
+
+&gt;<i>
+</I>&gt;<i> So how about changing the eLua Lua primitives for i2c to something a
+</I>&gt;<i> bit higher level, that reflects the range of possible I2C protocol
+</I>&gt;<i> sequences. There are only about three major variants as far as I can
+</I>&gt;<i> see: master write, master read and combined write-read sequences, plus
+</I>&gt;<i> a probe no-op to see if there is a slave present on a given address.
+</I>&gt;<i>
+</I>
+Right, thanks, I forgot about the last one. It is also used to detect end of
+operation while writing data to an I2C EEPROM (while the memory writes the
+data it won't acknowledge its slave addres). So we agree, there are 3 basic
+operations that should be taken into consideration: read, write and query.
+And yes, in the light of the information from you and Laurent I agree that
+we must change our I2C platform interface. Do you agree with this format
+(high level description):
+
+1. init( id, speed )
+2. write( id, i2caddr, devaddr, bytes ) (could be simply 'write( id,
+i2caddr, bytes )' but I want to make it symetrical with number 3 below).
+3. read( id, i2caddr, devaddr, numbytes ) (&quot;devaddr&quot; could have a special
+value meaning &quot;don't send an address&quot; as some devices don't need an address
+for a read operation (for example an I2C EEPROM which supports sequential
+reads: specify an address just on the first 'read' command, after which the
+device's internal address register increments automatically). I'm still not
+sure if this optimization is just asking for trouble or it can actually be
+implemented on all (or at least most) of our platforms).
+4. query (id, i2caddr)
+
+
+&gt;<i> Expressing a meaningful i2c transaction in a single Lua function call
+</I>&gt;<i> would also means that, on loss of bus arbitration during a message,
+</I>&gt;<i> the generic i2c code could just wait for the bus to become free again
+</I>&gt;<i> and retry the message without making client Lua cose detect and handle
+</I>&gt;<i> this condition.
+</I>&gt;<i>
+</I>
+Absolutely.
+
+
+&gt;<i> It would also mean that the more intelligent devices that perform
+</I>&gt;<i> whole I2C operations in hardware could be used.  With the present
+</I>&gt;<i> i2c.*() Lua interface (and the resulting C platform interface),
+</I>&gt;<i> implementing eLua I2C on such devices is needlessly complex, even
+</I>&gt;<i> without contempleting its DMA capabilities direct to from EEPROM...
+</I>&gt;<i>
+</I>&gt;<i> I've been staring at this all day and have now had enough, but I
+</I>&gt;<i> thought I'd write to let you know you're not alone, and to raise the
+</I>&gt;<i> issue of changing the Lua module interface, since this impacts on the
+</I>&gt;<i> C platform interface.
+</I>&gt;<i>
+</I>&gt;<i> My own difficulty with changing the i2c interfaces is that I wouldn't
+</I>&gt;<i> want to reimplement the existing str9 code and I don't have str9 (or
+</I>&gt;<i> lm3s) hardware to test such hings on
+</I>&gt;<i>
+</I>
+Don't worry about that, I'll be happy to implement them myself once we agree
+on an interface. I'm actually glad this happens now, when the only
+(official) implementation of I2C is on STR9 :)
+
+Best,
+Bogdan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20110606/290fc4ff/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20110606/290fc4ff/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="002454.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+	<LI>Next message: <A HREF="002452.html">[eLua-dev] Redefining the I2C Lua interface (was: I2C for LM3S	devices)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#2450">[ date ]</a>
+              <a href="thread.html#2450">[ thread ]</a>
+              <a href="subject.html#2450">[ subject ]</a>
+              <a href="author.html#2450">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

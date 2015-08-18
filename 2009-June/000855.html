@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Re-compiling with cross-compiler?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Re-compiling%20with%20cross-compiler%3F&In-Reply-To=%3CEMEWEMEW2_DELIMl5EIqEb75be547037d54d3f9699b%2C%0A%09jbsnyder%40fanplastic.org%2C%20368E3F47-6C4F-4088-8DC8-419%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000854.html">
+   <LINK REL="Next"  HREF="000856.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Re-compiling with cross-compiler?</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Re-compiling%20with%20cross-compiler%3F&In-Reply-To=%3CEMEWEMEW2_DELIMl5EIqEb75be547037d54d3f9699b%2C%0A%09jbsnyder%40fanplastic.org%2C%20368E3F47-6C4F-4088-8DC8-419%3E"
+       TITLE="[eLua-dev] Re-compiling with cross-compiler?">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Tue Jun 16 01:52:16 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000854.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+        <LI>Next message: <A HREF="000856.html">[eLua-dev] Lua Workshop 2009
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#855">[ date ]</a>
+              <a href="thread.html#855">[ thread ]</a>
+              <a href="subject.html#855">[ subject ]</a>
+              <a href="author.html#855">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Quick question, if someone else has a 64-bit system, could you try the  
+following:
+
+build the cross-compiler:
+scons -f cross-lua.py
+
+put the following code into test.lua:
+function testfunc(x)
+     return x^2
+end
+
+./luac -ccn float 64 -cce little -o abc.luac -s test.lua
+./luac -ccn float 64 -cce little -o abc2.luac abc.luac
+
+Does the second one blow up?
+
+It works for me if I compile it as 32-bit (-m32), but not by default  
+as a 64-bit binary.
+
+
+I think that ldump.c doesn't necessary work quite correctly on LP64  
+systems...
+<A HREF="http://www.ibm.com/developerworks/library/l-port64.html">http://www.ibm.com/developerworks/library/l-port64.html</A>
+
+I guess I should just use int32_t, uint32_t etc?
+
+As always, things are more complicated than one might hope :-)
+
+-jsnyder
+
+On Jun 15, 2009, at 1:17 PM, James Snyder wrote:
+
+&gt;<i>
+</I>&gt;<i> On Jun 15, 2009, at 12:39 PM, Bogdan Marinescu wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> eLua already has a patch for &quot;cross-compiling&quot;, for details please  
+</I>&gt;&gt;<i> check this page:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://elua.berlios.de/beta/en/using.html#cross">http://elua.berlios.de/beta/en/using.html#cross</A>
+</I>&gt;<i>
+</I>&gt;<i> Right, I've been taking a look at that to try and figure out how to  
+</I>&gt;<i> integrate this into the RPC code.
+</I>&gt;<i>
+</I>&gt;&gt;<i> I think you can work on this. My suggestion would be to serialize  
+</I>&gt;&gt;<i> everything into a predefined format (for example &quot;network order&quot;  
+</I>&gt;&gt;<i> for all numbers) and let the remote target unpack the dump itself  
+</I>&gt;&gt;<i> (although it would need some kind of information about the machine  
+</I>&gt;&gt;<i> you're sending the request from, but this kind of stuff can be  
+</I>&gt;&gt;<i> easily embedded into the dump itself).
+</I>&gt;<i>
+</I>&gt;<i> I was thinking of having the clients exchange information about  
+</I>&gt;<i> endianness and sizes when the connection is initiated.  I think I  
+</I>&gt;<i> could just mimic the set of bytes used in the headers for a binary  
+</I>&gt;<i> dump in order to get the right info exchanged.
+</I>&gt;<i>
+</I>&gt;<i> Network order sounds like a good idea for parameters that are being  
+</I>&gt;<i> exchanged.  I suppose whatever is done there should be consistent  
+</I>&gt;<i> with how bytecode is handled as well.  My initial thought was to use  
+</I>&gt;<i> header information exchanged when the connection is started to see  
+</I>&gt;<i> who has what configuration (endianness, lua_Number type, etc..) and   
+</I>&gt;<i> only do translations if necessary, and have whoever supports more  
+</I>&gt;<i> formats be responsible for putting things into alternate formats for  
+</I>&gt;<i> less capable nodes (i.e.: a float machine can handle both float and  
+</I>&gt;<i> int, an integer only one however would be the only one who can deal  
+</I>&gt;<i> with float).  I may not get all of these cases covered for the  
+</I>&gt;<i> initial version, but I would like it to at least work between an  
+</I>&gt;<i> Intel 32 or 64 bit machine and a Cortex-M3 for starters.  I suppose  
+</I>&gt;<i> one of the merits of just going with network ordering or  
+</I>&gt;<i> standardized output is that if one were, say, broadcasting code over  
+</I>&gt;<i> some network link to multiple machines at once, this would prevent  
+</I>&gt;<i> having to do some sort of negotiation process.
+</I>&gt;<i>
+</I>&gt;<i> Hmm... more experimentation and coding needed...
+</I>&gt;<i>
+</I>&gt;<i> -jsnyder
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> James Snyder
+</I>&gt;<i> Biomedical Engineering
+</I>&gt;<i> Northwestern University
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+</I>&gt;<i> <A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+</I>&gt;<i> ph: (847) 448-0386
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Elua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Elua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090615/49b992f1/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090615/49b992f1/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000854.html">[eLua-dev] Re-compiling with cross-compiler?
+</A></li>
+	<LI>Next message: <A HREF="000856.html">[eLua-dev] Lua Workshop 2009
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#855">[ date ]</a>
+              <a href="thread.html#855">[ thread ]</a>
+              <a href="subject.html#855">[ subject ]</a>
+              <a href="author.html#855">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

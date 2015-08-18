@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] Single Chip Lua Prospects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C81fbe47d1003090125s52329511r8084c3233ac7b72a%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001241.html">
+   <LINK REL="Next"  HREF="001243.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] Single Chip Lua Prospects</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20Single%20Chip%20Lua%20Prospects&In-Reply-To=%3C81fbe47d1003090125s52329511r8084c3233ac7b72a%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] Single Chip Lua Prospects">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Tue Mar  9 10:25:44 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001241.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+        <LI>Next message: <A HREF="001243.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1242">[ date ]</a>
+              <a href="thread.html#1242">[ thread ]</a>
+              <a href="subject.html#1242">[ subject ]</a>
+              <a href="author.html#1242">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Mar 9, 2010 at 11:08 AM, John Hind &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">john.hind at zen.co.uk</A>&gt; wrote:
+
+&gt;<i> I've never used Microchip CDC. If you have control of both ends why add the
+</I>&gt;<i> complexity of emulating a serial link?
+</I>
+
+I don't really want to _emulate_ a serial link, I just _want_ a serial link
+:<i>) I actually do quite a bit of prototyping from within the eLua shell
+</I>(which is one of the main ideas behind eLua), and I'd rather not give up
+this feature. And the new (exciting IMO) things that are coming to eLua also
+require a serial port, and they use it quite a lot. Of course, other people
+might find it easier and/or more convenient to do everything without a
+serial, but for me it's almost indispensable.
+
+
+&gt;<i> I have used USB - Serial converters
+</I>&gt;<i> to use Microchip serial ports with PCs without &quot;real&quot; serial ports. I
+</I>&gt;<i> certainly recommend FTDI-based converters these days because their drivers
+</I>&gt;<i> seem more stable on Vista and 7. They do seem better from a port shuffle
+</I>&gt;<i> basis also. However you still have to find the serial port number in the
+</I>&gt;<i> first place. The only way the user can find it is to interpret the highly
+</I>&gt;<i> technical Device Manager and it is hard to write reliable automatic probes
+</I>&gt;<i> because you do not know what other serial devices may be connected.
+</I>
+
+I actually wrote a piece of code that detects only FTDI adapters a while
+ago. &quot;Wrote&quot; is a bit of an overstatement, because I just used some code I
+found on CodeProject :) If you want, I can send the relevant part of the
+code to you. Didn't use it in a while, but I remember that it worked quite
+well. And I'm quite sure it can be extended to recognize a broader range of
+devices, if needed.
+
+
+&gt;<i> In my experience, using CDC virtually guarantees high support costs.
+</I>&gt;<i>
+</I>
+I never had any problems with them. As long as one uses good quality USB to
+serial adapters (FTDIs being a very good example) everything seems to work
+fine. On the other hand, I never tested a microcontroller based CDC
+solution, and there's a very good chance that they don't perform equally
+well.
+
+
+&gt;<i> Besides this, writing good serial port code on a PC is difficult even
+</I>&gt;<i> without emulation in the picture - I've virtually built a career fixing
+</I>&gt;<i> badly written com port code!
+</I>&gt;<i>
+</I>
+eLua is going to release a cross platform serial library soon, so this
+problem will be over! :)
+
+Best,
+Bogdan
+
+
+&gt;<i> &gt; -----Original Message-----
+</I>&gt;<i> &gt; From: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev-bounces at lists.berlios.de</A> [mailto:elua-dev-
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">bounces at lists.berlios.de</A>] On Behalf Of Ross Berteig
+</I>&gt;<i> &gt; Sent: 08 March 2010 22:26
+</I>&gt;<i> &gt; To: <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">elua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; Subject: Re: [eLua-dev] Single Chip Lua Prospects
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Sometime on 3/8/2010, John Hind wrote:
+</I>&gt;<i> &gt;  &gt;I prefer HID over CDC  for two reasons: On Windows virtual Com
+</I>&gt;<i> &gt;  &gt;ports tend to shuffle about at random and it is difficult to
+</I>&gt;<i> &gt;  &gt;write host-side software that can find the port number reliably
+</I>&gt;<i> &gt;  &gt;in all circumstances without bothering the user with technical
+</I>&gt;<i> &gt;  &gt;details.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The secret to preventing Windows from doing the COM port
+</I>&gt;<i> &gt; assignment shuffle is to give every CDC device a unique serial
+</I>&gt;<i> &gt; number descriptor. Without the serial number, Windows has to rely
+</I>&gt;<i> &gt; on its internal name of the upstream USB port to which the device
+</I>&gt;<i> &gt; is connected. If you move the device to a different port, then it
+</I>&gt;<i> &gt; sees it as a new device, reloads the drivers, and reassigns the
+</I>&gt;<i> &gt; COM port.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I don't know how easy Microchip makes it to do this. Ideally, it
+</I>&gt;<i> &gt; would be easy to generate a serial number at runtime from some
+</I>&gt;<i> &gt; factory guaranteed unique value (the FTDI chips do this, for
+</I>&gt;<i> &gt; instance). Otherwise, you would have to provide for serializing
+</I>&gt;<i> &gt; the devices as or after firmware is loaded.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Ross Berteig                               <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">Ross at CheshireEng.com</A>
+</I>&gt;<i> &gt; Cheshire Engineering Corp.           <A HREF="http://www.CheshireEng.com/">http://www.CheshireEng.com/</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; eLua-dev mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20100309/7544f13f/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20100309/7544f13f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001241.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+	<LI>Next message: <A HREF="001243.html">[eLua-dev] Single Chip Lua Prospects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1242">[ date ]</a>
+              <a href="thread.html#1242">[ thread ]</a>
+              <a href="subject.html#1242">[ subject ]</a>
+              <a href="author.html#1242">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] IMPORTANT: new build system in master
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2013-June/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20new%20build%20system%20in%20master&In-Reply-To=%3CCANKDJfaw997_OhY07rnyLHr4re6f17gvP_JbA8Zxn_Sah3rxsw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="004139.html">
+   <LINK REL="Next"  HREF="004142.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] IMPORTANT: new build system in master</H1>
+    <B>Bogdan Marinescu</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20IMPORTANT%3A%20new%20build%20system%20in%20master&In-Reply-To=%3CCANKDJfaw997_OhY07rnyLHr4re6f17gvP_JbA8Zxn_Sah3rxsw%40mail.gmail.com%3E"
+       TITLE="[eLua-dev] IMPORTANT: new build system in master">bogdan.marinescu at gmail.com
+       </A><BR>
+    <I>Sat Jun  1 10:33:35 CEST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="004139.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+        <LI>Next message: <A HREF="004142.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4141">[ date ]</a>
+              <a href="thread.html#4141">[ thread ]</a>
+              <a href="subject.html#4141">[ subject ]</a>
+              <a href="author.html#4141">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Jun 1, 2013 at 9:55 AM, Martin Guy &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">martinwguy at gmail.com</A>&gt; wrote:
+
+&gt;<i> &gt; It uses the old
+</I>&gt;<i> &gt; platform_conf.h mechanism, not the configurator.
+</I>&gt;<i>
+</I>&gt;<i> Does that mean that platform_conf's BUILD_* options or other are now
+</I>&gt;<i> performed by something in the build system?
+</I>&gt;<i> That would be an improvement!
+</I>&gt;<i>
+</I>
+Really? You didn't even read the configurator docs before deciding to trash
+the new build system? In any case, this is what the configurator does, yes (
+<A HREF="http://www.eluaproject.net/doc/master/en_configurator.html">http://www.eluaproject.net/doc/master/en_configurator.html</A>). However, this
+only works with the new, Lua based build system, because it is written in
+Lua and interfaces with the builder's Lua code. The branch that I've
+created for you uses the old scons-based build system and thus you still
+have to edit your platform_conf.h manually.
+
+
+&gt;<i>
+</I>&gt;<i> Lake? Do you mean that, now that all the SConstruct-dependent work has
+</I>&gt;<i> been destroyed, and we all have to put work into build-elua.lua,  you
+</I>&gt;<i> intend to implement a third build system and, presumably, then delete
+</I>&gt;<i> build-elua.lua?
+</I>&gt;<i>
+</I>&gt;<i> No wonder all serious developers run away from eLua screaming!
+</I>&gt;<i>
+</I>
+One of the things that I've learnt from life is that it is ocasionally
+helpful to get informed properly on a topic before getting all outraged
+about said topic. I recommend this to you, it's a good exercise. For
+example, should you have done that in this particular situation (especially
+since I've already told you that there is now a functional &quot;uselake&quot; branch
+on github that everybody can look at), you would've found that the
+differences to build_elua.lua are actually quite small. In fact, after
+getting myself accustomed with lake, it took me little over an hour to have
+the first eLua target bulding with lake. There are two main reasons for
+this:
+
+- builld_elua.lua is mostly about executing the configurator, reading the
+backend specific configuration files, setting the compiler/linker/assembler
+flags, getting the list of files and other such tasks. The part that
+actually invokes the build process is in the last section of the file; when
+that section is reached, the things that are build-system independent (file
+list/compilation flags) are already set.
+- lake and my actual builder are not that different conceptually, thus
+switching to lake was not that hard. When I say &quot;my builder&quot;, I reffer to
+utils/build.lua, the build system that I wrote specifically for eLua. But
+this is only the part that does the actual build (invoking the
+compiler/linker/assembler, taking care of dependency analysis and so on);
+the rest of the system (configurator and the main part of build_elua.lua)
+are completely independent of the builder. As I already said in a number of
+ocasions, writing my own build system for eLua (and again, by this I'm
+reffering only to utils/build.lua) was a mistake; we simply didn't need
+another build system, it was something that started as an exercise and went
+too far eventually. This is why I am removing this part and ONLY this part
+and replacing it with lake, which is a dedicated build tool that seems to
+fit eLua perfectly.
+
+To summarize, after lake will be in place, the only thing that MIGHT change
+is that instead of:
+
+# lua build_elua.lua &lt;options&gt; ...
+
+you'll have to do:
+
+# lake &lt;options&gt; ...
+
+And not even that will change if Steve (lake's author) agrees to package
+lake as a module that I'll be able to use from build_elua.lua, in which
+case the build system invocation won't change at all. On the backend
+configuration side, I expect very little things to change, so you won't
+have anything to maintain there. Although there is another branch that I'm
+working on to refactor the various toolchain options in a single place,
+which does change the build system a bit more. The idea here is that eLua
+is a dynamic project, it changes and it will keep on changing. I understand
+your resistance to change, but this is not going to stop, so we have to
+find a common ground somewhere.
+
+Best,
+Bogdan
+
+
+&gt;<i>     M
+</I>&gt;<i>
+</I>&gt;<i>    M
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> eLua-dev mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">eLua-dev at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">https://lists.berlios.de/mailman/listinfo/elua-dev</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20130601/aa6ee04d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20130601/aa6ee04d/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="004139.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+	<LI>Next message: <A HREF="004142.html">[eLua-dev] IMPORTANT: new build system in master
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4141">[ date ]</a>
+              <a href="thread.html#4141">[ thread ]</a>
+              <a href="subject.html#4141">[ subject ]</a>
+              <a href="author.html#4141">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [eLua-dev] ADC platform interface proposal
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/elua-dev/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20platform%20interface%20proposal&In-Reply-To=%3C3689B415-C8CC-418B-9A66-1E39BA0724C7%40fanplastic.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000296.html">
+   <LINK REL="Next"  HREF="000298.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[eLua-dev] ADC platform interface proposal</H1>
+    <B>James Snyder</B> 
+    <A HREF="mailto:elua-dev%40lists.berlios.de?Subject=Re%3A%20%5BeLua-dev%5D%20ADC%20platform%20interface%20proposal&In-Reply-To=%3C3689B415-C8CC-418B-9A66-1E39BA0724C7%40fanplastic.org%3E"
+       TITLE="[eLua-dev] ADC platform interface proposal">jbsnyder at fanplastic.org
+       </A><BR>
+    <I>Wed Jan 21 19:47:44 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000296.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+        <LI>Next message: <A HREF="000298.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#297">[ date ]</a>
+              <a href="thread.html#297">[ thread ]</a>
+              <a href="subject.html#297">[ subject ]</a>
+              <a href="author.html#297">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Jan 21, 2009, at 1:38 AM, Bogdan Marinescu wrote:
+
+&gt;<i> On Mon, Jan 19, 2009 at 10:06 PM, James Snyder &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A> 
+</I>&gt;<i> &gt; wrote:
+</I>&gt;&gt;<i> I've got an initial attempt at the ADC module sketched out, and  
+</I>&gt;&gt;<i> I'll check it in as soon as I make a few more modifications to  
+</I>&gt;&gt;<i> clean things up and make sure I haven't broken builds for platforms  
+</I>&gt;&gt;<i> that don't have ADC implementations written yet.  So far it will  
+</I>&gt;&gt;<i> happily do single shot readings, and the voltages I'm putting in  
+</I>&gt;&gt;<i> seem to correlate with what I'd expect.
+</I>&gt;<i>
+</I>&gt;<i> Good news, thanks! :)
+</I>&gt;<i>
+</I>&gt;&gt;<i> As things stand, I'm returning the raw integer value provided off  
+</I>&gt;&gt;<i> of the ADC.  Should the ADC module know what range of voltage  
+</I>&gt;&gt;<i> inputs is and attempt to convert to say, millivolts, when a sample  
+</I>&gt;&gt;<i> is returned?  For lower bit depths, like 10 bits, having the result  
+</I>&gt;&gt;<i> returned as u16 in millivolts wouldn't decimate the resolution of  
+</I>&gt;&gt;<i> the result, however at higher resolutions converting a raw integer  
+</I>&gt;&gt;<i> result to mV might result in loss of precision without floating  
+</I>&gt;&gt;<i> point.  This is one of those &quot;level of abstraction&quot; questions that  
+</I>&gt;&gt;<i> might be valuable to discuss.  I suppose, one way to handle things  
+</I>&gt;&gt;<i> would be to have this functionality be optional, but which should  
+</I>&gt;&gt;<i> be the default?
+</I>&gt;<i>
+</I>&gt;<i> Let's return the ADC readings for now. I want this to work on the
+</I>&gt;<i> integer-only Lua as well (maybe with a fixed point library), so I'm
+</I>&gt;<i> trying to avoid floating point numbers in the platform interface as
+</I>&gt;<i> much as possible.
+</I>
+Yeah, the way to do this without losing detail would be to use  
+floating point.  I'm not adverse to the idea that just returning raw  
+results is appropriate, since in a lot of cases one is going to do  
+some additional conversion anyways.  At least on the LM3S board I have  
+the ADC is 0-3V, so, in most cases, I'd likely have some sort of op- 
+amp arrangement to take whatever signal I had as a source and remap it  
+onto that range.  In such a situation, pre-conversion isn't all that  
+useful.  I'm not sure, overall, how many applications end up doing  
+additional conversion or not.  One thing that may make sense is to be  
+able to let the programmer know what the bit depth is, or what the max  
+and min readable values are, similar to how one can set timers?
+
+I think all you would need would be maxval, because I don't know of  
+any ADCs that will return negative values.  Does that seem reasonable?
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Another item is:  If I do a single shot conversion, and then  
+</I>&gt;&gt;<i> subsequently call the function to get a sample, should default  
+</I>&gt;&gt;<i> behavior be to keep returning the last result?  I've found that at  
+</I>&gt;&gt;<i> least with the Stellaris platform the results are stored in a FIFO,  
+</I>&gt;&gt;<i> so the first time I get my result, and the second time I get a  
+</I>&gt;&gt;<i> default value (presumably telling me that the FIFO is empty).  Any  
+</I>&gt;&gt;<i> thoughts?
+</I>&gt;<i>
+</I>&gt;<i> I'm not sure I understand this. If you call a function to get a
+</I>&gt;<i> sample, it should read a new sample and return it. What would be the
+</I>&gt;<i> point of returning the previous sample?
+</I>
+Well, I guess what I was asking was, what to do in order to make  
+behavior consistent across platforms.  I suppose what I should do is  
+throw an error based on however a particular platform indicates the  
+sample buffer is empty.
+
+
+--
+James Snyder
+Biomedical Engineering
+Northwestern University
+<A HREF="https://lists.berlios.de/mailman/listinfo/elua-dev">jbsnyder at fanplastic.org</A>
+<A HREF="http://fanplastic.org/key.txt">http://fanplastic.org/key.txt</A>
+ph: (847) 644-2322
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090121/616ab22d/attachment.html">https://lists.berlios.de/pipermail/elua-dev/attachments/20090121/616ab22d/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PGP.sig
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: This is a digitally signed message part
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/elua-dev/attachments/20090121/616ab22d/attachment.pgp">https://lists.berlios.de/pipermail/elua-dev/attachments/20090121/616ab22d/attachment.pgp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000296.html">[eLua-dev] ADC platform interface proposal
+</A></li>
+	<LI>Next message: <A HREF="000298.html">[eLua-dev] On Timers &amp; ADC
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#297">[ date ]</a>
+              <a href="thread.html#297">[ thread ]</a>
+              <a href="subject.html#297">[ subject ]</a>
+              <a href="author.html#297">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/elua-dev">More information about the eLua-dev
+mailing list</a><br>
+</body></html>
